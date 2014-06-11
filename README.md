@@ -6,4 +6,4 @@ For more information about this project, please contact [Jim Bowring](mailto://b
 
 Getting Started 
 -------------
-Instructions on how to install and begin using **CHRONI**, along with other documentation, can be found in the wiki.
+Instructions on how to install and begin using **CHRONI**, along with other documentation, can be found in the [CHRONI wiki](https://github.com/CIRDLES/CHRONI/wiki).
