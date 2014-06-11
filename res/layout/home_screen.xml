@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/progressBar1"
         android:layout_centerHorizontal="true"
-        android:text="CIRDLES"
+        android:text="CHRONI"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
         android:textSize="100sp" />
