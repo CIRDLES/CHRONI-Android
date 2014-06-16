@@ -1,4 +1,6 @@
-package com.example.cirdles;
+package org.cirdles.chroni;
+
+import com.example.cirdles.R;
 
 import android.net.Uri;
 import android.os.Bundle;

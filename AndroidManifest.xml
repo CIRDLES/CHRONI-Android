@@ -22,7 +22,7 @@
         android:debuggable="false">
         
         <activity
-            android:name="com.example.cirdles.HomeScreen"
+            android:name="org.cirdles.chroni.HomeScreen"
              android:screenOrientation="portrait"
              android:noHistory="true">
             <intent-filter>
@@ -32,7 +32,7 @@
         </activity>
         
         <activity
-            android:name="com.example.cirdles.MainMenu"
+            android:name="org.cirdles.chroni.MainMenu"
             android:parentActivityName="android.intent.action.USERPROFILE"
            android:screenOrientation="portrait">
             <intent-filter>
@@ -42,7 +42,7 @@
         </activity>
         
                 <activity
-            android:name="com.example.cirdles.UserProfile"
+            android:name="org.cirdles.chroni.UserProfile"
             android:parentActivityName="android.intent.action.MAINMENU"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
@@ -53,7 +53,7 @@
         </activity>
         
          <activity
-            android:name="com.example.cirdles.History"
+            android:name="org.cirdles.chroni.History"
             android:parentActivityName="android.intent.action.MAINMENU"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -63,7 +63,7 @@
         </activity>
         
         <activity 
-           android:name=".FilePickerActivity"
+           android:name="org.cirdles.chroni.FilePickerActivity"
            android:screenOrientation="portrait"
            android:noHistory="true">
             <intent-filter>
@@ -73,7 +73,7 @@
         </activity>
         
         <activity
-            android:name="com.example.cirdles.AliquotMenu"
+            android:name="org.cirdles.chroni.AliquotMenu"
             android:parentActivityName="android.intent.action.MAINMENU"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
@@ -84,7 +84,7 @@
         </activity>
         
         <activity
-            android:name="com.example.cirdles.ReportSettingsMenu"
+            android:name="org.cirdles.chroni.ReportSettingsMenu"
             android:parentActivityName="android.intent.action.MAINMENU"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -94,7 +94,7 @@
         </activity>
 
          <activity
-            android:name="com.example.cirdles.Display"
+            android:name="org.cirdles.chroni.Display"
             android:parentActivityName="android.intent.action.DISPLAY"
             android:screenOrientation="portrait">
             <intent-filter>

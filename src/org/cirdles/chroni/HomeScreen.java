@@ -1,8 +1,10 @@
-package com.example.cirdles;
+package org.cirdles.chroni;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+
+import com.example.cirdles.R;
 
 import android.os.Bundle;
 import android.os.Environment;

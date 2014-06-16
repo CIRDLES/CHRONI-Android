@@ -1,7 +1,10 @@
-package com.example.cirdles;
+package org.cirdles.chroni;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import com.example.cirdles.R;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
