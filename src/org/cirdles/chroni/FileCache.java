@@ -1,4 +1,4 @@
-package com.example.cirdles;
+package org.cirdles.chroni;
 
 import java.io.File;
 import android.content.Context;

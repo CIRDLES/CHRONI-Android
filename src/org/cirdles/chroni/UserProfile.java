@@ -1,53 +1,94 @@
-package com.example.cirdles;
+package org.cirdles.chroni;
+
+/*
+ * This class is used to collect the information from a new user.
+ */
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.example.cirdles.R;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.CheckBox;
+import android.widget.EditText;
 
-public class Display extends Activity {
-	private Button viewConcordia, viewProbabilityDensity, changeReportSettings;
+public class UserProfile extends Activity {
+
+	private EditText geochronUsernameInput, geochronPasswordInput;
+	private Button loginSubmitButton;
+
+	private String geochronUsername, geochronPassword;	// the login values on file
+	
+	public static final String USER_REGISTERED = "My CIRDLES Application";
+	public static final String USER_PREFS = "My CIRDLES Settings";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTheme(android.R.style.Theme_Holo);
-		setContentView(R.layout.display);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-	
-        viewConcordia = (Button) findViewById(R.id.viewConcordiaButton);
-        viewConcordia.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-//				Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-//				startActivity(openMainMenu);
-			}
-		});
-        
-        viewProbabilityDensity = (Button) findViewById(R.id.viewProbabilityDensityButton);
-        viewProbabilityDensity.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-//				Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-//				startActivity(openMainMenu);
-			}
-		});
-        
-        changeReportSettings = (Button) findViewById(R.id.changeReportSettingsButton);
-        changeReportSettings.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				Intent openRSMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-				startActivity(openRSMenu);
-			}
-		});
-	
-	}
+		setTheme(android.R.style.Theme_Holo);
+		setContentView(R.layout.user_profile);
 
+		geochronUsernameInput = (EditText) findViewById(R.id.geochronUsername);
+		geochronUsername = geochronUsernameInput.getText().toString();
+
+		geochronPasswordInput = (EditText) findViewById(R.id.geochronPassword);
+		geochronPassword = geochronPasswordInput.getText().toString();
+		
+		loginSubmitButton = (Button) findViewById(R.id.profileSaveButton);
+		loginSubmitButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				//	Stores the login information in shared preferences for a new user
+				SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putString("Geochron Username", geochronUsername);
+				editor.putString("Geochron Password", geochronPassword);
+				editor.commit();
+
+				SharedPreferences applicationSettings = getSharedPreferences(USER_REGISTERED, 0);
+				SharedPreferences.Editor applicationEditor = applicationSettings.edit();
+				applicationEditor.putBoolean("User Registered", true);
+				applicationEditor.commit();
+				
+		    	Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
+		    	startActivity(openMainMenu);		    		
+		    	}
+			});	
+	}
+	
+	/*
+	 * This method gets the current time.
+	 */
+	public String getTime(){
+		java.text.DateFormat dateFormat = new SimpleDateFormat("KK:mm:ss a MM/dd/yy");
+		Date date = new Date();
+		String time = dateFormat.format(date);
+		return time;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+    protected void onStop(){
+       super.onStop();
+       
+    }
+	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -100,6 +141,5 @@ public class Display extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 }
