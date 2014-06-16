@@ -23,7 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class AliquotMenu extends Activity implements OnClickListener{
+public class AliquotMenu extends Activity{
 	
 	private Button aliquotFileSelectButton, aliquotFileSubmitButton, aliquotIGSNSubmitButton, aliquotURLButton;
 	private EditText aliquotFileSelectText, aliquotIGSNText, aliquotURLText;
@@ -61,84 +61,62 @@ public class AliquotMenu extends Activity implements OnClickListener{
 //              }
 //        }
         
-		// Information about Aliquot File
-		aliquotFileSelectButton = (Button) findViewById(R.id.aliquotFileSelectButton);
-		aliquotFileSelectButton.setOnClickListener(this);
+     // Information about Aliquot File
+     		aliquotFileSelectButton = (Button) findViewById(R.id.aliquotFileSelectButton);
+     		aliquotFileSelectButton.setOnClickListener(new View.OnClickListener() {
+     			public void onClick(View v) {
+     				Intent openFilePicker = new Intent("android.intent.action.ALIQUOTFILEPICKERMENU");
+     				startActivity(openFilePicker);
+     		    	}
+     			});	
 
-		aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
-		aliquotFileSubmitButton.setOnClickListener(this);
-		
-		aliquotFileSelectText = (EditText) findViewById(R.id.aliquotFileSelectText);		
-		if(getIntent().hasExtra("AliquotXMLFileName")){
-			selectedAliquot = getIntent().getStringExtra("AliquotXMLFileName");
-			aliquotFileSelectText.setText(selectedAliquot);
-		}
+     		aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
+     		aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
+     			public void onClick(View v) {
+     		    	Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+     		    	startActivity(openMainMenu);		    		
+     		    	}
+     			});	
+     		
+     		aliquotFileSelectText = (EditText) findViewById(R.id.aliquotFileSelectText);		
+     		if(getIntent().hasExtra("AliquotXMLFileName")){
+     			selectedAliquot = getIntent().getStringExtra("AliquotXMLFileName");
+     			aliquotFileSelectText.setText(selectedAliquot);
+     		}
 
-		// Information about Aliquot IGSN
-		aliquotIGSNText = (EditText) findViewById(R.id.aliquotIGSNText);
-		aliquotIGSNSubmitButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
-		aliquotIGSNSubmitButton.setOnClickListener(this);
+     		// Information about Aliquot IGSN
+     		aliquotIGSNText = (EditText) findViewById(R.id.aliquotIGSNText);
+     		
+     		aliquotIGSNSubmitButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
+     		aliquotIGSNSubmitButton.setOnClickListener(new View.OnClickListener() {
+     			public void onClick(View v) {				
+     				aliquotIGSN = aliquotIGSNText.getText().toString().toUpperCase();
+
+     				// Downloads Aliquot file
+     				URLFileReader downloader = new URLFileReader(AliquotMenu.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");	
+     		    	Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+     		    	startActivity(openMainMenu);		    		
+     		    	}
+     			});	
+     		
+     		// Information about Aliquot URL
+     		aliquotURLText = (EditText) findViewById(R.id.aliquotURLText);
+     		
+     		aliquotURLButton = (Button) findViewById(R.id.aliquotURLButton);
+     		aliquotURLButton.setOnClickListener(new View.OnClickListener() {
+     			public void onClick(View v) {
+     				aliquotURL = aliquotURLText.getText().toString();
+
+     				// Downloads Aliquot file from URL
+     				URLFileReader downloader = new URLFileReader(AliquotMenu.this, "AliquotMenu", aliquotURL, "url");	
+     				Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+     				openMainMenu.putExtra("Url", aliquotURL);
+     		    	startActivity(openMainMenu);	
+     		    	}
+     			});
+     		
+     }
 		
-		// Information about Aliquot URL
-		aliquotURLText = (EditText) findViewById(R.id.aliquotURLText);
-		aliquotURLButton = (Button) findViewById(R.id.aliquotURLButton);
-		aliquotURLButton.setOnClickListener(this);
-		
-	}
-	
-	@Override
-	public void onClick(View v) {
-		switch(v.getId()) {
-		case R.id.aliquotFileSelectButton:
-			// Create a new Intent for the file picker activity
-			Intent intent = new Intent(this, FilePickerActivity.class);
-		
-			// Show hidden files
-			//intent.putExtra(FilePickerActivity.EXTRA_SHOW_HIDDEN_FILES, true);
-			
-			// Only make .xml files visible
-			ArrayList<String> extensions = new ArrayList<String>();
-			extensions.add(".xml");
-			intent.putExtra(FilePickerActivity.EXTRA_ACCEPTED_FILE_EXTENSIONS, extensions);
-			
-			// Sets the Initial Directory
-			intent.putExtra("Default_Directory", "Aliquot");
-			
-			// Start the activity
-			startActivityForResult(intent, REQUEST_PICK_FILE);
-			break;
-			
-		case R.id.aliquotFileSubmitButton:
-			Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-	    	startActivity(openMainMenu);
-	    	break;
-	    	
-		case R.id.aliquotIGSNSubmitButton:
-			{
-				if(aliquotIGSNText.getText() != null){
-				aliquotIGSN = aliquotIGSNText.getText().toString().toUpperCase();
-				// Downloads Aliquot file
-				URLFileReader IGSNdownloader = new URLFileReader(AliquotMenu.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");	
-				}
-				if(!isInvalidFile()){
-					Intent openMainMenu1 = new Intent("android.intent.action.DISPLAY");
-					startActivity(openMainMenu1);	
-					break;
-				}
-			}
-		case R.id.aliquotURLButton:
-			if(aliquotURLText.getText() != null){
-			aliquotURL = aliquotURLText.getText().toString();
-			// Downloads Aliquot file from URL
-			URLFileReader URLDownloader = new URLFileReader(AliquotMenu.this, "AliquotMenu", aliquotURL, "url");	
-			Intent openMainMenu2 = new Intent("android.intent.action.DISPLAY");
-			openMainMenu2.putExtra("Url", aliquotURL);
-	    	startActivity(openMainMenu2);	
-	    	break;
-			}
-		}
-	}
-	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(resultCode == RESULT_OK) {

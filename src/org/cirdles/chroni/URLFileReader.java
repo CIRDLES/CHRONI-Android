@@ -156,13 +156,13 @@ public class URLFileReader{
 					// download the file to the appropriate location
 					input = connection.getInputStream();
 					if(fileType.contains("Aliquot")){
-						if(fileLength > 0.05 || fileLength == -1){ 
-							cancel(true);
-						}else{
-							output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CIRDLES/Aliquot/" + fileName + ".xml");
-						}
+//						if(fileLength > 0.05 || fileLength == -1){ 
+//							cancel(true);
+//						}else{
+							output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + fileName + ".xml");
+//						}
 					}else if(fileType.contains("Report Settings")){
-						output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CIRDLES/Report Settings/" + fileName + ".xml");
+						output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings/" + fileName + ".xml");
 					}
 					
 					byte data[] = new byte[4096];

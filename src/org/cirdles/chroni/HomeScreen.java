@@ -93,9 +93,9 @@ public class HomeScreen extends Activity implements FilenameFilter {
 	 */
 	protected void createDirectories() throws FileNotFoundException {
 		// Establishes the CIRDLES root folder
-		File cirdlesDirectory = new File(Environment.getExternalStorageDirectory()+ "/CIRDLES/");
-		File aliquotDirectory = new File(Environment.getExternalStorageDirectory()+ "/CIRDLES/Aliquot");
-		File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory()+ "/CIRDLES/Report Settings");
+		File cirdlesDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/");
+		File aliquotDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Aliquot");
+		File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Report Settings");
 		
 		// Creates the directories if they are not there
 		if(cirdlesDirectory.exists()){
