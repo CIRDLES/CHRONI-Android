@@ -142,25 +142,23 @@ public class URLFileReader{
 					connection = (HttpURLConnection) url.openConnection();
 					connection.connect();
 
-					// expect HTTP 200 OK, so we don't mistakenly save error report
-					// instead of the file
 					if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
 						return "Server returned HTTP "
 								+ connection.getResponseCode() + " "
 								+ connection.getResponseMessage();
 
-					// useful to display download percentage of the file
-					// might be -1: server did not report the length
+					// might be -1: if server did not report the length
 					long fileLength = connection.getContentLength();
 
 					// download the file to the appropriate location
 					input = connection.getInputStream();
 					if(fileType.contains("Aliquot")){
-//						if(fileLength > 0.05 || fileLength == -1){ 
-//							cancel(true);
-//						}else{
+						if(fileLength == 55){ // Cancels if invalid IGSN file (if file has a length of 0.05 KB)
+							AliquotMenu.setInvalidFile(true);	// Sets file as invalid
+							cancel(true);
+						}else{
 							output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + fileName + ".xml");
-//						}
+						}
 					}else if(fileType.contains("Report Settings")){
 						output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings/" + fileName + ".xml");
 					}
@@ -179,7 +177,7 @@ public class URLFileReader{
 						if (fileLength > 0) // only if total length is known
 							publishProgress((int) (total * 100 / fileLength));
 						// Creates the actual downloaded file.
-						// Must be bigger than 0.05 because that is the size of error files
+						// Must be bigger than 55 because that is the size of error files
 						// if -1, the server is not sending back requested length so, for now, downloading 
 							output.write(data, 0, count);
 					}
