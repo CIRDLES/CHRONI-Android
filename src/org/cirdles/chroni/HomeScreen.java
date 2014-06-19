@@ -46,6 +46,12 @@ public class HomeScreen extends Activity implements FilenameFilter {
 	        versionNumber.setText("Version " + versionCode + "." + versionName);
 	        versionNumber.setTextColor(getResources().getColor(R.color.button_blue));
 	        
+	        // Puts demo items in the history database if first launch
+	        preloadedAliquots = new CirdlesDatabaseHelper(this);
+	        if(isInitialLaunch()){
+	        	preloadedAliquots.createEntry("01/11/1111", "Demo Aliquot");      
+	        }
+	        
 			//Creates the necessary application directories
 			createDirectories();
 		} catch (FileNotFoundException e) {
@@ -55,12 +61,6 @@ public class HomeScreen extends Activity implements FilenameFilter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        // Puts demo items in the history database
-        preloadedAliquots = new CirdlesDatabaseHelper(this);
-        if(!preloadedAliquots.isPresent("Demo Aliquot")){
-        	preloadedAliquots.createEntry("01/11/1111", "Demo Aliquot");      
-        }
         
 		Thread timer = new Thread(){
 			public void run(){
@@ -110,7 +110,7 @@ public class HomeScreen extends Activity implements FilenameFilter {
 			URLFileReader downloader = new URLFileReader(HomeScreen.this, "HomeScreen", "http://cirdles.org/sites/default/files/Downloads/CIRDLESDefaultReportSettings.xml", "url");	
 		}
 		// Notes that files have been downloaded and application has been properly initialized
-		storeSharedPrefs();
+		saveInitialLaunch();
 	}
 
 	@Override
@@ -124,10 +124,10 @@ public class HomeScreen extends Activity implements FilenameFilter {
     /*
      * Storing in Shared Preferences
      */
-	 protected void storeSharedPrefs() {
+	 protected void saveInitialLaunch() {
 		SharedPreferences settings = getSharedPreferences(PREF_FIRST_LAUNCH, 0);
 		SharedPreferences.Editor editor = settings.edit();
-		 editor.putBoolean(PREF_FIRST_LAUNCH, false);
+		 editor.putBoolean("Initial Launch", false);
 		 editor.commit();  //Commiting changes
 	    } 
 	
@@ -135,9 +135,11 @@ public class HomeScreen extends Activity implements FilenameFilter {
       * Checking Shared Preferences if the user had pressed 
       * the remember me button last time he logged in
       * */
-	 private boolean isFirstTime() {
-		 return PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(PREF_FIRST_LAUNCH, true);
-	    }
+	 private boolean isInitialLaunch() {
+		SharedPreferences settings = getSharedPreferences(PREF_FIRST_LAUNCH, 0);
+		return settings.getBoolean("Initial Launch", true);
+	 }
+	 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

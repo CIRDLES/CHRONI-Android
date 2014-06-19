@@ -75,20 +75,13 @@ public class UserProfile extends Activity {
 			geochronUsernameInput.setText(getGeochronUsername());
 			geochronPasswordInput.setText(getGeochronPassword());
 		
-//			// Changes save button to appropriate text and clears input if edits are made
-//			if(geochronUsernameInput.getText().toString() != getGeochronUsername()){
-//				profileSaveButton.setText("Save");
-//			}else{
+			// Changes save button to appropriate text and clears input if edits are made
+//			if((geochronUsernameInput.getText().toString() != getGeochronUsername())|| (geochronPasswordInput.getText().toString() != getGeochronPassword())){
 //				profileSaveButton.setText("Edit");
 //				geochronPasswordInput.setText("");
-//			}
-//		
-//			if(geochronPasswordInput.getText().toString() != getGeochronPassword()){
-//				profileSaveButton.setText("Save");
 //			}else{
-//				profileSaveButton.setText("Edit");
+//				profileSaveButton.setText("Save");
 //			}
-		
 		}	
 		
 	}
