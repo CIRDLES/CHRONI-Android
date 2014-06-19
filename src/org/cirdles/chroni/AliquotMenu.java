@@ -53,14 +53,6 @@ public class AliquotMenu extends Activity{
      				startActivity(openFilePicker);
      		    	}
      			});	
-
-     		aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
-     		aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
-     			public void onClick(View v) {
-     		    	Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-     		    	startActivity(openMainMenu);		    		
-     		    	}
-     			});	
      		
      		aliquotFileSelectText = (EditText) findViewById(R.id.aliquotFileSelectText);		
      		if(getIntent().hasExtra("AliquotXMLFileName")){
@@ -70,19 +62,30 @@ public class AliquotMenu extends Activity{
      			aliquotFileSelectText.setText(fileName);
      		}
 
+     		aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
+     		aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
+     			public void onClick(View v) {
+     				if(aliquotFileSelectText.getText().length() != 0){
+     					Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+     					startActivity(openMainMenu);		    		
+     		    	}
+     			}
+     		});	
+     		
      		// Information about Aliquot IGSN
      		aliquotIGSNText = (EditText) findViewById(R.id.aliquotIGSNText);
      		
      		aliquotIGSNSubmitButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
      		aliquotIGSNSubmitButton.setOnClickListener(new View.OnClickListener() {
-     			public void onClick(View v) {				
-     				aliquotIGSN = aliquotIGSNText.getText().toString().toUpperCase();
-
-     				// Downloads Aliquot file
-     				URLFileReader downloader = new URLFileReader(AliquotMenu.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");	
-     		    	Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-     		    	startActivity(openMainMenu);		    		
+     			public void onClick(View v) {		
+     				if(aliquotIGSNText.getText().length() != 0){
+	     				aliquotIGSN = aliquotIGSNText.getText().toString().toUpperCase();
+	     				// Downloads Aliquot file
+	     				URLFileReader downloader = new URLFileReader(AliquotMenu.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");	
+	     		    	Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+	     		    	startActivity(openMainMenu);		    		
      		    	}
+     			}
      			});	
      		
      		// Information about Aliquot URL
@@ -91,16 +94,16 @@ public class AliquotMenu extends Activity{
      		aliquotURLButton = (Button) findViewById(R.id.aliquotURLButton);
      		aliquotURLButton.setOnClickListener(new View.OnClickListener() {
      			public void onClick(View v) {
-     				aliquotURL = aliquotURLText.getText().toString();
-
-     				// Downloads Aliquot file from URL
-     				URLFileReader downloader = new URLFileReader(AliquotMenu.this, "AliquotMenu", aliquotURL, "url");	
-     				Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-     				openMainMenu.putExtra("Url", aliquotURL);
-     		    	startActivity(openMainMenu);	
+     				if(aliquotURLText.getText().length() != 0){
+	     				aliquotURL = aliquotURLText.getText().toString();
+	     				// Downloads Aliquot file from URL
+	     				URLFileReader downloader = new URLFileReader(AliquotMenu.this, "AliquotMenu", aliquotURL, "url");	
+	     				Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+	     				openMainMenu.putExtra("Url", aliquotURL);
+	     		    	startActivity(openMainMenu);	
      		    	}
+     			}
      			});
-     		
      }
 		
 	@Override
