@@ -9,8 +9,6 @@ import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.example.cirdles.R;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;

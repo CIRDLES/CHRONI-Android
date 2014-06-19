@@ -47,18 +47,8 @@
         android:layout_alignBaseline="@+id/TextView01"
         android:layout_alignBottom="@+id/TextView01"
         android:layout_alignRight="@+id/reportSettingsFileSelectButton"
-        android:layout_toRightOf="@+id/TextView01" />
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/reportSettingsUrlText"
-        android:layout_below="@+id/imageView1"
-        android:text="Report Settings"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/border_grey"
-        android:textSize="60sp" />
+        android:layout_toRightOf="@+id/TextView01"
+        android:textColor="@color/black" />
 
     <Button
         android:id="@+id/reportSettingsUrlButton"
@@ -105,6 +95,19 @@
         android:layout_marginLeft="18dp"
         android:layout_toRightOf="@+id/textView2"
         android:ems="10"
-        android:hint="Select a file from this device" />
+        android:hint="Select a file from this device"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/reportSettingsUrlText"
+        android:layout_alignTop="@+id/imageView1"
+        android:layout_marginTop="177dp"
+        android:text="Report Settings"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/border_grey"
+        android:textSize="60sp" />
 
 </RelativeLayout>

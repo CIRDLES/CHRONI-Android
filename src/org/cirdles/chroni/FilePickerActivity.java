@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.example.cirdles.R;
-
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;

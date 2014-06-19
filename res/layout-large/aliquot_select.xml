@@ -31,12 +31,13 @@
          android:id="@+id/aliquotURLText"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:inputType="textUri"
          android:layout_alignParentBottom="true"
          android:layout_alignRight="@+id/aliquotFileSelectButton"
          android:layout_marginBottom="74dp"
+         android:layout_toRightOf="@+id/TextView02"
          android:ems="10"
-         android:minWidth="385dp"
+         android:inputType="textUri"
+         android:minWidth="375dp"
          android:textColor="@color/black" >
 
          <requestFocus />

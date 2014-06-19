@@ -1,7 +1,5 @@
 package org.cirdles.chroni;
 
-import com.example.cirdles.R;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -17,7 +15,7 @@ public class ReportSettingsMenu extends Activity {
 	private Button reportSettingsFileSelectButton, reportSettingsOpenButton, reportSettingsUrlButton;
 	private EditText reportSettingsFileSelectText, reportSettingsUrlText;
 	private String selectedReportSettings; // name of Report Settings file that has been chosen for viewing
-	
+	private String reportSettingsUrl; // name of Report Settings URL
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,12 +55,12 @@ public class ReportSettingsMenu extends Activity {
  		reportSettingsUrlButton = (Button) findViewById(R.id.reportSettingsUrlButton);
  		reportSettingsUrlButton.setOnClickListener(new View.OnClickListener() {
  			public void onClick(View v) {
-// 				aliquotURL = aliquotURLText.getText().toString();
+ 				reportSettingsUrl = reportSettingsUrlText.getText().toString();
 
  				// Downloads Aliquot file from URL
-// 				URLFileReader downloader = new URLFileReader(AliquotMenu.this, "AliquotMenu", aliquotURL, "url");	
+ 				URLFileReader downloader = new URLFileReader(ReportSettingsMenu.this, "ReportSettingsMenu", reportSettingsUrl, "url");	
  				Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-// 				openMainMenu.putExtra("Url", aliquotURL);
+ 				openMainMenu.putExtra("Url", reportSettingsUrl);
  		    	startActivity(openMainMenu);	
  		    	}
  			});

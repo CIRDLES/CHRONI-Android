@@ -82,8 +82,14 @@ public class URLFileReader{
 				}
 			}
 		}else if(getFileType().contains("Report Settings")){
-			if(!getFileName().contains("Default Report Settings")){
-				name = "Report Settings File";
+//			if(!getFileName().contains("Default Report Settings")){
+				String[] URL = getFileURL().split("/");
+				name = URL[URL.length-1];
+				if (name.contains(".xml")){
+					// Removes the file name ending from XML files
+					String [] newName = name.split(".xml");
+					name = newName[0];
+//				}			
 			}
 		}
 		return name;

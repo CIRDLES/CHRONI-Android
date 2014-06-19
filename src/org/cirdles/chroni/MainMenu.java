@@ -3,8 +3,6 @@ package org.cirdles.chroni;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import com.example.cirdles.R;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
