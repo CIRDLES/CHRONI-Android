@@ -3,18 +3,37 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:gravity="center"
     android:orientation="vertical" >
+    
+      <Button
+        android:id="@+id/changeReportSettingsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/horizontalScrollView"
+        android:layout_alignParentLeft="true"
+        android:background="@color/button_blue"
+        android:text="Change Report Settings" />
 
     <Button
         android:id="@+id/viewConcordiaButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:background="@color/button_blue"
         android:minHeight="55dip"
         android:minWidth="75dip"
         android:text="Concordia Plot" />
+    
+    <Button
+        android:id="@+id/viewProbabilityDensityButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/button_blue"
+        android:text="Probability Density" />
 
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"
@@ -59,23 +78,5 @@
         android:minHeight="250dip"
         android:minWidth="250dip"
         android:src="@drawable/cirdles_logo" />
-
-    <Button
-        android:id="@+id/viewProbabilityDensityButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/button_blue"
-        android:text="Probability Density" />
-
-    <Button
-        android:id="@+id/changeReportSettingsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/horizontalScrollView"
-        android:layout_centerHorizontal="true"
-        android:background="@color/button_blue"
-        android:text="Change Report Settings" />
 
 </RelativeLayout>

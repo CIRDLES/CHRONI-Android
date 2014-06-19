@@ -79,7 +79,7 @@ public class AliquotMenu extends Activity{
      		aliquotIGSNSubmitButton.setOnClickListener(new View.OnClickListener() {
      			public void onClick(View v) {		
      				if(aliquotIGSNText.getText().length() != 0){
-	     				aliquotIGSN = aliquotIGSNText.getText().toString().toUpperCase();
+	     				aliquotIGSN = aliquotIGSNText.getText().toString().toUpperCase().trim();
 	     				// Downloads Aliquot file
 	     				URLFileReader downloader = new URLFileReader(AliquotMenu.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");	
 	     		    	Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
@@ -95,7 +95,7 @@ public class AliquotMenu extends Activity{
      		aliquotURLButton.setOnClickListener(new View.OnClickListener() {
      			public void onClick(View v) {
      				if(aliquotURLText.getText().length() != 0){
-	     				aliquotURL = aliquotURLText.getText().toString();
+	     				aliquotURL = aliquotURLText.getText().toString().trim();
 	     				// Downloads Aliquot file from URL
 	     				URLFileReader downloader = new URLFileReader(AliquotMenu.this, "AliquotMenu", aliquotURL, "url");	
 	     				Intent openMainMenu = new Intent("android.intent.action.DISPLAY");

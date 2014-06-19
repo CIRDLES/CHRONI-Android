@@ -13,7 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class Display extends Activity {
-	private Button viewConcordia, viewProbabilityDensity, changeReportSettings;
+	private Button changeReportSettings, viewConcordia, viewProbabilityDensity;
+	private boolean hasConcordia, hasProbabilityDensity; // Indicate if there are images
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

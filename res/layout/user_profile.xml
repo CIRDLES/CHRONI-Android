@@ -37,7 +37,8 @@
         android:ems="10"
         android:hint="Email Address"
         android:inputType="textEmailAddress"
-        android:minWidth="400dip" />
+        android:minWidth="400dip"
+        android:textColor="@color/black" />
 
     <TextView
         android:id="@+id/TextView01"
@@ -95,10 +96,23 @@
         android:layout_alignBottom="@+id/TextView03"
         android:layout_alignLeft="@+id/geochronUsername"
         android:ems="10"
-        android:inputType="textEmailAddress|textPassword"
-        android:minWidth="400dip" >
+        android:inputType="textPassword"
+        android:minWidth="400dip"
+        android:textColor="@color/black" >
 
         <requestFocus />
     </EditText>
+
+    <Button
+        android:id="@+id/profileCancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/button_blue"
+        android:minHeight="80dip"
+        android:minWidth="130dip"
+        android:text="Cancel"
+        android:textSize="35sp" />
 
 </RelativeLayout>

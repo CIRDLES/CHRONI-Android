@@ -27,19 +27,6 @@
         android:textColor="@color/border_grey"
         android:textSize="25sp" />
 
-    <Button
-        android:id="@+id/profileSaveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
-        android:background="@color/button_blue"
-        android:minHeight="50dp"
-        android:minWidth="100dp"
-        android:text="Save"
-        android:textSize="20sp" />
-
     <TextView
         android:id="@+id/TextView01"
         android:layout_width="wrap_content"
@@ -60,8 +47,9 @@
         android:layout_alignLeft="@+id/geochronUsername"
         android:layout_marginBottom="47dp"
         android:ems="10"
-        android:inputType="textEmailAddress"
-        android:minWidth="300dip" >
+        android:inputType="textPassword"
+        android:minWidth="300dip"
+        android:textColor="@color/black" >
 
         <requestFocus />
     </EditText>
@@ -88,7 +76,8 @@
         android:ems="10"
         android:hint="Email Address"
         android:inputType="textEmailAddress"
-        android:minWidth="300dip" />
+        android:minWidth="300dip"
+        android:textColor="@color/black" />
 
     <ImageView
         android:id="@+id/imageView1"
@@ -97,5 +86,31 @@
         android:layout_above="@+id/textView1"
         android:layout_centerHorizontal="true"
         android:src="@drawable/cirdles_logo" />
+
+    <Button
+        android:id="@+id/profileCancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/profileSaveButton"
+        android:layout_alignBottom="@+id/profileSaveButton"
+        android:layout_alignRight="@+id/TextView01"
+        android:background="@color/button_blue"
+        android:minHeight="50dp"
+        android:minWidth="100dp"
+        android:text="Cancel"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/profileSaveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/geochronPassword"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:background="@color/button_blue"
+        android:minHeight="50dp"
+        android:minWidth="100dp"
+        android:text="Save"
+        android:textSize="20sp" />
 
 </RelativeLayout>

@@ -59,7 +59,7 @@ public class ReportSettingsMenu extends Activity {
  		reportSettingsUrlButton.setOnClickListener(new View.OnClickListener() {
  			public void onClick(View v) {
  				if(reportSettingsUrlText.getText().length() != 0){
-	 				reportSettingsUrl = reportSettingsUrlText.getText().toString();
+	 				reportSettingsUrl = reportSettingsUrlText.getText().toString().trim();
 	
 	 				// Downloads Report Settings file from URL
 	 				URLFileReader downloader = new URLFileReader(ReportSettingsMenu.this, "ReportSettingsMenu", reportSettingsUrl, "url");	

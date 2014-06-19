@@ -22,11 +22,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class UserProfile extends Activity {
 
 	private EditText geochronUsernameInput, geochronPasswordInput;
-	private Button loginSubmitButton;
+	private Button profileSaveButton, profileCancelButton;
 
 	private String geochronUsername, geochronPassword;	// the login values on file
 	
@@ -39,32 +40,66 @@ public class UserProfile extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setTheme(android.R.style.Theme_Holo);
 		setContentView(R.layout.user_profile);
-
-		geochronUsernameInput = (EditText) findViewById(R.id.geochronUsername);
-		geochronUsername = geochronUsernameInput.getText().toString();
-
-		geochronPasswordInput = (EditText) findViewById(R.id.geochronPassword);
-		geochronPassword = geochronPasswordInput.getText().toString();
-		
-		loginSubmitButton = (Button) findViewById(R.id.profileSaveButton);
-		loginSubmitButton.setOnClickListener(new View.OnClickListener() {
+				
+		profileSaveButton = (Button) findViewById(R.id.profileSaveButton);
+		profileSaveButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				//	Stores the login information in shared preferences for a new user
 				SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
 				SharedPreferences.Editor editor = settings.edit();
-				editor.putString("Geochron Username", geochronUsername);
-				editor.putString("Geochron Password", geochronPassword);
+				editor.clear(); // Clears previously stored prefs
+				editor.putString("Geochron Username", geochronUsernameInput.getText().toString());
+				editor.putString("Geochron Password", geochronPasswordInput.getText().toString());
 				editor.commit();
-
-				SharedPreferences applicationSettings = getSharedPreferences(USER_REGISTERED, 0);
-				SharedPreferences.Editor applicationEditor = applicationSettings.edit();
-				applicationEditor.putBoolean("User Registered", true);
-				applicationEditor.commit();
+				Toast.makeText(UserProfile.this, "Your Geochron Profile information is saved!", 3000).show();
 				
 		    	Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
 		    	startActivity(openMainMenu);		    		
 		    	}
 			});	
+
+		profileCancelButton = (Button) findViewById(R.id.profileCancelButton);
+		profileCancelButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
+		    	startActivity(openMainMenu);		    		
+		    	}
+		});	
+		
+		// Initializes profile information with currently stored profile or, if no one has been registered, sets as empty 
+		checkCredentials(); // Checks to see if there is a profile stored 
+		geochronUsernameInput = (EditText) findViewById(R.id.geochronUsername);
+		geochronPasswordInput = (EditText) findViewById(R.id.geochronPassword);
+		
+		if(!geochronUsername.contentEquals("None") && !geochronPassword.contentEquals("None")){
+			geochronUsernameInput.setText(getGeochronUsername());
+			geochronPasswordInput.setText(getGeochronPassword());
+		
+//			// Changes save button to appropriate text and clears input if edits are made
+//			if(geochronUsernameInput.getText().toString() != getGeochronUsername()){
+//				profileSaveButton.setText("Save");
+//			}else{
+//				profileSaveButton.setText("Edit");
+//				geochronPasswordInput.setText("");
+//			}
+//		
+//			if(geochronPasswordInput.getText().toString() != getGeochronPassword()){
+//				profileSaveButton.setText("Save");
+//			}else{
+//				profileSaveButton.setText("Edit");
+//			}
+		
+		}	
+		
+	}
+	
+	/*
+	 * Retrieves the Shared Preferences
+	 */
+	private void checkCredentials(){
+		SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
+		setGeochronUsername(settings.getString("Geochron Username", "None"));
+		setGeochronPassword(settings.getString("Geochron Password", "None"));
 	}
 	
 	/*
@@ -77,6 +112,22 @@ public class UserProfile extends Activity {
 		return time;
 	}
 	
+	public String getGeochronUsername() {
+		return geochronUsername;
+	}
+
+	public void setGeochronUsername(String geochronUsername) {
+		this.geochronUsername = geochronUsername;
+	}
+
+	public String getGeochronPassword() {
+		return geochronPassword;
+	}
+
+	public void setGeochronPassword(String geochronPassword) {
+		this.geochronPassword = geochronPassword;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onStop()
@@ -112,29 +163,7 @@ public class UserProfile extends Activity {
 	        case R.id.exitProgram:
                 finish();
                 System.exit(0);
-                
-//            case R.id.deleteFileMenu:
-//            	Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-//				startActivity(openReportSettingsMenu);
-//                return true;
-//            case R.id.renameFileMenu:
-//            	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
-//				startActivity(openAliquotMenu);
-//                return true;
-//            case R.id.defaultFileMenu:
-//            	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
-//				startActivity(openAliquotMenu);
-//                return true;
-
-//            case R.id.selectAliquotMenu:
-//            	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
-//				startActivity(openAliquotMenu);
-//                return true;
-//            case R.id.selectReportSettingsMenu:
-//            	Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-//				startActivity(openReportSettingsMenu);
-//                return true;
-                
+               
              default:
                 return super.onOptionsItemSelected(item);
         }
