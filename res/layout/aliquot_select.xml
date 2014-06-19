@@ -142,7 +142,7 @@
          android:layout_above="@+id/aliquotFileSelectButton"
          android:layout_marginBottom="44dp"
          android:layout_toLeftOf="@+id/aliquotFileSelectButton"
-         android:text="Select"
+         android:text="Aliquot"
          android:textAppearance="?android:attr/textAppearanceLarge"
          android:textColor="@color/border_grey"
          android:textSize="100sp" />

@@ -4,16 +4,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/background" >
 
-     <ImageView
-         android:id="@+id/imageView1"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentTop="true"
-         android:layout_centerHorizontal="true"
-         android:maxHeight="200dp"
-         android:maxWidth="200dp"
-         android:src="@drawable/cirdles_logo" />
-
      <Button
          android:id="@+id/aliquotFileSubmitButton"
          android:layout_width="wrap_content"
@@ -86,17 +76,6 @@
          android:textColor="@color/black"
          android:textSize="20sp" />
 
-     <TextView
-         android:id="@+id/textView1"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_above="@+id/aliquotFileSelectButton"
-         android:layout_centerHorizontal="true"
-         android:text="Select"
-         android:textAppearance="?android:attr/textAppearanceLarge"
-         android:textColor="@color/border_grey"
-         android:textSize="70sp" />
-
      <EditText
          android:id="@+id/aliquotFileSelectText"
          android:layout_width="wrap_content"
@@ -144,5 +123,27 @@
          android:ems="10"
          android:minWidth="270dp"
          android:textColor="@color/black" />
+
+     <ImageView
+         android:id="@+id/imageView1"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/textView1"
+         android:layout_centerHorizontal="true"
+         android:maxHeight="200dp"
+         android:maxWidth="200dp"
+         android:src="@drawable/cirdles_logo" />
+
+     <TextView
+         android:id="@+id/textView1"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/aliquotFileSelectButton"
+         android:layout_centerHorizontal="true"
+         android:layout_marginBottom="69dp"
+         android:text="Aliquot"
+         android:textAppearance="?android:attr/textAppearanceLarge"
+         android:textColor="@color/border_grey"
+         android:textSize="70sp" />
 
 </RelativeLayout>

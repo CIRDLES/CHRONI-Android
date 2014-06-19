@@ -9,9 +9,15 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class ReportSettingsMenu extends Activity {
-
+	private Button reportSettingsFileSelectButton, reportSettingsOpenButton, reportSettingsUrlButton;
+	private EditText reportSettingsFileSelectText, reportSettingsUrlText;
+	private String selectedReportSettings; // name of Report Settings file that has been chosen for viewing
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -19,6 +25,47 @@ public class ReportSettingsMenu extends Activity {
 		setContentView(R.layout.report_settings_select);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        // Information about Report Settings file
+        reportSettingsFileSelectButton = (Button) findViewById(R.id.reportSettingsFileSelectButton);
+        reportSettingsFileSelectButton.setOnClickListener(new View.OnClickListener() {
+ 			public void onClick(View v) {
+ 				Intent openFilePicker = new Intent("android.intent.action.FILEPICKER");
+ 				openFilePicker.putExtra("Default_Directory", "Report Settings");
+ 				startActivity(openFilePicker);
+ 		    	}
+ 			});	
+
+        reportSettingsOpenButton = (Button) findViewById(R.id.reportSettingsFileOpenButton);
+        reportSettingsOpenButton.setOnClickListener(new View.OnClickListener() {
+ 			public void onClick(View v) {
+ 		    	Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+ 		    	startActivity(openMainMenu);		    		
+ 		    	}
+ 			});	
+ 		
+        reportSettingsFileSelectText = (EditText) findViewById(R.id.reportSettingsFileSelectText);		
+ 		if(getIntent().hasExtra("ReportSettingsXMLFileName")){
+ 			selectedReportSettings = getIntent().getStringExtra("ReportSettingsXMLFileName");
+			String[] absoluteFileName = selectedReportSettings.split("/");
+			String fileName = absoluteFileName[absoluteFileName.length - 1];
+ 			reportSettingsFileSelectText.setText(fileName);
+ 		}
+
+ 	// Information about Report Settings URL
+ 		reportSettingsUrlText = (EditText) findViewById(R.id.reportSettingsUrlText);
+ 		
+ 		reportSettingsUrlButton = (Button) findViewById(R.id.reportSettingsUrlButton);
+ 		reportSettingsUrlButton.setOnClickListener(new View.OnClickListener() {
+ 			public void onClick(View v) {
+// 				aliquotURL = aliquotURLText.getText().toString();
+
+ 				// Downloads Aliquot file from URL
+// 				URLFileReader downloader = new URLFileReader(AliquotMenu.this, "AliquotMenu", aliquotURL, "url");	
+ 				Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+// 				openMainMenu.putExtra("Url", aliquotURL);
+ 		    	startActivity(openMainMenu);	
+ 		    	}
+ 			});
 	}
 
 	@Override
@@ -47,28 +94,6 @@ public class ReportSettingsMenu extends Activity {
 	        case R.id.exitProgram:
                 finish();
                 System.exit(0);
-                
-//            case R.id.deleteFileMenu:
-//            	Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-//				startActivity(openReportSettingsMenu);
-//                return true;
-//            case R.id.renameFileMenu:
-//            	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
-//				startActivity(openAliquotMenu);
-//                return true;
-//            case R.id.defaultFileMenu:
-//            	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
-//				startActivity(openAliquotMenu);
-//                return true;
-
-//            case R.id.selectAliquotMenu:
-//            	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
-//				startActivity(openAliquotMenu);
-//                return true;
-//            case R.id.selectReportSettingsMenu:
-//            	Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-//				startActivity(openReportSettingsMenu);
-//                return true;
                 
              default:
                 return super.onOptionsItemSelected(item);

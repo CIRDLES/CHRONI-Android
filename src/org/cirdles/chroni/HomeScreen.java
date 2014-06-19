@@ -31,7 +31,7 @@ public class HomeScreen extends Activity implements FilenameFilter {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTheme(android.R.style.Theme_DeviceDefault_NoActionBar_Fullscreen);
+		setTheme(android.R.style.Theme_Holo);
 		setContentView(R.layout.home_screen);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         

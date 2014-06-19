@@ -46,26 +46,12 @@ public class AliquotMenu extends Activity{
 		setContentView(R.layout.aliquot_select);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
-        // set option menu if has no hardware menu key
-//        boolean hasMenu = ViewConfiguration.get(this).hasPermanentMenuKey();
-//        if(!hasMenu){
-//            //getWindow().setFlags(0x08000000, 0x08000000);
-//            try {
-//                getWindow().addFlags(WindowManager.LayoutParams.class.getField("FLAG_NEEDS_MENU_KEY").getInt(null));
-//              }
-//              catch (NoSuchFieldException e) {
-//                // Ignore since this field won't exist in most versions of Android
-//              }
-//              catch (IllegalAccessException e) {
-//                Log.w("Optionmenus", "Could not access FLAG_NEEDS_MENU_KEY in addLegacyOverflowButton()", e);
-//              }
-//        }
-        
      // Information about Aliquot File
      		aliquotFileSelectButton = (Button) findViewById(R.id.aliquotFileSelectButton);
      		aliquotFileSelectButton.setOnClickListener(new View.OnClickListener() {
      			public void onClick(View v) {
-     				Intent openFilePicker = new Intent("android.intent.action.ALIQUOTFILEPICKERMENU");
+     				Intent openFilePicker = new Intent("android.intent.action.FILEPICKER");
+     				openFilePicker.putExtra("Default_Directory", "Aliquot");
      				startActivity(openFilePicker);
      		    	}
      			});	
@@ -81,7 +67,9 @@ public class AliquotMenu extends Activity{
      		aliquotFileSelectText = (EditText) findViewById(R.id.aliquotFileSelectText);		
      		if(getIntent().hasExtra("AliquotXMLFileName")){
      			selectedAliquot = getIntent().getStringExtra("AliquotXMLFileName");
-     			aliquotFileSelectText.setText(selectedAliquot);
+    			String[] absoluteFileName = selectedAliquot.split("/");
+    			String fileName = absoluteFileName[absoluteFileName.length - 1];
+     			aliquotFileSelectText.setText(fileName);
      		}
 
      		// Information about Aliquot IGSN

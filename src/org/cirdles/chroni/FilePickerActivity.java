@@ -78,13 +78,13 @@ public class FilePickerActivity extends ListActivity {
 		getListView().setEmptyView(emptyView);
 		
 		// Set initial directory
-		mDirectory = new File(Environment.getExternalStorageDirectory()+ "/CIRDLES/");
+		mDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/");
 		// Sets the initial directory based on what file user is looking for (Aliquot or Report Settings)
 		if(getIntent().hasExtra("Default_Directory")){
 			if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot")){
-				mDirectory = new File(Environment.getExternalStorageDirectory()+ "/CIRDLES/Aliquot/");
+				mDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Aliquot/");
 			}else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report Settings")){
-				mDirectory = new File(Environment.getExternalStorageDirectory()+ "/CIRDLES/Report Settings/");
+				mDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Report Settings/");
 			}
 		}
 		
@@ -157,11 +157,19 @@ public class FilePickerActivity extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		File newFile = (File)l.getItemAtPosition(position);
 		
-		if(newFile.isFile()) {
-			// Set result
-			Intent extra = new Intent();
-			extra.putExtra(EXTRA_FILE_PATH, newFile.getAbsolutePath());
-			setResult(RESULT_OK, extra);
+		if(newFile.isFile()) {		
+			// Sends back selected file name
+			if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot")){
+		    	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
+		    	openAliquotMenu.putExtra("AliquotXMLFileName", newFile.getAbsolutePath());
+		    	startActivity(openAliquotMenu);
+			}else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report Settings")){
+				Intent openRSMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+				openRSMenu.putExtra("ReportSettingsXMLFileName", newFile.getAbsolutePath());
+		    	startActivity(openRSMenu);
+			}
+//			setResult(RESULT_OK, extra);
+			
 			// Finish the activity
 			finish();
 		} else {

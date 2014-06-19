@@ -229,8 +229,13 @@ public class URLFileReader{
 		
 		@Override
 		protected void onCancelled(String result) {
-			Toast.makeText(context, "Download error: You have specified an invalid IGSN",
+			if(downloadMethod.contentEquals("igsn")){
+				Toast.makeText(context, "Download error: You have specified an invalid IGSN",
 					Toast.LENGTH_LONG).show();
+			}else{
+				Toast.makeText(context, "Download error: You have specified an invalid URL",
+						Toast.LENGTH_LONG).show();
+			}
 		}
 		
 	}

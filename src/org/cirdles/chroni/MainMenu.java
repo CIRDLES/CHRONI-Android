@@ -28,7 +28,7 @@ public class MainMenu extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// Sets up layout
 		super.onCreate(savedInstanceState);
-		setTheme(android.R.style.Theme_DeviceDefault_NoActionBar_Fullscreen);
+		setTheme(android.R.style.Theme_Holo);
 		setContentView(R.layout.main_menu);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	       
