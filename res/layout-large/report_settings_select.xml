@@ -93,7 +93,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/textView2"
         android:layout_alignRight="@+id/textView1"
-        android:background="@color/grey"
+        android:background="@color/dark_grey"
         android:minHeight="48dp"
         android:minWidth="48dp"
         android:text="+"
