@@ -119,18 +119,18 @@ protected String getNodeAttr(String tagName, String attrName, NodeList nodes ) {
  * @param name the variable name the Value Model should have
  * @return the Value Model with the specific name and null if no Value models contain the name
  */
-//protected static ValueModel getValueModelByName(Fraction fraction, String name){
-//		Iterator<Entry<String, ValueModel>> valueModelIterator = fraction.getValueModelMap().entrySet().iterator();
-//		while (valueModelIterator.hasNext()) {
-//			Entry<String, ValueModel> specificValueModel = valueModelIterator.next();
-//			String valueModelName = specificValueModel.getValue().getName();
-//
-//			if (valueModelName.equals(name)){
-//				return specificValueModel.getValue();
-//			}
-//		}
-//	return null;
-//}
+protected static ValueModel getValueModelByName(Fraction fraction, String name){
+		Iterator<Entry<String, ValueModel>> valueModelIterator = fraction.getValueModelMap().entrySet().iterator();
+		while (valueModelIterator.hasNext()) {
+			Entry<String, ValueModel> specificValueModel = valueModelIterator.next();
+			String valueModelName = specificValueModel.getValue().getName();
+
+			if (valueModelName.equals(name)){
+				return specificValueModel.getValue();
+			}
+		}
+	return null;
+}
 
 /*
  * Allows us to easily get the contents of a Node object
@@ -169,77 +169,79 @@ public static double roundToSignificantFigures(double num, int n) {
  * @param visibleColumn the column with the information to be aligned
  * @param visibleCategory the category with the information to be aligned    
  */
-//protected static void alignColumn(Column visibleColumn, Category visibleCategory)   {
-//    	int spaces = visibleColumn.getDisplayName().length();
-//    	String displayName1 = visibleColumn.getDisplayName1();	    	
-//    	String displayName2 = visibleColumn.getDisplayName2();
-//    	String displayName3 = visibleColumn.getDisplayName3();
-//    	int currentSpace1 = displayName1.length();
-//    	int currentSpace2 = displayName2.length();
-//    	int currentSpace3 = displayName3.length();
-//    	
-//		String categoryName = visibleColumn.getDisplayName();
-//
-//     	if(currentSpace1 < spaces){
-//    		int spaceLeft = spaces - currentSpace1;
-//    		for (int i = 0; i < spaceLeft; i++){
-//    			displayName1 += " ";
-//    		}	    	visibleColumn.setDisplayName1(displayName1);
-//
-//    	}
-//    	
-//     	if(currentSpace2 < spaces){
-//    		int spaceLeft = spaces - currentSpace2;
-//    		for (int i = 0; i < spaceLeft; i++){
-//    			displayName2 += " ";
-//    		}	    	visibleColumn.setDisplayName2(displayName2);
-//
-//    	}
-//    	
-//    	if(currentSpace3 < spaces){
-//    		int spaceLeft = spaces - currentSpace3;
-//    		for (int i = 0; i < spaceLeft; i++){
-//    			displayName3 += " ";
-//    		}	    	visibleColumn.setDisplayName3(displayName3);
-//
-//    	}
-//    	
-//    	if(spaces < currentSpace1){
-//    		int spaceLeft = currentSpace1 - spaces;
-//    		for (int i = 0; i < spaceLeft; i++){
-//    			categoryName += " ";
-//    			displayName2 += " ";
-//    			displayName3 += " ";
-//    			}	    	
-//    		visibleCategory.setDisplayName(categoryName);
-//    		visibleColumn.setDisplayName2(displayName2);
-//    		visibleColumn.setDisplayName3(displayName3);
-//    	}
-//    	
-//    	if(spaces < currentSpace2){
-//    		int spaceLeft = currentSpace2 - spaces;
-//    		for (int i = 0; i < spaceLeft; i++){
-//    			categoryName += " ";
-//    			displayName1 += " ";
-//    			displayName3 += " ";
-//    			}	    	
-//    		visibleCategory.setDisplayName(categoryName);
-//    		visibleColumn.setDisplayName1(displayName1);
-//    		visibleColumn.setDisplayName3(displayName3);
-//    	}
-//    	
-//    	if(spaces < currentSpace3){
-//    		int spaceLeft = currentSpace3 - spaces;
-//    		for (int i = 0; i < spaceLeft; i++){
-//    			categoryName += " ";
-//    			displayName1 += " ";
-//    			displayName2 += " ";
-//    			}	    	
-//    		visibleCategory.setDisplayName(categoryName);
-//    		visibleColumn.setDisplayName1(displayName1);
-//    		visibleColumn.setDisplayName2(displayName2);
-//    	}
-//    	
-//    }
+protected static void alignColumn(Column visibleColumn, Category visibleCategory)   {
+    	int spaces = visibleColumn.getDisplayName().length();
+    	String displayName1 = visibleColumn.getDisplayName1();	    	
+    	String displayName2 = visibleColumn.getDisplayName2();
+    	String displayName3 = visibleColumn.getDisplayName3();
+    	int currentSpace1 = displayName1.length();
+    	int currentSpace2 = displayName2.length();
+    	int currentSpace3 = displayName3.length();
+    	
+		String categoryName = visibleColumn.getDisplayName();
 
+     	if(currentSpace1 < spaces){
+    		int spaceLeft = spaces - currentSpace1;
+    		for (int i = 0; i < spaceLeft; i++){
+    			displayName1 += " ";
+    		}	    	visibleColumn.setDisplayName1(displayName1);
+
+    	}
+    	
+     	if(currentSpace2 < spaces){
+    		int spaceLeft = spaces - currentSpace2;
+    		for (int i = 0; i < spaceLeft; i++){
+    			displayName2 += " ";
+    		}	    	visibleColumn.setDisplayName2(displayName2);
+
+    	}
+    	
+    	if(currentSpace3 < spaces){
+    		int spaceLeft = spaces - currentSpace3;
+    		for (int i = 0; i < spaceLeft; i++){
+    			displayName3 += " ";
+    		}	    	visibleColumn.setDisplayName3(displayName3);
+
+    	}
+    	
+    	if(spaces < currentSpace1){
+    		int spaceLeft = currentSpace1 - spaces;
+    		for (int i = 0; i < spaceLeft; i++){
+    			categoryName += " ";
+    			displayName2 += " ";
+    			displayName3 += " ";
+    			}	    	
+    		visibleCategory.setDisplayName(categoryName);
+    		visibleColumn.setDisplayName2(displayName2);
+    		visibleColumn.setDisplayName3(displayName3);
+    	}
+    	
+    	if(spaces < currentSpace2){
+    		int spaceLeft = currentSpace2 - spaces;
+    		for (int i = 0; i < spaceLeft; i++){
+    			categoryName += " ";
+    			displayName1 += " ";
+    			displayName3 += " ";
+    			}	    	
+    		visibleCategory.setDisplayName(categoryName);
+    		visibleColumn.setDisplayName1(displayName1);
+    		visibleColumn.setDisplayName3(displayName3);
+    	}
+    	
+    	if(spaces < currentSpace3){
+    		int spaceLeft = currentSpace3 - spaces;
+    		for (int i = 0; i < spaceLeft; i++){
+    			categoryName += " ";
+    			displayName1 += " ";
+    			displayName2 += " ";
+    			}	    	
+    		visibleCategory.setDisplayName(categoryName);
+    		visibleColumn.setDisplayName1(displayName1);
+    		visibleColumn.setDisplayName2(displayName2);
+    	}
+    	
+    }
+
+
+    
 }
