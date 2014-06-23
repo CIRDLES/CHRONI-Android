@@ -94,7 +94,7 @@
         </activity>
 
          <activity
-            android:name="org.cirdles.chroni.Display"
+            android:name="org.cirdles.chroni.TablePainter"
             android:parentActivityName="android.intent.action.DISPLAY"
             android:screenOrientation="portrait">
             <intent-filter>
