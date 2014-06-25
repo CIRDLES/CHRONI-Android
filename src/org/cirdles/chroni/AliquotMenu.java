@@ -67,9 +67,9 @@ public class AliquotMenu extends Activity{
      			public void onClick(View v) {
      				if(aliquotFileSelectText.getText().length() != 0){
      					Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-//     					openMainMenu.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); 
-     					TableBuilder.setAliquotPath(getIntent().getStringExtra("AliquotXMLFileName")); // Sends Aliquot XML path for file parsing
-     					TableBuilder.buildTable();
+     					openMainMenu.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); 
+//     					TableBuilder.setAliquotPath(getIntent().getStringExtra("AliquotXMLFileName")); // Sends Aliquot XML path for file parsing
+//     					TableBuilder.buildTable();
      					startActivity(openMainMenu);		    		
      		    	}
      			}

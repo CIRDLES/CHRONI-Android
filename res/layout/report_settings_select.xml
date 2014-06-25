@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView1"
+        android:layout_below="@+id/testText"
         android:layout_marginLeft="39dp"
         android:layout_marginTop="61dp"
         android:text="Device"
@@ -66,7 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/reportSettingsFileSelectButton"
-        android:layout_toRightOf="@+id/textView1"
+        android:layout_toRightOf="@+id/testText"
         android:background="@color/button_blue"
         android:minHeight="48dp"
         android:minWidth="50dp"
@@ -99,7 +99,7 @@
         android:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/testText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/reportSettingsUrlText"

@@ -21,7 +21,7 @@
         android:textSize="25sp" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/testText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/menuOpenButton"
@@ -81,7 +81,7 @@
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textView1"
+        android:layout_alignBottom="@+id/testText"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="92dp"
         android:src="@drawable/cirdles_logo" />

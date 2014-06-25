@@ -46,9 +46,9 @@ public class ReportSettingsMenu extends Activity {
  			public void onClick(View v) {
  				if(reportSettingsFileSelectText.getText().length() != 0){
  					Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-// 					openMainMenu.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends Report Setting XML path for file parsing
- 					TableBuilder.setReportSettingsPath(getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends Aliquot XML path for file parsing
- 					TableBuilder.buildTable();
+ 					openMainMenu.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends Report Setting XML path for file parsing
+// 					TableBuilder.setReportSettingsPath(getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends Aliquot XML path for file parsing
+// 					TableBuilder.buildTable();
  					startActivity(openMainMenu);		    		
  				}
  			}

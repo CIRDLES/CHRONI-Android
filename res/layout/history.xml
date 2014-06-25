@@ -52,7 +52,7 @@
         android:src="@drawable/cirdles_logo" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/testText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/imageView1"

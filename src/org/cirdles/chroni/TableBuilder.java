@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import android.os.Environment;
+
 public class TableBuilder{
 	
 	private static String reportSettingsPath,  aliquotPath; // the file names to be parsed
@@ -21,7 +23,7 @@ public class TableBuilder{
         // Instantiates the Report Settings Parser
 		ReportSettingsParser RSP = new ReportSettingsParser();
 		if(getReportSettingsPath() == null){
-			setReportSettingsPath("/sdcard/CHRONI/Default Report Settings.xml"); // sets the default RS path if none specified
+			setReportSettingsPath(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings/Default Report Settings.xml"); // sets the default RS path if none specified
 		}
 		categoryMap = (TreeMap<Integer, Category>) RSP.runReportSettingsParser(getReportSettingsPath());
 		ArrayList<String> outputVariableName = RSP.getOutputVariableName();
