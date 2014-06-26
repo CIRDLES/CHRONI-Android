@@ -115,16 +115,15 @@ public class TablePainter extends Activity{
 			}
 					
 			// loops through number of columns and adds text views to each row. this creates cells!
-			for(int j = 0; j < outputVariableName.size(); j++){ 
+			for(int j = 0; j < outputVariableName.size(); j++){
 				TextView cell = new TextView(this);
-				cell.setWidth(125);
+				cell.setWidth(205);
 				cell.setPadding(3, 4, 3, 4);
 				cell.setTextColor(Color.BLACK);
 				cell.setTextSize((float)14.5);
 				cell.setGravity(Gravity.RIGHT);
 							
 				if (rowCount < 5){
-					// All aliquot data cells
 					cell.setTypeface(Typeface.DEFAULT_BOLD);
 					cell.setGravity(Gravity.CENTER);
 				}
@@ -135,22 +134,25 @@ public class TablePainter extends Activity{
 				
 				// sets appropriate background color for cells
 				if(rowCount < 4){
-					// colors odd header rows
-					cell.setBackgroundColor(getResources().getColor(R.color.dark_grey));
-					cell.setTextColor(Color.WHITE);
+					// colors header rows
+//					if(rowCount % 2 == 0){ 					// colors header rows
+						cell.setBackgroundResource(R.drawable.background_blue_background);
+//					}else{
+//						cell.setBackgroundResource(R.drawable.dark_grey_background);
+//					}
 				}
 				else if (rowCount > 4 && rowCount % 2 == 1) {
 					// colors odd body rows
-					cell.setBackgroundColor(getResources().getColor(R.color.light_grey));
+					cell.setBackgroundResource(R.drawable.light_grey_background);
 				}else if(rowCount == 4){
 					// aliquot name cell
 					cell.setTextColor(Color.WHITE);
-					cell.setBackgroundColor(getResources().getColor(R.color.dark_grey));
+					cell.setBackgroundResource(R.drawable.light_blue_background);
 					cell.setTypeface(Typeface.DEFAULT_BOLD);
 				}
 				else {
 					// header rows and all other body rows
-					cell.setBackgroundColor(getResources().getColor(R.color.white));
+					cell.setBackgroundResource(R.drawable.white_background);
 				}
 					
 				//populates the first row with the associated category info corresponding to each column
@@ -170,7 +172,6 @@ public class TablePainter extends Activity{
 				}
 				
 				if(cell.getText().equals("-")){
-					// Accounts for the empty variable name cells
 					cell.setGravity(Gravity.CENTER);					
 				}
 				//append an individual cell to a content row
