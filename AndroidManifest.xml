@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.cirdles.chroni"
     android:versionCode="0"
-    android:versionName="1.2" >
+    android:versionName="2.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -95,7 +95,7 @@
 
          <activity
             android:name="org.cirdles.chroni.TablePainter"
-            android:parentActivityName="android.intent.action.DISPLAY"
+            android:parentActivityName="android.intent.action.MAINMENU"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.DISPLAY" />

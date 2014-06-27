@@ -67,6 +67,9 @@ public class AliquotMenu extends Activity{
      			public void onClick(View v) {
      				if(aliquotFileSelectText.getText().length() != 0){
      					Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+     					openMainMenu.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); 
+//     					TableBuilder.setAliquotPath(getIntent().getStringExtra("AliquotXMLFileName")); // Sends Aliquot XML path for file parsing
+//     					TableBuilder.buildTable();
      					startActivity(openMainMenu);		    		
      		    	}
      			}
@@ -172,35 +175,13 @@ public class AliquotMenu extends Activity{
 		        	startActivity(openUserProfile);
 		            return true;
 		        case R.id.helpMenu:
-					Intent openHelpBlog = new Intent(Intent.ACTION_VIEW, Uri.parse("http://joyenettles.blogspot.com"));
-					startActivity(openHelpBlog);
-		        	return true;
+//					Intent openHelpBlog = new Intent(Intent.ACTION_VIEW, Uri.parse("http://joyenettles.blogspot.com"));
+//					startActivity(openHelpBlog);
+//		        	return true;
 		        case R.id.exitProgram:
 	                finish();
 	                System.exit(0);
-	                
-//	            case R.id.deleteFileMenu:
-//	            	Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-//					startActivity(openReportSettingsMenu);
-//	                return true;
-//	            case R.id.renameFileMenu:
-//	            	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
-//					startActivity(openAliquotMenu);
-//	                return true;
-//	            case R.id.defaultFileMenu:
-//	            	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
-//					startActivity(openAliquotMenu);
-//	                return true;
-
-//	            case R.id.selectAliquotMenu:
-//	            	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
-//					startActivity(openAliquotMenu);
-//	                return true;
-//	            case R.id.selectReportSettingsMenu:
-//	            	Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-//					startActivity(openReportSettingsMenu);
-//	                return true;
-	                
+	
 	             default:
 	                return super.onOptionsItemSelected(item);
 	        }

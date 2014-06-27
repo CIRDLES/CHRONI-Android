@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/aliquotIGSNText"
         android:layout_alignTop="@+id/aliquotFileSubmitButton"
-        android:background="@color/grey"
+        android:background="@color/dark_grey"
         android:minHeight="48dp"
         android:minWidth="48dp"
         android:text="+"
@@ -65,7 +65,7 @@
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_alignBottom="@+id/aliquotIGSNText"
-         android:layout_toLeftOf="@+id/textView1"
+         android:layout_toLeftOf="@+id/testText"
          android:text="GeoChron IGSN"
          android:textAppearance="?android:attr/textAppearanceLarge"
          android:textColor="@color/black"
@@ -136,7 +136,7 @@
          android:src="@drawable/cirdles_logo" />
 
      <TextView
-         android:id="@+id/textView1"
+         android:id="@+id/testText"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_above="@+id/aliquotFileSelectButton"

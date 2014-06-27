@@ -20,7 +20,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/testText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/versionNumber"
@@ -45,7 +45,7 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/textView1"
+        android:layout_above="@+id/testText"
         android:layout_centerHorizontal="true"
         android:minHeight="100dp"
         android:minWidth="100dp" />

@@ -13,6 +13,8 @@
         android:layout_above="@+id/horizontalScrollView"
         android:layout_alignParentLeft="true"
         android:background="@color/button_blue"
+        android:minHeight="55dip"
+        android:minWidth="75dip"
         android:text="Change Report Settings" />
 
     <Button
@@ -33,7 +35,9 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:background="@color/button_blue"
-        android:text="Probability Density" />
+        android:text="Probability Density" 
+        android:minHeight="55dip"
+        android:minWidth="75dip"/>
 
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"

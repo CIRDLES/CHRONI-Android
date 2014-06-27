@@ -98,7 +98,7 @@
          android:layout_height="wrap_content"
          android:layout_alignBottom="@+id/aliquotFileSelectText"
          android:layout_alignRight="@+id/aliquotIGSNText"
-         android:background="@color/grey"
+         android:background="@color/dark_grey"
          android:minHeight="48dp"
          android:minWidth="48dp"
          android:text="+"
@@ -120,7 +120,7 @@
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_alignBottom="@+id/aliquotIGSNSubmitButton"
-         android:layout_alignLeft="@+id/textView1"
+         android:layout_alignLeft="@+id/testText"
          android:ems="10"
          android:minWidth="270dp"
          android:textColor="@color/black" />
@@ -129,14 +129,14 @@
          android:id="@+id/imageView1"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_above="@+id/textView1"
+         android:layout_above="@+id/testText"
          android:layout_centerHorizontal="true"
          android:maxHeight="200dp"
          android:maxWidth="200dp"
          android:src="@drawable/cirdles_logo" />
 
      <TextView
-         android:id="@+id/textView1"
+         android:id="@+id/testText"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_above="@+id/aliquotFileSelectButton"

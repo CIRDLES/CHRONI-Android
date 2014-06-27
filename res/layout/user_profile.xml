@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/TextView02"
         android:layout_alignBottom="@+id/TextView02"
-        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignLeft="@+id/testText"
         android:layout_marginLeft="51dp"
         android:ems="10"
         android:hint="Email Address"
@@ -53,7 +53,7 @@
         android:textSize="50sp" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/testText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/TextView01"
