@@ -160,7 +160,7 @@ public class URLFileReader{
 					input = connection.getInputStream();
 					if(fileType.contains("Aliquot")){
 						if(fileLength == 55){ // Cancels if invalid IGSN file (if file has a length of 0.05 KB)
-							AliquotMenu.setInvalidFile(true);	// Sets file as invalid
+							AliquotMenuActivity.setInvalidFile(true);	// Sets file as invalid
 							cancel(true);
 						}else{
 							output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + fileName + ".xml");
@@ -175,7 +175,7 @@ public class URLFileReader{
 					while ((count = input.read(data)) != -1) {
 						// allow canceling with back button
 						if (isCancelled()){
-							AliquotMenu.setInvalidFile(true);	// Sets file as invalid
+							AliquotMenuActivity.setInvalidFile(true);	// Sets file as invalid
 							return null;
 							}
 						total += count;

@@ -53,8 +53,8 @@ public class TableBuilder{
         } );
 
 		String[][] finalArray = fillArray(outputVariableName,reportSettingsArray, fractionArray);
-		TablePainter.setFinalArray(finalArray);
-		TablePainter.setOutputVariableName(outputVariableName);
+		TablePainterActivity.setFinalArray(finalArray);
+		TablePainterActivity.setOutputVariableName(outputVariableName);
 
 	}     
 
