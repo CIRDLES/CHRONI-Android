@@ -89,20 +89,7 @@
         android:textSize="100sp" />
 
     <Button
-        android:id="@+id/profileSaveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="69dp"
-        android:layout_toLeftOf="@+id/geochronPassword"
-        android:background="@color/button_blue"
-        android:minHeight="80dip"
-        android:minWidth="130dip"
-        android:text="Save"
-        android:textSize="35sp" />
-
-    <Button
-        android:id="@+id/profileCancelButton"
+        android:id="@+id/profileMenuButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/profileSaveButton"
@@ -111,7 +98,33 @@
         android:background="@color/button_blue"
         android:minHeight="80dp"
         android:minWidth="130dp"
-        android:text="Cancel"
+        android:text="Menu"
         android:textSize="35sp" />
+
+    <Button
+        android:id="@+id/profileSaveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="66dp"
+        android:layout_toLeftOf="@+id/profileMenuButton"
+        android:background="@color/button_blue"
+        android:minHeight="80dip"
+        android:minWidth="130dip"
+        android:text="Save"
+        android:textSize="35sp" />
+
+    <ToggleButton
+        android:id="@+id/profileValidateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TextView03"
+        android:layout_alignTop="@+id/profileSaveButton"
+        android:background="@color/red"
+        android:minHeight="80dip"
+        android:minWidth="130dip"
+        android:text="Unvalidated!"
+        android:textOff="Unvalidated!"
+        android:textOn="Validated!" />
 
 </RelativeLayout>

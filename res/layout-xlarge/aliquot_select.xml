@@ -146,4 +146,16 @@
          android:textColor="@color/black"
          android:textSize="30sp" />
 
+     <ToggleButton
+         android:id="@+id/privateAliquotButton"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignBottom="@+id/aliquotIGSNText"
+         android:layout_alignRight="@+id/aliquotIGSNText"
+         android:minWidth="50dp"
+         android:text="ToggleButton"
+         android:textOff="Public"
+         android:textOn="Private"
+         android:textSize="10sp" />
+
 </RelativeLayout>

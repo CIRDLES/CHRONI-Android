@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.util.Log;
 import android.view.Menu;
@@ -20,22 +21,25 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class AliquotMenuActivity extends Activity {
 
     private Button aliquotFileSelectButton, aliquotFileSubmitButton,
 	    aliquotIGSNSubmitButton, aliquotURLButton;
+    private ToggleButton privateAliquotButton;
     private EditText aliquotFileSelectText, aliquotIGSNText, aliquotURLText;
     private String selectedAliquot, aliquotIGSN, aliquotURL, aliquotLocation,
 	    aliquot; // the Aliquot values
     public static boolean aliquotFound;
-    private boolean invalidFile = false; // true if file attempted to be
-					 // downloaded is invalid
+    private boolean invalidFile = false; // true if file attempted to be downloaded is invalid
+    private static boolean privateFile = false;
+    private static String geochronUsername, geochronPassword; // the geochron information on file for the user
+    public static final String USER_PREFS = "My CIRDLES Settings"; // code to access stored preferences
 
     // Base URLs for IGSN downloads
     public static String BASE_ALIQUOT_URI = "http://www.geochronportal.org/getxml.php?igsn=";
-    // public static String BASE_ALIQUOT_URI =
-    // "http://picasso.kgs.ku.edu/geochron/getxml.php?igsn=";
+    // public static String BASE_ALIQUOT_URI = "http://picasso.kgs.ku.edu/geochron/getxml.php?igsn=";
     public static String BASE_SAMPLE_URI = "http://www.geosamples.org/display.php?igsn=";
 
     private static final int REQUEST_PICK_FILE = 1;
@@ -85,10 +89,22 @@ public class AliquotMenuActivity extends Activity {
 
 	// Information about Aliquot IGSN
 	aliquotIGSNText = (EditText) findViewById(R.id.aliquotIGSNText);
-
+    // Checks to see if user profile information has been authenticated for private file access
+    retrieveCredentials();
+	if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
+		aliquotIGSNText.setHint("Profile information stored. Private files enabled!");
+	}	   
+	
+	privateAliquotButton = (ToggleButton) findViewById(R.id.privateAliquotButton);
+//	privateAliquotButton.setOnClickListener(new View.OnClickListener() {
+//	    public void onClick(View v) { 
+//	    	privateFile = privateAliquotButton.isChecked();
+//	    }
+//	   	});
+	    
 	aliquotIGSNSubmitButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
 	aliquotIGSNSubmitButton.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
+	    public void onClick(View v) { 	
 		if (aliquotIGSNText.getText().length() != 0) {
 		    aliquotIGSN = aliquotIGSNText.getText().toString()
 			    .toUpperCase().trim();
@@ -147,6 +163,16 @@ public class AliquotMenuActivity extends Activity {
 	    }
 	}
     }
+    
+    /*
+     * Retrieves the currently stored username and password
+     * If none present, returns None
+     */
+    private void retrieveCredentials() {
+	SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
+	setGeochronUsername(settings.getString("Geochron Username", "None"));
+	setGeochronPassword(settings.getString("Geochron Password", "None"));
+    }
 
     /*
      * Creates URL from the constant geochron URL and IGSN
@@ -154,12 +180,9 @@ public class AliquotMenuActivity extends Activity {
     public final static String makeURI(String baseURL, String IGSN) {
 	String URI = baseURL + IGSN;
 	// Will create unique URL and password if credentials required
-	// if(ViewUtil.privateIGSN){
-	// URI += "&username="+
-	// ViewUtil.USERNAME+
-	// "&password="+
-	// ViewUtil.PASSWORD;
-	// }
+	 if(privateFile){
+		 URI += "&username="+ getGeochronUsername()+"&password="+ getGeochronPassword();
+	 }
 	return URI;
     }
 
@@ -178,7 +201,23 @@ public class AliquotMenuActivity extends Activity {
 	invalidFile = invalidFile;
     }
 
-    @Override
+    public static String getGeochronUsername() {
+		return geochronUsername;
+	}
+
+	public void setGeochronUsername(String geochronUsername) {
+		this.geochronUsername = geochronUsername;
+	}
+
+	public static String getGeochronPassword() {
+		return geochronPassword;
+	}
+
+	public void setGeochronPassword(String geochronPassword) {
+		this.geochronPassword = geochronPassword;
+	}
+
+	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
 	// Handle item selection
 	switch (item.getItemId()) {

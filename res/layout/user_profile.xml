@@ -104,7 +104,7 @@
     </EditText>
 
     <Button
-        android:id="@+id/profileCancelButton"
+        android:id="@+id/profileMenuButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -112,7 +112,20 @@
         android:background="@color/button_blue"
         android:minHeight="80dip"
         android:minWidth="130dip"
-        android:text="Cancel"
+        android:text="Menu"
         android:textSize="35sp" />
+
+    <ToggleButton
+        android:id="@+id/profileValidateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/red"
+        android:minHeight="50dip"
+        android:minWidth="100dip"
+        android:text="Unvalidated!"
+        android:textOff="Unvalidated!"
+        android:textOn="Validated!" />
 
 </RelativeLayout>

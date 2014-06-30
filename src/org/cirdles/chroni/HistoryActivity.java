@@ -38,7 +38,7 @@ public class HistoryActivity extends Activity {
 
 	// sets up the layout
 	super.onCreate(savedInstanceState);
-	setTheme(android.R.style.Theme_DeviceDefault_NoActionBar_Fullscreen);
+	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.history);
 
 	// Sets up the finish button

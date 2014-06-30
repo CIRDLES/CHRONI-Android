@@ -88,29 +88,43 @@
         android:src="@drawable/cirdles_logo" />
 
     <Button
-        android:id="@+id/profileCancelButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/profileSaveButton"
-        android:layout_alignBottom="@+id/profileSaveButton"
-        android:layout_alignRight="@+id/TextView01"
-        android:background="@color/button_blue"
-        android:minHeight="50dp"
-        android:minWidth="100dp"
-        android:text="Cancel"
-        android:textSize="20sp" />
-
-    <Button
         android:id="@+id/profileSaveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/geochronPassword"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
         android:background="@color/button_blue"
         android:minHeight="50dp"
         android:minWidth="100dp"
         android:text="Save"
         android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/profileMenuButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/profileSaveButton"
+        android:layout_alignBottom="@+id/profileSaveButton"
+        android:layout_toRightOf="@+id/testText"
+        android:background="@color/button_blue"
+        android:minHeight="50dp"
+        android:minWidth="100dp"
+        android:text="Menu"
+        android:textSize="20sp" />
+
+    <ToggleButton
+        android:id="@+id/profileValidateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/profileSaveButton"
+        android:layout_alignBottom="@+id/profileSaveButton"
+        android:layout_toLeftOf="@+id/geochronPassword"
+        android:background="@color/red"
+        android:minHeight="50dip"
+        android:minWidth="100dip"
+        android:text="Unvalidated!"
+        android:textOff="Unvalidated!"
+        android:textOn="Checking..." />
 
 </RelativeLayout>
