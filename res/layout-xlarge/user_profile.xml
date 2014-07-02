@@ -99,6 +99,7 @@
         android:minHeight="80dp"
         android:minWidth="130dp"
         android:text="Menu"
+        android:textColor="@color/white"
         android:textSize="35sp" />
 
     <Button
@@ -112,6 +113,7 @@
         android:minHeight="80dip"
         android:minWidth="130dip"
         android:text="Save"
+        android:textColor="@color/white"
         android:textSize="35sp" />
 
     <ToggleButton
@@ -120,11 +122,13 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/TextView03"
         android:layout_alignTop="@+id/profileSaveButton"
-        android:background="@color/red"
+        android:background="@color/button_blue"
         android:minHeight="80dip"
         android:minWidth="130dip"
-        android:text="Unvalidated!"
-        android:textOff="Unvalidated!"
-        android:textOn="Validated!" />
+        android:text="Validate"
+        android:textColor="@color/white"
+        android:textOff="Validate"
+        android:textOn="Checking..."
+        android:textSize="30sp" />
 
 </RelativeLayout>

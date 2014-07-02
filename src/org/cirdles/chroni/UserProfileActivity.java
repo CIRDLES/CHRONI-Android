@@ -7,7 +7,6 @@ package org.cirdles.chroni;
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,18 +14,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.cirdles.chroni.R.color;
 import org.xml.sax.SAXException;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,7 +31,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -86,12 +80,13 @@ public class UserProfileActivity extends Activity {
 	    	retrieveCredentials();
 	    	if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
 //	    		Toast.makeText(UserProfileActivity.this, "Username: " + getGeochronUsername() + " and Password: " + getGeochronPassword(), 3000).show();
-	    		isValidated = validateGeochronCredentials(getGeochronUsername(), getGeochronPassword());
+	    		isValidated = validateGeochronCredentialsOld(getGeochronUsername(), getGeochronPassword());
 		    	if(isValidated){
 		    		profileValidateButton.setBackgroundColor(Color.GREEN);
-		    		profileValidateButton.setText("Validated!");
+		    		profileValidateButton.setText("Valid!");
 		    	}else{
-		    		profileValidateButton.setText("Unvalidated!");
+		    		profileValidateButton.setText("Not Valid!");
+		    		profileValidateButton.setBackgroundColor(Color.RED);
 		    	}
 	    	}else{
 	    		Toast.makeText(UserProfileActivity.this, "Credentials not stored", 3000).show();
@@ -143,6 +138,41 @@ public class UserProfileActivity extends Activity {
 	setGeochronUsername(settings.getString("Geochron Username", "None"));
 	setGeochronPassword(settings.getString("Geochron Password", "None"));
     }
+    
+    /**
+    * Validates currently stored geochron credentials 
+    * From U-Pb Redux's ReduxPersistantState.class
+    * http://www.geochronportal.org/post_to_credentials_service.html
+    * 
+    * @param username
+    * @param password
+    * @return
+    */
+//	public boolean validateGeochronCredentials(String username,
+//			String password) {
+//		boolean isValid = false; // Geochron Credential boolean
+//		String geochronCredentialsService = "http://www.geochronportal.org/credentials_service.php";
+//
+//		// Specify the information to be sent with the AsyncHttpClient
+//		RequestParams params = new RequestParams(); 
+//		params.put("username", username);
+//		params.put("password", password);
+//		
+//		UserVerificationClient.post(geochronCredentialsService, params, new AsyncHttpResponseHandler(){
+//		     @Override
+//		     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+//		          System.out.println(response);
+//		     }
+//		     @Override
+//		     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable
+//		 error)
+//		 {
+//		          error.printStackTrace(System.out);
+//		     }
+//		});
+//		
+//		return isValid;
+//	}
 
     /**
     * Validates currently stored geochron credentials 
@@ -153,7 +183,7 @@ public class UserProfileActivity extends Activity {
     * @param password
     * @return
     */
-	public boolean validateGeochronCredentials(String username,
+	public boolean validateGeochronCredentialsOld(String username,
 			String password) {
 
 		String geochronCredentialsService = "http://www.geochronportal.org/credentials_service.php";
@@ -163,40 +193,39 @@ public class UserProfileActivity extends Activity {
 		String data = null;
 		try {
 			// puts login data in appropriate "name=value" query format
-			data = //
-			URLEncoder.encode("username", "UTF-8") + "="
-					+ URLEncoder.encode(username, "UTF-8");
-			data += "&" + URLEncoder.encode("password", "UTF-8") + "="
-					+ URLEncoder.encode(password, "UTF-8");
+			data = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
+//			data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
 		} catch (UnsupportedEncodingException unsupportedEncodingException) {
+			unsupportedEncodingException.printStackTrace();
 		}
+		return data == null;
 
-		File fileOut = HTTP_PostAndResponse(geochronCredentialsService, data);
-
-		if (fileOut != null) {
-			org.w3c.dom.Document doc = ConvertXMLTextToDOMdocument(fileOut);
-
-			if (doc != null) {
-				if (doc.getElementsByTagName("valid").getLength() > 0) {
-					valid = doc.getElementsByTagName("valid").item(0)
-							.getTextContent().trim().equalsIgnoreCase("yes");
-					System.out.println("valid = " + valid);
-				}
-			}
-			if (valid) {
-				Toast.makeText(UserProfileActivity.this,
-						"Geochron Credentials are VALID!", 3000).show();
-			} else {
-				Toast.makeText(UserProfileActivity.this,
-						"Credentials NOT valid", 3000).show();
-			}
-		} else {
-			Toast.makeText(
-					UserProfileActivity.this,
-					"Credentials Server " + geochronCredentialsService
-							+ " cannot be located.\n", 3000).show();
-		}
-		return valid;
+//		File fileOut = HTTP_PostAndResponse(geochronCredentialsService, data);
+//
+//		if (fileOut != null) {
+//			org.w3c.dom.Document doc = ConvertXMLTextToDOMdocument(fileOut);
+//
+//			if (doc != null) {
+//				if (doc.getElementsByTagName("valid").getLength() > 0) {
+//					valid = doc.getElementsByTagName("valid").item(0)
+//							.getTextContent().trim().equalsIgnoreCase("yes");
+//					System.out.println("valid = " + valid);
+//				}
+//			}
+//			if (valid) {
+//				Toast.makeText(UserProfileActivity.this,
+//						"Geochron Credentials are VALID!", 3000).show();
+//			} else {
+//				Toast.makeText(UserProfileActivity.this,
+//						"Credentials NOT valid", 3000).show();
+//			}
+//		} else {
+//			Toast.makeText(
+//					UserProfileActivity.this,
+//					"Credentials Server " + geochronCredentialsService
+//							+ " cannot be located.\n", 3000).show();
+//		}
+//		return valid;
 	}
     
    /**

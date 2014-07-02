@@ -98,6 +98,7 @@
         android:minHeight="50dp"
         android:minWidth="100dp"
         android:text="Save"
+        android:textColor="@color/white"
         android:textSize="20sp" />
 
     <Button
@@ -111,6 +112,7 @@
         android:minHeight="50dp"
         android:minWidth="100dp"
         android:text="Menu"
+        android:textColor="@color/white"
         android:textSize="20sp" />
 
     <ToggleButton
@@ -120,11 +122,13 @@
         android:layout_alignBaseline="@+id/profileSaveButton"
         android:layout_alignBottom="@+id/profileSaveButton"
         android:layout_toLeftOf="@+id/geochronPassword"
-        android:background="@color/red"
+        android:background="@color/button_blue"
         android:minHeight="50dip"
         android:minWidth="100dip"
-        android:text="Unvalidated!"
-        android:textOff="Unvalidated!"
-        android:textOn="Checking..." />
+        android:text="Validate"
+        android:textColor="@color/white"
+        android:textOff="Validate"
+        android:textOn="Checking..."
+        android:textSize="20sp" />
 
 </RelativeLayout>

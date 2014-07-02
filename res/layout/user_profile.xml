@@ -24,7 +24,8 @@
         android:minHeight="80dip"
         android:minWidth="130dip"
         android:text="Save"
-        android:textSize="35sp" />
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 
     <EditText
         android:id="@+id/geochronUsername"
@@ -113,6 +114,7 @@
         android:minHeight="80dip"
         android:minWidth="130dip"
         android:text="Menu"
+        android:textColor="@color/white"
         android:textSize="35sp" />
 
     <ToggleButton
@@ -121,11 +123,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@color/red"
+        android:background="@color/button_blue"
         android:minHeight="50dip"
         android:minWidth="100dip"
         android:text="Unvalidated!"
-        android:textOff="Unvalidated!"
-        android:textOn="Validated!" />
+        android:textColor="@color/white"
+        android:textOff="Validate"
+        android:textOn="Checking..."
+        android:textSize="20sp" />
 
 </RelativeLayout>
