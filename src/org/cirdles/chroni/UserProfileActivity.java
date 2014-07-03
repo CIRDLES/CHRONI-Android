@@ -18,7 +18,12 @@ import java.net.URLEncoder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.http.Header;
+import org.apache.http.client.HttpResponseException;
 import org.xml.sax.SAXException;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -80,7 +85,12 @@ public class UserProfileActivity extends Activity {
 	    	retrieveCredentials();
 	    	if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
 //	    		Toast.makeText(UserProfileActivity.this, "Username: " + getGeochronUsername() + " and Password: " + getGeochronPassword(), 3000).show();
-	    		isValidated = validateGeochronCredentialsOld(getGeochronUsername(), getGeochronPassword());
+	    		try {
+					isValidated = validateGeochronCredentials(getGeochronUsername(), getGeochronPassword());
+				} catch (HttpResponseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		    	if(isValidated){
 		    		profileValidateButton.setBackgroundColor(Color.GREEN);
 		    		profileValidateButton.setText("Valid!");
@@ -148,31 +158,29 @@ public class UserProfileActivity extends Activity {
     * @param password
     * @return
     */
-//	public boolean validateGeochronCredentials(String username,
-//			String password) {
-//		boolean isValid = false; // Geochron Credential boolean
-//		String geochronCredentialsService = "http://www.geochronportal.org/credentials_service.php";
-//
-//		// Specify the information to be sent with the AsyncHttpClient
-//		RequestParams params = new RequestParams(); 
-//		params.put("username", username);
-//		params.put("password", password);
-//		
-//		UserVerificationClient.post(geochronCredentialsService, params, new AsyncHttpResponseHandler(){
-//		     @Override
-//		     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-//		          System.out.println(response);
-//		     }
-//		     @Override
-//		     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable
-//		 error)
-//		 {
-//		          error.printStackTrace(System.out);
-//		     }
-//		});
-//		
-//		return isValid;
-//	}
+	public boolean validateGeochronCredentials(String username, String password) throws HttpResponseException {
+		boolean isValid = false; // Geochron Credential boolean
+		String geochronCredentialsService = "http://www.geochronportal.org/credentials_service.php";
+
+		// Specify the information to be sent with the AsyncHttpClient
+		RequestParams params = new RequestParams(); 
+		params.put("username", username);
+		params.put("password", password);
+		
+		UserVerificationClient.post(geochronCredentialsService, params, new AsyncHttpResponseHandler(){
+		     @Override
+		     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+		    	 Toast.makeText(UserProfileActivity.this, "Yayyy " + responseBody.toString(), Toast.LENGTH_LONG).show();
+		     
+		     }
+		     @Override
+		     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+		    	 Toast.makeText(UserProfileActivity.this, "Error " + statusCode, Toast.LENGTH_LONG).show();
+		     }
+		});
+		
+		return isValid;
+	}
 
     /**
     * Validates currently stored geochron credentials 
@@ -244,9 +252,7 @@ public class UserProfileActivity extends Activity {
            URLConnection conn = url.openConnection();
            conn.setDoOutput( true ); // Triggers POST
            conn.setDoInput( true );
-//           conn.setRequestProperty("Accept-Charset", charset);
-//           conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset); // second parameter is the standard HTTP POST for web forms
-           
+
            DataOutputStream dstream = new DataOutputStream( conn.getOutputStream() );
 
            // The POST line
@@ -258,7 +264,7 @@ public class UserProfileActivity extends Activity {
            // Read Response
            InputStream in = conn.getInputStream();
 
-           BufferedOutputStream streamOut = new BufferedOutputStream(new FileOutputStream( fileOut ));
+           FileOutputStream streamOut = new FileOutputStream( fileOut );
            int x;
            while ((x = in.read()) != -1) {
                streamOut.write( x );
