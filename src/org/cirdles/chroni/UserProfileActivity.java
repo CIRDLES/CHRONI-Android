@@ -211,60 +211,6 @@ public class UserProfileActivity extends Activity {
 				});
 	}
 
-    /**
-    * Validates currently stored geochron credentials 
-    * From U-Pb Redux's ReduxPersistantState.class
-    * http://www.geochronportal.org/post_to_credentials_service.html
-    * 
-    * @param username
-    * @param password
-    * @return
-    */
-	public boolean validateGeochronCredentialsOld(String username,
-			String password) {
-
-		String geochronCredentialsService = "http://www.geochronportal.org/credentials_service.php";
-
-		boolean valid = false;
-
-		String data = null;
-		try {
-			// puts login data in appropriate "name=value" query format
-			data = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
-//			data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
-		} catch (UnsupportedEncodingException unsupportedEncodingException) {
-			unsupportedEncodingException.printStackTrace();
-		}
-		return data == null;
-
-//		File fileOut = HTTP_PostAndResponse(geochronCredentialsService, data);
-//
-//		if (fileOut != null) {
-//			org.w3c.dom.Document doc = ConvertXMLTextToDOMdocument(fileOut);
-//
-//			if (doc != null) {
-//				if (doc.getElementsByTagName("valid").getLength() > 0) {
-//					valid = doc.getElementsByTagName("valid").item(0)
-//							.getTextContent().trim().equalsIgnoreCase("yes");
-//					System.out.println("valid = " + valid);
-//				}
-//			}
-//			if (valid) {
-//				Toast.makeText(UserProfileActivity.this,
-//						"Geochron Credentials are VALID!", 3000).show();
-//			} else {
-//				Toast.makeText(UserProfileActivity.this,
-//						"Credentials NOT valid", 3000).show();
-//			}
-//		} else {
-//			Toast.makeText(
-//					UserProfileActivity.this,
-//					"Credentials Server " + geochronCredentialsService
-//							+ " cannot be located.\n", 3000).show();
-//		}
-//		return valid;
-	}
-
     
    /**
     * 
