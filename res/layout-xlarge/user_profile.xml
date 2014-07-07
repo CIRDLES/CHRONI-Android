@@ -116,7 +116,7 @@
         android:textColor="@color/white"
         android:textSize="35sp" />
 
-    <ToggleButton
+    <Button
         android:id="@+id/profileValidateButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -127,8 +127,6 @@
         android:minWidth="130dip"
         android:text="Validate"
         android:textColor="@color/white"
-        android:textOff="Validate"
-        android:textOn="Checking..."
         android:textSize="30sp" />
 
 </RelativeLayout>

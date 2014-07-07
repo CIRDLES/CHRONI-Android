@@ -5,6 +5,7 @@ package org.cirdles.chroni;
  */
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.Random;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,11 +29,13 @@ import com.loopj.android.http.RequestParams;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,8 +47,7 @@ import android.widget.ToggleButton;
 public class UserProfileActivity extends Activity {
 
     private EditText geochronUsernameInput, geochronPasswordInput;
-    private Button profileSaveButton, profileMenuButton;
-    private ToggleButton profileValidateButton;
+    private Button profileSaveButton, profileMenuButton, profileValidateButton;
     
     private String geochronUsername, geochronPassword; // the login values on file
     private boolean isValidated = false; // the current status of user profile credentials
@@ -75,18 +78,17 @@ public class UserProfileActivity extends Activity {
 		Toast.makeText(UserProfileActivity.this,
 			"Your Geochron Profile information is saved!", 3000)
 			.show();
+		
 	    }
 	});
 	
-	profileValidateButton = (ToggleButton) findViewById(R.id.profileValidateButton);
+	profileValidateButton = (Button) findViewById(R.id.profileValidateButton);
 	profileValidateButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
-//	    	profileValidateButton.setEnabled(false);
 	    	retrieveCredentials();
 	    	if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
-//	    		Toast.makeText(UserProfileActivity.this, "Username: " + getGeochronUsername() + " and Password: " + getGeochronPassword(), 3000).show();
 	    		try {
-					isValidated = validateGeochronCredentials(getGeochronUsername(), getGeochronPassword());
+					validateGeochronCredentials(getGeochronUsername(), getGeochronPassword());
 				} catch (HttpResponseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -158,8 +160,8 @@ public class UserProfileActivity extends Activity {
     * @param password
     * @return
     */
-	public boolean validateGeochronCredentials(String username, String password) throws HttpResponseException {
-		boolean isValid = false; // Geochron Credential boolean
+	public void validateGeochronCredentials(String username, String password) throws HttpResponseException {
+	    boolean isValid = false; // Geochron Credential boolean
 		String geochronCredentialsService = "http://www.geochronportal.org/credentials_service.php";
 
 		// Specify the information to be sent with the AsyncHttpClient
@@ -167,19 +169,46 @@ public class UserProfileActivity extends Activity {
 		params.put("username", username);
 		params.put("password", password);
 		
-		UserVerificationClient.post(geochronCredentialsService, params, new AsyncHttpResponseHandler(){
-		     @Override
-		     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-		    	 Toast.makeText(UserProfileActivity.this, "Yayyy " + responseBody.toString(), Toast.LENGTH_LONG).show();
-		     
-		     }
-		     @Override
-		     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-		    	 Toast.makeText(UserProfileActivity.this, "Error " + statusCode, Toast.LENGTH_LONG).show();
-		     }
-		});
-		
-		return isValid;
+		UserVerificationClient.post(geochronCredentialsService, params,
+				new AsyncHttpResponseHandler() {
+					@Override
+					public void onSuccess(int statusCode, Header[] headers,
+							byte[] responseBody) {
+						File fileOut = HTTP_PostAndResponse(responseBody);
+						boolean valid = false;
+						
+						if (fileOut != null) {
+							org.w3c.dom.Document doc = ConvertXMLTextToDOMdocument(fileOut);
+				
+							if (doc != null) {
+								if (doc.getElementsByTagName("valid").getLength() > 0) {
+									valid = doc.getElementsByTagName("valid").item(0)
+											.getTextContent().trim().equalsIgnoreCase("yes");
+									setValidated(valid);
+								}
+							}
+							if (valid) {
+								Toast.makeText(UserProfileActivity.this,
+										"Geochron Credentials are VALID!", 3000).show();
+							} else {
+								Toast.makeText(UserProfileActivity.this,
+										"Credentials NOT valid", 3000).show();
+							}
+						} else {
+							Toast.makeText(
+									UserProfileActivity.this,
+									"Credentials Server cannot be located.\n", 3000).show();
+						}
+					}
+
+					@Override
+					public void onFailure(int statusCode, Header[] headers,
+							byte[] responseBody, Throwable error) {
+						Toast.makeText(UserProfileActivity.this,
+								"Error " + statusCode, Toast.LENGTH_LONG)
+								.show();
+					}
+				});
 	}
 
     /**
@@ -235,6 +264,7 @@ public class UserProfileActivity extends Activity {
 //		}
 //		return valid;
 	}
+
     
    /**
     * 
@@ -242,42 +272,32 @@ public class UserProfileActivity extends Activity {
     * @param data
     * @return
     */
-   public static File HTTP_PostAndResponse ( String serviceURI, String data ) {
-       File fileOut = new File( "HTTP_PostAndResponse_tempXML.xml" );
+   public static File HTTP_PostAndResponse ( byte[] data ) {
+       File fileOut = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Profile Information.xml");
 //       fileOut.delete();
 
        try {
-           // Send data
-           URL url = new URL( serviceURI );
-           URLConnection conn = url.openConnection();
-           conn.setDoOutput( true ); // Triggers POST
-           conn.setDoInput( true );
-
-           DataOutputStream dstream = new DataOutputStream( conn.getOutputStream() );
-
-           // The POST line
-           dstream.writeBytes( data );
-           if(dstream != null){
-        	   dstream.close();
-           }
-
            // Read Response
-           InputStream in = conn.getInputStream();
+    	   ByteArrayInputStream in = new ByteArrayInputStream(data);
 
            FileOutputStream streamOut = new FileOutputStream( fileOut );
            int x;
            while ((x = in.read()) != -1) {
-               streamOut.write( x );
-               //System.out.write(x);
+               char ch = (char)x;
+        	   streamOut.write( ch );
            }
            if(in != null){
         	   in.close();
            }
            if (streamOut != null){
+        	   streamOut.flush();
         	   streamOut.close();
            }
+           
        } catch (Exception e) {
-           return null;
+    	   String err="Error: " + e.getMessage();
+    	   Log.e("UserProfileActivity.this", err);
+    	   return null;
        }
 
        return fileOut;
