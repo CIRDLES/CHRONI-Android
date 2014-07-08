@@ -75,6 +75,7 @@ public class ReportSettingsMenuActivity extends Activity {
 	reportSettingsUrlText = (EditText) findViewById(R.id.reportSettingsUrlText);
 
 	reportSettingsUrlButton = (Button) findViewById(R.id.reportSettingsUrlButton);
+	reportSettingsUrlButton.setText("Download");
 	reportSettingsUrlButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
 		if (reportSettingsUrlText.getText().length() != 0) {
@@ -85,10 +86,10 @@ public class ReportSettingsMenuActivity extends Activity {
 		    URLFileReader downloader = new URLFileReader(
 			    ReportSettingsMenuActivity.this,
 			    "ReportSettingsMenu", reportSettingsUrl, "url");
-		    Intent openMainMenu = new Intent(
-			    "android.intent.action.DISPLAY");
-		    openMainMenu.putExtra("Url", reportSettingsUrl);
-		    startActivity(openMainMenu);
+//		    Intent openMainMenu = new Intent(
+//			    "android.intent.action.DISPLAY");
+//		    openMainMenu.putExtra("Url", reportSettingsUrl);
+//		    startActivity(openMainMenu);
 		}
 	    }
 	});

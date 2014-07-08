@@ -229,7 +229,7 @@ public class URLFileReader{
 				Toast.makeText(context, "Download error: " + result,
 						Toast.LENGTH_LONG).show();
 			else
-				Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT)
+				Toast.makeText(context, "File downloaded!", Toast.LENGTH_SHORT)
 						.show();
 		}
 		

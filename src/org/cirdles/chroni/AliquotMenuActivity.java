@@ -103,18 +103,15 @@ public class AliquotMenuActivity extends Activity {
 //	   	});
 	    
 	aliquotIGSNSubmitButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
+	aliquotIGSNSubmitButton.setText("Download");
 	aliquotIGSNSubmitButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) { 	
 		if (aliquotIGSNText.getText().length() != 0) {
-		    aliquotIGSN = aliquotIGSNText.getText().toString()
-			    .toUpperCase().trim();
+		    aliquotIGSN = aliquotIGSNText.getText().toString().toUpperCase().trim();
 		    // Downloads Aliquot file
-		    URLFileReader downloader = new URLFileReader(
-			    AliquotMenuActivity.this, "AliquotMenu", makeURI(
-				    BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
-		    Intent openMainMenu = new Intent(
-			    "android.intent.action.DISPLAY");
-		    startActivity(openMainMenu);
+		    URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
+//		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+//		    startActivity(openMainMenu);
 		}
 	    }
 	});
@@ -123,6 +120,7 @@ public class AliquotMenuActivity extends Activity {
 	aliquotURLText = (EditText) findViewById(R.id.aliquotURLText);
 
 	aliquotURLButton = (Button) findViewById(R.id.aliquotURLButton);
+	aliquotURLButton.setText("Download");
 	aliquotURLButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
 		if (aliquotURLText.getText().length() != 0) {
@@ -131,10 +129,10 @@ public class AliquotMenuActivity extends Activity {
 		    URLFileReader downloader = new URLFileReader(
 			    AliquotMenuActivity.this, "AliquotMenu",
 			    aliquotURL, "url");
-		    Intent openMainMenu = new Intent(
-			    "android.intent.action.DISPLAY");
-		    openMainMenu.putExtra("Url", aliquotURL);
-		    startActivity(openMainMenu);
+//		    Intent openMainMenu = new Intent(
+//			    "android.intent.action.DISPLAY");
+//		    openMainMenu.putExtra("Url", aliquotURL);
+//		    startActivity(openMainMenu);
 		}
 	    }
 	});

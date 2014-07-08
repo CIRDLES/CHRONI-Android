@@ -18,6 +18,8 @@ import android.os.Environment;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -28,20 +30,15 @@ import android.widget.TableRow.LayoutParams;
 
 public class TablePainterActivity extends Activity {
 
-    private static String concordiaUrl, probabilityDensityUrl; // urls to
-							       // neccessary
-							       // images
+	private Button changeReportSettingsButton, viewConcordiaButton, viewProbabilityDensityButton; // display layout buttons
+	
+    private static String concordiaUrl, probabilityDensityUrl; // urls to neccessary images
 
-    private static TreeMap<Integer, Category> categoryMap; // map returned from
-							   // parsing Report
-							   // Settings
-    private static TreeMap<String, Fraction> fractionMap; // map returned from
-							  // parsing Aliquot
+    private static TreeMap<Integer, Category> categoryMap; // map returned from parsing Report Settings
+    private static TreeMap<String, Fraction> fractionMap; // map returned from parsing Aliquot
 
     private static String[][] finalArray; // the completed array for displaying
-    private static ArrayList<String> outputVariableName; // output variable
-							 // names for column
-							 // work
+    private static ArrayList<String> outputVariableName; // output variable names for column work
 
     private TextView testText;
     private String test;
@@ -52,35 +49,47 @@ public class TablePainterActivity extends Activity {
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.display);
 
+	// Sets up the buttons
+	changeReportSettingsButton = (Button) findViewById(R.id.changeReportSettingsButton);
+	changeReportSettingsButton.setOnClickListener(new View.OnClickListener() {
+	    public void onClick(View v) {
+		Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+		startActivity(openReportSettingsMenu);
+	    }
+	});
+	
+	viewConcordiaButton = (Button) findViewById(R.id.viewConcordiaButton);
+	viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
+	    public void onClick(View v) {
+//		Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+//		startActivity(openReportSettingsMenu);
+	    }
+	});
+	
+	viewProbabilityDensityButton = (Button) findViewById(R.id.viewProbabilityDensityButton);
+	viewProbabilityDensityButton.setOnClickListener(new View.OnClickListener() {
+	    public void onClick(View v) {
+//		Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+//		startActivity(openReportSettingsMenu);
+	    }
+	});
+	
 	// Instantiates the Report Settings Parser
 	ReportSettingsParser RSP = new ReportSettingsParser();
 	String reportSettingsPath = Environment.getExternalStorageDirectory()
-		+ "/CHRONI/Report Settings/Default Report Settings.xml"; // sets
-									 // the
-									 // default
-									 // report
-									 // settings
-									 // xml
+		+ "/CHRONI/Report Settings/Default Report Settings.xml"; // sets default Report Settings XML
 	if (getIntent().getStringExtra("ReportSettingsXML") != null) {
 	    reportSettingsPath = getIntent()
-		    .getStringExtra("ReportSettingsXML"); // gets the new
-							  // location of the
-							  // report settings XML
+		    .getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
 	}
-	categoryMap = (TreeMap<Integer, Category>) RSP
-		.runReportSettingsParser(reportSettingsPath);
+	categoryMap = (TreeMap<Integer, Category>) RSP.runReportSettingsParser(reportSettingsPath);
 	ArrayList<String> outputVariableName = RSP.getOutputVariableName();
 
 	// Instantiates the Aliquot Parser
 	AliquotParser AP = new AliquotParser();
 	String aliquotPath = "";
 	if (getIntent().getStringExtra("AliquotXML") != null) {
-	    aliquotPath = getIntent().getStringExtra("AliquotXML"); // gets the
-								    // new
-								    // location
-								    // of the
-								    // aliquot
-								    // XML
+	    aliquotPath = getIntent().getStringExtra("AliquotXML"); // gets the new location of the aliquot xml
 	}
 	// String aliquotPath = "/sdcard/Download/geochron_7767.xml";
 	fractionMap = (TreeMap<String, Fraction>) AP
