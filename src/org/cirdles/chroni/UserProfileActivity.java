@@ -41,13 +41,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class UserProfileActivity extends Activity {
 
     private EditText geochronUsernameInput, geochronPasswordInput;
-    private Button profileSaveButton, profileMenuButton, profileValidateButton;
+    private TextView validationText;
+    private Button profileMenuButton, profileValidateButton;
     
     private String geochronUsername, geochronPassword; // the login values on file
     private boolean isValidated = false; // the current status of user profile credentials
@@ -62,29 +64,25 @@ public class UserProfileActivity extends Activity {
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.user_profile);
 
-	profileSaveButton = (Button) findViewById(R.id.profileSaveButton);
-	profileSaveButton.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
-		// Stores the login information in shared preferences for a new
-		// user
-		SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
-		SharedPreferences.Editor editor = settings.edit();
-		editor.clear(); // Clears previously stored prefs
-		editor.putString("Geochron Username", geochronUsernameInput
-			.getText().toString());
-		editor.putString("Geochron Password", geochronPasswordInput
-			.getText().toString());
-		editor.commit();
-		Toast.makeText(UserProfileActivity.this,
-			"Your Geochron Profile information is saved!", 3000)
-			.show();
-		
-	    }
-	});
+	validationText = (TextView) findViewById(R.id.validationText);
 	
 	profileValidateButton = (Button) findViewById(R.id.profileValidateButton);
 	profileValidateButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
+			// Stores the login information in shared preferences for a new
+			// user
+			SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.clear(); // Clears previously stored prefs
+			editor.putString("Geochron Username", geochronUsernameInput
+				.getText().toString());
+			editor.putString("Geochron Password", geochronPasswordInput
+				.getText().toString());
+			editor.commit();
+			Toast.makeText(UserProfileActivity.this,
+				"Your Geochron Profile information is saved!", 3000)
+				.show();
+	    	
 	    	retrieveCredentials();
 	    	if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
 	    		try {
@@ -93,13 +91,6 @@ public class UserProfileActivity extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-		    	if(isValidated){
-		    		profileValidateButton.setBackgroundColor(Color.GREEN);
-		    		profileValidateButton.setText("Valid!");
-		    	}else{
-		    		profileValidateButton.setText("Not Valid!");
-		    		profileValidateButton.setBackgroundColor(Color.RED);
-		    	}
 	    	}else{
 	    		Toast.makeText(UserProfileActivity.this, "Credentials not stored", 3000).show();
 	    	}
@@ -125,18 +116,6 @@ public class UserProfileActivity extends Activity {
 		&& !getGeochronPassword().contentEquals("None")) {
 	    geochronUsernameInput.setText(getGeochronUsername());
 	    geochronPasswordInput.setText(getGeochronPassword());
-
-	    // Changes save button to appropriate text and clears input if edits
-	    // are made
-	    // if((geochronUsernameInput.getText().toString() !=
-	    // getGeochronUsername())||
-	    // (geochronPasswordInput.getText().toString() !=
-	    // getGeochronPassword())){
-	    // profileSaveButton.setText("Edit");
-	    // geochronPasswordInput.setText("");
-	    // }else{
-	    // profileSaveButton.setText("Save");
-	    // }
 	}
 
     }
@@ -188,11 +167,11 @@ public class UserProfileActivity extends Activity {
 								}
 							}
 							if (valid) {
-								Toast.makeText(UserProfileActivity.this,
-										"Geochron Credentials are VALID!", 3000).show();
+					    		validationText.setText("Your Geochron Portal credentials are valid!");
+
 							} else {
-								Toast.makeText(UserProfileActivity.this,
-										"Credentials NOT valid", 3000).show();
+					    		validationText.setText("Your Geochron Portal credentials are not valid!");
+
 							}
 						} else {
 							Toast.makeText(

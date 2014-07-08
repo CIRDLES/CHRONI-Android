@@ -2,16 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background" >
-
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="43dp"
-        android:src="@drawable/cirdles_logo" />
+    android:background="@drawable/logo_background" >
 
     <EditText
         android:id="@+id/geochronPassword"
@@ -40,19 +31,6 @@
         android:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/TextView02"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/TextView01"
-        android:layout_marginRight="39dp"
-        android:layout_marginTop="61dp"
-        android:layout_toLeftOf="@+id/geochronPassword"
-        android:text="Username"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/border_grey"
-        android:textSize="35sp" />
-
-    <TextView
         android:id="@+id/TextView03"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,69 +42,75 @@
         android:textColor="@color/border_grey"
         android:textSize="35sp" />
 
-    <TextView
-        android:id="@+id/TextView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="54dp"
-        android:text="Geochron Portal"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/border_grey"
-        android:textSize="50sp" />
-
-    <TextView
-        android:id="@+id/testText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/TextView01"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="72dp"
-        android:text="Profile"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/border_grey"
-        android:textSize="100sp" />
-
-    <Button
-        android:id="@+id/profileMenuButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/profileSaveButton"
-        android:layout_marginLeft="68dp"
-        android:layout_toRightOf="@+id/imageView1"
-        android:background="@color/button_blue"
-        android:minHeight="80dp"
-        android:minWidth="130dp"
-        android:text="Menu"
-        android:textColor="@color/white"
-        android:textSize="35sp" />
-
-    <Button
-        android:id="@+id/profileSaveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="66dp"
-        android:layout_toLeftOf="@+id/profileMenuButton"
-        android:background="@color/button_blue"
-        android:minHeight="80dip"
-        android:minWidth="130dip"
-        android:text="Save"
-        android:textColor="@color/white"
-        android:textSize="35sp" />
-
     <Button
         android:id="@+id/profileValidateButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/TextView03"
-        android:layout_alignTop="@+id/profileSaveButton"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="58dp"
         android:background="@color/button_blue"
         android:minHeight="80dip"
         android:minWidth="130dip"
         android:text="Validate"
         android:textColor="@color/white"
         android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/profileMenuButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/geochronPassword"
+        android:layout_alignTop="@+id/profileValidateButton"
+        android:background="@color/button_blue"
+        android:minHeight="80dp"
+        android:minWidth="130dp"
+        android:text="Home"
+        android:textColor="@color/white"
+        android:textSize="35sp" />
+
+    <TextView
+        android:id="@+id/testText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Profile"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/border_grey"
+        android:textSize="100sp" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/testText"
+        android:layout_centerHorizontal="true"
+        android:text="Geochron Portal"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/border_grey"
+        android:textSize="50sp" />
+
+    <TextView
+        android:id="@+id/TextView02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextView01"
+        android:layout_marginTop="33dp"
+        android:layout_toLeftOf="@+id/geochronUsername"
+        android:text="Username"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/border_grey"
+        android:textSize="35sp" />
+
+    <TextView
+        android:id="@+id/validationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/geochronPassword"
+        android:layout_marginTop="48dp"
+        android:layout_toRightOf="@+id/profileValidateButton"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black" />
 
 </RelativeLayout>

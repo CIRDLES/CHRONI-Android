@@ -13,20 +13,6 @@
         android:layout_marginTop="43dp"
         android:src="@drawable/cirdles_logo" />
 
-    <Button
-        android:id="@+id/profileSaveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dp"
-        android:background="@color/button_blue"
-        android:minHeight="80dip"
-        android:minWidth="130dip"
-        android:text="Save"
-        android:textColor="@color/white"
-        android:textSize="20sp" />
-
     <EditText
         android:id="@+id/geochronUsername"
         android:layout_width="wrap_content"
@@ -113,7 +99,7 @@
         android:background="@color/button_blue"
         android:minHeight="80dip"
         android:minWidth="130dip"
-        android:text="Menu"
+        android:text="Home"
         android:textColor="@color/white"
         android:textSize="35sp" />
 
@@ -129,5 +115,16 @@
         android:text="Validate!"
         android:textColor="@color/white"
         android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/validationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextView01"
+        android:layout_marginTop="14dp"
+        android:layout_toRightOf="@+id/TextView02"
+        android:text="Your Geochron Portal credentials are valid!"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black" />
 
 </RelativeLayout>
