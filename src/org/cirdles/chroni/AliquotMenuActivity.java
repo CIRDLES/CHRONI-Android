@@ -21,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class AliquotMenuActivity extends Activity {
@@ -29,8 +30,9 @@ public class AliquotMenuActivity extends Activity {
 	    aliquotIGSNSubmitButton, aliquotURLButton;
     private ToggleButton privateAliquotButton;
     private EditText aliquotFileSelectText, aliquotIGSNText, aliquotURLText;
-    private String selectedAliquot, aliquotIGSN, aliquotURL, aliquotLocation,
-	    aliquot; // the Aliquot values
+    
+    private String selectedAliquot, aliquotIGSN, aliquotURL, aliquotLocation, aliquot; // the Aliquot values
+	private static String absoluteFileName;
     public static boolean aliquotFound;
     private boolean invalidFile = false; // true if file attempted to be downloaded is invalid
     private static boolean privateFile = false;
@@ -109,13 +111,18 @@ public class AliquotMenuActivity extends Activity {
 		if (aliquotIGSNText.getText().length() != 0) {
 		    aliquotIGSN = aliquotIGSNText.getText().toString().toUpperCase().trim();
 		    // Downloads Aliquot file
+		    final String aliquotURL = makeURI(BASE_ALIQUOT_URI, aliquotIGSN);
 		    URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
-//		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-//		    startActivity(openMainMenu);
-		}
-	    }
-	});
+			
+					Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+				    setAbsoluteFileName(String.valueOf(Environment.getExternalStorageDirectory()) + "/CHRONI/Aliquot/" + createFileName("igsn", aliquotURL) + ".xml");
+				    	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
+				    	startActivity(openMainMenu);
 
+			    }
+		} // closes if
+	    });
+	
 	// Information about Aliquot URL
 	aliquotURLText = (EditText) findViewById(R.id.aliquotURLText);
 
@@ -129,15 +136,44 @@ public class AliquotMenuActivity extends Activity {
 		    URLFileReader downloader = new URLFileReader(
 			    AliquotMenuActivity.this, "AliquotMenu",
 			    aliquotURL, "url");
-//		    Intent openMainMenu = new Intent(
-//			    "android.intent.action.DISPLAY");
-//		    openMainMenu.putExtra("Url", aliquotURL);
-//		    startActivity(openMainMenu);
+		   
+		    
+		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+		    setAbsoluteFileName(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + createFileName("url", aliquotURL) + ".xml");
+		   	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
+		   	startActivity(openMainMenu);
+		
+			
+		    }
+		    
 		}
-	    }
-	});
+	    });
     }
 
+    /*
+	 * Creates file name based on the file's type and URL
+	 */
+	protected String createFileName(String downloadMethod, String fileUrl) {
+		String name = null;
+			// If downloading based on IGSN URL, just use IGSN for name
+			if(downloadMethod.contains("igsn")){
+			String[] URL = fileUrl.split("igsn=");
+			name = URL[1];
+			}
+			
+			// if downloading based on URL, makes name from ending of URL
+			else if(downloadMethod.contains("url")){
+				String[] URL = fileUrl.split("/");
+				name = URL[URL.length-1];
+				if (name.contains(".xml")){
+					// Removes the file name ending from XML files
+					String [] newName = name.split(".xml");
+					name = newName[0];
+				}
+			}
+		return name;
+	}
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	if (resultCode == RESULT_OK) {
@@ -171,7 +207,7 @@ public class AliquotMenuActivity extends Activity {
 	setGeochronUsername(settings.getString("Geochron Username", "None"));
 	setGeochronPassword(settings.getString("Geochron Password", "None"));
     }
-
+    
     /*
      * Creates URL from the constant geochron URL and IGSN
      */
@@ -213,6 +249,14 @@ public class AliquotMenuActivity extends Activity {
 
 	public void setGeochronPassword(String geochronPassword) {
 		this.geochronPassword = geochronPassword;
+	}
+
+	public String getAbsoluteFileName() {
+		return absoluteFileName;
+	}
+
+	public void setAbsoluteFileName(String absoluteFileName) {
+		this.absoluteFileName = absoluteFileName;
 	}
 
 	@Override
