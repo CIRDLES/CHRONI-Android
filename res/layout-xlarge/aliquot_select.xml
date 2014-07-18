@@ -17,17 +17,6 @@
         android:textColor="@color/black" />
 
     <Button
-        android:id="@+id/aliquotFileSubmitButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/aliquotIGSNText"
-        android:layout_marginBottom="75dp"
-        android:layout_toRightOf="@+id/aliquotFileSelectButton"
-        android:background="@color/button_blue"
-        android:minWidth="135dp"
-        android:text="Open" />
-
-    <Button
         android:id="@+id/aliquotFileSelectButton"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
@@ -47,7 +36,7 @@
         android:layout_alignBottom="@+id/aliquotURLText"
         android:layout_alignLeft="@+id/aliquotIGSNSubmitButton"
         android:background="@color/button_blue"
-        android:minWidth="135dp"
+        android:minWidth="75dip"
         android:text="Open" />
 
      <Button
@@ -57,7 +46,7 @@
          android:layout_alignBottom="@+id/aliquotIGSNText"
          android:layout_alignLeft="@+id/aliquotFileSubmitButton"
          android:background="@color/button_blue"
-         android:minWidth="135dp"
+         android:minWidth="75dip"
          android:text="Open" />
 
      <EditText
@@ -146,16 +135,16 @@
          android:textColor="@color/black"
          android:textSize="30sp" />
 
-     <ToggleButton
-         android:id="@+id/privateAliquotButton"
+     <Button
+         android:id="@+id/aliquotFileSubmitButton"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_alignBottom="@+id/aliquotIGSNText"
-         android:layout_alignRight="@+id/aliquotIGSNText"
-         android:minWidth="50dp"
-         android:text="ToggleButton"
-         android:textOff="Public"
-         android:textOn="Private"
-         android:textSize="10sp" />
+         android:layout_above="@+id/aliquotIGSNSubmitButton"
+         android:layout_marginBottom="64dp"
+         android:layout_marginLeft="33dp"
+         android:layout_toRightOf="@+id/aliquotFileSelectButton"
+         android:background="@color/button_blue"
+         android:minWidth="75dip"
+         android:text="Open" />
 
 </RelativeLayout>

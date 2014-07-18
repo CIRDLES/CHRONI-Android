@@ -147,16 +147,4 @@
          android:textColor="@color/border_grey"
          android:textSize="100sp" />
 
-     <ToggleButton
-         android:id="@+id/privateAliquotButton"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_alignParentTop="true"
-         android:minWidth="50dp"
-         android:text="ToggleButton"
-         android:textOff="Public"
-         android:textOn="Private"
-         android:textSize="10sp" />
-
 </RelativeLayout>

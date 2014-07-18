@@ -28,7 +28,6 @@ public class AliquotMenuActivity extends Activity {
 
     private Button aliquotFileSelectButton, aliquotFileSubmitButton,
 	    aliquotIGSNSubmitButton, aliquotURLButton;
-    private ToggleButton privateAliquotButton;
     private EditText aliquotFileSelectText, aliquotIGSNText, aliquotURLText;
     
     private String selectedAliquot, aliquotIGSN, aliquotURL, aliquotLocation, aliquot; // the Aliquot values
@@ -95,15 +94,10 @@ public class AliquotMenuActivity extends Activity {
     retrieveCredentials();
 	if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
 		aliquotIGSNText.setHint("Profile information stored. Private files enabled!");
-	}	   
+	}else{
+		aliquotIGSNText.setHint("No profile information stored. Private files disabled.");
+	}
 	
-	privateAliquotButton = (ToggleButton) findViewById(R.id.privateAliquotButton);
-//	privateAliquotButton.setOnClickListener(new View.OnClickListener() {
-//	    public void onClick(View v) { 
-//	    	privateFile = privateAliquotButton.isChecked();
-//	    }
-//	   	});
-	    
 	aliquotIGSNSubmitButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
 	aliquotIGSNSubmitButton.setText("Download");
 	aliquotIGSNSubmitButton.setOnClickListener(new View.OnClickListener() {
@@ -141,11 +135,8 @@ public class AliquotMenuActivity extends Activity {
 		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
 		    setAbsoluteFileName(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + createFileName("url", aliquotURL) + ".xml");
 		   	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
-		   	startActivity(openMainMenu);
-		
-			
+		   	startActivity(openMainMenu);		
 		    }
-		    
 		}
 	    });
     }
@@ -213,9 +204,10 @@ public class AliquotMenuActivity extends Activity {
      */
     public final static String makeURI(String baseURL, String IGSN) {
 	String URI = baseURL + IGSN;
-	// Will create unique URL and password if credentials required
-	 if(privateFile){
-		 URI += "&username="+ getGeochronUsername()+"&password="+ getGeochronPassword();
+	// Will create unique URL and password if credentials stored
+//    retrieveCredentials();
+	if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
+		URI += "&username="+ getGeochronUsername()+"&password="+ getGeochronPassword();
 	 }
 	return URI;
     }
