@@ -39,7 +39,7 @@ public class URLFileReader{
 
 	public void startFileDownload(Context classContext, String className){
 		if(className.contentEquals("HomeScreen")){
-		// Sets the type of file and URL being accessed for saving purposes
+		// Sets the type of file and URL being accessed for saving purposes of the default Report Settings
 		setFileType("Report Settings");
 		setFileName("Default Report Settings");	// Always downloading Default RS here
 		
@@ -57,10 +57,6 @@ public class URLFileReader{
 				setFileType("Report Settings");
 				setFileName(createFileName());	// generates file name based on URL
 			}
-			
-			// Sets up the synchronous download thread 
-//			final SynchronousDownloadTask downloadTask = new SynchronousDownloadTask(classContext);		
-//			downloadTask.executeSynchronousDownload(fileURL); // retrieves the file from the specified URL
 		
 			// Sets up the Download thread 
 			final DownloadTask downloadTask = new DownloadTask(classContext);		
@@ -79,6 +75,11 @@ public class URLFileReader{
 			if(downloadMethod.contains("igsn")){
 			String[] URL = getFileURL().split("igsn=");
 			name = URL[1];
+			if(name.contains("&username=")){
+				// Makes an additional split to remove the username and password query from the file name
+				String[] url2 = name.split("&username=");
+				name = url2[0]; 
+			}
 			}
 			
 			// if downloading based on URL, makes name from ending of URL

@@ -108,11 +108,23 @@ public class AliquotMenuActivity extends Activity {
 		    final String aliquotURL = makeURI(BASE_ALIQUOT_URI, aliquotIGSN);
 		    URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
 			
+			Thread timer = new Thread() {
+			    public void run() {
+				try {
+				    sleep(3000); // gives file download three seconds to complete
+				} catch (InterruptedException e) {
+				    e.printStackTrace();
+				} finally {
 					Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-				    setAbsoluteFileName(String.valueOf(Environment.getExternalStorageDirectory()) + "/CHRONI/Aliquot/" + createFileName("igsn", aliquotURL) + ".xml");
+				    setAbsoluteFileName(String.valueOf(Environment.getExternalStorageDirectory()) + "/CHRONI/Aliquot/" + aliquotIGSN + ".xml");
 				    	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
 				    	startActivity(openMainMenu);
-
+				}
+			    }
+			};
+			timer.start();
+				    	
+				    	
 			    }
 		} // closes if
 	    });
@@ -130,13 +142,25 @@ public class AliquotMenuActivity extends Activity {
 		    URLFileReader downloader = new URLFileReader(
 			    AliquotMenuActivity.this, "AliquotMenu",
 			    aliquotURL, "url");
-		   
+		    
+			Thread timer = new Thread() {
+			    public void run() {
+				try {
+				    sleep(3000); // gives file download three seconds to complete
+				} catch (InterruptedException e) {
+				    e.printStackTrace();
+				} finally {
 		    
 		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
 		    setAbsoluteFileName(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + createFileName("url", aliquotURL) + ".xml");
 		   	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
 		   	startActivity(openMainMenu);		
-		    }
+				}
+			    }
+			};
+			timer.start();
+				
+				}
 		}
 	    });
     }
@@ -150,6 +174,11 @@ public class AliquotMenuActivity extends Activity {
 			if(downloadMethod.contains("igsn")){
 			String[] URL = fileUrl.split("igsn=");
 			name = URL[1];
+			if(name.contains("&username=")){
+				// Makes an additional split to remove the username and password query from the file name
+				String[] url2 = name.split("&username=");
+				name = url2[0]; 
+			}
 			}
 			
 			// if downloading based on URL, makes name from ending of URL
