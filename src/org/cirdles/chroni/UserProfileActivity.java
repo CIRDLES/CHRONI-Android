@@ -49,7 +49,7 @@ public class UserProfileActivity extends Activity {
 
     private EditText geochronUsernameInput, geochronPasswordInput;
     private TextView validationText;
-    private Button profileMenuButton, profileValidateButton;
+    private Button profileMenuButton, profileValidateButton, profileEraseButton;
     
     private String geochronUsername, geochronPassword; // the login values on file
     private boolean isValidated = false; // the current status of user profile credentials
@@ -71,6 +71,7 @@ public class UserProfileActivity extends Activity {
 	    public void onClick(View v) {
 			// Stores the login information in shared preferences for a new
 			// user
+	    	if(geochronUsernameInput.getText().length() != 0 || geochronPasswordInput.getText().length() != 0){
 			SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
 			SharedPreferences.Editor editor = settings.edit();
 			editor.clear(); // Clears previously stored prefs
@@ -83,17 +84,18 @@ public class UserProfileActivity extends Activity {
 				"Your Geochron Profile information is saved!", 3000)
 				.show();
 	    	
+			// Validates GeoChron credentials if input is stored
 	    	retrieveCredentials();
 	    	if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
 	    		try {
 					validateGeochronCredentials(getGeochronUsername(), getGeochronPassword());
 				} catch (HttpResponseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	    	}else{
 	    		Toast.makeText(UserProfileActivity.this, "Credentials not stored", 3000).show();
 	    	}
+	    }
 	    }
 	});
 
@@ -105,7 +107,27 @@ public class UserProfileActivity extends Activity {
 		startActivity(openMainMenu);
 	    }
 	});
+	
+	/*
+	 * Clears all profile information
+	 */
+	profileEraseButton = (Button) findViewById(R.id.profileEraseButton);
+	profileEraseButton.setOnClickListener(new View.OnClickListener() {
+	    public void onClick(View v) {
+	    	if(geochronUsernameInput.getText().length() != 0 || geochronPasswordInput.getText().length() != 0){
 
+			SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.clear(); // Clears previously stored prefs
+			
+			geochronUsernameInput.setText("");
+			geochronPasswordInput.setText("");
+			
+    		Toast.makeText(UserProfileActivity.this, "Credentials erased!", 3000).show();
+	    	}
+	    }
+	 	});
+			
 	// Initializes profile information with currently stored profile or, if
 	// no one has been registered, sets as empty
 	retrieveCredentials(); // Checks to see if there is a profile stored

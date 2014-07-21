@@ -113,4 +113,17 @@
         android:textColor="@color/black"
         android:textColorHint="@color/black" />
 
+    <Button
+        android:id="@+id/profileEraseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/profileMenuButton"
+        android:layout_centerHorizontal="true"
+        android:background="@color/button_blue"
+        android:minHeight="80dip"
+        android:minWidth="130dip"
+        android:text="Erase"
+        android:textColor="@color/white"
+        android:textSize="35sp" />
+
 </RelativeLayout>

@@ -64,21 +64,6 @@
         android:textColor="@color/border_grey"
         android:textSize="60sp" />
 
-    <Button
-        android:id="@+id/profileValidateButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TextView03"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="28dp"
-        android:layout_marginLeft="61dp"
-        android:background="@color/button_blue"
-        android:minHeight="50dip"
-        android:minWidth="100dip"
-        android:text="Validate"
-        android:textColor="@color/white"
-        android:textSize="20sp" />
-
     <TextView
         android:id="@+id/TextView02"
         android:layout_width="wrap_content"
@@ -115,5 +100,33 @@
         android:textColor="@color/black"
         android:textColorHint="@color/black"
         android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/profileEraseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/profileValidateButton"
+        android:layout_alignBottom="@+id/profileValidateButton"
+        android:layout_centerHorizontal="true"
+        android:background="@color/button_blue"
+        android:minHeight="50dip"
+        android:minWidth="100dip"
+        android:text="Erase"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/profileValidateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="24dp"
+        android:layout_toLeftOf="@+id/testText"
+        android:background="@color/button_blue"
+        android:minHeight="50dip"
+        android:minWidth="100dip"
+        android:text="Validate"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 
 </RelativeLayout>
