@@ -11,7 +11,8 @@
         android:layout_alignBaseline="@+id/TextView01"
         android:layout_alignBottom="@+id/TextView01"
         android:layout_alignRight="@+id/reportSettingsFileSelectButton"
-        android:layout_toRightOf="@+id/TextView01" />
+        android:layout_toRightOf="@+id/TextView01"
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/testText"
@@ -57,7 +58,8 @@
         android:layout_toLeftOf="@+id/reportSettingsFileSelectButton"
         android:layout_toRightOf="@+id/textView2"
         android:ems="10"
-        android:hint="Select a file from this device" />
+        android:hint="Select a file from this device"
+        android:textColor="@color/white" />
 
     <ImageView
         android:id="@+id/imageView1"
