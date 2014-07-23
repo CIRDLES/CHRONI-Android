@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Anders Kalør
+ * Copyright 2011 Anders Kalr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public class FilePickerActivity extends ListActivity {
 	 */
 //	public final static String DEFAULT_INITIAL_DIRECTORY = Environment.getExternalStorageDirectory()+ "/CIRDLES/";
 	
-	protected File mDirectory;
+	protected File mainDirectory;
 	protected ArrayList<File> mFiles;
 	protected FilePickerListAdapter mAdapter;
 	protected boolean mShowHiddenFiles = false;
@@ -76,13 +76,14 @@ public class FilePickerActivity extends ListActivity {
 		getListView().setEmptyView(emptyView);
 		
 		// Set initial directory
-		mDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/");
-		// Sets the initial directory based on what file user is looking for (Aliquot or Report Settings)
+		mainDirectory = getDir("CHRONI", Context.MODE_PRIVATE); 
+
+		 //Sets the initial directory based on what file user is looking for (Aliquot or Report Settings)
 		if(getIntent().hasExtra("Default_Directory")){
 			if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot")){
-				mDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Aliquot/");
+				mainDirectory = new File(mainDirectory, "Aliquot");
 			}else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report Settings")){
-				mDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Report Settings/");
+				mainDirectory = new File(mainDirectory, "Report Settings");
 			}
 		}
 		
@@ -123,7 +124,7 @@ public class FilePickerActivity extends ListActivity {
 		ExtensionFilenameFilter filter = new ExtensionFilenameFilter(acceptedFileExtensions);
 		
 		// Get the files in the directory
-		File[] files = mDirectory.listFiles(filter);
+		File[] files = mainDirectory.listFiles(filter);
 		if(files != null && files.length > 0) {
 			for(File f : files) {
 				if(f.isHidden() && !mShowHiddenFiles) {
@@ -171,7 +172,7 @@ public class FilePickerActivity extends ListActivity {
 			// Finish the activity
 			finish();
 		} else {
-			mDirectory = newFile;
+			mainDirectory = newFile;
 			// Update the files list
 			refreshFilesList();
 		}

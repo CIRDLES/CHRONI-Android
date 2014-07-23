@@ -1,5 +1,6 @@
 package org.cirdles.chroni;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +12,6 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.PowerManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -25,14 +25,15 @@ public class URLFileReader{
 	private String fileType;	// Report Settings or Aliquot File
 	private String fileURL;	// the URL of the file
 	private String downloadMethod; // the type of download used to get file (igsn or url)
-
+	private Context classContext; // an instance of the activity's context for memory access
+	
 	/*
 	 * Sets up the Progress Bar and retrieves default Report Settings File from CIRDLES.org
 	 */
 	public URLFileReader(Context classContext, String className, String URL, String downloadMethod){
 		setFileURL(URL); // Sets the URL for download
 		setDownloadMethod(downloadMethod); // sets download type
-		
+		setClassContext(classContext);
 		// Sets the type of file being accessed for saving purposes
 		startFileDownload(classContext, className);
 		}
@@ -143,6 +144,11 @@ public class URLFileReader{
 
 		@Override
 		protected String doInBackground(String... sUrl) {
+			// Directories needed to place files in accurate locations
+			File chroniDirectory = classContext.getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
+	    	File aliquotDirectory = new File(chroniDirectory, "Aliquot");
+	    	File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
+	    				
 			// take CPU lock to prevent CPU from going off if the user
 			// presses the power button during download
 			PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -173,11 +179,11 @@ public class URLFileReader{
 							AliquotMenuActivity.setInvalidFile(true);	// Sets file as invalid
 							cancel(true);
 						}else{
-							output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + fileName + ".xml");
-//							AliquotMenuActivity.setAbsoluteFileName(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + fileName + ".xml");
+							output = new FileOutputStream(aliquotDirectory+ "/" + fileName + ".xml");
+//							AliquotMenuActivity.setAbsoluteFileName(aliquotDirectory+ "/" + fileName + ".xml");
 						}
 					}else if(fileType.contains("Report Settings")){
-						output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings/" + fileName + ".xml");
+						output = new FileOutputStream(reportSettingsDirectory + "/" + fileName + ".xml");
 					}
 					
 					byte data[] = new byte[4096];
@@ -291,5 +297,13 @@ public class URLFileReader{
 
 	public void setDownloadMethod(String downloadMethod) {
 		this.downloadMethod = downloadMethod;
+	}
+
+	public Context getClassContext() {
+		return classContext;
+	}
+
+	public void setClassContext(Context classContext) {
+		this.classContext = classContext;
 	}
 }

@@ -5,9 +5,9 @@ import java.util.ArrayList;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -52,6 +52,10 @@ public class AliquotMenuActivity extends Activity {
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.aliquot_select);
 	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+	
+	// Directories needed for file locations
+	final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); 
+	final File aliquotDirectory = new File(chroniDirectory, "Aliquot");	
 
 	// Information about Aliquot File
 	aliquotFileSelectButton = (Button) findViewById(R.id.aliquotFileSelectButton);
@@ -116,7 +120,7 @@ public class AliquotMenuActivity extends Activity {
 				    e.printStackTrace();
 				} finally {
 					Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-				    setAbsoluteFileName(String.valueOf(Environment.getExternalStorageDirectory()) + "/CHRONI/Aliquot/" + aliquotIGSN + ".xml");
+				    setAbsoluteFileName(aliquotDirectory + "/" + aliquotIGSN + ".xml");
 				    	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
 				    	startActivity(openMainMenu);
 				}
@@ -152,7 +156,7 @@ public class AliquotMenuActivity extends Activity {
 				} finally {
 		    
 		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-		    setAbsoluteFileName(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + createFileName("url", aliquotURL) + ".xml");
+		    setAbsoluteFileName(aliquotDirectory + "/" + createFileName("url", aliquotURL) + ".xml");
 		   	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
 		   	startActivity(openMainMenu);		
 				}
