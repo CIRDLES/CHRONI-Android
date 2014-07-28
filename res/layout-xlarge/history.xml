@@ -36,7 +36,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
         android:background="@color/button_blue"
-        android:text="Finish"
+        android:text="Home"
         android:textColor="@color/white"
         android:textColorHint="@color/white" />
 

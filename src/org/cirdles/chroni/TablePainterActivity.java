@@ -1,5 +1,6 @@
 package org.cirdles.chroni;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,12 +10,12 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,13 +75,16 @@ public class TablePainterActivity extends Activity {
 	    }
 	});
 	
+	// Directories needed to place files in accurate locations
+	File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
+	File aliquotDirectory = new File(chroniDirectory, "Aliquot");
+	File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
+	
 	// Instantiates the Report Settings Parser
 	ReportSettingsParser RSP = new ReportSettingsParser();
-	String reportSettingsPath = Environment.getExternalStorageDirectory()
-		+ "/CHRONI/Report Settings/Default Report Settings.xml"; // sets default Report Settings XML
+	String reportSettingsPath = String.valueOf(new File(chroniDirectory, "Report Settings")) + "/Default Report Settings.xml"; // sets default Report Settings XML
 	if (getIntent().getStringExtra("ReportSettingsXML") != null) {
-	    reportSettingsPath = getIntent()
-		    .getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
+	    reportSettingsPath = getIntent().getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
 	}
 	categoryMap = (TreeMap<Integer, Category>) RSP.runReportSettingsParser(reportSettingsPath);
 	ArrayList<String> outputVariableName = RSP.getOutputVariableName();

@@ -1,8 +1,11 @@
 package org.cirdles.chroni;
 
+import java.io.File;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.view.Menu;
@@ -18,7 +21,8 @@ public class ReportSettingsMenuActivity extends Activity {
     private String selectedReportSettings; // name of Report Settings file that
 					   // has been chosen for viewing
     private String reportSettingsUrl; // name of Report Settings URL
-
+    private String absoluteFileName; // path of selected Report Settings file
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
@@ -26,6 +30,10 @@ public class ReportSettingsMenuActivity extends Activity {
 	setContentView(R.layout.report_settings_select);
 	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+	// Directories needed for file locations
+	final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); 
+	final File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
+	
 	// Information about Report Settings file
 	reportSettingsFileSelectButton = (Button) findViewById(R.id.reportSettingsFileSelectButton);
 	reportSettingsFileSelectButton
@@ -83,19 +91,41 @@ public class ReportSettingsMenuActivity extends Activity {
 			    .toString().trim();
 
 		    // Downloads Report Settings file from URL
-		    URLFileReader downloader = new URLFileReader(
-			    ReportSettingsMenuActivity.this,
-			    "ReportSettingsMenu", reportSettingsUrl, "url");
-//		    Intent openMainMenu = new Intent(
-//			    "android.intent.action.DISPLAY");
-//		    openMainMenu.putExtra("Url", reportSettingsUrl);
-//		    startActivity(openMainMenu);
+		    URLFileReader downloader = new URLFileReader(ReportSettingsMenuActivity.this,   "ReportSettingsMenu", reportSettingsUrl, "url");
+		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+		    setAbsoluteFileName(reportSettingsDirectory + "/" + createFileName("url", reportSettingsUrl) + ".xml");
+		    openMainMenu.putExtra("ReportSettingsXML", getAbsoluteFileName());
+		    startActivity(openMainMenu);
 		}
 	    }
 	});
     }
 
-    @Override
+    /*
+	 * Creates file name based on the file's type and URL
+	 */
+	protected String createFileName(String downloadMethod, String fileUrl) {
+		String name = null;			
+			//makes name from ending of URL
+				String[] URL = fileUrl.split("/");
+				name = URL[URL.length-1];
+				if (name.contains(".xml")){
+					// Removes the file name ending from XML files
+					String [] newName = name.split(".xml");
+					name = newName[0];
+				}
+		return name;
+	}
+    
+    public String getAbsoluteFileName() {
+		return absoluteFileName;
+	}
+
+	public void setAbsoluteFileName(String absoluteFileName) {
+		this.absoluteFileName = absoluteFileName;
+	}
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
 	// Inflate the menu; this adds items to the action bar if it is present.
 	getMenuInflater().inflate(R.menu.menu, menu);

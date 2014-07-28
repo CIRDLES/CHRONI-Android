@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -63,7 +64,7 @@ public class UserProfileActivity extends Activity {
 	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.user_profile);
-
+	
 	validationText = (TextView) findViewById(R.id.validationText);
 	
 	profileValidateButton = (Button) findViewById(R.id.profileValidateButton);

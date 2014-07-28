@@ -2,6 +2,7 @@ package org.cirdles.chroni;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 
 import android.os.Bundle;
@@ -99,25 +100,22 @@ public class HomeScreenActivity extends Activity implements FilenameFilter {
      * Report Settings folders
      */
     protected void createDirectories() throws FileNotFoundException {
-	// Establishes the CIRDLES root folder
-	File cirdlesDirectory = new File(
-		Environment.getExternalStorageDirectory() + "/CHRONI/");
-	File aliquotDirectory = new File(
-		Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot");
-	File reportSettingsDirectory = new File(
-		Environment.getExternalStorageDirectory()
-			+ "/CHRONI/Report Settings");
-
+	// Establishes the CIRDLES folder
+    	File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
+    	File aliquotDirectory = new File(chroniDirectory, "Aliquot");
+    	File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
+    	
 	// Creates the directories if they are not there
-	if (cirdlesDirectory.exists()) {
-	    cirdlesDirectory.mkdirs();
+	if (!chroniDirectory.exists()) {
+		chroniDirectory.mkdirs();
 	}
-	if (aliquotDirectory.exists()) {
+	if (!aliquotDirectory.exists()) {
 	    aliquotDirectory.mkdirs();
 	}
-	if (reportSettingsDirectory.exists()) {
+	if (!reportSettingsDirectory.exists()) {
 	    reportSettingsDirectory.mkdirs();
 	}
+	
 	// Downloads Default Report Settings file
 	if (accept(reportSettingsDirectory, "Default Report Settings")) {
 	    URLFileReader downloader = new URLFileReader(

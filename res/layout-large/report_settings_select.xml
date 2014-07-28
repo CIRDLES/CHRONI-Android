@@ -82,7 +82,7 @@
         android:layout_alignRight="@+id/testText"
         android:layout_toRightOf="@+id/TextView01"
         android:ems="10"
-        android:textColor="@color/black" >
+        android:textColor="@color/white" >
 
         <requestFocus />
     </EditText>
@@ -109,6 +109,6 @@
         android:layout_toRightOf="@+id/textView2"
         android:ems="10"
         android:hint="Select a file from this device"
-        android:textColor="@color/black" />
+        android:textColor="@color/white" />
 
 </RelativeLayout>
