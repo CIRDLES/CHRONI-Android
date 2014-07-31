@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -49,31 +50,6 @@ public class TablePainterActivity extends Activity {
 	super.onCreate(savedInstanceState);
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.display);
-
-	// Sets up the buttons
-	changeReportSettingsButton = (Button) findViewById(R.id.changeReportSettingsButton);
-	changeReportSettingsButton.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
-		Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-		startActivity(openReportSettingsMenu);
-	    }
-	});
-	
-	viewConcordiaButton = (Button) findViewById(R.id.viewConcordiaButton);
-	viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
-//		Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-//		startActivity(openReportSettingsMenu);
-	    }
-	});
-	
-	viewProbabilityDensityButton = (Button) findViewById(R.id.viewProbabilityDensityButton);
-	viewProbabilityDensityButton.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
-//		Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-//		startActivity(openReportSettingsMenu);
-	    }
-	});
 	
 	// Directories needed to place files in accurate locations
 	File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
@@ -120,47 +96,75 @@ public class TablePainterActivity extends Activity {
 	    }
 	});
 
-	String[][] finalArray = fillArray(outputVariableName,
-		reportSettingsArray, fractionArray);
-	// finalArray = getFinalArray();
-	// TableLayout table = (TableLayout) findViewById(R.id.myTable);
+	String[][] finalArray = fillArray(outputVariableName,reportSettingsArray, fractionArray);
 
 	// TextView aliquotName = new TextView(this);
 	ArrayList<String> contents = new ArrayList<String>();
 
-	HorizontalScrollView screenScroll = (HorizontalScrollView) findViewById(R.id.horizontalScrollView); // controls
-													    // the
-													    // horizontal
-													    // scrolling
-													    // of
-													    // the
-													    // entire
-													    // table
-	LinearLayout tableLayout = (LinearLayout) findViewById(R.id.displayTableLayout); // gives
-											 // inner
-											 // table
-											 // layout
-											 // for
-											 // displaying
-	TableLayout headerInformationTable = (TableLayout) findViewById(R.id.tableForHeader); // Report
-											      // Settings
-											      // header
-											      // table
+	// Setup to add buttons
+	LinearLayout buttonTableLayout = (LinearLayout) findViewById(R.id.displayLayout); // layout handle needed for buttons
+	TableRow buttonRow = (TableRow) findViewById(R.id.buttonRow);
+	buttonRow.setGravity(Gravity.CENTER);
+	
+	// Creates the Report Settings button
+	changeReportSettingsButton = new Button(this);
+	changeReportSettingsButton.setTextColor(Color.WHITE);
+	changeReportSettingsButton.setTextSize((float) 15);
+	changeReportSettingsButton.setText("Change Report Settings");
+	changeReportSettingsButton.setPadding(15,15,15,15);
+	changeReportSettingsButton.setGravity(Gravity.CENTER);
+	changeReportSettingsButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+	changeReportSettingsButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+	buttonRow.addView(changeReportSettingsButton);
+	changeReportSettingsButton.setOnClickListener(new View.OnClickListener() {
+    public void onClick(View v) {
+    	Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+    	startActivity(openReportSettingsMenu);
+    }
+	});
 
-	ScrollView scrollPane = (ScrollView) findViewById(R.id.scrollPane); // Vertical
-									    // scrolling
-									    // for
-									    // the
-									    // aliquot
-									    // portion
-									    // of
-									    // table
-	TableLayout aliquotDataTable = (TableLayout) findViewById(R.id.finalTable); // the
-										    // aliquot
-										    // specific
-										    // information
+	viewConcordiaButton = new Button(this);
+	viewConcordiaButton.setTextColor(Color.WHITE);
+	viewConcordiaButton.setTextSize((float) 15);
+	viewConcordiaButton.setText("Concordia Plot");
+	viewConcordiaButton.setPadding(15,15,15,15);
+	viewConcordiaButton.setGravity(Gravity.CENTER);
+	viewConcordiaButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+	viewConcordiaButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+	buttonRow.addView(viewConcordiaButton);
+	viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+//			Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+//			startActivity(openReportSettingsMenu);
+		    }
+		});
 
-	// calculates number of rows based on the size of the fraction five is
+	viewProbabilityDensityButton = new Button(this);
+	viewProbabilityDensityButton.setTextColor(Color.WHITE);
+	viewProbabilityDensityButton.setTextSize((float) 15);
+	viewProbabilityDensityButton.setText("Probability Density");
+	viewProbabilityDensityButton.setPadding(15,15,15,15);
+	viewProbabilityDensityButton.setGravity(Gravity.CENTER);
+	viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+	viewProbabilityDensityButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+	buttonRow.addView(viewProbabilityDensityButton);
+	viewProbabilityDensityButton.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+//			Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+//			startActivity(openReportSettingsMenu);
+		    }
+		});
+		
+	
+	HorizontalScrollView screenScroll = (HorizontalScrollView) findViewById(R.id.horizontalScrollView); // controls the horizontal scrolling of the table
+	
+	LinearLayout tableLayout = (LinearLayout) findViewById(R.id.displayTableLayout); // gives inner table layout for displaying
+	TableLayout headerInformationTable = (TableLayout) findViewById(R.id.tableForHeader); // Report Settings header table
+
+	ScrollView scrollPane = (ScrollView) findViewById(R.id.scrollPane); // Vertical scrolling for the aliquot portion of the table
+	TableLayout aliquotDataTable = (TableLayout) findViewById(R.id.finalTable); // the aliquot specific info contained here
+
+	// calculates number of rows based on the size of the fraction, five is
 	// added for the Report Settings rows
 	final int ROWS = 5 + fractionMap.size();
 	int rowCount = 0;
@@ -169,7 +173,7 @@ public class TablePainterActivity extends Activity {
 	for (int i = 0; i < ROWS; i++) {
 
 	    TableRow row = new TableRow(this);
-
+	  
 	    // puts rows in appropriate place on layout
 	    if (rowCount < 5) {
 		// Report Settings and aliquot name rows

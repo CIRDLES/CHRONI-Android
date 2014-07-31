@@ -1,44 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/RelativeLayout1"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/displayLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
     android:orientation="vertical" >
-    
-      <Button
-        android:id="@+id/changeReportSettingsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/horizontalScrollView"
-        android:layout_alignParentLeft="true"
-        android:background="@color/button_blue"
-        android:minHeight="55dip"
-        android:minWidth="75dip"
-        android:text="Change Report Settings" />
 
-    <Button
-        android:id="@+id/viewConcordiaButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:background="@color/button_blue"
-        android:minHeight="55dip"
-        android:minWidth="75dip"
-        android:text="Concordia Plot" />
+    <TableRow
+        android:id="@+id/buttonRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </TableRow>
     
-    <Button
-        android:id="@+id/viewProbabilityDensityButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/button_blue"
-        android:text="Probability Density" 
-        android:minHeight="55dip"
-        android:minWidth="75dip"/>
-
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"
         android:layout_width="wrap_content"
@@ -82,5 +55,4 @@
         android:minHeight="250dip"
         android:minWidth="250dip"
         android:src="@drawable/cirdles_logo" />
-
-</RelativeLayout>
+    </LinearLayout>
