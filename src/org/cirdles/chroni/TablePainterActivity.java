@@ -38,7 +38,11 @@ public class TablePainterActivity extends Activity {
 
     private static TreeMap<Integer, Category> categoryMap; // map returned from parsing Report Settings
     private static TreeMap<String, Fraction> fractionMap; // map returned from parsing Aliquot
+    private static TreeMap<String, Image> imageMap; // map of image data returned from parsing Aliquot
 
+	private static MapTuple maps; // The fraction and image map from parsing Aliquot file
+    private static Image[] imageArray;  
+	
     private static String[][] finalArray; // the completed array for displaying
     private static ArrayList<String> outputVariableName; // output variable names for column work
 
@@ -71,9 +75,12 @@ public class TablePainterActivity extends Activity {
 	if (getIntent().getStringExtra("AliquotXML") != null) {
 	    aliquotPath = getIntent().getStringExtra("AliquotXML"); // gets the new location of the aliquot xml
 	}
-	// String aliquotPath = "/sdcard/Download/geochron_7767.xml";
-	fractionMap = (TreeMap<String, Fraction>) AP
-		.runAliquotParser(aliquotPath);
+	
+	// Parses aliquot file and retrieves maps
+	maps = AP.runAliquotParser(aliquotPath); 
+	fractionMap = (TreeMap<String, Fraction>)maps.getFractionMap();
+	imageMap = (TreeMap<String, Image>)maps.getImageMap();
+	
 	String aliquot = AP.getAliquotName();
 
 	// fills the arrays
@@ -123,38 +130,44 @@ public class TablePainterActivity extends Activity {
     }
 	});
 
-	viewConcordiaButton = new Button(this);
-	viewConcordiaButton.setTextColor(Color.WHITE);
-	viewConcordiaButton.setTextSize((float) 15);
-	viewConcordiaButton.setText("Concordia Plot");
-	viewConcordiaButton.setPadding(15,15,15,15);
-	viewConcordiaButton.setGravity(Gravity.CENTER);
-	viewConcordiaButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-	viewConcordiaButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-	buttonRow.addView(viewConcordiaButton);
-	viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
-		    public void onClick(View v) {
-//			Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-//			startActivity(openReportSettingsMenu);
-		    }
-		});
-
-	viewProbabilityDensityButton = new Button(this);
-	viewProbabilityDensityButton.setTextColor(Color.WHITE);
-	viewProbabilityDensityButton.setTextSize((float) 15);
-	viewProbabilityDensityButton.setText("Probability Density");
-	viewProbabilityDensityButton.setPadding(15,15,15,15);
-	viewProbabilityDensityButton.setGravity(Gravity.CENTER);
-	viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-	viewProbabilityDensityButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-	buttonRow.addView(viewProbabilityDensityButton);
-	viewProbabilityDensityButton.setOnClickListener(new View.OnClickListener() {
-		    public void onClick(View v) {
-//			Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-//			startActivity(openReportSettingsMenu);
-		    }
-		});
-		
+	// Determines whether or not to add additional buttons for images
+    imageArray = retrieveImages(imageMap);
+	
+    if((imageArray[0] != null) && !(imageArray[0].getImageURL().length()==0)){
+		viewConcordiaButton = new Button(this);
+		viewConcordiaButton.setTextColor(Color.WHITE);
+		viewConcordiaButton.setTextSize((float) 15);
+		viewConcordiaButton.setText("Concordia Plot");
+		viewConcordiaButton.setPadding(15,15,15,15);
+		viewConcordiaButton.setGravity(Gravity.CENTER);
+		viewConcordiaButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+		viewConcordiaButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		buttonRow.addView(viewConcordiaButton);
+		viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
+			    public void onClick(View v) {
+				    Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageArray[0].getImageURL()));
+				    startActivity(viewConcordiaIntent);
+			    }
+			});
+    }
+    
+    if((imageArray[1] != null) && !(imageArray[1].getImageURL().length()==0)){
+		viewProbabilityDensityButton = new Button(this);
+		viewProbabilityDensityButton.setTextColor(Color.WHITE);
+		viewProbabilityDensityButton.setTextSize((float) 15);
+		viewProbabilityDensityButton.setText("Probability Density");
+		viewProbabilityDensityButton.setPadding(15,15,15,15);
+		viewProbabilityDensityButton.setGravity(Gravity.CENTER);
+		viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+		viewProbabilityDensityButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		buttonRow.addView(viewProbabilityDensityButton);
+		viewProbabilityDensityButton.setOnClickListener(new View.OnClickListener() {
+			    public void onClick(View v) {
+				    Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageArray[1].getImageURL()));
+				    startActivity(viewProbabilityDensityIntent);
+			    }
+			});
+    }
 	
 	HorizontalScrollView screenScroll = (HorizontalScrollView) findViewById(R.id.horizontalScrollView); // controls the horizontal scrolling of the table
 	
@@ -250,6 +263,21 @@ public class TablePainterActivity extends Activity {
 	    }
 	    rowCount++;
 	}
+    }
+    
+    /*
+     * Retrieves the images from the image map
+     */
+    private static Image[] retrieveImages(TreeMap<String, Image> imageMap) {
+    	Image[] imageArray = new Image[3]; // two spaces allotted for the probability and concordia images, 3rd for report csv image 
+    	Iterator<Entry<String, Image>> iterator = imageMap.entrySet().iterator();
+    	int imageCount = 0; // image iterator
+    	while (iterator.hasNext()) {
+    		Entry<String, Image> image = iterator.next();
+    		imageArray[imageCount] = image.getValue(); // places image in array
+    	}
+	
+	 return imageArray;
     }
 
     /*

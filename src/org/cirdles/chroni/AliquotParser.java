@@ -24,7 +24,9 @@ public class AliquotParser {
 	private static SortedMap<String, Fraction> fractionMap; // Collects the fractions in the Aliquot XML file
 	private static SortedMap<String,Image> imageMap; // The given images in an aliquot
 	
-	public static SortedMap<String, Fraction> runAliquotParser(String fileName){	
+	private static MapTuple maps; // The fraction and image map from parsing Aliquot file
+	
+	public static MapTuple runAliquotParser(String fileName){	
 
 		try {
 			// Begins the parsing of the file
@@ -95,10 +97,10 @@ public class AliquotParser {
 			e.printStackTrace();
 		}
 		
-		return fractionMap;
+		// Creates the MapTuple object from both maps
+		maps = new MapTuple(fractionMap, imageMap);
+		return maps;
 	} // Closes the parsing aliquot method
-	
-
 		
 	public static String getAliquotName() {
 		return aliquotName;
@@ -120,8 +122,6 @@ public class AliquotParser {
 	public static void setImageMap(SortedMap<String,Image> imageMap) {
 		AliquotParser.imageMap = imageMap;
 	}
-
-
 
 	public static void setAliquotName(String aliquotName) {
 		AliquotParser.aliquotName = aliquotName;
