@@ -45,14 +45,4 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/horizontalScrollView"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:minHeight="250dip"
-        android:minWidth="250dip"
-        android:src="@drawable/cirdles_logo" />
-    </LinearLayout>
+</LinearLayout>

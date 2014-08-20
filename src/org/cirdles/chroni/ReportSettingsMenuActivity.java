@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 public class ReportSettingsMenuActivity extends Activity {
     private Button reportSettingsFileSelectButton, reportSettingsOpenButton,
@@ -29,6 +30,10 @@ public class ReportSettingsMenuActivity extends Activity {
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.report_settings_select);
 	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+    // Sets up background
+    RelativeLayout layout =(RelativeLayout)findViewById(R.id.reportSettingsBackground);
+    layout.setBackground(getResources().getDrawable(R.drawable.background));
 
 	// Directories needed for file locations
 	final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); 

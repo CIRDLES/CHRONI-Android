@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.Menu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class HomeScreenActivity extends Activity implements FilenameFilter {
@@ -33,6 +34,10 @@ public class HomeScreenActivity extends Activity implements FilenameFilter {
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.home_screen);
 	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+    //Places background image on layout due to theme overriding
+    RelativeLayout layout =(RelativeLayout)findViewById(R.id.homeScreenBackground);
+    layout.setBackground(getResources().getDrawable(R.drawable.background));
 
 	// Checks to see if this is launch
 	// checkCredentials();

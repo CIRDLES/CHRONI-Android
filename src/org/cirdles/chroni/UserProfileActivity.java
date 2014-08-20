@@ -42,6 +42,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -64,7 +65,11 @@ public class UserProfileActivity extends Activity {
 	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.user_profile);
-	
+
+    //Places background image on layout due to theme overriding
+    RelativeLayout layout =(RelativeLayout)findViewById(R.id.userProfileBackground);
+    layout.setBackground(getResources().getDrawable(R.drawable.background));
+
 	validationText = (TextView) findViewById(R.id.validationText);
 	
 	profileValidateButton = (Button) findViewById(R.id.profileValidateButton);
@@ -82,7 +87,7 @@ public class UserProfileActivity extends Activity {
 				.getText().toString());
 			editor.commit();
 			Toast.makeText(UserProfileActivity.this,
-				"Your Geochron Profile information is saved!", 3000)
+				"Your Geochron Profile information is saved!", Toast.LENGTH_LONG)
 				.show();
 	    	
 			// Validates GeoChron credentials if input is stored
@@ -94,7 +99,7 @@ public class UserProfileActivity extends Activity {
 					e.printStackTrace();
 				}
 	    	}else{
-	    		Toast.makeText(UserProfileActivity.this, "Credentials not stored", 3000).show();
+	    		Toast.makeText(UserProfileActivity.this, "Credentials not stored", Toast.LENGTH_LONG).show();
 	    	}
 	    }
 	    }
@@ -124,7 +129,7 @@ public class UserProfileActivity extends Activity {
 			geochronUsernameInput.setText("");
 			geochronPasswordInput.setText("");
 			
-    		Toast.makeText(UserProfileActivity.this, "Credentials erased!", 3000).show();
+    		Toast.makeText(UserProfileActivity.this, "Credentials erased!", Toast.LENGTH_LONG).show();
 	    	}
 	    }
 	 	});
@@ -199,7 +204,7 @@ public class UserProfileActivity extends Activity {
 						} else {
 							Toast.makeText(
 									UserProfileActivity.this,
-									"Credentials Server cannot be located.\n", 3000).show();
+									"Credentials Server cannot be located.\n", Toast.LENGTH_LONG).show();
 						}
 					}
 
@@ -214,7 +219,7 @@ public class UserProfileActivity extends Activity {
 	}
 
     
-   /**
+   /*
     * 
     * @param serviceURI
     * @param data

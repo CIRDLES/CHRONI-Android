@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class MainMenuActivity extends Activity {
@@ -29,6 +30,10 @@ public class MainMenuActivity extends Activity {
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.main_menu);
 	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+     //Places background image on layout due to theme overriding
+     RelativeLayout layout =(RelativeLayout)findViewById(R.id.mainMenuBackground);
+     layout.setBackground(getResources().getDrawable(R.drawable.background));
 
 	try {
 	    // Puts the versioning information on the App

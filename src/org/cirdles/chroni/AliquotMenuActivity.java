@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -52,6 +53,10 @@ public class AliquotMenuActivity extends Activity {
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.aliquot_select);
 	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+    //Places background image on layout due to theme overriding
+    RelativeLayout layout =(RelativeLayout)findViewById(R.id.aliquotSelectBackground);
+    layout.setBackground(getResources().getDrawable(R.drawable.background));
 	
 	// Directories needed for file locations
 	final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); 

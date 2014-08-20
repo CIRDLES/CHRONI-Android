@@ -41,6 +41,10 @@ public class HistoryActivity extends Activity {
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.history);
 
+    //Places background image on layout due to theme overriding
+    RelativeLayout layout =(RelativeLayout)findViewById(R.id.historyBackground);
+    layout.setBackground(getResources().getDrawable(R.drawable.background));
+
 	// Sets up the finish button
 	finishButton = (Button) findViewById(R.id.historyFinishButton);
 	finishButton.setOnClickListener(new OnClickListener() {
