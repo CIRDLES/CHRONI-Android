@@ -95,7 +95,7 @@ public class HistoryActivity extends Activity {
 
 			if (j == 2) {
 			    cell.setWidth(275);
-			    cell.setHeight(151);
+			    cell.setHeight(150);
 			}
 
 			if (i % 2 == 1) {
