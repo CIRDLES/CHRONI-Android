@@ -31,6 +31,7 @@ public class HistoryActivity extends Activity {
     TableLayout table;
     Button finishButton;
     ImageView reviewSubtext;
+    CirdlesDatabaseHelper preloadedAliquots; // Database
 
     @SuppressLint("NewApi")
     @Override
@@ -90,12 +91,11 @@ public class HistoryActivity extends Activity {
 			cell.setTextSize((float) 17);
 			cell.setGravity(Gravity.CENTER);
 			cell.setWidth(275);
-			cell.setHeight(75);
+			cell.setHeight(150);
 
-			// sets up width of each column
 			if (j == 2) {
 			    cell.setWidth(275);
-			    cell.setHeight(100);
+			    cell.setHeight(150);
 			}
 
 			if (i % 2 == 1) {
@@ -116,37 +116,38 @@ public class HistoryActivity extends Activity {
 			row.addView(cell);
 		    } // ends the formatting of the text cells
 
-		    // adds the button to the last column
+		    // adds the open button to the last column
 		    else if (j == 2 && i != 0) {
-			Button cell = new Button(this);
-			cell.setTextColor(Color.WHITE);
-			cell.setTextSize((float) 15);
-			cell.setGravity(Gravity.CENTER);
-			cell.setHeight(100);
-			row.addView(cell);
+			Button button = new Button(this);
+			button.setTextColor(Color.WHITE);
+			button.setTextSize((float) 15);
+			button.setGravity(Gravity.CENTER);
+			button.setHeight(100);
+            button.setBackgroundColor(Color.GRAY);
+			row.addView(button);
 
-			cell.setText("OPEN");
+			button.setText("OPEN");
 
 			// adds button functionality
-			cell.setOnClickListener(new View.OnClickListener() {
-			    // When view/edit is clicked, the review screen is
-			    // opened
-			    public void onClick(View v) {
-				Intent openTableScreen = new Intent(
-					"android.intent.action.DISPLAY");
-				startActivity(openTableScreen);
-			    }
-			});
+			button.setOnClickListener(new View.OnClickListener() {
+                // When view/edit is clicked, the review screen is
+                // opened
+                public void onClick(View v) {
+
+//				Intent openTableScreen = new Intent("android.intent.action.DISPLAY");
+//				startActivity(openTableScreen);
+                }
+            });
 
 			// Colors buttons
 			if (i % 2 == 1) {
 			    // colors even rows
-			    cell.setBackgroundColor(Color.parseColor("#107AB3"));
-			    cell.setTextColor(Color.WHITE);
+			    button.setBackgroundColor(Color.parseColor("#107AB3"));
+			    button.setTextColor(Color.WHITE);
 
 			} else {
-			    cell.setBackgroundColor(Color.WHITE);
-			    cell.setTextColor(Color.BLACK);
+			    button.setBackgroundColor(Color.WHITE);
+			    button.setTextColor(Color.BLACK);
 			}
 
 		    }

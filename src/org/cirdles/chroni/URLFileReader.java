@@ -262,8 +262,6 @@ public class URLFileReader{
 		}
 		
 	}
-
-	
 	
 	// The accessors and mutators of the outer class
 	

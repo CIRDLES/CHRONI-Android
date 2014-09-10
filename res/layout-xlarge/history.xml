@@ -12,8 +12,10 @@
         android:layout_height="870dp"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="125dp"
-        android:layout_marginTop="490dp"
-        android:orientation="vertical" >
+        android:layout_marginTop="675dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="525dp"
+        android:layout_marginRight="525dp">
 
         <ScrollView
             android:id="@+id/tableScroll"

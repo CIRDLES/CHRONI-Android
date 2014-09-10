@@ -2,6 +2,8 @@ package org.cirdles.chroni;
 
 import java.io.File;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class ReportSettingsMenuActivity extends Activity {
     private Button reportSettingsFileSelectButton, reportSettingsOpenButton,
@@ -91,17 +94,40 @@ public class ReportSettingsMenuActivity extends Activity {
 	reportSettingsUrlButton.setText("Download");
 	reportSettingsUrlButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
+            // Checks internet connection before downloading files
+            ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+            if (mWifi.isConnected()) {
 		if (reportSettingsUrlText.getText().length() != 0) {
 		    reportSettingsUrl = reportSettingsUrlText.getText()
 			    .toString().trim();
 
 		    // Downloads Report Settings file from URL
 		    URLFileReader downloader = new URLFileReader(ReportSettingsMenuActivity.this,   "ReportSettingsMenu", reportSettingsUrl, "url");
-		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+
+
+            Thread timer = new Thread() {
+                public void run() {
+                    try {
+                        sleep(2500); // gives file download three seconds to complete
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+
+            Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
 		    setAbsoluteFileName(reportSettingsDirectory + "/" + createFileName("url", reportSettingsUrl) + ".xml");
 		    openMainMenu.putExtra("ReportSettingsXML", getAbsoluteFileName());
 		    startActivity(openMainMenu);
-		}
+                    }
+                }
+            };
+            timer.start();
+        	}
+            }else{
+                //Handles lack of wifi connection
+                Toast.makeText(ReportSettingsMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
+            }
 	    }
 	});
     }

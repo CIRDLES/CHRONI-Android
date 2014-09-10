@@ -3,6 +3,8 @@ package org.cirdles.chroni;
 import java.io.File;
 import java.util.ArrayList;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -110,32 +112,40 @@ public class AliquotMenuActivity extends Activity {
 	aliquotIGSNSubmitButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
 	aliquotIGSNSubmitButton.setText("Download");
 	aliquotIGSNSubmitButton.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) { 	
+	    public void onClick(View v) {
+            // Checks internet connection before downloading files
+            ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+            if (mWifi.isConnected()) {
 		if (aliquotIGSNText.getText().length() != 0) {
-		    aliquotIGSN = aliquotIGSNText.getText().toString().toUpperCase().trim();
-		    // Downloads Aliquot file
-		    final String aliquotURL = makeURI(BASE_ALIQUOT_URI, aliquotIGSN);
-		    URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
-			
-			Thread timer = new Thread() {
-			    public void run() {
-				try {
-				    sleep(3000); // gives file download three seconds to complete
-				} catch (InterruptedException e) {
-				    e.printStackTrace();
-				} finally {
-					Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-				    setAbsoluteFileName(aliquotDirectory + "/" + aliquotIGSN + ".xml");
-				    	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
-				    	startActivity(openMainMenu);
-				}
-			    }
-			};
-			timer.start();
-				    	
-				    	
-			    }
-		} // closes if
+            aliquotIGSN = aliquotIGSNText.getText().toString().toUpperCase().trim();
+            // Downloads Aliquot file
+            final String aliquotURL = makeURI(BASE_ALIQUOT_URI, aliquotIGSN);
+            URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
+
+            Thread timer = new Thread() {
+                public void run() {
+                    try {
+                        sleep(2500); // gives file download three seconds to complete
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+                        setAbsoluteFileName(aliquotDirectory + "/" + aliquotIGSN + ".xml");
+                        openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
+                        startActivity(openMainMenu);
+                    }
+                }
+            };
+            timer.start();
+        	}
+		}else{
+                //Handles lack of wifi connection
+                Toast.makeText(AliquotMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
+            }
+        }
+
 	    });
 	
 	// Information about Aliquot URL
@@ -145,6 +155,11 @@ public class AliquotMenuActivity extends Activity {
 	aliquotURLButton.setText("Download");
 	aliquotURLButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
+            // Checks internet connection before downloading files
+            ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+            if (mWifi.isConnected()) {
 		if (aliquotURLText.getText().length() != 0) {
 		    aliquotURL = aliquotURLText.getText().toString().trim();
 		    // Downloads Aliquot file from URL
@@ -155,7 +170,7 @@ public class AliquotMenuActivity extends Activity {
 			Thread timer = new Thread() {
 			    public void run() {
 				try {
-				    sleep(3000); // gives file download three seconds to complete
+				    sleep(2500); // gives file download three seconds to complete
 				} catch (InterruptedException e) {
 				    e.printStackTrace();
 				} finally {
@@ -170,6 +185,10 @@ public class AliquotMenuActivity extends Activity {
 			timer.start();
 				
 				}
+            }else{
+                //Handles lack of wifi connection
+                Toast.makeText(AliquotMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
+            }
 		}
 	    });
     }

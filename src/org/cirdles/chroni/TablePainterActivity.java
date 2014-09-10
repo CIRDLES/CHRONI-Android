@@ -2,9 +2,11 @@ package org.cirdles.chroni;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -29,10 +31,11 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
+import android.widget.Toast;
 
 public class TablePainterActivity extends Activity {
 
-	private Button changeReportSettingsButton, viewConcordiaButton, viewProbabilityDensityButton; // display layout buttons
+	private Button changeReportSettingsButton, viewConcordiaButton, viewProbabilityDensityButton, saveAliquotButton; // display layout buttons
 	
     private static String concordiaUrl, probabilityDensityUrl; // urls to neccessary images
 
@@ -48,6 +51,8 @@ public class TablePainterActivity extends Activity {
 
     private TextView testText;
     private String test;
+
+    private CirdlesDatabaseHelper entryHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,7 +86,7 @@ public class TablePainterActivity extends Activity {
 	fractionMap = (TreeMap<String, Fraction>)maps.getFractionMap();
 	imageMap = (TreeMap<String, Image>)maps.getImageMap();
 	
-	String aliquot = AP.getAliquotName();
+	final String aliquot = AP.getAliquotName();
 
 	// fills the arrays
 	String[][] reportSettingsArray = fillReportSettingsArray(
@@ -112,6 +117,7 @@ public class TablePainterActivity extends Activity {
 	LinearLayout buttonTableLayout = (LinearLayout) findViewById(R.id.displayLayout); // layout handle needed for buttons
 	TableRow buttonRow = (TableRow) findViewById(R.id.buttonRow);
 	buttonRow.setGravity(Gravity.CENTER);
+//    buttonRow.setBackgroundColor(Color.GRAY);
 	
 	// Creates the Report Settings button
 	changeReportSettingsButton = new Button(this);
@@ -129,6 +135,27 @@ public class TablePainterActivity extends Activity {
     	startActivity(openReportSettingsMenu);
     }
 	});
+
+        entryHelper = new CirdlesDatabaseHelper(this);
+
+        // Creates the history button
+        saveAliquotButton = new Button(this);
+        saveAliquotButton.setTextColor(Color.WHITE);
+        saveAliquotButton.setTextSize((float) 15);
+        saveAliquotButton.setText("Save");
+        saveAliquotButton.setPadding(15,15,15,15);
+        saveAliquotButton.setGravity(Gravity.CENTER);
+        saveAliquotButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+        saveAliquotButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        buttonRow.addView(saveAliquotButton);
+        saveAliquotButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                entryHelper.createEntry(getCurrentTime(), aliquot);
+                Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
+                saveAliquotButton.setClickable(false);
+                saveAliquotButton.setText("Saved!");
+            }
+        });
 
 	// Determines whether or not to add additional buttons for images
     imageArray = retrieveImages(imageMap);
@@ -248,7 +275,7 @@ public class TablePainterActivity extends Activity {
 		    } else {
 			// category name doesn't exist in contents arraylist
 			cell.setText(finalArray[i][j]);
-			cell.setVisibility(1);
+			cell.setVisibility(View.VISIBLE);
 			contents.add(finalArray[i][j]);
 		    }
 		} else {
@@ -557,6 +584,17 @@ public class TablePainterActivity extends Activity {
 	    ArrayList<String> outputVariableName) {
 	TablePainterActivity.outputVariableName = outputVariableName;
     }
+
+    /*
+ * This method gets the current time.
+ */
+    public String getCurrentTime(){
+        java.text.DateFormat dateFormat = new SimpleDateFormat("KK:mm a MM/dd/yy");
+        Date date = new Date();
+        String time = dateFormat.format(date);
+        return time;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
