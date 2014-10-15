@@ -25,7 +25,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -52,7 +51,7 @@ public class TablePainterActivity extends Activity {
     private TextView testText;
     private String test;
 
-    private CirdlesDatabaseHelper entryHelper;
+    private CHRONIDatabaseHelper entryHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,6 +112,11 @@ public class TablePainterActivity extends Activity {
 	// TextView aliquotName = new TextView(this);
 	ArrayList<String> contents = new ArrayList<String>();
 
+        // Creates database entry from current entry
+        entryHelper = new CHRONIDatabaseHelper(this);
+        entryHelper.createEntry(getCurrentTime(), aliquotPath, reportSettingsPath);
+        Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
+
 	// Setup to add buttons
 	LinearLayout buttonTableLayout = (LinearLayout) findViewById(R.id.displayLayout); // layout handle needed for buttons
 	TableRow buttonRow = (TableRow) findViewById(R.id.buttonRow);
@@ -135,27 +139,6 @@ public class TablePainterActivity extends Activity {
     	startActivity(openReportSettingsMenu);
     }
 	});
-
-        entryHelper = new CirdlesDatabaseHelper(this);
-
-        // Creates the history button
-        saveAliquotButton = new Button(this);
-        saveAliquotButton.setTextColor(Color.WHITE);
-        saveAliquotButton.setTextSize((float) 15);
-        saveAliquotButton.setText("Save");
-        saveAliquotButton.setPadding(15,15,15,15);
-        saveAliquotButton.setGravity(Gravity.CENTER);
-        saveAliquotButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-        saveAliquotButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        buttonRow.addView(saveAliquotButton);
-        saveAliquotButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                entryHelper.createEntry(getCurrentTime(), aliquot);
-                Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
-                saveAliquotButton.setClickable(false);
-                saveAliquotButton.setText("Saved!");
-            }
-        });
 
 	// Determines whether or not to add additional buttons for images
     imageArray = retrieveImages(imageMap);
@@ -589,7 +572,7 @@ public class TablePainterActivity extends Activity {
  * This method gets the current time.
  */
     public String getCurrentTime(){
-        java.text.DateFormat dateFormat = new SimpleDateFormat("KK:mm a MM/dd/yy");
+        java.text.DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy a KK:mm");
         Date date = new Date();
         String time = dateFormat.format(date);
         return time;

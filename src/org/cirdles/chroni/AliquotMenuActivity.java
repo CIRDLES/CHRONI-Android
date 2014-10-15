@@ -32,10 +32,12 @@ public class AliquotMenuActivity extends Activity {
     private Button aliquotFileSelectButton, aliquotFileSubmitButton,
 	    aliquotIGSNSubmitButton, aliquotURLButton;
     private EditText aliquotFileSelectText, aliquotIGSNText, aliquotURLText;
-    
+
     private String selectedAliquot, aliquotIGSN, aliquotURL, aliquotLocation, aliquot; // the Aliquot values
 	private static String absoluteFileName;
     public static boolean aliquotFound;
+
+    private String[][] finalTable; // the table created from parsing the two files
     private boolean invalidFile = false; // true if file attempted to be downloaded is invalid
     private static boolean privateFile = false;
     private static String geochronUsername, geochronPassword; // the geochron information on file for the user
@@ -59,10 +61,10 @@ public class AliquotMenuActivity extends Activity {
     //Places background image on layout due to theme overriding
     RelativeLayout layout =(RelativeLayout)findViewById(R.id.aliquotSelectBackground);
     layout.setBackground(getResources().getDrawable(R.drawable.background));
-	
+
 	// Directories needed for file locations
-	final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); 
-	final File aliquotDirectory = new File(chroniDirectory, "Aliquot");	
+	final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE);
+	final File aliquotDirectory = new File(chroniDirectory, "Aliquot");
 
 	// Information about Aliquot File
 	aliquotFileSelectButton = (Button) findViewById(R.id.aliquotFileSelectButton);
@@ -87,13 +89,20 @@ public class AliquotMenuActivity extends Activity {
 	aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
 		if (aliquotFileSelectText.getText().length() != 0) {
+//            finalTable = createDisplayTable(getIntent().getStringExtra("AliquotXMLFileName"));
+//            if(!finalTable.equals(null)){
+//                Toast.makeText(AliquotMenuActivity.this, "Final table was created!", Toast.LENGTH_LONG).show();
+//            }else{
+//                Toast.makeText(AliquotMenuActivity.this, "Final table NOT created!", Toast.LENGTH_LONG).show();
+//            }
+
 		    Intent openMainMenu = new Intent(
 			    "android.intent.action.DISPLAY");
 		    openMainMenu.putExtra("AliquotXML", getIntent()
 			    .getStringExtra("AliquotXMLFileName"));
-		    // TableBuilder.setAliquotPath(getIntent().getStringExtra("AliquotXMLFileName"));
-		    // // Sends Aliquot XML path for file parsing
-		    // TableBuilder.buildTable();
+//		    TableBuilder.setAliquotPath(getIntent().getStringExtra("AliquotXMLFileName"));
+		    // Sends Aliquot XML path for file parsing
+//		    TableBuilder.buildTable();
 		    startActivity(openMainMenu);
 		}
 	    }
@@ -108,7 +117,7 @@ public class AliquotMenuActivity extends Activity {
 	}else{
 		aliquotIGSNText.setHint("No profile information stored. Private files disabled.");
 	}
-	
+
 	aliquotIGSNSubmitButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
 	aliquotIGSNSubmitButton.setText("Download");
 	aliquotIGSNSubmitButton.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +156,7 @@ public class AliquotMenuActivity extends Activity {
         }
 
 	    });
-	
+
 	// Information about Aliquot URL
 	aliquotURLText = (EditText) findViewById(R.id.aliquotURLText);
 
@@ -166,7 +175,7 @@ public class AliquotMenuActivity extends Activity {
 		    URLFileReader downloader = new URLFileReader(
 			    AliquotMenuActivity.this, "AliquotMenu",
 			    aliquotURL, "url");
-		    
+
 			Thread timer = new Thread() {
 			    public void run() {
 				try {
@@ -174,16 +183,16 @@ public class AliquotMenuActivity extends Activity {
 				} catch (InterruptedException e) {
 				    e.printStackTrace();
 				} finally {
-		    
+
 		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
 		    setAbsoluteFileName(aliquotDirectory + "/" + createFileName("url", aliquotURL) + ".xml");
 		   	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
-		   	startActivity(openMainMenu);		
+		   	startActivity(openMainMenu);
 				}
 			    }
 			};
 			timer.start();
-				
+
 				}
             }else{
                 //Handles lack of wifi connection
@@ -192,6 +201,26 @@ public class AliquotMenuActivity extends Activity {
 		}
 	    });
     }
+
+    /*
+    Parses the aliquot and report settings files to get the info for the display table
+     */
+//    private String[][] createDisplayTable(String aliquotPath) {
+//        // Directories needed to place files in accurate locations
+//        File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
+//        File aliquotDirectory = new File(chroniDirectory, "Aliquot");
+//        File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
+//
+//        String reportSettingsPath = String.valueOf(new File(chroniDirectory, "Report Settings")) + "/Default Report Settings.xml"; // sets default Report Settings XML
+//        if (getIntent().getStringExtra("ReportSettingsXML") != null) {
+//            reportSettingsPath = getIntent().getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
+//        }
+//
+//        // Creates the display table
+//        TableBuilder tableBuilder = new TableBuilder(reportSettingsPath, aliquotPath);
+//        String[][] finalTable = tableBuilder.buildTable();
+//        return finalTable;
+//    }
 
     /*
 	 * Creates file name based on the file's type and URL

@@ -9,18 +9,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 /*
  * This class defines the functionality behind the database.
  */
-public class CirdlesDatabaseHelper extends SQLiteOpenHelper {
+public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
 	public static final String KEY_ROWID = "_id";	// keeps track of row count
 	public static final String KEY_DATE = "_date";
-	public static final String KEY_NAME = "aliquot_name";
-	
-	private static final String DATABASE_NAME = "MyCIRDLESDB";	// name of database
+	public static final String ALIQUOT_NAME = "aliquot_name";
+    public static final String REPORT_SETTINGS_NAME = "report_settings_name";
+
+    private static final String DATABASE_NAME = "MyCHRONIDB";	// name of database
 	private static final String DATABASE_TABLE = "viewedAliquotTable";	// name of table used
 	private static final int DATABASE_VERSION = 1;
 
 	private int rowNumber = 1;
 	
-	public CirdlesDatabaseHelper(Context context) {
+	public CHRONIDatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
@@ -34,8 +35,9 @@ public class CirdlesDatabaseHelper extends SQLiteOpenHelper {
 		// Creates table and adds appropriate rows
 		db.execSQL("CREATE TABLE " + DATABASE_TABLE + " (" + 
 				KEY_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
-				KEY_DATE + " TEXT NOT NULL, " + 
-				KEY_NAME + " TEXT NOT NULL);"				
+				KEY_DATE + " TEXT NOT NULL, " +
+                        ALIQUOT_NAME + " TEXT NOT NULL, " +
+                        REPORT_SETTINGS_NAME + " TEXT NOT NULL);"
 		);
 	}
 	
@@ -53,14 +55,15 @@ public class CirdlesDatabaseHelper extends SQLiteOpenHelper {
 	 * Method that will create an entry in the database.
 	 * @params the column values that will be added in the database
 	 */
-	public void createEntry(String date, String tableName){
+	public void createEntry(String date, String aliquotName, String reportSettingsName){
 		SQLiteDatabase db = this.getWritableDatabase();
 		
 		ContentValues cv = new ContentValues();
 		cv.put(KEY_DATE, date);
-		cv.put(KEY_NAME, tableName);
-		
-		db.insert(DATABASE_TABLE, null, cv);
+		cv.put(ALIQUOT_NAME, aliquotName);
+        cv.put(REPORT_SETTINGS_NAME, reportSettingsName);
+
+        db.insert(DATABASE_TABLE, null, cv);
 		db.close();
 	}
 
@@ -72,8 +75,8 @@ public class CirdlesDatabaseHelper extends SQLiteOpenHelper {
 		boolean present = false;
 		SQLiteDatabase db = this.getReadableDatabase();
 		
-		String[] columns = new String[]{KEY_ROWID, KEY_DATE, KEY_NAME}; //column names
-		Cursor c = db.query(DATABASE_TABLE, columns, KEY_NAME + " = '" + aliquotName + "'", null, null, null, null);
+		String[] columns = new String[]{KEY_ROWID, KEY_DATE, ALIQUOT_NAME, REPORT_SETTINGS_NAME}; //column names
+		Cursor c = db.query(DATABASE_TABLE, columns, ALIQUOT_NAME + " = '" + aliquotName + "'", null, null, null, null);
 		
 		if(c.toString().contentEquals(aliquotName)){
 			present = true;
@@ -90,7 +93,7 @@ public class CirdlesDatabaseHelper extends SQLiteOpenHelper {
 //	public String getEquipmentName(String equipmentName){
 //		SQLiteDatabase db = this.getReadableDatabase();
 //		
-//		String[] columns = new String[]{KEY_ROWID, KEY_EQUIPMENT, KEY_NAME, KEY_MALTPIN, KEY_TIME, KEY_COMMENTS, KEY_PICTURE, KEY_URL}; //column names
+//		String[] columns = new String[]{KEY_ROWID, KEY_EQUIPMENT, ALIQUOT_NAME, KEY_MALTPIN, KEY_TIME, KEY_COMMENTS, KEY_PICTURE, KEY_URL}; //column names
 //		Cursor c = db.query(DATABASE_TABLE, columns, KEY_EQUIPMENT + " = '" + equipmentName + "'", null, null, null, null);
 //		String result = "";
 //		
@@ -111,7 +114,7 @@ public class CirdlesDatabaseHelper extends SQLiteOpenHelper {
 //	public String getData(long rowNumber){
 //		SQLiteDatabase db = this.getReadableDatabase();
 //		
-//		String[] columns = new String[]{KEY_ROWID, KEY_DATE, KEY_NAME, KEY_SOURCE}; //column names
+//		String[] columns = new String[]{KEY_ROWID, KEY_DATE, ALIQUOT_NAME, KEY_SOURCE}; //column names
 //		Cursor c = db.query(DATABASE_TABLE, columns, KEY_ROWID + " = " + rowNumber, null, null, null, null);
 //		String result = "";
 //		
@@ -132,7 +135,7 @@ public class CirdlesDatabaseHelper extends SQLiteOpenHelper {
 //	public String getSampleName(String maltPin){
 //		SQLiteDatabase db = this.getReadableDatabase();
 //		
-//		String[] columns = new String[]{KEY_ROWID, KEY_EQUIPMENT, KEY_NAME, KEY_MALTPIN, KEY_TIME, KEY_COMMENTS, KEY_PICTURE, KEY_URL}; //column names
+//		String[] columns = new String[]{KEY_ROWID, KEY_EQUIPMENT, ALIQUOT_NAME, KEY_MALTPIN, KEY_TIME, KEY_COMMENTS, KEY_PICTURE, KEY_URL}; //column names
 //		Cursor c = db.query(DATABASE_TABLE, columns, KEY_MALTPIN + " = '" + maltPin + "'", null, null, null, null);
 //		String result = "";
 //		
@@ -153,14 +156,14 @@ public class CirdlesDatabaseHelper extends SQLiteOpenHelper {
 //	public String getAllData() {
 //		SQLiteDatabase ourDatabase = this.getReadableDatabase();
 //		
-//		String[] columns = new String[]{KEY_ROWID, KEY_EQUIPMENT, KEY_NAME, KEY_MALTPIN, KEY_TIME, KEY_COMMENTS, KEY_PICTURE, KEY_URL}; //column names
+//		String[] columns = new String[]{KEY_ROWID, KEY_EQUIPMENT, ALIQUOT_NAME, KEY_MALTPIN, KEY_TIME, KEY_COMMENTS, KEY_PICTURE, KEY_URL}; //column names
 //		Cursor c = ourDatabase.query(DATABASE_TABLE, columns, null, null, null, null, null);
 //		String result = "";
 //
 //		// Setting up indices for each column
 //		int iRow = c.getColumnIndex(KEY_ROWID);
 //		int iEquipment = c.getColumnIndex(KEY_EQUIPMENT);
-//		int iName = c.getColumnIndex(KEY_NAME);
+//		int iName = c.getColumnIndex(ALIQUOT_NAME);
 //		int iPin = c.getColumnIndex(KEY_MALTPIN);
 //		int iTime = c.getColumnIndex(KEY_TIME);
 //		int iComments = c.getColumnIndex(KEY_COMMENTS);
@@ -185,7 +188,7 @@ public class CirdlesDatabaseHelper extends SQLiteOpenHelper {
 //		
 //		ContentValues cv = new ContentValues();
 //		cv.put(KEY_EQUIPMENT, machine);
-//		cv.put(KEY_NAME, sample);
+//		cv.put(ALIQUOT_NAME, sample);
 //		cv.put(KEY_MALTPIN, pin);
 //		cv.put(KEY_TIME, time);
 //		cv.put(KEY_COMMENTS, comments);
@@ -204,32 +207,39 @@ public class CirdlesDatabaseHelper extends SQLiteOpenHelper {
 	public String[][] fillTableData() {
 		SQLiteDatabase ourDatabase = this.getReadableDatabase();
 
-		String[] columns = new String[]{KEY_ROWID, KEY_DATE, KEY_NAME}; //column names
+		String[] columns = new String[]{KEY_ROWID, KEY_DATE, ALIQUOT_NAME, REPORT_SETTINGS_NAME}; //column names
 		Cursor c = ourDatabase.query(DATABASE_TABLE, columns, null, null, null, null, null);
 		
 		// Setting up indices for each column
 		int iDate = c.getColumnIndex(KEY_DATE);
-		int iName = c.getColumnIndex(KEY_NAME);
-		
-		// Sets us the 2d array	
+		int iAliquot = c.getColumnIndex(ALIQUOT_NAME);
+        int iReportSettings = c.getColumnIndex(REPORT_SETTINGS_NAME);
+
+        // Sets us the 2d array
 		final int ROWS = (int) getTotalEntryCount() + 1; //extra row reserved for header
-		final int COLS = 3;
+		final int COLS = 5;
 		String[][] databaseTable = new String[ROWS][COLS];
 		
 		// Fills in the header row
 		databaseTable[0][0] = "Last Opened";
-		databaseTable[0][1] = "Aliquot File";
-		databaseTable[0][2] = " ";	// empty header for buttons
-		
-		// inserts the data into the 2D array
+		databaseTable[0][1] = "Aliquot";
+        databaseTable[0][2] = "Report Settings";
+        databaseTable[0][3] = "VIEW";	// empty header for buttons
+        databaseTable[0][4] = "DELETE";	// empty header for buttons
+
+        // inserts the data into the 2D array
 		rowNumber = 1;
 		for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()){
 			int columnNumber = 0;
 			databaseTable[rowNumber][columnNumber] = c.getString(iDate);
 			columnNumber++;
-			databaseTable[rowNumber][columnNumber] = c.getString(iName);
+			databaseTable[rowNumber][columnNumber] = c.getString(iAliquot);
 			columnNumber++;
-			databaseTable[rowNumber][columnNumber] = " ";
+            databaseTable[rowNumber][columnNumber] = c.getString(iReportSettings);
+            columnNumber++;
+            databaseTable[rowNumber][columnNumber] = " ";
+            columnNumber++;
+            databaseTable[rowNumber][columnNumber] = " ";
 			rowNumber++;
 		}		
 		c.close();

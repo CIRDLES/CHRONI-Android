@@ -2,7 +2,6 @@ package org.cirdles.chroni;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -26,7 +25,7 @@ public class HomeScreenActivity extends Activity  {
     // Version number
     private TextView versionNumber;
 
-    CirdlesDatabaseHelper trialDatabaseHelper; // Database
+    CHRONIDatabaseHelper trialDatabaseHelper; // Database
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,7 @@ public class HomeScreenActivity extends Activity  {
                     R.color.button_blue));
 
             // Puts demo items in the history database if first launch
-//            trialDatabaseHelper = new CirdlesDatabaseHelper(this);
+//            trialDatabaseHelper = new CHRONIDatabaseHelper(this);
 //            if (isInitialLaunch()) {
 //                trialDatabaseHelper.createEntry("01/11/1111", "Demo Aliquot");
 //            }
@@ -127,31 +126,32 @@ public class HomeScreenActivity extends Activity  {
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if (mWifi.isConnected()) {
-            File defaultReportSettingsDirectory = new File(reportSettingsDirectory, "Default Report Settings");
+        File defaultReportSettingsDirectory = new File(reportSettingsDirectory, "Default Report Settings");
 
-            // Checks to see if the default report settings is present
-            File[] files = reportSettingsDirectory.listFiles(); // Lists files in CHRONI directory
-            for (File f : files) {
-                if (f.getName().contentEquals("Default Report Settings.xml")) {
-                    defaultReportSettingsPresent = true;
-                }
+        // Checks to see if the default report settings is present
+        File[] files = reportSettingsDirectory.listFiles(); // Lists files in CHRONI directory
+        for (File f : files) {
+            if (f.getName().contentEquals("Default Report Settings.xml")) {
+                defaultReportSettingsPresent = true;
             }
+        }
+        if (!defaultReportSettingsPresent) {
 
-            // Downloads the default report setting file if absent
-            if(!defaultReportSettingsPresent){
+            if (mWifi.isConnected()) {
+                // Downloads the default report setting file if absent
                 URLFileReader downloader = new URLFileReader(
                         HomeScreenActivity.this,
                         "HomeScreen",
                         "http://cirdles.org/sites/default/files/Downloads/CIRDLESDefaultReportSettings.xml",
                         "url");
-            }
+                saveInitialLaunch();
 
+            }
             // Notes that files have been downloaded and application has been
             // properly initialized
-            saveInitialLaunch();
-        } else {
+         else {
             Toast.makeText(HomeScreenActivity.this, "Please connect to your local wifi network to download your Default Report Settings file.", Toast.LENGTH_LONG).show();
+        }
         }
     }
 
