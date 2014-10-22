@@ -111,7 +111,7 @@ public class HistoryActivity extends Activity {
                         cell.setTypeface(Typeface.DEFAULT_BOLD);
 
                         if(j != 4){ //TODO: Come back and find a more elegant solution to handle adding multiple buttons
-                        row.addView(cell);}
+                            row.addView(cell);}
                         else if(j==4 && i==0){
                             row.addView(cell);
                         }
@@ -139,39 +139,39 @@ public class HistoryActivity extends Activity {
                             // opened
                             public void onClick(View v) {
 
-				Intent openTableScreen = new Intent("android.intent.action.DISPLAY");
+                                Intent openTableScreen = new Intent("android.intent.action.DISPLAY");
                                 openTableScreen.putExtra("AliquotXML", database[currentRow][currentColumn-2]);
-				startActivity(openTableScreen);
+                                startActivity(openTableScreen);
                             }
                         });
 
                     }
 
-                // adds the delete buttons to the last column
-                if (j == 4 && i != 0) {
-                    Button button = new Button(this);
-                    button.setText("DELETE");
-                    button.setTextColor(Color.WHITE);
-                    button.setTextSize((float)11);
-                    button.setTypeface(Typeface.DEFAULT_BOLD);
-                    button.setGravity(Gravity.CENTER);
-                    button.setHeight(105);
-                    button.setWidth(50);
-                    button.setBackgroundColor(Color.GRAY);
-                    row.addView(button);
+                    // adds the delete buttons to the last column
+                    if (j == 4 && i != 0) {
+                        Button button = new Button(this);
+                        button.setText("DELETE");
+                        button.setTextColor(Color.WHITE);
+                        button.setTextSize((float)11);
+                        button.setTypeface(Typeface.DEFAULT_BOLD);
+                        button.setGravity(Gravity.CENTER);
+                        button.setHeight(105);
+                        button.setWidth(50);
+                        button.setBackgroundColor(Color.GRAY);
+                        row.addView(button);
 
-                    final int currentRow = i;
+                        final int currentRow = i;
 
-                    // adds button functionality
-                    button.setOnClickListener(new View.OnClickListener() {
-                        // When button clicked, it deletes entry
-                        public void onClick(View v) {
-                            myAliquots.deleteEntry(currentRow);
-                        }
-                    });
+                        // adds button functionality
+                        button.setOnClickListener(new View.OnClickListener() {
+                            // When button clicked, it deletes entry
+                            public void onClick(View v) {
+                                myAliquots.deleteEntry(currentRow);
+                            }
+                        });
 
+                    }
                 }
-            }
 
             }
 
