@@ -3,6 +3,7 @@ package org.cirdles.chroni;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -38,6 +39,7 @@ public class HistoryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.history);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 
         //Places background image on layout due to theme overriding
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.historyBackground);

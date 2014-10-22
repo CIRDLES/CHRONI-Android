@@ -26,6 +26,7 @@ import java.util.List;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
@@ -68,8 +69,9 @@ public class FilePickerActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTheme(android.R.style.Theme_Holo);
-		
-		// Set the view to be shown if the list is empty
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+
+        // Set the view to be shown if the list is empty
 		LayoutInflater inflator = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View emptyView = inflator.inflate(R.layout.file_picker_empty_view, null);
 		((ViewGroup)getListView().getParent()).addView(emptyView);

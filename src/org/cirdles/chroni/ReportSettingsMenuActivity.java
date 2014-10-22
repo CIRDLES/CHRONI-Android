@@ -37,7 +37,7 @@ public class ReportSettingsMenuActivity extends Activity {
 	super.onCreate(savedInstanceState);
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.report_settings_select);
-	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 
     // Sets up background
     RelativeLayout layout =(RelativeLayout)findViewById(R.id.reportSettingsBackground);

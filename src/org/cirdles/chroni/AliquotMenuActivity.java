@@ -56,7 +56,7 @@ public class AliquotMenuActivity extends Activity {
 	super.onCreate(savedInstanceState);
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.aliquot_select);
-	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 
     //Places background image on layout due to theme overriding
     RelativeLayout layout =(RelativeLayout)findViewById(R.id.aliquotSelectBackground);

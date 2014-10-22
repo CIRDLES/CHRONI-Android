@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -57,9 +58,10 @@ public class TablePainterActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setTheme(android.R.style.Theme_Holo);
+    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 	setContentView(R.layout.display);
-	
-	// Directories needed to place files in accurate locations
+
+        // Directories needed to place files in accurate locations
 	File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
 	File aliquotDirectory = new File(chroniDirectory, "Aliquot");
 	File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
