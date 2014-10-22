@@ -15,7 +15,8 @@
         android:layout_marginRight="203dp"
         android:ems="10"
         android:minWidth="325dp"
-        android:textColor="@color/white" />
+        android:textColor="@color/black"
+    android:textSize="18sp" />
 
     <Button
         android:id="@+id/aliquotFileSelectButton"
@@ -61,7 +62,8 @@
          android:ems="10"
          android:hint="Select a file from this device"
          android:minWidth="275dp"
-         android:textColor="@color/white" />
+         android:textColor="@color/black"
+         android:textSize="18sp" />
 
      <TextView
          android:id="@+id/TextView02"
@@ -98,7 +100,8 @@
          android:ems="10"
          android:inputType="textUri"
          android:minWidth="430dp"
-         android:textColor="@color/white" >
+         android:textColor="@color/black"
+         android:textSize="18sp">
 
          <requestFocus />
      </EditText>
