@@ -123,7 +123,7 @@
         android:text="Current Report Settings: "
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/black"
-        android:textSize="22sp"
+        android:textSize="18sp"
         android:layout_below="@+id/testText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="67dp" />

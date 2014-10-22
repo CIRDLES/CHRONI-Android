@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/logo_background"
+    android:background="@drawable/background"
     android:id="@+id/userProfileBackground">>
 
     <EditText
@@ -15,7 +15,8 @@
         android:ems="10"
         android:inputType="textPassword"
         android:minWidth="400dip"
-        android:textColor="@color/white" />
+        android:textColor="@color/black"
+        android:textSize="25sp" />
 
     <EditText
         android:id="@+id/geochronUsername"
@@ -29,7 +30,8 @@
         android:hint="Email Address"
         android:inputType="textEmailAddress"
         android:minWidth="400dip"
-        android:textColor="@color/white" />
+        android:textColor="@color/black"
+        android:textSize="25sp" />
 
     <TextView
         android:id="@+id/TextView03"
@@ -126,5 +128,13 @@
         android:text="Erase"
         android:textColor="@color/white"
         android:textSize="35sp" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cirdles_logo"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
