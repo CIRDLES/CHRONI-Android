@@ -2,6 +2,7 @@ package org.cirdles.chroni;
 
 import java.io.File;
 
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -16,17 +17,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ReportSettingsMenuActivity extends Activity {
     private Button reportSettingsFileSelectButton, reportSettingsOpenButton,
 	    reportSettingsUrlButton;
     private EditText reportSettingsFileSelectText, reportSettingsUrlText;
+    private TextView currentReportSettingsFile; // The Name of the current report settings
     private String selectedReportSettings; // name of Report Settings file that
 					   // has been chosen for viewing
     private String reportSettingsUrl; // name of Report Settings URL
     private String absoluteFileName; // path of selected Report Settings file
-    
+
+    private static final String PREF_REPORT_SETTINGS = "Current Report Settings";     // Path of the current report settungs file
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
@@ -41,7 +46,14 @@ public class ReportSettingsMenuActivity extends Activity {
 	// Directories needed for file locations
 	final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); 
 	final File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
-	
+
+    // Provides a label of the name of the current report settings file
+        currentReportSettingsFile = (TextView) findViewById(R.id.currentReportSettingsLabel);
+//        String[] reportSettingLabelContents = retrieveReportSettingsFileName().split("/");
+//        String reportSettingsLabel = reportSettingLabelContents[reportSettingLabelContents.length-1];
+//        currentReportSettingsFile.setText("Current Report Settings: " + reportSettingsLabel);
+        currentReportSettingsFile.setText("Current Report Settings: " + retrieveReportSettingsFileName());
+
 	// Information about Report Settings file
 	reportSettingsFileSelectButton = (Button) findViewById(R.id.reportSettingsFileSelectButton);
 	reportSettingsFileSelectButton
@@ -82,6 +94,7 @@ public class ReportSettingsMenuActivity extends Activity {
 		    // TableBuilder.setReportSettingsPath(getIntent().getStringExtra("ReportSettingsXMLFileName"));
 		    // // Sends Aliquot XML path for file parsing
 		    // TableBuilder.buildTable();
+            saveCurrentReportSettings();
 		    startActivity(openMainMenu);
 		}
 	    }
@@ -118,7 +131,8 @@ public class ReportSettingsMenuActivity extends Activity {
             Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
 		    setAbsoluteFileName(reportSettingsDirectory + "/" + createFileName("url", reportSettingsUrl) + ".xml");
 		    openMainMenu.putExtra("ReportSettingsXML", getAbsoluteFileName());
-		    startActivity(openMainMenu);
+                        saveCurrentReportSettings();
+                        startActivity(openMainMenu);
                     }
                 }
             };
@@ -155,6 +169,24 @@ public class ReportSettingsMenuActivity extends Activity {
 	public void setAbsoluteFileName(String absoluteFileName) {
 		this.absoluteFileName = absoluteFileName;
 	}
+
+ /*
+ * Accesses current report settings file
+ */
+    private String retrieveReportSettingsFileName() {
+        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+        return settings.getString("Current Report Settings", "Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
+    }
+
+  /*
+  * Stores Current Report Settings
+  */
+    protected void saveCurrentReportSettings() {
+        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("Current Report Settings", getIntent().getStringExtra("ReportSettingsXMLFileName")); // gets chosen file from file browser and stores
+        editor.commit(); // Commiting changes
+    }
 
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {

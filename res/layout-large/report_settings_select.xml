@@ -42,37 +42,39 @@
         android:id="@+id/TextView01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView2"
-        android:layout_below="@+id/reportSettingsFileOpenButton"
-        android:layout_marginTop="51dp"
         android:text="URL"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_marginBottom="72dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_alignStart="@+id/textView2" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/testText"
-        android:layout_marginRight="27dp"
-        android:layout_marginTop="48dp"
-        android:layout_toLeftOf="@+id/testText"
         android:text="Device"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_above="@+id/reportSettingsUrlButton"
+        android:layout_toLeftOf="@+id/testText"
+        android:layout_toStartOf="@+id/testText"
+        android:layout_marginBottom="49dp" />
 
     <TextView
         android:id="@+id/testText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView1"
-        android:layout_centerHorizontal="true"
         android:text="Report Settings"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="50sp" />
+        android:textSize="50sp"
+        android:layout_alignBottom="@+id/imageView1"
+        android:layout_alignRight="@+id/imageView1"
+        android:layout_alignEnd="@+id/imageView1" />
 
     <EditText
         android:id="@+id/reportSettingsUrlText"
@@ -83,7 +85,7 @@
         android:layout_alignRight="@+id/testText"
         android:layout_toRightOf="@+id/TextView01"
         android:ems="10"
-        android:textColor="@color/white" >
+        android:textColor="@color/black" >
 
         <requestFocus />
     </EditText>
@@ -110,6 +112,17 @@
         android:layout_toRightOf="@+id/textView2"
         android:ems="10"
         android:hint="Select a file from this device"
-        android:textColor="@color/white" />
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/currentReportSettingsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Current Report Settings: "
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:layout_above="@+id/reportSettingsFileSelectButton"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

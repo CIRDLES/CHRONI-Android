@@ -21,11 +21,12 @@ public class HomeScreenActivity extends Activity  {
 
     // Maintains whether app is initalizing for the first time or not
     private static final String PREF_FIRST_LAUNCH = "First Launch";
+    private static final String PREF_REPORT_SETTINGS = "Current Report Settings";     // Path of the current report settungs file
 
     // Version number
     private TextView versionNumber;
 
-    CHRONIDatabaseHelper trialDatabaseHelper; // Database
+    private CHRONIDatabaseHelper trialDatabaseHelper; // Database
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,10 +107,11 @@ public class HomeScreenActivity extends Activity  {
     protected void createDirectories() throws FileNotFoundException {
         boolean defaultReportSettingsPresent = false; // detemines whether the report settings is present or not
 
-        // Establishes the CIRDLES folder
+        // Establishes the CHRONI folders
         File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
         File aliquotDirectory = new File(chroniDirectory, "Aliquot");
         File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
+        File defaultReportSettingsDirectory = new File(reportSettingsDirectory, "Default Report Settings");
 
         // Creates the directories if they are not there
         if (!chroniDirectory.exists()) {
@@ -125,8 +127,6 @@ public class HomeScreenActivity extends Activity  {
         // Checks internet connection before downloading files
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        File defaultReportSettingsDirectory = new File(reportSettingsDirectory, "Default Report Settings");
 
         // Checks to see if the default report settings is present
         File[] files = reportSettingsDirectory.listFiles(); // Lists files in CHRONI directory
@@ -145,7 +145,7 @@ public class HomeScreenActivity extends Activity  {
                         "http://cirdles.org/sites/default/files/Downloads/CIRDLESDefaultReportSettings.xml",
                         "url");
                 saveInitialLaunch();
-
+                saveCurrentReportSettings();
             }
             // Notes that files have been downloaded and application has been
             // properly initialized
@@ -162,6 +162,21 @@ public class HomeScreenActivity extends Activity  {
         SharedPreferences settings = getSharedPreferences(PREF_FIRST_LAUNCH, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("Initial Launch", false);
+        editor.commit(); // Commiting changes
+    }
+
+    /*
+    * Stores Current Report Settings
+    */
+    protected void saveCurrentReportSettings() {
+        // Establishes the CHRONI folders
+        File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
+        File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
+        File defaultReportSettingsDirectory = new File(reportSettingsDirectory, "Default Report Settings");
+
+        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("Current Report Settings", defaultReportSettingsDirectory.getPath()); // gets chosen file from file browser and stores
         editor.commit(); // Commiting changes
     }
 
