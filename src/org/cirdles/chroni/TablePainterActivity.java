@@ -59,7 +59,7 @@ public class TablePainterActivity extends Activity {
 	super.onCreate(savedInstanceState);
 	setTheme(android.R.style.Theme_Holo);
     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-	setContentView(R.layout.display);
+        setContentView(R.layout.display);
 
         // Directories needed to place files in accurate locations
 	File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
@@ -189,7 +189,12 @@ public class TablePainterActivity extends Activity {
 	ScrollView scrollPane = (ScrollView) findViewById(R.id.scrollPane); // Vertical scrolling for the aliquot portion of the table
 	TableLayout aliquotDataTable = (TableLayout) findViewById(R.id.finalTable); // the aliquot specific info contained here
 
-	// calculates number of rows based on the size of the fraction, five is
+//    // Clears the previous table
+//        for(int currentRow = 0; currentRow < aliquotDataTable.getChildCount(); currentRow++){
+//            aliquotDataTable.removeViewAt(currentRow);
+//            }
+
+        // calculates number of rows based on the size of the fraction, five is
 	// added for the Report Settings rows
 	final int ROWS = 5 + fractionMap.size();
 	int rowCount = 0;
