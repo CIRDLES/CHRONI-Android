@@ -52,7 +52,7 @@ public class ReportSettingsMenuActivity extends Activity {
 //        String[] reportSettingLabelContents = retrieveReportSettingsFileName().split("/");
 //        String reportSettingsLabel = reportSettingLabelContents[reportSettingLabelContents.length-1];
 //        currentReportSettingsFile.setText("Current Report Settings: " + reportSettingsLabel);
-        currentReportSettingsFile.setText("Current Report Settings: " + retrieveReportSettingsFileName());
+        currentReportSettingsFile.setText("Current Report Settings: " + splitReportSettingsName(retrieveReportSettingsFileName()));
 
 	// Information about Report Settings file
 	reportSettingsFileSelectButton = (Button) findViewById(R.id.reportSettingsFileSelectButton);
@@ -176,6 +176,15 @@ public class ReportSettingsMenuActivity extends Activity {
     private String retrieveReportSettingsFileName() {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
         return settings.getString("Current Report Settings", "Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
+    }
+
+    /*
+    Splits report settings file name
+     */
+    private String splitReportSettingsName(String fileName){
+        String[] fileNameParts = fileName.split("/");
+        String reportSettingsName = fileNameParts[fileNameParts.length-1];
+        return reportSettingsName;
     }
 
   /*
