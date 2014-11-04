@@ -328,35 +328,41 @@ public class UserProfileActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-	getMenuInflater().inflate(R.menu.menu, menu);
-	return true;
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-	// Handle item selection
-	switch (item.getItemId()) {
-	case R.id.returnToMenu:
-	    Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-	    startActivity(openMainMenu);
-	    return true;
-	case R.id.editProfileMenu:
-	    Intent openUserProfile = new Intent(
-		    "android.intent.action.USERPROFILE");
-	    startActivity(openUserProfile);
-	    return true;
-	case R.id.helpMenu:
-	    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-		    Uri.parse("http://joyenettles.blogspot.com"));
-	    startActivity(openHelpBlog);
-	    return true;
-	case R.id.exitProgram:
-	    finish();
-	    System.exit(0);
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.returnToMenu:
+                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
+                startActivity(openMainMenu);
+                return true;
+            case R.id.editProfileMenu:
+                Intent openUserProfile = new Intent(
+                        "android.intent.action.USERPROFILE");
+                startActivity(openUserProfile);
+                return true;
+            case R.id.aboutScreen:
+                Intent openAboutScreen = new Intent(
+                        "android.intent.action.ABOUT");
+                startActivity(openAboutScreen);
+                return true;
+            case R.id.helpMenu:
+                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://chronihelpblog.wordpress.com"));
+                startActivity(openHelpBlog);
+                return true;
+            case R.id.exitProgram:
+                finish();
+                System.exit(0);
 
-	default:
-	    return super.onOptionsItemSelected(item);
-	}
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

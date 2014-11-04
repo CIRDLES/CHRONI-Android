@@ -8,6 +8,9 @@
         android:id="@+id/editProfileMenu"
         android:title="Edit Profile"/>
     <item
+        android:id="@+id/aboutScreen"
+        android:title="About"/>
+    <item
         android:id="@+id/helpMenu"
         android:title="Help"/>
     <item

@@ -217,9 +217,14 @@ public class ReportSettingsMenuActivity extends Activity {
 		    "android.intent.action.USERPROFILE");
 	    startActivity(openUserProfile);
 	    return true;
+    case R.id.aboutScreen:
+            Intent openAboutScreen = new Intent(
+                    "android.intent.action.ABOUT");
+            startActivity(openAboutScreen);
+            return true;
 	case R.id.helpMenu:
 	    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-		    Uri.parse("http://joyenettles.blogspot.com"));
+		    Uri.parse("http://chronihelpblog.wordpress.com"));
 	    startActivity(openHelpBlog);
 	    return true;
 	case R.id.exitProgram:

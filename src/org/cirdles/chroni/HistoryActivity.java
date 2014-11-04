@@ -180,6 +180,7 @@ public class HistoryActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
@@ -197,41 +198,19 @@ public class HistoryActivity extends Activity {
                         "android.intent.action.USERPROFILE");
                 startActivity(openUserProfile);
                 return true;
+            case R.id.aboutScreen:
+                Intent openAboutScreen = new Intent(
+                        "android.intent.action.ABOUT");
+                startActivity(openAboutScreen);
+                return true;
             case R.id.helpMenu:
                 Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://joyenettles.blogspot.com"));
+                        Uri.parse("http://chronihelpblog.wordpress.com"));
                 startActivity(openHelpBlog);
                 return true;
             case R.id.exitProgram:
                 finish();
                 System.exit(0);
-
-                // case R.id.deleteFileMenu:
-                // Intent openReportSettingsMenu = new
-                // Intent("android.intent.action.REPORTSETTINGSMENU");
-                // startActivity(openReportSettingsMenu);
-                // return true;
-                // case R.id.renameFileMenu:
-                // Intent openAliquotMenu = new
-                // Intent("android.intent.action.ALIQUOTMENU");
-                // startActivity(openAliquotMenu);
-                // return true;
-                // case R.id.defaultFileMenu:
-                // Intent openAliquotMenu = new
-                // Intent("android.intent.action.ALIQUOTMENU");
-                // startActivity(openAliquotMenu);
-                // return true;
-
-                // case R.id.selectAliquotMenu:
-                // Intent openAliquotMenu = new
-                // Intent("android.intent.action.ALIQUOTMENU");
-                // startActivity(openAliquotMenu);
-                // return true;
-                // case R.id.selectReportSettingsMenu:
-                // Intent openReportSettingsMenu = new
-                // Intent("android.intent.action.REPORTSETTINGSMENU");
-                // startActivity(openReportSettingsMenu);
-                // return true;
 
             default:
                 return super.onOptionsItemSelected(item);
