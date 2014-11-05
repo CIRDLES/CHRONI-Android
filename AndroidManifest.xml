@@ -100,6 +100,15 @@
         </activity>
 
         <activity
+            android:name="org.cirdles.chroni.ViewAnalysisImageActivity"
+            android:screenOrientation="sensorPortrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEWANALYSISIMAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name="org.cirdles.chroni.AboutActivity"
             android:screenOrientation="sensorPortrait"
             android:noHistory="true">

@@ -158,7 +158,9 @@ public class TablePainterActivity extends Activity {
 		viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
 			    public void onClick(View v) {
 				    Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageArray[0].getImageURL()));
-				    startActivity(viewConcordiaIntent);
+//                    Intent viewConcordiaIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
+                    viewConcordiaIntent.putExtra("ConcordiaImage", imageArray[0].getImageURL());
+                    startActivity(viewConcordiaIntent);
 			    }
 			});
     }
@@ -176,7 +178,9 @@ public class TablePainterActivity extends Activity {
 		viewProbabilityDensityButton.setOnClickListener(new View.OnClickListener() {
 			    public void onClick(View v) {
 				    Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageArray[1].getImageURL()));
-				    startActivity(viewProbabilityDensityIntent);
+//                    Intent viewProbabilityDensityIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
+//                    viewProbabilityDensityIntent.putExtra("ProbabilityDensityImage", imageArray[1].getImageURL());
+                    startActivity(viewProbabilityDensityIntent);
 			    }
 			});
     }
