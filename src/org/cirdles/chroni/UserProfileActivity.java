@@ -4,18 +4,10 @@ package org.cirdles.chroni;
  * This class is used to collect the information from a new user.
  */
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.util.Random;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,7 +29,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,7 +38,6 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 public class UserProfileActivity extends Activity {
 
@@ -131,7 +121,7 @@ public class UserProfileActivity extends Activity {
         }
 	});
 
-	profileMenuButton = (Button) findViewById(R.id.profileMenuButton);
+	profileMenuButton = (Button) findViewById(R.id.aboutHomeButton);
 	profileMenuButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
 		Intent openMainMenu = new Intent(
@@ -372,6 +362,20 @@ public class UserProfileActivity extends Activity {
                         "android.intent.action.USERPROFILE");
                 startActivity(openUserProfile);
                 return true;
+            case R.id.viewAliquotsMenu:
+                Intent openAliquotFiles = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openAliquotFiles.putExtra("Default_Directory",
+                        "Aliquot");
+                startActivity(openAliquotFiles);
+                return true;
+            case R.id.viewReportSettingsMenu:
+                Intent openReportSettingsFiles = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openReportSettingsFiles.putExtra("Default_Directory",
+                        "Report Settings");
+                startActivity(openReportSettingsFiles);
+                return true;
             case R.id.aboutScreen:
                 Intent openAboutScreen = new Intent(
                         "android.intent.action.ABOUT");
@@ -385,7 +389,7 @@ public class UserProfileActivity extends Activity {
             case R.id.exitProgram:
                 finish();
                 System.exit(0);
-
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

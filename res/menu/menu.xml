@@ -7,6 +7,18 @@
     <item
         android:id="@+id/editProfileMenu"
         android:title="Edit Profile"/>
+    
+    <item android:id="@+id/viewFilesMenu"
+        android:title="View Files" >
+        <!-- "View Files" submenu -->
+        <menu>
+            <item android:id="@+id/viewAliquotsMenu"
+                android:title="Aliquot Files" />
+            <item android:id="@+id/viewReportSettingsMenu"
+                android:title="Report Settings Files" />
+        </menu>
+    </item>
+
     <item
         android:id="@+id/aboutScreen"
         android:title="About"/>

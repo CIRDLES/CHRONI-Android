@@ -200,6 +200,20 @@ public class HistoryActivity extends Activity {
                         "android.intent.action.USERPROFILE");
                 startActivity(openUserProfile);
                 return true;
+            case R.id.viewAliquotsMenu:
+                Intent openAliquotFiles = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openAliquotFiles.putExtra("Default_Directory",
+                        "Aliquot");
+                startActivity(openAliquotFiles);
+                return true;
+            case R.id.viewReportSettingsMenu:
+                Intent openReportSettingsFiles = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openReportSettingsFiles.putExtra("Default_Directory",
+                        "Report Settings");
+                startActivity(openReportSettingsFiles);
+                return true;
             case R.id.aboutScreen:
                 Intent openAboutScreen = new Intent(
                         "android.intent.action.ABOUT");
@@ -213,7 +227,7 @@ public class HistoryActivity extends Activity {
             case R.id.exitProgram:
                 finish();
                 System.exit(0);
-
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

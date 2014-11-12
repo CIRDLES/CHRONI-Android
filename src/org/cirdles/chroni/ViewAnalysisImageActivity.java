@@ -6,6 +6,7 @@ package org.cirdles.chroni;
         import java.io.InputStream;
         import java.net.URL;
 
+        import android.content.Intent;
         import android.content.pm.ActivityInfo;
         import android.net.Uri;
         import android.os.AsyncTask;
@@ -14,6 +15,8 @@ package org.cirdles.chroni;
         import android.app.ProgressDialog;
         import android.graphics.Bitmap;
         import android.graphics.BitmapFactory;
+        import android.view.Menu;
+        import android.view.MenuItem;
         import android.view.View;
         import android.widget.Button;
         import android.widget.ImageView;
@@ -83,4 +86,58 @@ public class ViewAnalysisImageActivity extends Activity {
             }
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.returnToMenu:
+                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
+                startActivity(openMainMenu);
+                return true;
+            case R.id.editProfileMenu:
+                Intent openUserProfile = new Intent(
+                        "android.intent.action.USERPROFILE");
+                startActivity(openUserProfile);
+                return true;
+            case R.id.viewAliquotsMenu:
+                Intent openAliquotFiles = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openAliquotFiles.putExtra("Default_Directory",
+                        "Aliquot");
+                startActivity(openAliquotFiles);
+                return true;
+            case R.id.viewReportSettingsMenu:
+                Intent openReportSettingsFiles = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openReportSettingsFiles.putExtra("Default_Directory",
+                        "Report Settings");
+                startActivity(openReportSettingsFiles);
+                return true;
+            case R.id.aboutScreen:
+                Intent openAboutScreen = new Intent(
+                        "android.intent.action.ABOUT");
+                startActivity(openAboutScreen);
+                return true;
+            case R.id.helpMenu:
+                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://chronihelpblog.wordpress.com"));
+                startActivity(openHelpBlog);
+                return true;
+            case R.id.exitProgram:
+                finish();
+                System.exit(0);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/TextView02"
         android:layout_alignBottom="@+id/TextView02"
-        android:layout_alignRight="@+id/profileMenuButton"
+        android:layout_alignRight="@+id/aboutHomeButton"
         android:ems="10"
         android:hint="Email Address"
         android:inputType="textEmailAddress"
@@ -80,7 +80,7 @@
         android:textSize="25sp" />
 
     <Button
-        android:id="@+id/profileMenuButton"
+        android:id="@+id/aboutHomeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/profileValidateButton"

@@ -622,7 +622,6 @@ public class TablePainterActivity extends Activity {
         return time;
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -643,6 +642,20 @@ public class TablePainterActivity extends Activity {
                         "android.intent.action.USERPROFILE");
                 startActivity(openUserProfile);
                 return true;
+            case R.id.viewAliquotsMenu:
+                Intent openAliquotFiles = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openAliquotFiles.putExtra("Default_Directory",
+                        "Aliquot");
+                startActivity(openAliquotFiles);
+                return true;
+            case R.id.viewReportSettingsMenu:
+                Intent openReportSettingsFiles = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openReportSettingsFiles.putExtra("Default_Directory",
+                        "Report Settings");
+                startActivity(openReportSettingsFiles);
+                return true;
             case R.id.aboutScreen:
                 Intent openAboutScreen = new Intent(
                         "android.intent.action.ABOUT");
@@ -656,7 +669,7 @@ public class TablePainterActivity extends Activity {
             case R.id.exitProgram:
                 finish();
                 System.exit(0);
-
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
