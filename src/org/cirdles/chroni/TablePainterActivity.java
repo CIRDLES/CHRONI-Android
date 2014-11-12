@@ -17,6 +17,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -144,7 +146,7 @@ public class TablePainterActivity extends Activity {
 
 	// Determines whether or not to add additional buttons for images
     imageArray = retrieveImages(imageMap);
-	
+
     if((imageArray[0] != null) && !(imageArray[0].getImageURL().length()==0)){
 		viewConcordiaButton = new Button(this);
 		viewConcordiaButton.setTextColor(Color.WHITE);
@@ -157,10 +159,20 @@ public class TablePainterActivity extends Activity {
 		buttonRow.addView(viewConcordiaButton);
 		viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
 			    public void onClick(View v) {
-				    Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageArray[0].getImageURL()));
+                    // Checks internet connection before getting images
+                    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                    if (mobileWifi.isConnected()) {
+                        Toast.makeText(TablePainterActivity.this, "Opening Concordia Image...", Toast.LENGTH_LONG).show();
+                        Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageArray[0].getImageURL()));
 //                    Intent viewConcordiaIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
-                    viewConcordiaIntent.putExtra("ConcordiaImage", imageArray[0].getImageURL());
-                    startActivity(viewConcordiaIntent);
+                        viewConcordiaIntent.putExtra("ConcordiaImage", imageArray[0].getImageURL());
+                        startActivity(viewConcordiaIntent);
+                    }else{
+                        //Handles lack of wifi connection
+                        Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
+                    }
 			    }
 			});
     }
@@ -177,11 +189,21 @@ public class TablePainterActivity extends Activity {
 		buttonRow.addView(viewProbabilityDensityButton);
 		viewProbabilityDensityButton.setOnClickListener(new View.OnClickListener() {
 			    public void onClick(View v) {
-				    Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageArray[1].getImageURL()));
+                    // Checks internet connection before getting images
+                    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                    if (mobileWifi.isConnected()) {
+                    Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
+                    Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageArray[1].getImageURL()));
 //                    Intent viewProbabilityDensityIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
 //                    viewProbabilityDensityIntent.putExtra("ProbabilityDensityImage", imageArray[1].getImageURL());
                     startActivity(viewProbabilityDensityIntent);
-			    }
+			    }else{
+                        //Handles lack of wifi connection
+                        Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
+                    }
+                }
 			});
     }
 	

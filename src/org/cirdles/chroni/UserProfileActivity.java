@@ -125,7 +125,7 @@ public class UserProfileActivity extends Activity {
                     }
                 } else {
                     //Handles lack of wifi connection
-                    Toast.makeText(UserProfileActivity.this, "Please check your internet connection before attempting to vaidate.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(UserProfileActivity.this, "Please check your internet connection before attempting to validate.", Toast.LENGTH_LONG).show();
                 }
             }
         }
