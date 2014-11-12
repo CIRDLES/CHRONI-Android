@@ -128,7 +128,6 @@ public class AliquotMenuActivity extends Activity {
             final String aliquotURL = makeURI(BASE_ALIQUOT_URI, aliquotIGSN);
             Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show();
             URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
-//            Toast.makeText(AliquotMenuActivity.this, "File downloaded!", Toast.LENGTH_LONG).show();
 
             setAbsoluteFileName(aliquotDirectory + "/" + aliquotIGSN + ".xml");
 //            Thread timer = new Thread() {
@@ -174,25 +173,7 @@ public class AliquotMenuActivity extends Activity {
             URLFileReader downloader = new URLFileReader(
 			    AliquotMenuActivity.this, "AliquotMenu",
 			    aliquotURL, "url");
-
-			Thread timer = new Thread() {
-			    public void run() {
-				try {
-				    sleep(3500); // gives file download three seconds to complete
-				} catch (InterruptedException e) {
-				    e.printStackTrace();
-				} finally {
-//		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
 		    setAbsoluteFileName(aliquotDirectory + "/" + createFileName("url", aliquotURL) + ".xml");
-//		   	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
-//		   	startActivity(openMainMenu);
-				}
-
-			    }
-			};
-//			timer.start();
-//            Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
-
 				}
             }else{
                 //Handles lack of wifi connection

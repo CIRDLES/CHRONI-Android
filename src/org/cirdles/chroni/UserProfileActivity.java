@@ -102,14 +102,14 @@ public class UserProfileActivity extends Activity {
                 editor.commit();
 
                 // Provides feedback that credentials have been saved
-                Toast.makeText(UserProfileActivity.this, "Your Geochron Profile information is saved!", Toast.LENGTH_LONG).show();
+                Toast.makeText(UserProfileActivity.this, "Your Geochron Profile information is saved!", Toast.LENGTH_SHORT).show();
 
                 // Checks internet connection before getting credential input
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
                 if (mobileWifi.isConnected()) {
                     // Attempts to validate GeoChron credentials if input is stored
-                    Toast.makeText(UserProfileActivity.this, "Validating Credentials...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(UserProfileActivity.this, "Validating Credentials...", Toast.LENGTH_SHORT).show();
                     retrieveCredentials(); // Fetches the credentials
 
                     if (!getGeochronUsername().contentEquals("None") && !getGeochronPassword().contentEquals("None")) {

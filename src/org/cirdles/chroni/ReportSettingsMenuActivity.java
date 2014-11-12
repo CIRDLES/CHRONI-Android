@@ -121,26 +121,8 @@ public class ReportSettingsMenuActivity extends Activity {
 
                         URLFileReader downloader = new URLFileReader(ReportSettingsMenuActivity.this,   "ReportSettingsMenu", reportSettingsUrl, "url");
 
-
-//                        Thread timer = new Thread() {
-//                            public void run() {
-//                                try {
-//                                    sleep(2500); // gives file download three seconds to complete
-//                                } catch (InterruptedException e) {
-//                                    e.printStackTrace();
-//                                } finally {
-                                    Toast.makeText(ReportSettingsMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
                                     setAbsoluteFileName(reportSettingsDirectory + "/" + createFileName("url", reportSettingsUrl) + ".xml");
                                     saveCurrentReportSettings();
-//                                    Toast.makeText(ReportSettingsMenuActivity.this, getAbsoluteFileName(), Toast.LENGTH_LONG).show();
-
-                                    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-                                    openMainMenu.putExtra("ReportSettingsXML", getAbsoluteFileName());
-                                    startActivity(openMainMenu);
-//                                }
-//                            }
-//                        };
-//                        timer.start();
                     }
                 }else{
                     //Handles lack of wifi connection

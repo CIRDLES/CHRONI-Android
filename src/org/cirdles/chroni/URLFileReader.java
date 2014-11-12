@@ -157,7 +157,6 @@ public class URLFileReader{
 	    	File aliquotDirectory = new File(chroniDirectory, "Aliquot");
 	    	File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
 
-
 			// take CPU lock to prevent CPU from going off if the user
 			// presses the power button during download
 			PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -184,7 +183,7 @@ public class URLFileReader{
 					// download the file to the appropriate location
 					input = connection.getInputStream();
 					if(fileType.contains("Aliquot")){
-						if(fileLength <= 55){ // Cancels if invalid IGSN file (if file has a length of 0.05 KB)
+						if(fileLength == 55){ // Cancels if invalid IGSN file (if file has a length of 0.05 KB)
 							AliquotMenuActivity.setInvalidFile(true);	// Sets file as invalid
 							cancel(true);
 						}else{
@@ -253,14 +252,28 @@ public class URLFileReader{
 
 		@Override
 		protected void onPostExecute(String result) {
-            boolean erroneousFile = parseFileForError(downloadedFilePath);
-            if (result != null || erroneousFile) {
-                Toast.makeText(context, "Download error: " + "You have specified a private IGSN", Toast.LENGTH_LONG).show();
-                File fileToRemove = new File(downloadedFilePath);
-                fileToRemove.delete();
-            } else {
-                Toast.makeText(context, "File downloaded!", Toast.LENGTH_SHORT).show();
+            boolean erroneousFile = false;
+            if(String.valueOf(classContext).contains("AliquotMenuActivity")){
+                // Figures out if aliquot file is erroneous
+                erroneousFile = parseAliquotFileForError(downloadedFilePath);
+                if (result != null || erroneousFile) {
+                    Toast.makeText(context, "Download error: " + "You have specified a private IGSN", Toast.LENGTH_LONG).show();
+                    File fileToRemove = new File(downloadedFilePath);
+                    fileToRemove.delete();
+                } else {
+                    Toast.makeText(context, "File downloaded!", Toast.LENGTH_SHORT).show();
+                }
+            }else if(String.valueOf(classContext).contains("ReportSettingsMenuActivity")){
+                erroneousFile = parseReportSettingsFileForError(downloadedFilePath);
+                if (result != null || erroneousFile) {
+                    Toast.makeText(context, "Download error: " + "You have specified an invalid Report Settings file", Toast.LENGTH_LONG).show();
+                    File fileToRemove = new File(downloadedFilePath);
+                    fileToRemove.delete();
+                } else {
+                    Toast.makeText(context, "File downloaded!", Toast.LENGTH_SHORT).show();
+                }
             }
+
         }
 		
 		@Override
@@ -286,7 +299,7 @@ public class URLFileReader{
         /*
         Parses file for error
          */
-        protected boolean parseFileForError(String downloadedFilePath){
+        protected boolean parseAliquotFileForError(String downloadedFilePath){
             boolean erroneousFile = false;
             try {
                 // Begins the parsing of the file
@@ -311,6 +324,31 @@ public class URLFileReader{
                 return erroneousFile;
         }
 	}
+
+    /*
+        Parses file for error
+         */
+    protected boolean parseReportSettingsFileForError(String downloadedFilePath){
+        boolean erroneousFile = false;
+        try {
+            // Begins the parsing of the file
+            File fXmlFile = new File(downloadedFilePath);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            DomParser parser = new DomParser();
+            Document doc = dBuilder.parse(fXmlFile);
+
+            // Get the document's root XML nodes to see if file contains an error
+            NodeList root = doc.getChildNodes();
+            if(parser.getNode("ReportSettings", root) == null) {
+                erroneousFile = true;
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return erroneousFile;
+    }
 
 
 	// The accessors and mutators of the outer class
