@@ -117,7 +117,9 @@ public class ReportSettingsMenuActivity extends Activity {
 			    .toString().trim();
 
 		    // Downloads Report Settings file from URL
-		    URLFileReader downloader = new URLFileReader(ReportSettingsMenuActivity.this,   "ReportSettingsMenu", reportSettingsUrl, "url");
+            Toast.makeText(ReportSettingsMenuActivity.this, "Downloading Report Settings...", Toast.LENGTH_LONG).show();
+
+            URLFileReader downloader = new URLFileReader(ReportSettingsMenuActivity.this,   "ReportSettingsMenu", reportSettingsUrl, "url");
 
 
             Thread timer = new Thread() {
@@ -127,7 +129,7 @@ public class ReportSettingsMenuActivity extends Activity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } finally {
-
+                        Toast.makeText(ReportSettingsMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
             Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
 		    setAbsoluteFileName(reportSettingsDirectory + "/" + createFileName("url", reportSettingsUrl) + ".xml");
 		    openMainMenu.putExtra("ReportSettingsXML", getAbsoluteFileName());

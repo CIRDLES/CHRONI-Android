@@ -89,13 +89,7 @@ public class AliquotMenuActivity extends Activity {
 	aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
 		if (aliquotFileSelectText.getText().length() != 0) {
-//            finalTable = createDisplayTable(getIntent().getStringExtra("AliquotXMLFileName"));
-//            if(!finalTable.equals(null)){
-//                Toast.makeText(AliquotMenuActivity.this, "Final table was created!", Toast.LENGTH_LONG).show();
-//            }else{
-//                Toast.makeText(AliquotMenuActivity.this, "Final table NOT created!", Toast.LENGTH_LONG).show();
-//            }
-
+            Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
 		    Intent openMainMenu = new Intent(
 			    "android.intent.action.DISPLAY");
 		    openMainMenu.putExtra("AliquotXML", getIntent()
@@ -130,6 +124,7 @@ public class AliquotMenuActivity extends Activity {
 		if (aliquotIGSNText.getText().length() != 0) {
             aliquotIGSN = aliquotIGSNText.getText().toString().toUpperCase().trim();
             // Downloads Aliquot file
+            Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show();
             final String aliquotURL = makeURI(BASE_ALIQUOT_URI, aliquotIGSN);
             URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
 
@@ -140,6 +135,7 @@ public class AliquotMenuActivity extends Activity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } finally {
+                        Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
                         Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
                         setAbsoluteFileName(aliquotDirectory + "/" + aliquotIGSN + ".xml");
                         openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
@@ -172,7 +168,8 @@ public class AliquotMenuActivity extends Activity {
 		if (aliquotURLText.getText().length() != 0) {
 		    aliquotURL = aliquotURLText.getText().toString().trim();
 		    // Downloads Aliquot file from URL
-		    URLFileReader downloader = new URLFileReader(
+            Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show();
+            URLFileReader downloader = new URLFileReader(
 			    AliquotMenuActivity.this, "AliquotMenu",
 			    aliquotURL, "url");
 
@@ -183,7 +180,7 @@ public class AliquotMenuActivity extends Activity {
 				} catch (InterruptedException e) {
 				    e.printStackTrace();
 				} finally {
-
+                    Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
 		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
 		    setAbsoluteFileName(aliquotDirectory + "/" + createFileName("url", aliquotURL) + ".xml");
 		   	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
