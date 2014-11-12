@@ -19,9 +19,9 @@ import org.w3c.dom.NodeList;
 public class ReportSettingsParser {
 
 	private static SortedMap<Integer, Category> categoryMap; // Collects the visible categories of a report settings
-	private static ArrayList<String> outputVariableNames = new ArrayList<String>();
-	
-	public static SortedMap<Integer, Category> runReportSettingsParser(String fileName){
+	private ArrayList<String> outputVariableNames = new ArrayList<String>();
+    public static int columnCount = 0;
+	public SortedMap<Integer, Category> runReportSettingsParser(String fileName){
 
 		try {
 			// Begins the parsing of the file
@@ -83,8 +83,8 @@ public class ReportSettingsParser {
 						String columnVisibility = parser.getNodeValue("visible", columnNodes);
 						String positionIndex = parser.getNodeValue("positionIndex", columnNodes);
 						String uncertaintyType = parser.getNodeValue("uncertaintyType", columnNodes);
-						
-						if (columnVisibility.equals("true")) {
+
+                        if (columnVisibility.equals("true")) {
 							// Instantiates a new Column and adds visible columns to the Category's Column map
 							Column visibleColumn = new Column(categoryDisplayName, displayName1, displayName2, displayName3, units, methodName, variableName, Integer.parseInt(positionIndex), Integer.parseInt(countOfSignificantDigits));
 							if(uncertaintyType.equals("ABS")|| uncertaintyType.equals("PCT")){
@@ -121,21 +121,20 @@ public class ReportSettingsParser {
 										Column visibleUncertaintyColumn = new Column(categoryDisplayName,uncertaintyName1,uncertaintyName2,	uncertaintyName3, uncertaintyUnits, uncertaintyMethodName, uncertaintyVariableName, Integer.parseInt(uncertaintyPositionIndex), Integer.parseInt(uncertaintyCountOfSignificantDigits));
 										visibleColumn.setUncertaintyColumn(visibleUncertaintyColumn); 
 										outputVariableNames.add(uncertaintyVariableName);
-								
 //										occupyAbsentInfo(visibleUncertaintyColumn,uncertaintyName1,uncertaintyName2,uncertaintyName3, uncertaintyMethodName, uncertaintyVariableName);
-
 									} // Closes visible uncertainty column
 								} // Closes loop through uncertainty columns
-							} // Closes navigation through dates and isotopic ratios categories						
-						} // Closes iterations through all visible columns
-					} // Closes going into visible category for columns	
+							} // Closes navigation through dates and isotopic ratios categories
+                        } // Closes iterations through all visible columns
+
+                    } // Closes going into visible category for columns
 				} // Closes going into visible category
 			} // Closes loop through file for category nodes
 		} // Closes try statement
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-	return categoryMap;			
+	return categoryMap;
 	} // Closes the main method
 	
 	/*
@@ -167,12 +166,12 @@ public class ReportSettingsParser {
 	    }
 	 }
 	
-	public static ArrayList<String> getOutputVariableName() {
+	public ArrayList<String> getOutputVariableName() {
 		return outputVariableNames;
 	}
 
-	public static void setOutputVariableName(ArrayList<String> outputVariableName) {
-		ReportSettingsParser.outputVariableNames = outputVariableName;
+	public void setOutputVariableName(ArrayList<String> outputVariableName) {
+		this.outputVariableNames = outputVariableName;
 	}
 
 	public static SortedMap<Integer, Category> getCategoryMap() {
@@ -182,6 +181,13 @@ public class ReportSettingsParser {
 	public static void setCategoryMap(SortedMap<Integer, Category> categoryMap) {
 		ReportSettingsParser.categoryMap = categoryMap;
 	}
-	
+
+    public int getColumnCount() {
+        return columnCount;
+    }
+
+    public void setColumnCount(int columnCount) {
+        this.columnCount = columnCount;
+    }
 }// Closes the class
 

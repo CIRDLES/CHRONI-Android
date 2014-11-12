@@ -54,113 +54,115 @@ public class TablePainterActivity extends Activity {
     private TextView testText;
     private String test;
 
+    private static int columnCount;
+
     private CHRONIDatabaseHelper entryHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-	super.onCreate(savedInstanceState);
-	setTheme(android.R.style.Theme_Holo);
-    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        super.onCreate(savedInstanceState);
+        setTheme(android.R.style.Theme_Holo);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         setContentView(R.layout.display);
 
         // Directories needed to place files in accurate locations
-	File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
-	File aliquotDirectory = new File(chroniDirectory, "Aliquot");
-	File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
-	
-	// Instantiates the Report Settings Parser
-	ReportSettingsParser RSP = new ReportSettingsParser();
-	String reportSettingsPath = String.valueOf(new File(chroniDirectory, "Report Settings")) + "/Default Report Settings.xml"; // sets default Report Settings XML
-	if (getIntent().getStringExtra("ReportSettingsXML") != null) {
-	    reportSettingsPath = getIntent().getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
-	}
+        File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
+        File aliquotDirectory = new File(chroniDirectory, "Aliquot");
+        File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
+
+        // Instantiates the Report Settings Parser
+        ReportSettingsParser RSP = new ReportSettingsParser();
+        String reportSettingsPath = String.valueOf(new File(chroniDirectory, "Report Settings")) + "/Default Report Settings.xml"; // sets default Report Settings XML
+        if (getIntent().getStringExtra("ReportSettingsXML") != null) {
+            reportSettingsPath = getIntent().getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
+        }
 //        Toast.makeText(TablePainterActivity.this, reportSettingsPath, Toast.LENGTH_LONG).show();
 
-    categoryMap = (TreeMap<Integer, Category>) RSP.runReportSettingsParser(reportSettingsPath);
-	ArrayList<String> outputVariableName = RSP.getOutputVariableName();
+        categoryMap = (TreeMap<Integer, Category>) RSP.runReportSettingsParser(reportSettingsPath);
+        ArrayList<String> outputVariableName = RSP.getOutputVariableName();
 
-	// Instantiates the Aliquot Parser
-	AliquotParser AP = new AliquotParser();
-	String aliquotPath = "";
-	if (getIntent().getStringExtra("AliquotXML") != null) {
-	    aliquotPath = getIntent().getStringExtra("AliquotXML"); // gets the new location of the aliquot xml
-	}
-	
-	// Parses aliquot file and retrieves maps
-	maps = AP.runAliquotParser(aliquotPath); 
-	fractionMap = (TreeMap<String, Fraction>)maps.getFractionMap();
-	imageMap = (TreeMap<String, Image>)maps.getImageMap();
-	
-	final String aliquot = AP.getAliquotName();
+        // Instantiates the Aliquot Parser
+        AliquotParser AP = new AliquotParser();
+        String aliquotPath = "";
+        if (getIntent().getStringExtra("AliquotXML") != null) {
+            aliquotPath = getIntent().getStringExtra("AliquotXML"); // gets the new location of the aliquot xml
+        }
 
-	// fills the arrays
-	String[][] reportSettingsArray = fillReportSettingsArray(
-		outputVariableName, categoryMap);
-	String[][] fractionArray = fillFractionArray(outputVariableName,
-		categoryMap, fractionMap, aliquot);
+        // Parses aliquot file and retrieves maps
+        maps = AP.runAliquotParser(aliquotPath);
+        fractionMap = (TreeMap<String, Fraction>) maps.getFractionMap();
+        imageMap = (TreeMap<String, Image>) maps.getImageMap();
 
-	// handles the array sorting
-	Arrays.sort(fractionArray, new Comparator<String[]>() {
-	    @Override
-	    public int compare(final String[] entry1, final String[] entry2) {
-		int retVal = 0;
+        final String aliquot = AP.getAliquotName();
 
-		final String field1 = entry1[0].trim();
-		final String field2 = entry2[0].trim();
+        // fills the arrays
+        String[][] reportSettingsArray = fillReportSettingsArray(
+                outputVariableName, categoryMap);
+        String[][] fractionArray = fillFractionArray(outputVariableName,
+                categoryMap, fractionMap, aliquot);
 
-		Comparator<String> forNoah = new IntuitiveStringComparator<String>();
-		return retVal = forNoah.compare(field1, field2);
-	    }
-	});
+        // handles the array sorting
+        Arrays.sort(fractionArray, new Comparator<String[]>() {
+            @Override
+            public int compare(final String[] entry1, final String[] entry2) {
+                int retVal = 0;
 
-	String[][] finalArray = fillArray(outputVariableName,reportSettingsArray, fractionArray);
+                final String field1 = entry1[0].trim();
+                final String field2 = entry2[0].trim();
 
-	// TextView aliquotName = new TextView(this);
-	ArrayList<String> contents = new ArrayList<String>();
+                Comparator<String> forNoah = new IntuitiveStringComparator<String>();
+                return retVal = forNoah.compare(field1, field2);
+            }
+        });
+
+        String[][] finalArray = fillArray(outputVariableName, reportSettingsArray, fractionArray);
+
+        // TextView aliquotName = new TextView(this);
+        ArrayList<String> contents = new ArrayList<String>();
 
         // Creates database entry from current entry
         entryHelper = new CHRONIDatabaseHelper(this);
-        entryHelper.createEntry(getCurrentTime(), aliquotPath, reportSettingsPath);
-        Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
+//        entryHelper.createEntry(getCurrentTime(), aliquotPath, reportSettingsPath);
+//        Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
 
-	// Setup to add buttons
-	LinearLayout buttonTableLayout = (LinearLayout) findViewById(R.id.displayLayout); // layout handle needed for buttons
-	TableRow buttonRow = (TableRow) findViewById(R.id.buttonRow);
-	buttonRow.setGravity(Gravity.CENTER);
+        // Setup to add buttons
+        LinearLayout buttonTableLayout = (LinearLayout) findViewById(R.id.displayLayout); // layout handle needed for buttons
+        TableRow buttonRow = (TableRow) findViewById(R.id.buttonRow);
+        buttonRow.setGravity(Gravity.CENTER);
 //    buttonRow.setBackgroundColor(Color.GRAY);
-	
-	// Creates the Report Settings button
-	changeReportSettingsButton = new Button(this);
-	changeReportSettingsButton.setTextColor(Color.WHITE);
-	changeReportSettingsButton.setTextSize((float) 15);
-	changeReportSettingsButton.setText("Change Report Settings");
-	changeReportSettingsButton.setPadding(15,15,15,15);
-	changeReportSettingsButton.setGravity(Gravity.CENTER);
-	changeReportSettingsButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-	changeReportSettingsButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-	buttonRow.addView(changeReportSettingsButton);
-	changeReportSettingsButton.setOnClickListener(new View.OnClickListener() {
-    public void onClick(View v) {
-    	Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-    	startActivity(openReportSettingsMenu);
-    }
-	});
 
-	// Determines whether or not to add additional buttons for images
-    imageArray = retrieveImages(imageMap);
+        // Creates the Report Settings button
+        changeReportSettingsButton = new Button(this);
+        changeReportSettingsButton.setTextColor(Color.WHITE);
+        changeReportSettingsButton.setTextSize((float) 15);
+        changeReportSettingsButton.setText("Change Report Settings");
+        changeReportSettingsButton.setPadding(15, 15, 15, 15);
+        changeReportSettingsButton.setGravity(Gravity.CENTER);
+        changeReportSettingsButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+        changeReportSettingsButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        buttonRow.addView(changeReportSettingsButton);
+        changeReportSettingsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+                startActivity(openReportSettingsMenu);
+            }
+        });
 
-    if((imageArray[0] != null) && !(imageArray[0].getImageURL().length()==0)){
-		viewConcordiaButton = new Button(this);
-		viewConcordiaButton.setTextColor(Color.WHITE);
-		viewConcordiaButton.setTextSize((float) 15);
-		viewConcordiaButton.setText("Concordia Plot");
-		viewConcordiaButton.setPadding(15,15,15,15);
-		viewConcordiaButton.setGravity(Gravity.CENTER);
-		viewConcordiaButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-		viewConcordiaButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		buttonRow.addView(viewConcordiaButton);
-		viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
-			    public void onClick(View v) {
+        // Determines whether or not to add additional buttons for images
+        imageArray = retrieveImages(imageMap);
+
+        if ((imageArray[0] != null) && !(imageArray[0].getImageURL().length() == 0)) {
+            viewConcordiaButton = new Button(this);
+            viewConcordiaButton.setTextColor(Color.WHITE);
+            viewConcordiaButton.setTextSize((float) 15);
+            viewConcordiaButton.setText("Concordia Plot");
+            viewConcordiaButton.setPadding(15, 15, 15, 15);
+            viewConcordiaButton.setGravity(Gravity.CENTER);
+            viewConcordiaButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+            viewConcordiaButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            buttonRow.addView(viewConcordiaButton);
+            viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
                     // Checks internet connection before getting images
                     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -171,145 +173,154 @@ public class TablePainterActivity extends Activity {
 //                    Intent viewConcordiaIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
                         viewConcordiaIntent.putExtra("ConcordiaImage", imageArray[0].getImageURL());
                         startActivity(viewConcordiaIntent);
-                    }else{
+                    } else {
                         //Handles lack of wifi connection
                         Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
                     }
-			    }
-			});
-    }
-    
-    if((imageArray[1] != null) && !(imageArray[1].getImageURL().length()==0)){
-		viewProbabilityDensityButton = new Button(this);
-		viewProbabilityDensityButton.setTextColor(Color.WHITE);
-		viewProbabilityDensityButton.setTextSize((float) 15);
-		viewProbabilityDensityButton.setText("Probability Density");
-		viewProbabilityDensityButton.setPadding(15,15,15,15);
-		viewProbabilityDensityButton.setGravity(Gravity.CENTER);
-		viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-		viewProbabilityDensityButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		buttonRow.addView(viewProbabilityDensityButton);
-		viewProbabilityDensityButton.setOnClickListener(new View.OnClickListener() {
-			    public void onClick(View v) {
+                }
+            });
+        }
+
+        if ((imageArray[1] != null) && !(imageArray[1].getImageURL().length() == 0)) {
+            viewProbabilityDensityButton = new Button(this);
+            viewProbabilityDensityButton.setTextColor(Color.WHITE);
+            viewProbabilityDensityButton.setTextSize((float) 15);
+            viewProbabilityDensityButton.setText("Probability Density");
+            viewProbabilityDensityButton.setPadding(15, 15, 15, 15);
+            viewProbabilityDensityButton.setGravity(Gravity.CENTER);
+            viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+            viewProbabilityDensityButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            buttonRow.addView(viewProbabilityDensityButton);
+            viewProbabilityDensityButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
                     // Checks internet connection before getting images
                     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
                     if (mobileWifi.isConnected()) {
-                    Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
-                    Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageArray[1].getImageURL()));
+                        Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
+                        Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageArray[1].getImageURL()));
 //                    Intent viewProbabilityDensityIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
 //                    viewProbabilityDensityIntent.putExtra("ProbabilityDensityImage", imageArray[1].getImageURL());
-                    startActivity(viewProbabilityDensityIntent);
-			    }else{
+                        startActivity(viewProbabilityDensityIntent);
+                    } else {
                         //Handles lack of wifi connection
                         Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
                     }
                 }
-			});
-    }
-	
-	HorizontalScrollView screenScroll = (HorizontalScrollView) findViewById(R.id.horizontalScrollView); // controls the horizontal scrolling of the table
-	
-	LinearLayout tableLayout = (LinearLayout) findViewById(R.id.displayTableLayout); // gives inner table layout for displaying
-	TableLayout headerInformationTable = (TableLayout) findViewById(R.id.tableForHeader); // Report Settings header table
+            });
+        }
 
-	ScrollView scrollPane = (ScrollView) findViewById(R.id.scrollPane); // Vertical scrolling for the aliquot portion of the table
-	TableLayout aliquotDataTable = (TableLayout) findViewById(R.id.finalTable); // the aliquot specific info contained here
+        HorizontalScrollView screenScroll = (HorizontalScrollView) findViewById(R.id.horizontalScrollView); // controls the horizontal scrolling of the table
+
+        LinearLayout tableLayout = (LinearLayout) findViewById(R.id.displayTableLayout); // gives inner table layout for displaying
+        TableLayout headerInformationTable = (TableLayout) findViewById(R.id.tableForHeader); // Report Settings header table
+
+        ScrollView scrollPane = (ScrollView) findViewById(R.id.scrollPane); // Vertical scrolling for the aliquot portion of the table
+        TableLayout aliquotDataTable = (TableLayout) findViewById(R.id.finalTable); // the aliquot specific info contained here
 
 //    // Clears the previous table
 //        for(int currentRow = 0; currentRow < aliquotDataTable.getChildCount(); currentRow++){
 //            aliquotDataTable.removeViewAt(currentRow);
 //            }
 
-        // calculates number of rows based on the size of the fraction, five is
-	// added for the Report Settings rows
-	final int ROWS = 5 + fractionMap.size();
-	int rowCount = 0;
+        // calculates number of rows based on the size of the fraction, five is separately
+        // added for the Report Settings category rows
+        final int ROWS = 5 + fractionMap.size();
+//        final int COLS = getColumnCount();
+        int rowCount = 0;
 
-	// Table Layout Printing
-	for (int i = 0; i < ROWS; i++) {
+        // Table Layout Printing
+        for (int i = 0; i < ROWS; i++) {
 
-	    TableRow row = new TableRow(this);
-	  
-	    // puts rows in appropriate place on layout
-	    if (rowCount < 5) {
-		// Report Settings and aliquot name rows
-		headerInformationTable.addView(row);
-	    } else {
-		// Adds aliquot rows to the aliquot scroll table
-		aliquotDataTable.addView(row);
-	    }
+            TableRow row = new TableRow(this);
 
-	    // loops through number of columns and adds text views to each row.
-	    // this creates cells!
-	    for (int j = 0; j < outputVariableName.size(); j++) {
-		TextView cell = new TextView(this);
-		cell.setWidth(205);
-		cell.setPadding(3, 4, 3, 4);
-		cell.setTextColor(Color.BLACK);
-		cell.setTextSize((float) 14.5);
-		cell.setGravity(Gravity.RIGHT);
+            // puts rows in appropriate place on layout
+            if (rowCount < 5) {
+                // Report Settings and aliquot name rows
+                headerInformationTable.addView(row);
+            } else {
+                // Adds aliquot rows to the aliquot scroll table
+                aliquotDataTable.addView(row);
+            }
 
-		if (rowCount < 5) {
-		    cell.setTypeface(Typeface.DEFAULT_BOLD);
-		    cell.setGravity(Gravity.CENTER);
-		}
+            // loops through number of columns and adds text views to each row.
+            // this creates cells!
+//            for (int j = 0; j < COLS; j++) {
+            for (int j = 0; j < outputVariableName.size(); j++) {
 
-		if (rowCount == 0) {
-		    cell.setGravity(Gravity.LEFT);
-		}
+                TextView cell = new TextView(this);
+                cell.setWidth(205);
+                cell.setPadding(3, 4, 3, 4);
+                cell.setTextColor(Color.BLACK);
+                cell.setTextSize((float) 14.5);
+                cell.setGravity(Gravity.RIGHT);
 
-		// sets appropriate background color for cells
-		if (rowCount < 4) {
-		    // colors header rows
-		    // if(rowCount % 2 == 0){ // colors header rows
-		    cell.setBackgroundResource(R.drawable.background_blue_background);
-		    // }else{
-		    // cell.setBackgroundResource(R.drawable.dark_grey_background);
-		    // }
-		} else if (rowCount > 4 && rowCount % 2 == 1) {
-		    // colors odd body rows
-		    cell.setBackgroundResource(R.drawable.light_grey_background);
-		} else if (rowCount == 4) {
-		    // aliquot name cell
-		    cell.setTextColor(Color.WHITE);
-		    cell.setBackgroundResource(R.drawable.light_blue_background);
-		    cell.setTypeface(Typeface.DEFAULT_BOLD);
-		} else {
-		    // header rows and all other body rows
-		    cell.setBackgroundResource(R.drawable.white_background);
-		}
+                if (rowCount < 5) {
+                    cell.setTypeface(Typeface.DEFAULT_BOLD);
+                    cell.setGravity(Gravity.CENTER);
+                }
 
-		// populates the first row with the associated category info
-		// corresponding to each column
-		// sets duplicates to invisible if a specified category name is
-		// already presently being displayed
-		if (rowCount == 0) {
-		    if (contents.size() != 0
-			    && contents.contains(finalArray[i][j])) {
-			cell.setText(finalArray[i][j]);
-			cell.setTextColor(Color.TRANSPARENT);
-		    } else {
-			// category name doesn't exist in contents arraylist
-			cell.setText(finalArray[i][j]);
-			cell.setVisibility(View.VISIBLE);
-			contents.add(finalArray[i][j]);
-		    }
-		} else {
-		    cell.setText(finalArray[i][j]);
-		}
+                if (rowCount == 0) {
+                    cell.setGravity(Gravity.LEFT);
+                }
 
-		if (cell.getText().equals("-")) {
-		    cell.setGravity(Gravity.CENTER);
-		}
-		// append an individual cell to a content row
-		row.addView(cell);
-	    }
-	    rowCount++;
-	}
+                // sets appropriate background color for cells
+                if (rowCount < 4) {
+                    // colors header rows
+                    // if(rowCount % 2 == 0){ // colors header rows
+                    cell.setBackgroundResource(R.drawable.background_blue_background);
+                    // }else{
+                    // cell.setBackgroundResource(R.drawable.dark_grey_background);
+                    // }
+                } else if (rowCount > 4 && rowCount % 2 == 1) {
+                    // colors odd body rows
+                    cell.setBackgroundResource(R.drawable.light_grey_background);
+                } else if (rowCount == 4) {
+                    // aliquot name cell
+                    cell.setTextColor(Color.WHITE);
+                    cell.setBackgroundResource(R.drawable.light_blue_background);
+                    cell.setTypeface(Typeface.DEFAULT_BOLD);
+                } else {
+                    // header rows and all other body rows
+                    cell.setBackgroundResource(R.drawable.white_background);
+                }
+
+                // populates the first row with the associated category info
+                // corresponding to each column
+                // sets duplicates to invisible if a specified category name is
+                // already presently being displayed
+                if (rowCount == 0) {
+                    if (contents.size() != 0  && contents.contains(finalArray[i][j])) {
+                        cell.setText(finalArray[i][j]);
+                        cell.setTextColor(Color.TRANSPARENT);
+                    } else {
+                        //category name doesn't exist in contents arraylist
+                        cell.setText(finalArray[i][j]);
+                        cell.setVisibility(View.VISIBLE);
+                        contents.add(finalArray[i][j]);
+                    }
+                } else {
+                    cell.setText(finalArray[i][j]);
+                }
+
+                if (cell.getText().equals("-")) {
+                    cell.setGravity(Gravity.CENTER);
+                }
+                // append an individual cell to a content row
+                row.addView(cell);
+            }
+            rowCount++;
+        }
+
+//        // Goes through and distributes columns correctly
+//        for (int i = 0; i < ROWS; i++) {
+//            for (int j = 0; j < outputVariableName.size(); j++) {
+//
+//
+//        }
     }
-    
+
     /*
      * Retrieves the images from the image map
      */
@@ -417,7 +428,6 @@ public class TablePainterActivity extends Activity {
 		}
 	    }
 	}
-
 	return reportSettingsArray;
     }
 
@@ -652,4 +662,11 @@ public class TablePainterActivity extends Activity {
         }
     }
 
+    public static int getColumnCount() {
+        return columnCount;
+    }
+
+    public static void setColumnCount(int count) {
+        columnCount = count;
+    }
 }
