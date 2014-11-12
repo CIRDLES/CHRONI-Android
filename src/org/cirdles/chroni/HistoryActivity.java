@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /*
  * Sets up the main Review database table.
@@ -119,28 +120,28 @@ public class HistoryActivity extends Activity {
 
                     // adds the open buttons to the last column
                     else if (j == 3 && i != 0) {
-                        Button button = new Button(this);
-                        button.setText("OPEN");
-                        button.setTextColor(Color.WHITE);
-                        button.setTextSize((float) 12);
-                        button.setTypeface(Typeface.DEFAULT_BOLD);
-                        button.setGravity(Gravity.CENTER);
-                        button.setHeight(105);
-                        button.setWidth(50);
-                        button.setBackgroundColor(Color.GRAY);
-                        row.addView(button);
+                        Button openButton = new Button(this);
+                        openButton.setText("OPEN");
+                        openButton.setTextColor(Color.WHITE);
+                        openButton.setTextSize((float) 12);
+                        openButton.setTypeface(Typeface.DEFAULT_BOLD);
+                        openButton.setGravity(Gravity.CENTER);
+                        openButton.setHeight(105);
+                        openButton.setWidth(50);
+                        openButton.setBackgroundColor(Color.GRAY);
+                        row.addView(openButton);
 
                         final int currentRow = i;
                         final int currentColumn = j;
 
-                        // adds button functionality
-                        button.setOnClickListener(new View.OnClickListener() {
+                        // adds open button functionality
+                        openButton.setOnClickListener(new View.OnClickListener() {
                             // When view/edit is clicked, the review screen is
                             // opened
                             public void onClick(View v) {
-
+                                Toast.makeText(HistoryActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
                                 Intent openTableScreen = new Intent("android.intent.action.DISPLAY");
-                                openTableScreen.putExtra("AliquotXML", database[currentRow][currentColumn-2]);
+                                openTableScreen.putExtra("AliquotXML", database[currentRow][currentColumn - 2]);
                                 startActivity(openTableScreen);
                             }
                         });
@@ -149,24 +150,25 @@ public class HistoryActivity extends Activity {
 
                     // adds the delete buttons to the last column
                     if (j == 4 && i != 0) {
-                        Button button = new Button(this);
-                        button.setText("DELETE");
-                        button.setTextColor(Color.WHITE);
-                        button.setTextSize((float)11);
-                        button.setTypeface(Typeface.DEFAULT_BOLD);
-                        button.setGravity(Gravity.CENTER);
-                        button.setHeight(105);
-                        button.setWidth(50);
-                        button.setBackgroundColor(Color.GRAY);
-                        row.addView(button);
+                        Button deleteButton = new Button(this);
+                        deleteButton.setText("DELETE");
+                        deleteButton.setTextColor(Color.WHITE);
+                        deleteButton.setTextSize((float) 11);
+                        deleteButton.setTypeface(Typeface.DEFAULT_BOLD);
+                        deleteButton.setGravity(Gravity.CENTER);
+                        deleteButton.setHeight(105);
+                        deleteButton.setWidth(50);
+                        deleteButton.setBackgroundColor(Color.GRAY);
+                        row.addView(deleteButton);
 
                         final int currentRow = i;
 
                         // adds button functionality
-                        button.setOnClickListener(new View.OnClickListener() {
+                        deleteButton.setOnClickListener(new View.OnClickListener() {
                             // When button clicked, it deletes entry
                             public void onClick(View v) {
                                 myAliquots.deleteEntry(currentRow);
+                                Toast.makeText(HistoryActivity.this, "Your entry has been deleted!", Toast.LENGTH_LONG).show();
                             }
                         });
 
