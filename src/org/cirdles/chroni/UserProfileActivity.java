@@ -27,6 +27,8 @@ import org.xml.sax.SAXException;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -75,34 +77,58 @@ public class UserProfileActivity extends Activity {
 	profileValidateButton = (Button) findViewById(R.id.profileValidateButton);
 	profileValidateButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
-			// Stores the login information in shared preferences for a new
-			// user
-	    	if(geochronUsernameInput.getText().length() != 0 || geochronPasswordInput.getText().length() != 0){
-			SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
-			SharedPreferences.Editor editor = settings.edit();
-			editor.clear(); // Clears previously stored prefs
-			editor.putString("Geochron Username", geochronUsernameInput
-				.getText().toString());
-			editor.putString("Geochron Password", geochronPasswordInput
-				.getText().toString());
-			editor.commit();
-			Toast.makeText(UserProfileActivity.this,
-				"Your Geochron Profile information is saved!", Toast.LENGTH_LONG)
-				.show();
-	    	
-			// Validates GeoChron credentials if input is stored
-	    	retrieveCredentials();
-	    	if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
-	    		try {
-					validateGeochronCredentials(getGeochronUsername(), getGeochronPassword());
-				} catch (HttpResponseException e) {
-					e.printStackTrace();
-				}
-	    	}else{
-	    		Toast.makeText(UserProfileActivity.this, "Credentials not stored", Toast.LENGTH_LONG).show();
-	    	}
-	    }
-	    }
+            // Displays error message if username is missing
+            if (geochronUsernameInput.getText().length() == 0) {
+                Toast.makeText(UserProfileActivity.this, "Please enter your Geochron username.", Toast.LENGTH_LONG).show();
+            }
+            // Displays error message if password is missing
+            if (geochronPasswordInput.getText().length() == 0) {
+                Toast.makeText(UserProfileActivity.this, "Please enter your Geochron password.", Toast.LENGTH_LONG).show();
+            }
+            // Displays error message if all input is missing
+            if (geochronUsernameInput.getText().length() == 0 && geochronPasswordInput.getText().length() == 0) {
+                Toast.makeText(UserProfileActivity.this, "Please enter your Geochron credentials.", Toast.LENGTH_LONG).show();
+            }
+
+            if (geochronUsernameInput.getText().length() != 0 && geochronPasswordInput.getText().length() != 0) {
+                // Stores the login information in shared preferences for a new user if both fields contain input
+                SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.clear(); // Clears previously stored prefs
+                editor.putString("Geochron Username", geochronUsernameInput
+                        .getText().toString());
+                editor.putString("Geochron Password", geochronPasswordInput
+                        .getText().toString());
+                editor.commit();
+
+                // Provides feedback that credentials have been saved
+                Toast.makeText(UserProfileActivity.this, "Your Geochron Profile information is saved!", Toast.LENGTH_LONG).show();
+
+                // Checks internet connection before getting credential input
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                if (mobileWifi.isConnected()) {
+                    // Attempts to validate GeoChron credentials if input is stored
+                    Toast.makeText(UserProfileActivity.this, "Validating Credentials...", Toast.LENGTH_LONG).show();
+                    retrieveCredentials(); // Fetches the credentials
+
+                    if (!getGeochronUsername().contentEquals("None") && !getGeochronPassword().contentEquals("None")) {
+                        try {
+                            // validates credentials if not empty
+                            validateGeochronCredentials(getGeochronUsername(), getGeochronPassword());
+                        } catch (HttpResponseException e) {
+                            e.printStackTrace();
+                            Toast.makeText(UserProfileActivity.this, "Connection error", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(UserProfileActivity.this, "Credentials not stored", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    //Handles lack of wifi connection
+                    Toast.makeText(UserProfileActivity.this, "Please check your internet connection before attempting to vaidate.", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
 	});
 
 	profileMenuButton = (Button) findViewById(R.id.profileMenuButton);
@@ -175,7 +201,7 @@ public class UserProfileActivity extends Activity {
 		RequestParams params = new RequestParams(); 
 		params.put("username", username);
 		params.put("password", password);
-		
+
 		UserVerificationClient.post(geochronCredentialsService, params,
 				new AsyncHttpResponseHandler() {
 					@Override
@@ -183,10 +209,10 @@ public class UserProfileActivity extends Activity {
 							byte[] responseBody) {
 						File fileOut = HTTP_PostAndResponse(responseBody);
 						boolean valid = false;
-						
+
 						if (fileOut != null) {
 							org.w3c.dom.Document doc = ConvertXMLTextToDOMdocument(fileOut);
-				
+
 							if (doc != null) {
 								if (doc.getElementsByTagName("valid").getLength() > 0) {
 									valid = doc.getElementsByTagName("valid").item(0)

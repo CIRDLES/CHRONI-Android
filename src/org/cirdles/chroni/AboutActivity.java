@@ -1,6 +1,7 @@
 package org.cirdles.chroni;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
@@ -22,16 +23,18 @@ public class AboutActivity extends Activity  {
         setContentView(R.layout.about);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 
-//            Context context = this;
-//            int versionCode = context.getPackageManager().getPackageInfo(
-//                    context.getPackageName(), 0).versionCode;
-//            String versionName = context.getPackageManager().getPackageInfo(
-//                    context.getPackageName(), 0).versionName;
+            Context context = this;
+//            int versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+//            String versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
 //
 //            versionNumber = (TextView) findViewById(R.id.versionNumber);
 //            versionNumber.setText("Version " + versionCode + "." + versionName);
 //            versionNumber.setTextColor(getResources().getColor(
 //                    R.color.button_blue));
+
+//        Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
+//        startActivity(openMainMenu);
+
 
     }
 
