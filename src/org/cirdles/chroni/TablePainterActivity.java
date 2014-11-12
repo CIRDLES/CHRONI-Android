@@ -74,7 +74,9 @@ public class TablePainterActivity extends Activity {
 	if (getIntent().getStringExtra("ReportSettingsXML") != null) {
 	    reportSettingsPath = getIntent().getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
 	}
-	categoryMap = (TreeMap<Integer, Category>) RSP.runReportSettingsParser(reportSettingsPath);
+//        Toast.makeText(TablePainterActivity.this, reportSettingsPath, Toast.LENGTH_LONG).show();
+
+    categoryMap = (TreeMap<Integer, Category>) RSP.runReportSettingsParser(reportSettingsPath);
 	ArrayList<String> outputVariableName = RSP.getOutputVariableName();
 
 	// Instantiates the Aliquot Parser
@@ -336,8 +338,7 @@ public class TablePainterActivity extends Activity {
 	String[][] reportSettingsArray = new String[ROWS][COLUMNS];
 	int columnNum = 0; // the current column number for the array
 
-	Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet()
-		.iterator();
+	Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
 	while (iterator.hasNext()) {
 	    Entry<Integer, Category> category = iterator.next();
 	    int columnCount = 1; // the number of columns under each category

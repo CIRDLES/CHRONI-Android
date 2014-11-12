@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -124,26 +125,27 @@ public class AliquotMenuActivity extends Activity {
 		if (aliquotIGSNText.getText().length() != 0) {
             aliquotIGSN = aliquotIGSNText.getText().toString().toUpperCase().trim();
             // Downloads Aliquot file
-            Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show();
             final String aliquotURL = makeURI(BASE_ALIQUOT_URI, aliquotIGSN);
+            Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show();
             URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
+//            Toast.makeText(AliquotMenuActivity.this, "File downloaded!", Toast.LENGTH_LONG).show();
 
-            Thread timer = new Thread() {
-                public void run() {
-                    try {
-                        sleep(2500); // gives file download three seconds to complete
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } finally {
-                        Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
-                        Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-                        setAbsoluteFileName(aliquotDirectory + "/" + aliquotIGSN + ".xml");
-                        openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
-                        startActivity(openMainMenu);
-                    }
-                }
-            };
-            timer.start();
+            setAbsoluteFileName(aliquotDirectory + "/" + aliquotIGSN + ".xml");
+//            Thread timer = new Thread() {
+//                public void run() {
+//                    try {
+//                        sleep(3500); // gives file download three seconds to complete
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    } finally {
+////                        Looper.prepare();
+////                        Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+////                        openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
+////                        startActivity(openMainMenu);
+//                    }
+//                }
+//            };
+//            timer.start();
         	}
 		}else{
                 //Handles lack of wifi connection
@@ -176,19 +178,20 @@ public class AliquotMenuActivity extends Activity {
 			Thread timer = new Thread() {
 			    public void run() {
 				try {
-				    sleep(2500); // gives file download three seconds to complete
+				    sleep(3500); // gives file download three seconds to complete
 				} catch (InterruptedException e) {
 				    e.printStackTrace();
 				} finally {
-                    Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
-		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
+//		    Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
 		    setAbsoluteFileName(aliquotDirectory + "/" + createFileName("url", aliquotURL) + ".xml");
-		   	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
-		   	startActivity(openMainMenu);
+//		   	openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
+//		   	startActivity(openMainMenu);
 				}
+
 			    }
 			};
-			timer.start();
+//			timer.start();
+//            Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
 
 				}
             }else{

@@ -105,7 +105,6 @@ public class AliquotParser {
 		return aliquotName;
 	}
 
-
 	public static SortedMap<String, Fraction> getFractionMap() {
 		return fractionMap;
 	}

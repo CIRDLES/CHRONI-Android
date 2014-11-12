@@ -18,6 +18,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 public class URLFileReader{
 
 //	private ProgressDialog mProgressDialog;
@@ -141,6 +148,7 @@ public class URLFileReader{
 		public DownloadTask(Context context) {
 			this.context = context;
 		}
+        String downloadedFilePath; // path where downloaded file is to be written
 
 		@Override
 		protected String doInBackground(String... sUrl) {
@@ -148,7 +156,8 @@ public class URLFileReader{
 			File chroniDirectory = classContext.getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
 	    	File aliquotDirectory = new File(chroniDirectory, "Aliquot");
 	    	File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
-	    				
+
+
 			// take CPU lock to prevent CPU from going off if the user
 			// presses the power button during download
 			PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -175,15 +184,17 @@ public class URLFileReader{
 					// download the file to the appropriate location
 					input = connection.getInputStream();
 					if(fileType.contains("Aliquot")){
-						if(fileLength == 55){ // Cancels if invalid IGSN file (if file has a length of 0.05 KB)
+						if(fileLength <= 55){ // Cancels if invalid IGSN file (if file has a length of 0.05 KB)
 							AliquotMenuActivity.setInvalidFile(true);	// Sets file as invalid
 							cancel(true);
 						}else{
+                            downloadedFilePath = aliquotDirectory+ "/" + fileName + ".xml";
 							output = new FileOutputStream(aliquotDirectory+ "/" + fileName + ".xml");
 //							AliquotMenuActivity.setAbsoluteFileName(aliquotDirectory+ "/" + fileName + ".xml");
 						}
 					}else if(fileType.contains("Report Settings")){
-						output = new FileOutputStream(reportSettingsDirectory + "/" + fileName + ".xml");
+                        downloadedFilePath = reportSettingsDirectory + "/" + fileName + ".xml";
+                        output = new FileOutputStream(reportSettingsDirectory + "/" + fileName + ".xml");
 					}
 					
 					byte data[] = new byte[4096];
@@ -204,6 +215,7 @@ public class URLFileReader{
 						// if -1, the server is not sending back requested length so, for now, downloading 
 							output.write(data, 0, count);
 					}
+
 				} catch (Exception e) {
 					return e.toString();
 				} finally {
@@ -241,14 +253,15 @@ public class URLFileReader{
 
 		@Override
 		protected void onPostExecute(String result) {
-//			mProgressDialog.dismiss();
-			if (result != null)
-				Toast.makeText(context, "Download error: " + result,
-						Toast.LENGTH_LONG).show();
-			else
-				Toast.makeText(context, "File downloaded!", Toast.LENGTH_SHORT)
-						.show();
-		}
+            boolean erroneousFile = parseFileForError(downloadedFilePath);
+            if (result != null || erroneousFile) {
+                Toast.makeText(context, "Download error: " + "You have specified a private IGSN", Toast.LENGTH_LONG).show();
+                File fileToRemove = new File(downloadedFilePath);
+                fileToRemove.delete();
+            } else {
+                Toast.makeText(context, "File downloaded!", Toast.LENGTH_SHORT).show();
+            }
+        }
 		
 		@Override
 		protected void onCancelled(String result) {
@@ -260,9 +273,46 @@ public class URLFileReader{
 						Toast.LENGTH_LONG).show();
 			}
 		}
-		
+
+        /*
+        Splits report settings file name
+        */
+        private String splitFileName(String fileName){
+            String[] fileNameParts = fileName.split("/");
+            String newFileName = fileNameParts[fileNameParts.length-1];
+            return newFileName;
+        }
+
+        /*
+        Parses file for error
+         */
+        protected boolean parseFileForError(String downloadedFilePath){
+            boolean erroneousFile = false;
+            try {
+                // Begins the parsing of the file
+                File fXmlFile = new File(downloadedFilePath);
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                DomParser parser = new DomParser();
+                Document doc = dBuilder.parse(fXmlFile);
+
+                // Get the document's root XML nodes to see if file contains an error
+                NodeList root = doc.getChildNodes();
+                if(parser.getNode("results", root) != null) {
+                    Node rootNode = parser.getNode("results", root);
+                    NodeList rootNodes = rootNode.getChildNodes();
+                    String errorMessage = parser.getNodeValue("error", rootNodes);
+                    erroneousFile = true;
+                }
+            }catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return erroneousFile;
+        }
 	}
-	
+
+
 	// The accessors and mutators of the outer class
 	
 	public String getFileType() {
