@@ -106,12 +106,14 @@ public class HomeScreenActivity extends Activity  {
      */
     protected void createDirectories() throws FileNotFoundException {
         boolean defaultReportSettingsPresent = false; // detemines whether the report settings is present or not
+        boolean defaultReportSettings2Present = false; // detemines whether the report settings is present or not
 
         // Establishes the CHRONI folders
         File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
         File aliquotDirectory = new File(chroniDirectory, "Aliquot");
         File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
         File defaultReportSettingsDirectory = new File(reportSettingsDirectory, "Default Report Settings");
+        File defaultReportSettings2Directory = new File(reportSettingsDirectory, "Default Report Settings 2");
 
         // Creates the directories if they are not there
         if (!chroniDirectory.exists()) {
@@ -133,26 +135,40 @@ public class HomeScreenActivity extends Activity  {
         for (File f : files) {
             if (f.getName().contentEquals("Default Report Settings.xml")) {
                 defaultReportSettingsPresent = true;
+            }if (f.getName().contentEquals("Default Report Settings 2.xml")) {
+                defaultReportSettings2Present = true;
             }
         }
-        if (!defaultReportSettingsPresent) {
 
             if (mWifi.isConnected()) {
-                // Downloads the default report setting file if absent
-                URLFileReader downloader = new URLFileReader(
-                        HomeScreenActivity.this,
-                        "HomeScreen",
-                        "http://cirdles.org/sites/default/files/Downloads/CIRDLESDefaultReportSettings.xml",
-                        "url");
-                saveInitialLaunch();
-                saveCurrentReportSettings();
+
+                // Downloads default report settings 1 if not present
+                if (!defaultReportSettingsPresent) {
+                    // Downloads the default report setting file if absent
+                    URLFileReader downloader = new URLFileReader(
+                            HomeScreenActivity.this,
+                            "HomeScreen",
+                            "http://cirdles.org/sites/default/files/Downloads/CIRDLESDefaultReportSettings.xml",
+                            "url");
+                    saveInitialLaunch();
+                    saveCurrentReportSettings();         // Notes that files have been downloaded and application has been properly initialized
+                }
+
+                if (!defaultReportSettings2Present) {
+                    // Downloads the default report setting file if absent
+                    URLFileReader downloader2 = new URLFileReader(
+                            HomeScreenActivity.this,
+                            "HomeScreen",
+                            "http://cirdles.org/sites/default/files/Downloads/Default%20Report%20Settings%202.xml",
+                            "url");
+                    saveInitialLaunch();
+                    saveCurrentReportSettings();         // Notes that files have been downloaded and application has been properly initialized
+                }
+
+            }else {
+                Toast.makeText(HomeScreenActivity.this, "Please connect to your local wifi network to download your Default Report Settings files.", Toast.LENGTH_LONG).show();
             }
-            // Notes that files have been downloaded and application has been
-            // properly initialized
-         else {
-            Toast.makeText(HomeScreenActivity.this, "Please connect to your local wifi network to download your Default Report Settings file.", Toast.LENGTH_LONG).show();
-        }
-        }
+
     }
 
     /*

@@ -31,6 +31,7 @@ public class URLFileReader{
 	private String fileName = "file_name";	// generated name of the file
 	private String fileType;	// Report Settings or Aliquot File
 	private String fileURL;	// the URL of the file
+    private String className; // the name of the class
 	private String downloadMethod; // the type of download used to get file (igsn or url)
 	private Context classContext; // an instance of the activity's context for memory access
 	
@@ -41,19 +42,20 @@ public class URLFileReader{
 		setFileURL(URL); // Sets the URL for download
 		setDownloadMethod(downloadMethod); // sets download type
 		setClassContext(classContext);
+        setClassName(className);
 		// Sets the type of file being accessed for saving purposes
 		startFileDownload(classContext, className);
 		}
 
 	public void startFileDownload(Context classContext, String className){
 		if(className.contentEquals("HomeScreen")){
-		// Sets the type of file and URL being accessed for saving purposes of the default Report Settings
-		setFileType("Report Settings");
-		setFileName("Default Report Settings");	// Always downloading Default RS here
-		
-		// Sets up the Download thread 
-		final DownloadTask downloadTask = new DownloadTask(classContext);		
-		downloadTask.execute(fileURL); // retrieves the file from the specified URL
+            // Sets the type of file and URL being accessed for saving purposes of the default Report Settings
+            setFileType("Report Settings");
+            setFileName(createFileName());	// Always downloading Default RS here
+
+            // Sets up the Download thread
+            final DownloadTask downloadTask = new DownloadTask(classContext);
+            downloadTask.execute(fileURL); // retrieves the file from the specified URL
 		}else{
 			if(className.contentEquals("AliquotMenu")){
 				// Sets the type of file and URL being accessed for saving purposes
@@ -78,6 +80,7 @@ public class URLFileReader{
 	 */
 	protected String createFileName() {
 		String name = null;
+
 		if(getFileType().contains("Aliquot")){
 			// If downloading based on IGSN URL, just use IGSN for name
 			if(downloadMethod.contains("igsn")){
@@ -100,7 +103,7 @@ public class URLFileReader{
 					name = newName[0];
 				}
 			}
-		}else if(getFileType().contains("Report Settings")){
+		}else if(getFileType().contains("Report Settings") && !getClassName().contentEquals("HomeScreen")){
 //			if(!getFileName().contains("Default Report Settings")){
 				String[] URL = getFileURL().split("/");
 				name = URL[URL.length-1];
@@ -111,6 +114,15 @@ public class URLFileReader{
 //				}			
 			}
 		}
+
+        if(getClassName().contentEquals("HomeScreen")) {
+            if(fileURL.contentEquals("http://cirdles.org/sites/default/files/Downloads/CIRDLESDefaultReportSettings.xml")){
+                name = "Default Report Settings";
+            }if(fileURL.contentEquals("http://cirdles.org/sites/default/files/Downloads/Default%20Report%20Settings%202.xml")){
+                name = "Default Report Settings 2";
+            }
+        }
+
 		return name;
 	}
 	
@@ -140,8 +152,16 @@ public class URLFileReader{
 			}
         return in; 
 	}
-	
-	// subclass of AsyncTask to handle web request in background
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    // subclass of AsyncTask to handle web request in background
 	private class DownloadTask extends AsyncTask<String, Integer, String> {
 		private Context context;
 
