@@ -21,6 +21,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -219,11 +220,6 @@ public class TablePainterActivity extends Activity {
         ScrollView scrollPane = (ScrollView) findViewById(R.id.scrollPane); // Vertical scrolling for the aliquot portion of the table
         TableLayout aliquotDataTable = (TableLayout) findViewById(R.id.finalTable); // the aliquot specific info contained here
 
-//    // Clears the previous table
-//        for(int currentRow = 0; currentRow < aliquotDataTable.getChildCount(); currentRow++){
-//            aliquotDataTable.removeViewAt(currentRow);
-//            }
-
         // calculates number of rows based on the size of the fraction, five is separately
         // added for the Report Settings category rows
         final int ROWS = 5 + fractionMap.size();
@@ -246,7 +242,6 @@ public class TablePainterActivity extends Activity {
 
             // loops through number of columns and adds text views to each row.
             // this creates cells!
-//            for (int j = 0; j < COLS; j++) {
             for (int j = 0; j < outputVariableName.size(); j++) {
 
                 TextView cell = new TextView(this);
@@ -313,12 +308,39 @@ public class TablePainterActivity extends Activity {
             rowCount++;
         }
 
-//        // Goes through and distributes columns correctly
-//        for (int i = 0; i < ROWS; i++) {
-//            for (int j = 0; j < outputVariableName.size(); j++) {
+
+        // Goes through and distributes rows correctly
+//        for (int currentColumn = 0; currentColumn < outputVariableName.size(); currentColumn++) {
+//            int widestCellLength = 0;
+//            int currentCellWidth = 0;
+//            for (int currentRow = 2; currentRow < ROWS; currentRow++) {
+//                if(currentRow <4) {
+//                    TableRow headerTableRow = (TableRow) tableLayout.getChildAt(currentRow);
+//                    TextView currentCell = (TextView)headerTableRow.getChildAt(currentRow); // get child index on particular row
+//                    currentCellWidth = currentCell.getWidth();
+//                }else{
+////                    TableRow aliquotTableRow = (TableRow) tableLayout.getChildAt(currentRow);
+////                    TextView currentCell = (TextView)aliquotTableRow.getChildAt(currentRow); // get child index on particular row
+////                    currentCellWidth = currentCell.getWidth();
+//                }
+//                    Log.i("Column: " + currentColumn +  " Cell: " + currentRow + " Width: " + currentCellWidth, "Measuring");
 //
+//                if(currentCellWidth > widestCellLength){
+//                    widestCellLength = currentCellWidth;
+//                }
 //
+//                Log.i("Widest Cell: " + widestCellLength, "Result");
+//
+//            }
 //        }
+
+    }
+
+    /*
+    Goes through and distribute columns correctly given a table
+     */
+    protected void distributeColumnsAppropriately(){
+
     }
 
     /*
