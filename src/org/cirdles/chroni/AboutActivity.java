@@ -8,12 +8,15 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 
 public class AboutActivity extends Activity  {
@@ -27,6 +30,11 @@ public class AboutActivity extends Activity  {
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.about);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+
+        // Makes text scrollable
+        TextView aboutText = (TextView) findViewById(R.id.aboutText);
+        aboutText.setMovementMethod(new ScrollingMovementMethod());
+
 
         Button aboutHomeButton = (Button) findViewById(R.id.aboutHomeButton);
         aboutHomeButton.setOnClickListener(new View.OnClickListener() {
