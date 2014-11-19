@@ -129,13 +129,10 @@ public class MainMenuActivity extends Activity {
                         Uri.parse("http://chronihelpblog.wordpress.com"));
                 startActivity(openHelpBlog);
                 return true;
-            case R.id.exitProgram:
-                finish();
-                System.exit(0);
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
 }

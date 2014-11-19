@@ -73,7 +73,7 @@
         android:background="@color/button_blue"
         android:minHeight="100dip"
         android:minWidth="400dip"
-        android:text="Profile"
+        android:text="Credentials"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
         android:textSize="50sp" />

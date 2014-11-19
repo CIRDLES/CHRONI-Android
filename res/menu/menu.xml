@@ -6,7 +6,7 @@
         android:title="Main Menu"/>
     <item
         android:id="@+id/editProfileMenu"
-        android:title="Edit Profile"/>
+        android:title="Edit Credentials"/>
     
     <item android:id="@+id/viewFilesMenu"
         android:title="View Files" >
@@ -25,8 +25,5 @@
     <item
         android:id="@+id/helpMenu"
         android:title="Help"/>
-    <item
-        android:id="@+id/exitProgram"
-        android:title="Exit"/>
     
 </menu>
