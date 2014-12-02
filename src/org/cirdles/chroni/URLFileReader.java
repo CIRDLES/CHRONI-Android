@@ -11,11 +11,15 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import org.w3c.dom.Document;
@@ -28,16 +32,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class URLFileReader{
 
 //	private ProgressDialog mProgressDialog;
-	private String fileName = "file_name";	// generated name of the file
+	private String fileName = "";	// generated name of the file
 	private String fileType;	// Report Settings or Aliquot File
 	private String fileURL;	// the URL of the file
     private String className; // the name of the class
 	private String downloadMethod; // the type of download used to get file (igsn or url)
 	private Context classContext; // an instance of the activity's context for memory access
-	
-	/*
-	 * Sets up the Progress Bar and retrieves default Report Settings File from CIRDLES.org
-	 */
+
 	public URLFileReader(Context classContext, String className, String URL, String downloadMethod){
 		setFileURL(URL); // Sets the URL for download
 		setDownloadMethod(downloadMethod); // sets download type
@@ -46,6 +47,16 @@ public class URLFileReader{
 		// Sets the type of file being accessed for saving purposes
 		startFileDownload(classContext, className);
 		}
+
+    public URLFileReader(Context classContext, String className, String URL, String downloadMethod, String fileName){
+        setFileURL(URL); // Sets the URL for download
+        setDownloadMethod(downloadMethod); // sets download type
+        setClassContext(classContext);
+        setClassName(className);
+        setFileName(fileName);
+        // Sets the type of file being accessed for saving purposes
+        startFileDownload(classContext, className);
+    }
 
 	public void startFileDownload(Context classContext, String className){
 		if(className.contentEquals("HomeScreen")){
@@ -60,12 +71,16 @@ public class URLFileReader{
 			if(className.contentEquals("AliquotMenu")){
 				// Sets the type of file and URL being accessed for saving purposes
 				setFileType("Aliquot");
-				setFileName(createFileName());	// generates file name based on URL
+                if(getFileName().isEmpty()){
+    				setFileName(createFileName());
+                }	// generates file name based on URL
 			}
 			else if(className.contentEquals("ReportSettingsMenu")){
 				// Sets the type of file and URL being accessed for saving purposes
 				setFileType("Report Settings");
-				setFileName(createFileName());	// generates file name based on URL
+                if(getFileName().isEmpty()) {
+                    setFileName(createFileName());
+                }// generates file name based on URL
 			}
 		
 			// Sets up the Download thread 
@@ -125,6 +140,7 @@ public class URLFileReader{
 
 		return name;
 	}
+
 	
 	public final static InputStream getInputStreamFromURI(String URI){
         InputStream in = null;
@@ -209,7 +225,7 @@ public class URLFileReader{
 						}else{
                             downloadedFilePath = aliquotDirectory+ "/" + fileName + ".xml";
 							output = new FileOutputStream(aliquotDirectory+ "/" + fileName + ".xml");
-//							AliquotMenuActivity.setAbsoluteFileName(aliquotDirectory+ "/" + fileName + ".xml");
+//							AliquotMenuActivity.setAbsoluteFilePath(aliquotDirectory+ "/" + fileName + ".xml");
 						}
 					}else if(fileType.contains("Report Settings")){
                         downloadedFilePath = reportSettingsDirectory + "/" + fileName + ".xml";

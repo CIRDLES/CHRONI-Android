@@ -44,6 +44,7 @@ public class AboutActivity extends Activity  {
             }
         });
 
+
         Button testFileNameInputButton = (Button) findViewById(R.id.testFileNameInputButton);
         testFileNameInputButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

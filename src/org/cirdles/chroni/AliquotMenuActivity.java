@@ -1,8 +1,9 @@
 package org.cirdles.chroni;
 
 import java.io.File;
-import java.util.ArrayList;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -13,20 +14,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.os.Looper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
-import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 public class AliquotMenuActivity extends Activity {
 
@@ -35,9 +29,9 @@ public class AliquotMenuActivity extends Activity {
     private EditText aliquotFileSelectText, aliquotIGSNText, aliquotURLText;
 
     private String selectedAliquot, aliquotIGSN, aliquotURL, aliquotLocation, aliquot; // the Aliquot values
-	private static String absoluteFileName;
+	private static String absoluteFilePath; // the path of the Aliquot file
     public static boolean aliquotFound;
-
+    private String finalAliquotFileName; // the user specififed filename
     private String[][] finalTable; // the table created from parsing the two files
     private boolean invalidFile = false; // true if file attempted to be downloaded is invalid
     private static boolean privateFile = false;
@@ -78,11 +72,14 @@ public class AliquotMenuActivity extends Activity {
 	    }
 	});
 
-	aliquotFileSelectText = (EditText) findViewById(R.id.aliquotFileSelectText);
+   aliquotFileSelectText = (EditText) findViewById(R.id.aliquotFileSelectText);
+    /*
+    Will get selected file and place the file name on the file select input line
+     */
 	if (getIntent().hasExtra("AliquotXMLFileName")) {
 	    selectedAliquot = getIntent().getStringExtra("AliquotXMLFileName");
-	    String[] absoluteFileName = selectedAliquot.split("/");
-	    String fileName = absoluteFileName[absoluteFileName.length - 1];
+	    String[] filePath = selectedAliquot.split("/");
+	    String fileName = filePath[filePath.length - 1];
 	    aliquotFileSelectText.setText(fileName);
 	}
 
@@ -95,9 +92,6 @@ public class AliquotMenuActivity extends Activity {
 			    "android.intent.action.DISPLAY");
 		    openMainMenu.putExtra("AliquotXML", getIntent()
 			    .getStringExtra("AliquotXMLFileName"));
-//		    TableBuilder.setAliquotPath(getIntent().getStringExtra("AliquotXMLFileName"));
-		    // Sends Aliquot XML path for file parsing
-//		    TableBuilder.buildTable();
 		    startActivity(openMainMenu);
 		}
 	    }
@@ -129,22 +123,8 @@ public class AliquotMenuActivity extends Activity {
             Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show();
             URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
 
-            setAbsoluteFileName(aliquotDirectory + "/" + aliquotIGSN + ".xml");
-//            Thread timer = new Thread() {
-//                public void run() {
-//                    try {
-//                        sleep(3500); // gives file download three seconds to complete
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    } finally {
-////                        Looper.prepare();
-////                        Intent openMainMenu = new Intent("android.intent.action.DISPLAY");
-////                        openMainMenu.putExtra("AliquotXML", getAbsoluteFileName());
-////                        startActivity(openMainMenu);
-//                    }
-//                }
-//            };
-//            timer.start();
+            setAbsoluteFilePath(aliquotDirectory + "/" + aliquotIGSN + ".xml");
+
         	}
 		}else{
                 //Handles lack of wifi connection
@@ -166,42 +146,60 @@ public class AliquotMenuActivity extends Activity {
             NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
             if (mWifi.isConnected()) {
-		if (aliquotURLText.getText().length() != 0) {
-		    aliquotURL = aliquotURLText.getText().toString().trim();
-		    // Downloads Aliquot file from URL
-            Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show();
-            URLFileReader downloader = new URLFileReader(
-			    AliquotMenuActivity.this, "AliquotMenu",
-			    aliquotURL, "url");
-		    setAbsoluteFileName(aliquotDirectory + "/" + createFileName("url", aliquotURL) + ".xml");
-				}
+		        if (aliquotURLText.getText().length() != 0) {
+                    aliquotURL = aliquotURLText.getText().toString().trim();
+                    // Downloads Aliquot file from URL
+
+                    requestFileName(); // Prompts the user for a file name and sets it as the final file name and begins download
+
+                     }
             }else{
                 //Handles lack of wifi connection
                 Toast.makeText(AliquotMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
+                }
             }
-		}
-	    });
+        });
     }
 
     /*
-    Parses the aliquot and report settings files to get the info for the display table
+    Currently requests file name from user and then proceeds to download based on input
      */
-//    private String[][] createDisplayTable(String aliquotPath) {
-//        // Directories needed to place files in accurate locations
-//        File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
-//        File aliquotDirectory = new File(chroniDirectory, "Aliquot");
-//        File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
-//
-//        String reportSettingsPath = String.valueOf(new File(chroniDirectory, "Report Settings")) + "/Default Report Settings.xml"; // sets default Report Settings XML
-//        if (getIntent().getStringExtra("ReportSettingsXML") != null) {
-//            reportSettingsPath = getIntent().getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
-//        }
-//
-//        // Creates the display table
-//        TableBuilder tableBuilder = new TableBuilder(reportSettingsPath, aliquotPath);
-//        String[][] finalTable = tableBuilder.buildTable();
-//        return finalTable;
-//    }
+        public void requestFileName(){
+
+            // Directories needed for file locations
+            final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE);
+            final File aliquotDirectory = new File(chroniDirectory, "Aliquot");
+
+            AlertDialog.Builder userFileNameAlert = new AlertDialog.Builder(AliquotMenuActivity.this);
+
+                userFileNameAlert.setTitle("Choose a file name");
+                userFileNameAlert.setMessage("Enter the desired name of your Aliquot URL file:");
+
+                // Set an EditText view to get user input
+                final EditText input = new EditText(AliquotMenuActivity.this);
+                userFileNameAlert.setView(input);
+
+                userFileNameAlert.setPositiveButton("Set File Name", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        if (input.getText().toString().length() != 0) {
+                            setFinalAliquotFileName(input.getText().toString()); // sets the user file name in the class
+                            URLFileReader downloader = new URLFileReader(
+                                    AliquotMenuActivity.this, "AliquotMenu",
+                                    aliquotURL, "url", getFinalAliquotFileName()); // Downloads the file and sets user name
+                            setAbsoluteFilePath(aliquotDirectory + "/" + getFinalAliquotFileName() + ".xml");
+                            Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+                userFileNameAlert.setNegativeButton("Cancel Download", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                userFileNameAlert.show();
+            }
 
     /*
 	 * Creates file name based on the file's type and URL
@@ -215,10 +213,10 @@ public class AliquotMenuActivity extends Activity {
 			if(name.contains("&username=")){
 				// Makes an additional split to remove the username and password query from the file name
 				String[] url2 = name.split("&username=");
-				name = url2[0]; 
+				name = url2[0];
 			}
 			}
-			
+
 			// if downloading based on URL, makes name from ending of URL
 			else if(downloadMethod.contains("url")){
 				String[] URL = fileUrl.split("/");
@@ -231,7 +229,7 @@ public class AliquotMenuActivity extends Activity {
 			}
 		return name;
 	}
-    
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	if (resultCode == RESULT_OK) {
@@ -310,12 +308,12 @@ public class AliquotMenuActivity extends Activity {
 		this.geochronPassword = geochronPassword;
 	}
 
-	public String getAbsoluteFileName() {
-		return absoluteFileName;
+	public String getAbsoluteFilePath() {
+		return absoluteFilePath;
 	}
 
-	public void setAbsoluteFileName(String absoluteFileName) {
-		this.absoluteFileName = absoluteFileName;
+	public void setAbsoluteFilePath(String absoluteFileName) {
+		this.absoluteFilePath = absoluteFileName;
 	}
 
     @Override
@@ -360,4 +358,11 @@ public class AliquotMenuActivity extends Activity {
         }
     }
 
+    public String getFinalAliquotFileName() {
+        return finalAliquotFileName;
+    }
+
+    public void setFinalAliquotFileName(String finalAliquotFileName) {
+        this.finalAliquotFileName = finalAliquotFileName;
+    }
 }
