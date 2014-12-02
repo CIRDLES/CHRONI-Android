@@ -45,36 +45,6 @@ public class AboutActivity extends Activity  {
         });
 
 
-        Button testFileNameInputButton = (Button) findViewById(R.id.testFileNameInputButton);
-        testFileNameInputButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(AboutActivity.this);
-
-                alert.setTitle("DEMO - Select a file name");
-                alert.setMessage("Enter the desired name of your file below!");
-
-// Set an EditText view to get user input
-                final EditText input = new EditText(AboutActivity.this);
-                alert.setView(input);
-
-                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        if(input.getText().toString().length() != 0) {
-                            String userFileName = input.getText().toString();
-                            // Do something with value!
-                        }
-                    }
-                });
-
-                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Canceled.
-                    }
-                });
-
-                alert.show();
-            }
-        });
 
     }
 

@@ -2,6 +2,8 @@ package org.cirdles.chroni;
 
 import java.io.File;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -28,8 +30,8 @@ public class ReportSettingsMenuActivity extends Activity {
     private String selectedReportSettings; // name of Report Settings file that
     // has been chosen for viewing
     private String reportSettingsUrl; // name of Report Settings URL
-    private String absoluteFileName; // path of selected Report Settings file
-
+    private String absoluteFilePath; // path of selected Report Settings file
+    private String finalReportSettingsFileName; // name of the report settings file to be downloaded
     private static final String PREF_REPORT_SETTINGS = "Current Report Settings";     // Path of the current report settungs file
 
     @Override
@@ -116,13 +118,14 @@ public class ReportSettingsMenuActivity extends Activity {
                         reportSettingsUrl = reportSettingsUrlText.getText()
                                 .toString().trim();
 
-                        // Downloads Report Settings file from URL
-                        Toast.makeText(ReportSettingsMenuActivity.this, "Downloading Report Settings...", Toast.LENGTH_LONG).show();
-
-                        URLFileReader downloader = new URLFileReader(ReportSettingsMenuActivity.this,   "ReportSettingsMenu", reportSettingsUrl, "url");
-
-                                    setAbsoluteFileName(reportSettingsDirectory + "/" + createFileName("url", reportSettingsUrl) + ".xml");
-                                    saveCurrentReportSettings();
+                        requestFileName();
+//                        // Downloads Report Settings file from URL
+//                        Toast.makeText(ReportSettingsMenuActivity.this, "Downloading Report Settings...", Toast.LENGTH_LONG).show();
+//
+//                        URLFileReader downloader = new URLFileReader(ReportSettingsMenuActivity.this,   "ReportSettingsMenu", reportSettingsUrl, "url");
+//
+//                                    setAbsoluteFilePath(reportSettingsDirectory + "/" + createFileName("url", reportSettingsUrl) + ".xml");
+//                                    saveCurrentReportSettings();
                     }
                 }else{
                     //Handles lack of wifi connection
@@ -131,6 +134,50 @@ public class ReportSettingsMenuActivity extends Activity {
             }
         });
     }
+
+    /*
+   Currently requests file name from user and then proceeds to download based on input
+    */
+    public void requestFileName(){
+
+        // Directories needed for file locations
+        final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE);
+        final File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
+
+        AlertDialog.Builder userFileNameAlert = new AlertDialog.Builder(ReportSettingsMenuActivity.this);
+
+        userFileNameAlert.setTitle("Choose a file name");
+        userFileNameAlert.setMessage("Enter the desired name of your Report Settings URL file:");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(ReportSettingsMenuActivity.this);
+        userFileNameAlert.setView(input);
+
+        userFileNameAlert.setPositiveButton("Start Download!", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                if (input.getText().toString().length() != 0) {
+                    setFinalReportSettingsFileName(input.getText().toString()); // sets the user file name in the class
+
+                    URLFileReader downloader = new URLFileReader(ReportSettingsMenuActivity.this,   "ReportSettingsMenu", reportSettingsUrl, "url", getFinalReportSettingsFileName());
+                    setAbsoluteFilePath(reportSettingsDirectory + "/" + getFinalReportSettingsFileName() + ".xml");
+                    saveCurrentReportSettings();
+
+                    Toast.makeText(ReportSettingsMenuActivity.this, "Downloading Report Settings...", Toast.LENGTH_LONG).show();
+
+                }
+            }
+        });
+
+        userFileNameAlert.setNegativeButton("Cancel Download", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        userFileNameAlert.show();
+    }
+
+
 
     /*
 	 * Creates file name based on the file's type and URL
@@ -148,12 +195,12 @@ public class ReportSettingsMenuActivity extends Activity {
         return name;
     }
 
-    public String getAbsoluteFileName() {
-        return absoluteFileName;
+    public String getAbsoluteFilePath() {
+        return absoluteFilePath;
     }
 
-    public void setAbsoluteFileName(String absoluteFileName) {
-        this.absoluteFileName = absoluteFileName;
+    public void setAbsoluteFilePath(String absoluteFilePath) {
+        this.absoluteFilePath = absoluteFilePath;
     }
 
     /*
@@ -233,4 +280,11 @@ public class ReportSettingsMenuActivity extends Activity {
     }
 
 
+    public String getFinalReportSettingsFileName() {
+        return finalReportSettingsFileName;
+    }
+
+    public void setFinalReportSettingsFileName(String finalReportSettingsFileName) {
+        this.finalReportSettingsFileName = finalReportSettingsFileName;
+    }
 }

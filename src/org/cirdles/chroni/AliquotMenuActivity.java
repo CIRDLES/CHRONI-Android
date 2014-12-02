@@ -179,7 +179,7 @@ public class AliquotMenuActivity extends Activity {
                 final EditText input = new EditText(AliquotMenuActivity.this);
                 userFileNameAlert.setView(input);
 
-                userFileNameAlert.setPositiveButton("Set File Name", new DialogInterface.OnClickListener() {
+                userFileNameAlert.setPositiveButton("Start Download!", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if (input.getText().toString().length() != 0) {
                             setFinalAliquotFileName(input.getText().toString()); // sets the user file name in the class
@@ -215,17 +215,7 @@ public class AliquotMenuActivity extends Activity {
 				String[] url2 = name.split("&username=");
 				name = url2[0];
 			}
-			}
 
-			// if downloading based on URL, makes name from ending of URL
-			else if(downloadMethod.contains("url")){
-				String[] URL = fileUrl.split("/");
-				name = URL[URL.length-1];
-				if (name.contains(".xml")){
-					// Removes the file name ending from XML files
-					String [] newName = name.split(".xml");
-					name = newName[0];
-				}
 			}
 		return name;
 	}
