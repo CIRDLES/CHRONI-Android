@@ -284,6 +284,7 @@ public class URLFileReader{
                 erroneousFile = parseAliquotFileForError(downloadedFilePath);
                 if (result != null || erroneousFile) {
                     Toast.makeText(context, "Download error: " + "You have specified a private IGSN", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Enter your profile information to access this private IGSN file.", Toast.LENGTH_LONG).show();
                     File fileToRemove = new File(downloadedFilePath);
                     fileToRemove.delete();
                 } else {
