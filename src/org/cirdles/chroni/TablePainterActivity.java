@@ -223,8 +223,11 @@ public class TablePainterActivity extends Activity {
         // calculates number of rows based on the size of the fraction, five is separately
         // added for the Report Settings category rows
         final int ROWS = 5 + fractionMap.size();
-//        final int COLS = getColumnCount();
+        final int COLS = outputVariableName.size();
         int rowCount = 0;
+
+        // Gets column sizes from string array
+        int[] columnSizes = distributeColumnsAppropriately(finalArray, ROWS, COLS);
 
         // Table Layout Printing
         for (int i = 0; i < ROWS; i++) {
@@ -242,10 +245,11 @@ public class TablePainterActivity extends Activity {
 
             // loops through number of columns and adds text views to each row.
             // this creates cells!
-            for (int j = 0; j < outputVariableName.size(); j++) {
-
+            for (int j = 0; j < COLS; j++) {
                 TextView cell = new TextView(this);
-                cell.setWidth(205);
+                cell.setTypeface(Typeface.MONOSPACE);
+                cell.setMinEms(columnSizes[j] - 1); // sets column spacing based on max character count
+//                cell.setWidth(205);
                 cell.setPadding(3, 4, 3, 4);
                 cell.setTextColor(Color.BLACK);
                 cell.setTextSize((float) 14.5);
@@ -253,6 +257,7 @@ public class TablePainterActivity extends Activity {
 
                 if (rowCount < 5) {
                     cell.setTypeface(Typeface.DEFAULT_BOLD);
+                    cell.setTypeface(Typeface.MONOSPACE);
                     cell.setGravity(Gravity.CENTER);
                 }
 
@@ -276,6 +281,8 @@ public class TablePainterActivity extends Activity {
                     cell.setTextColor(Color.WHITE);
                     cell.setBackgroundResource(R.drawable.light_blue_background);
                     cell.setTypeface(Typeface.DEFAULT_BOLD);
+                    cell.setTypeface(Typeface.MONOSPACE);
+
                 } else {
                     // header rows and all other body rows
                     cell.setBackgroundResource(R.drawable.white_background);
@@ -309,38 +316,33 @@ public class TablePainterActivity extends Activity {
         }
 
 
-        // Goes through and distributes rows correctly
-//        for (int currentColumn = 0; currentColumn < outputVariableName.size(); currentColumn++) {
-//            int widestCellLength = 0;
-//            int currentCellWidth = 0;
-//            for (int currentRow = 2; currentRow < ROWS; currentRow++) {
-//                if(currentRow <4) {
-//                    TableRow headerTableRow = (TableRow) tableLayout.getChildAt(currentRow);
-//                    TextView currentCell = (TextView)headerTableRow.getChildAt(currentRow); // get child index on particular row
-//                    currentCellWidth = currentCell.getWidth();
-//                }else{
-////                    TableRow aliquotTableRow = (TableRow) tableLayout.getChildAt(currentRow);
-////                    TextView currentCell = (TextView)aliquotTableRow.getChildAt(currentRow); // get child index on particular row
-////                    currentCellWidth = currentCell.getWidth();
-//                }
-//                    Log.i("Column: " + currentColumn +  " Cell: " + currentRow + " Width: " + currentCellWidth, "Measuring");
-//
-//                if(currentCellWidth > widestCellLength){
-//                    widestCellLength = currentCellWidth;
-//                }
-//
-//                Log.i("Widest Cell: " + widestCellLength, "Result");
-//
-//            }
-//        }
 
     }
 
     /*
-    Goes through and distribute columns correctly given a table
+    Goes through and figures out columns lengths given a table
      */
-    protected void distributeColumnsAppropriately(){
+    protected int[] distributeColumnsAppropriately(String[][] finalArray, int ROWS, int COLS){
+        int[] columnMaxCharacterCounts = new int[COLS];
+        for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
+            int widestCellCharacterCount = 0;
+            int currentCellCharacterCount = 0;
+            for (int currentRow = 0; currentRow < ROWS; currentRow++) {
+//                Log.i("Column: " + currentColumn +  " Cell: " + currentRow + " Width: " + currentCellCharacterCount, "Measuring");
 
+                currentCellCharacterCount = finalArray[currentRow][currentColumn].length();
+
+                if(currentCellCharacterCount > widestCellCharacterCount){
+                    widestCellCharacterCount = currentCellCharacterCount;
+                }
+
+//                Log.i("Widest Cell: " + widestCellCharacterCount, "Result");
+            }
+
+            columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount;
+//            Log.i("Column: " + currentColumn +  " Widest Cell: " + widestCellCharacterCount, "Measuring");
+        }
+        return columnMaxCharacterCounts;
     }
 
     /*
