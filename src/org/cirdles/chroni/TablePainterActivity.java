@@ -134,8 +134,9 @@ public class TablePainterActivity extends Activity {
         String[] reportSettingsPathParts = reportSettingsPath.split("/");
         String currentReportSettingsFileName = reportSettingsPathParts[reportSettingsPathParts.length -1];
         reportSettingsCell.setText("Current Report Settings File: " + currentReportSettingsFileName);
-        reportSettingsCell.setTextColor(Color.WHITE);
-        reportSettingsCell.setBackgroundColor(getResources().getColor(R.color.button_blue));
+        reportSettingsCell.setTextColor(Color.BLACK);
+        reportSettingsCell.setTypeface(Typeface.DEFAULT_BOLD);
+        reportSettingsCell.setBackgroundResource(R.drawable.background_blue_background);
         reportSettingsCell.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         reportSettingsCell.setTextSize((float) 20);
         reportSettingsCell.setPadding(25, 25, 25, 25);
