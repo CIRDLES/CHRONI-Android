@@ -127,7 +127,29 @@ public class TablePainterActivity extends Activity {
 //        Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
 
         // Setup to add buttons
-        LinearLayout buttonTableLayout = (LinearLayout) findViewById(R.id.displayLayout); // layout handle needed for buttons
+        TableRow labelRow = (TableRow) findViewById(R.id.labelRow); // Row for buttons
+        labelRow.setGravity(Gravity.CENTER);
+
+        TextView reportSettingsCell = new TextView(this);
+        String[] reportSettingsPathParts = reportSettingsPath.split("/");
+        String currentReportSettingsFileName = reportSettingsPathParts[reportSettingsPathParts.length -1];
+        reportSettingsCell.setText("Current Report Settings File: " + currentReportSettingsFileName);
+        reportSettingsCell.setTextColor(Color.WHITE);
+        reportSettingsCell.setBackgroundColor(getResources().getColor(R.color.button_blue));
+        reportSettingsCell.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        reportSettingsCell.setTextSize((float) 20);
+        reportSettingsCell.setPadding(25, 25, 25, 25);
+        labelRow.addView(reportSettingsCell);
+
+//        TextView aliquotCell = new TextView(this);
+//        aliquotCell.setText("Aliquot");
+//        aliquotCell.setTextColor(Color.LTGRAY);
+//        aliquotCell.setBackgroundColor(getResources().getColor(R.color.button_blue));
+//        aliquotCell.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//        aliquotCell.setTextSize((float) 15);
+//        aliquotCell.setPadding(15, 15, 15, 15);
+//        labelRow.addView(aliquotCell);
+
         TableRow buttonRow = (TableRow) findViewById(R.id.buttonRow);
         buttonRow.setGravity(Gravity.CENTER);
 //    buttonRow.setBackgroundColor(Color.GRAY);
@@ -135,7 +157,7 @@ public class TablePainterActivity extends Activity {
         // Creates the Report Settings button
         changeReportSettingsButton = new Button(this);
         changeReportSettingsButton.setTextColor(Color.WHITE);
-        changeReportSettingsButton.setTextSize((float) 15);
+        changeReportSettingsButton.setTextSize((float) 18);
         changeReportSettingsButton.setText("Change Report Settings");
         changeReportSettingsButton.setPadding(15, 15, 15, 15);
         changeReportSettingsButton.setGravity(Gravity.CENTER);
@@ -155,7 +177,7 @@ public class TablePainterActivity extends Activity {
         if ((imageArray[0] != null) && !(imageArray[0].getImageURL().length() == 0)) {
             viewConcordiaButton = new Button(this);
             viewConcordiaButton.setTextColor(Color.WHITE);
-            viewConcordiaButton.setTextSize((float) 15);
+            viewConcordiaButton.setTextSize((float) 18);
             viewConcordiaButton.setText("Concordia Plot");
             viewConcordiaButton.setPadding(15, 15, 15, 15);
             viewConcordiaButton.setGravity(Gravity.CENTER);
