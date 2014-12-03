@@ -155,7 +155,13 @@ Currently requests file name from user and then proceeds to download based on in
         userFileNameAlert.setPositiveButton("Start Download!", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 if (input.getText().toString().length() != 0) {
-                    setFinalReportSettingsFileName(input.getText().toString()); // sets the user file name in the class
+                    if(input.getText().toString().contains(".xml")) { // Removes user added .xml
+                        String[] inputText = input.getText().toString().split(".xml");
+                        String userFileName = inputText[0];
+                        setFinalReportSettingsFileName(userFileName); // sets the user file name in the class
+                    }else {
+                        setFinalReportSettingsFileName(input.getText().toString()); // sets the user file name in the class
+                    }
                     URLFileReader downloader = new URLFileReader(
                             ReportSettingsMenuActivity.this, "ReportSettingsMenu",
                             reportSettingsUrl, "url", getFinalReportSettingsFileName()); // Downloads the file and sets user name
