@@ -118,16 +118,6 @@ public class URLFileReader{
 					name = newName[0];
 				}
 			}
-		}else if(getFileType().contains("Report Settings") && !getClassName().contentEquals("HomeScreen")){
-//			if(!getFileName().contains("Default Report Settings")){
-				String[] URL = getFileURL().split("/");
-				name = URL[URL.length-1];
-				if (name.contains(".xml")){
-					// Removes the file name ending from XML files
-					String [] newName = name.split(".xml");
-					name = newName[0];
-//				}			
-			}
 		}
 
         if(getClassName().contentEquals("HomeScreen")) {
