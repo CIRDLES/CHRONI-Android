@@ -58,7 +58,7 @@ public class MainMenuActivity extends Activity {
 	    }
 	});
 
-	historyButton = (Button) findViewById(R.id.chroniDirectoryButton);
+	historyButton = (Button) findViewById(R.id.menuHistoryButton);
 	historyButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
 		Intent openHistoryTable = new Intent(
@@ -67,7 +67,7 @@ public class MainMenuActivity extends Activity {
 	    }
 	});
 
-	profileButton = (Button) findViewById(R.id.deviceDirectoryButton);
+	profileButton = (Button) findViewById(R.id.chroniDirectoryButton);
 	profileButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
 		Intent openUserProfile = new Intent(

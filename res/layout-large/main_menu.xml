@@ -34,10 +34,10 @@
         android:textSize="100sp" />
 
     <Button
-        android:id="@+id/chroniDirectoryButton"
+        android:id="@+id/menuHistoryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/deviceDirectoryButton"
+        android:layout_above="@+id/chroniDirectoryButton"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="25dp"
         android:background="@color/button_blue"
@@ -52,8 +52,8 @@
         android:id="@+id/menuOpenButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/chroniDirectoryButton"
-        android:layout_alignLeft="@+id/chroniDirectoryButton"
+        android:layout_above="@+id/menuHistoryButton"
+        android:layout_alignLeft="@+id/menuHistoryButton"
         android:layout_marginBottom="24dp"
         android:background="@color/button_blue"
         android:minHeight="100dp"
@@ -64,11 +64,11 @@
         android:textSize="50sp" />
 
     <Button
-        android:id="@+id/deviceDirectoryButton"
+        android:id="@+id/chroniDirectoryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/versionNumberFileBrowserMenu"
-        android:layout_alignLeft="@+id/chroniDirectoryButton"
+        android:layout_alignLeft="@+id/menuHistoryButton"
         android:layout_marginBottom="33dp"
         android:background="@color/button_blue"
         android:minHeight="100dip"
