@@ -1,13 +1,7 @@
 package org.cirdles.chroni;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -46,7 +39,7 @@ public class MainMenuActivity extends Activity {
 	    String versionName = context.getPackageManager().getPackageInfo(
 		    context.getPackageName(), 0).versionName;
 
-	    versionNumber = (TextView) findViewById(R.id.versionNumberMainMenu);
+	    versionNumber = (TextView) findViewById(R.id.versionNumberFileBrowserMenu);
 	    versionNumber.setText("Version " + versionCode + "." + versionName);
 	    versionNumber.setTextColor(getResources().getColor(
 		    R.color.button_blue));
@@ -65,7 +58,7 @@ public class MainMenuActivity extends Activity {
 	    }
 	});
 
-	historyButton = (Button) findViewById(R.id.menuHistoryButton);
+	historyButton = (Button) findViewById(R.id.chroniDirectoryButton);
 	historyButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
 		Intent openHistoryTable = new Intent(
@@ -74,7 +67,7 @@ public class MainMenuActivity extends Activity {
 	    }
 	});
 
-	profileButton = (Button) findViewById(R.id.menuProfileButton);
+	profileButton = (Button) findViewById(R.id.deviceDirectoryButton);
 	profileButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
 		Intent openUserProfile = new Intent(

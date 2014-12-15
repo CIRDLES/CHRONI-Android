@@ -15,46 +15,31 @@
         android:id="@+id/chroniDirectoryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="337dp"
         android:background="@color/button_blue"
         android:minHeight="115dip"
         android:minWidth="500dip"
-        android:text="History"
+        android:text="CHRONI Directory"
         android:textColor="@color/white"
         android:textColorHint="@color/border_grey"
-        android:textSize="75sp" />
+        android:textSize="50sp"
+        android:layout_marginTop="106dp"
+        android:layout_below="@+id/imageView1"
+        android:layout_alignStart="@+id/deviceDirectoryButton" />
 
     <Button
         android:id="@+id/deviceDirectoryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/chroniDirectoryButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="139dp"
         android:background="@color/button_blue"
         android:minHeight="115dip"
         android:minWidth="500dip"
-        android:text="Credentials"
+        android:text="Device Directory"
         android:textColor="@color/white"
         android:textColorHint="@color/border_grey"
-        android:textSize="75sp" />
-
-    <Button
-        android:id="@+id/menuOpenButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/chroniDirectoryButton"
-        android:layout_alignLeft="@+id/chroniDirectoryButton"
-        android:layout_marginBottom="21dp"
-        android:background="@color/button_blue"
-        android:minHeight="115dip"
-        android:minWidth="500dip"
-        android:text="Open"
-        android:textColor="@color/white"
-        android:textColorHint="@color/border_grey"
-        android:textSize="75sp" />
+        android:textSize="75sp"
+        android:layout_marginBottom="96dp"
+        android:layout_above="@+id/versionNumberFileBrowserMenu"
+        android:layout_alignStart="@+id/chroniDirectoryButton" />
 
     <TextView
         android:id="@+id/versionNumberFileBrowserMenu"
@@ -67,26 +52,24 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-        android:id="@+id/testText"
+        android:id="@+id/fileBrowserHeaderText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/menuOpenButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="53dp"
-        android:text="Home"
+        android:text="Where is your file located?"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="100sp" />
+        android:textSize="50sp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/testText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="62dp"
         android:minHeight="430dp"
         android:minWidth="430dp"
-        android:src="@drawable/cirdles_logo" />
+        android:src="@drawable/cirdles_logo"
+        android:layout_alignBottom="@+id/fileBrowserHeaderText"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

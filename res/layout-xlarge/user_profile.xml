@@ -60,7 +60,7 @@
         android:textSize="30sp" />
 
     <Button
-        android:id="@+id/aboutHomeButton"
+        android:id="@+id/fileBrowserHomeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/geochronPassword"
@@ -120,7 +120,7 @@
         android:id="@+id/profileEraseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/aboutHomeButton"
+        android:layout_alignBottom="@+id/fileBrowserHomeButton"
         android:layout_centerHorizontal="true"
         android:background="@color/button_blue"
         android:minHeight="80dip"

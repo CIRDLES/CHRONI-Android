@@ -1,9 +1,6 @@
 package org.cirdles.chroni;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
@@ -13,10 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 
 public class AboutActivity extends Activity  {
@@ -36,7 +30,7 @@ public class AboutActivity extends Activity  {
         aboutText.setMovementMethod(new ScrollingMovementMethod());
 
 
-        Button aboutHomeButton = (Button) findViewById(R.id.aboutHomeButton);
+        Button aboutHomeButton = (Button) findViewById(R.id.fileBrowserHomeButton);
         aboutHomeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent openMainMenu = new Intent("android.intent.action.MAINMENU");

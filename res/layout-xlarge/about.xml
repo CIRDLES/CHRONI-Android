@@ -47,7 +47,7 @@
         android:textSize="25sp" />
 
     <Button
-        android:id="@+id/aboutHomeButton"
+        android:id="@+id/fileBrowserHomeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/button_blue"
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:text="Enter Filename"
         android:id="@+id/testFileNameInputButton"
-        android:layout_above="@+id/aboutHomeButton"
+        android:layout_above="@+id/fileBrowserHomeButton"
         android:layout_centerHorizontal="true" />
 
     <TextView
