@@ -25,8 +25,9 @@
          android:minWidth="50dp"
          android:text="Open"
          android:textSize="10sp"
+        android:layout_toEndOf="@+id/imageView1"
         android:layout_alignBottom="@+id/aliquotIGSNText"
-        android:layout_toEndOf="@+id/imageView1" />
+        android:layout_alignStart="@+id/aliquotFileSubmitButton" />
 
      <TextView
          android:id="@+id/TextView01"
@@ -58,13 +59,13 @@
          style="?android:attr/buttonStyleSmall"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_alignBottom="@+id/aliquotFileSelectText"
-         android:layout_alignRight="@+id/aliquotIGSNText"
          android:background="@color/dark_grey"
          android:minHeight="48dp"
          android:minWidth="48dp"
          android:text="+"
-         android:textSize="15sp" />
+         android:textSize="15sp"
+         android:layout_toEndOf="@+id/aliquotIGSNText"
+         android:layout_alignTop="@+id/aliquotFileSubmitButton" />
 
      <TextView
          android:id="@+id/textView2"
