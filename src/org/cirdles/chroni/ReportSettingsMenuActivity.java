@@ -101,36 +101,36 @@ public class ReportSettingsMenuActivity extends Activity {
             }
         });
 
-        // Information about Report Settings URL
-        reportSettingsUrlText = (EditText) findViewById(R.id.reportSettingsUrlText);
-
-        reportSettingsUrlButton = (Button) findViewById(R.id.reportSettingsUrlButton);
-        reportSettingsUrlButton.setText("Download");
-        reportSettingsUrlButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Checks internet connection before downloading files
-                ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-                if (mWifi.isConnected()) {
-                    if (reportSettingsUrlText.getText().length() != 0) {
-                        reportSettingsUrl = reportSettingsUrlText.getText()
-                                .toString().trim();
-                        requestFileName();
-//                        // Downloads Report Settings file from URL
-//                        Toast.makeText(ReportSettingsMenuActivity.this, "Downloading Report Settings...", Toast.LENGTH_LONG).show();
+//        // Information about Report Settings URL
+//        reportSettingsUrlText = (EditText) findViewById(R.id.reportSettingsUrlText);
 //
-//                        URLFileReader downloader = new URLFileReader(ReportSettingsMenuActivity.this,   "ReportSettingsMenu", reportSettingsUrl, "url");
+//        reportSettingsUrlButton = (Button) findViewById(R.id.reportSettingsUrlButton);
+//        reportSettingsUrlButton.setText("Download");
+//        reportSettingsUrlButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                // Checks internet connection before downloading files
+//                ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//                NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 //
-//                        setAbsoluteFilePath(reportSettingsDirectory + "/" + createFileName("url", reportSettingsUrl) + ".xml");
-                        saveCurrentReportSettings();
-                    }
-                }else{
-                    //Handles lack of wifi connection
-                    Toast.makeText(ReportSettingsMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+//                if (mWifi.isConnected()) {
+//                    if (reportSettingsUrlText.getText().length() != 0) {
+//                        reportSettingsUrl = reportSettingsUrlText.getText()
+//                                .toString().trim();
+//                        requestFileName();
+////                        // Downloads Report Settings file from URL
+////                        Toast.makeText(ReportSettingsMenuActivity.this, "Downloading Report Settings...", Toast.LENGTH_LONG).show();
+////
+////                        URLFileReader downloader = new URLFileReader(ReportSettingsMenuActivity.this,   "ReportSettingsMenu", reportSettingsUrl, "url");
+////
+////                        setAbsoluteFilePath(reportSettingsDirectory + "/" + createFileName("url", reportSettingsUrl) + ".xml");
+//                        saveCurrentReportSettings();
+//                    }
+//                }else{
+//                    //Handles lack of wifi connection
+//                    Toast.makeText(ReportSettingsMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
     }
 
     /*

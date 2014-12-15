@@ -9,14 +9,13 @@
         android:id="@+id/aliquotIGSNText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="381dp"
-        android:layout_marginRight="203dp"
-        android:ems="10"
+    android:layout_marginBottom="152dp"
+    android:ems="10"
         android:minWidth="325dp"
         android:textColor="@color/black"
-    android:textSize="18sp" />
+    android:textSize="18sp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignStart="@+id/aliquotFileSelectText" />
 
     <Button
         android:id="@+id/aliquotFileSelectButton"
@@ -32,16 +31,6 @@
         android:textSize="25sp" />
 
     <Button
-        android:id="@+id/aliquotURLButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/aliquotURLText"
-        android:layout_alignLeft="@+id/aliquotIGSNSubmitButton"
-        android:background="@color/button_blue"
-        android:minWidth="75dip"
-        android:text="Open" />
-
-     <Button
          android:id="@+id/aliquotIGSNSubmitButton"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
@@ -65,19 +54,7 @@
          android:textColor="@color/black"
          android:textSize="18sp" />
 
-     <TextView
-         android:id="@+id/TextView02"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignLeft="@+id/TextView01"
-         android:layout_alignTop="@+id/aliquotURLText"
-         android:layout_marginLeft="18dp"
-         android:text="URL"
-         android:textAppearance="?android:attr/textAppearanceLarge"
-         android:textColor="@color/black"
-         android:textSize="30sp" />
-
-     <TextView
+    <TextView
          android:id="@+id/textView2"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
@@ -89,24 +66,7 @@
          android:textColor="@color/black"
          android:textSize="30sp" />
 
-     <EditText
-         android:id="@+id/aliquotURLText"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/TextView01"
-         android:layout_marginLeft="18dp"
-         android:layout_marginTop="79dp"
-         android:layout_toRightOf="@+id/TextView02"
-         android:ems="10"
-         android:inputType="textUri"
-         android:minWidth="430dp"
-         android:textColor="@color/black"
-         android:textSize="18sp">
-
-         <requestFocus />
-     </EditText>
-
-     <TextView
+    <TextView
          android:id="@+id/testText"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"

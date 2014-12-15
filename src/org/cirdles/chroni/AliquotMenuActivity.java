@@ -135,30 +135,30 @@ public class AliquotMenuActivity extends Activity {
 	    });
 
 	// Information about Aliquot URL
-	aliquotURLText = (EditText) findViewById(R.id.aliquotURLText);
-
-	aliquotURLButton = (Button) findViewById(R.id.aliquotURLButton);
-	aliquotURLButton.setText("Download");
-	aliquotURLButton.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
-            // Checks internet connection before downloading files
-            ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-            if (mWifi.isConnected()) {
-		        if (aliquotURLText.getText().length() != 0) {
-                    aliquotURL = aliquotURLText.getText().toString().trim();
-                    // Downloads Aliquot file from URL
-
-                    requestFileName(); // Prompts the user for a file name and sets it as the final file name and begins download
-
-                     }
-            }else{
-                //Handles lack of wifi connection
-                Toast.makeText(AliquotMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+//	aliquotURLText = (EditText) findViewById(R.id.aliquotURLText);
+//
+//	aliquotURLButton = (Button) findViewById(R.id.aliquotURLButton);
+//	aliquotURLButton.setText("Download");
+//	aliquotURLButton.setOnClickListener(new View.OnClickListener() {
+//	    public void onClick(View v) {
+//            // Checks internet connection before downloading files
+//            ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//            NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+//
+//            if (mWifi.isConnected()) {
+//		        if (aliquotURLText.getText().length() != 0) {
+//                    aliquotURL = aliquotURLText.getText().toString().trim();
+//                    // Downloads Aliquot file from URL
+//
+//                    requestFileName(); // Prompts the user for a file name and sets it as the final file name and begins download
+//
+//                     }
+//            }else{
+//                //Handles lack of wifi connection
+//                Toast.makeText(AliquotMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
     }
 
     /*

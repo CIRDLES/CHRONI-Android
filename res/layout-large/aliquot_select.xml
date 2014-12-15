@@ -17,56 +17,16 @@
          android:text="Open"
          android:textSize="10sp" />
 
-     <TextView
-         android:id="@+id/TextView02"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignBottom="@+id/aliquotURLText"
-         android:layout_alignLeft="@+id/textView2"
-         android:text="URL"
-         android:textAppearance="?android:attr/textAppearanceLarge"
-         android:textColor="@color/black"
-         android:textSize="20sp" />
-
-     <EditText
-         android:id="@+id/aliquotURLText"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentBottom="true"
-         android:layout_alignRight="@+id/aliquotFileSelectButton"
-         android:layout_marginBottom="74dp"
-         android:layout_toRightOf="@+id/TextView02"
-         android:ems="10"
-         android:inputType="textUri"
-         android:minWidth="375dp"
-         android:textColor="@color/black"
-         android:textSize="15sp">
-
-         <requestFocus />
-     </EditText>
-
-     <Button
-         android:id="@+id/aliquotURLButton"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignBottom="@+id/aliquotURLText"
-         android:layout_alignLeft="@+id/aliquotFileSubmitButton"
-         android:background="@color/button_blue"
-         android:minWidth="50dp"
-         android:text="Open"
-         android:textSize="10sp" />
-
-     <Button
+    <Button
          android:id="@+id/aliquotIGSNSubmitButton"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_above="@+id/aliquotURLButton"
-         android:layout_alignLeft="@+id/aliquotURLButton"
-         android:layout_marginBottom="61dp"
-         android:background="@color/button_blue"
+        android:background="@color/button_blue"
          android:minWidth="50dp"
          android:text="Open"
-         android:textSize="10sp" />
+         android:textSize="10sp"
+        android:layout_alignBottom="@+id/aliquotIGSNText"
+        android:layout_toEndOf="@+id/imageView1" />
 
      <TextView
          android:id="@+id/TextView01"
@@ -143,12 +103,12 @@
          android:id="@+id/aliquotIGSNText"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_alignBottom="@+id/aliquotIGSNSubmitButton"
-         android:layout_marginLeft="17dp"
-         android:layout_toRightOf="@+id/TextView01"
          android:ems="10"
          android:minWidth="270dp"
          android:textColor="@color/black"
-         android:textSize="15sp" />
+         android:textSize="15sp"
+         android:layout_alignParentBottom="true"
+         android:layout_toEndOf="@+id/textView2"
+         android:layout_marginBottom="65dp" />
 
 </RelativeLayout>
