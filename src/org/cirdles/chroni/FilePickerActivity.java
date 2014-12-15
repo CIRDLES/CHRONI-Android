@@ -84,12 +84,10 @@ public class FilePickerActivity extends ListActivity {
 		if(getIntent().hasExtra("Default_Directory")){
 			if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_CHRONI_Directory")){
 				mainDirectory = new File(mainDirectory, "Aliquot"); // Takes user to Aliquot CHRONI Folder
-			}else if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Device_Directory")){
-				mainDirectory = Environment.getExternalStorageDirectory(); // Takes user to root directory folder
-			}else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_CHRONI_Directory")){
+			}else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_CHRONI_Directory")) {
                 mainDirectory = new File(mainDirectory, "Report Settings"); // Takes user to Report Settings CHRONI Folder
-            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Device_Directory")){
-                mainDirectory = Environment.getExternalStorageDirectory(); // Takes user to root directory folder
+            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Device_Directory")||getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Device_Directory")){
+				mainDirectory = Environment.getExternalStorageDirectory(); // Takes user to root directory folder
             }
 		}
 		
@@ -151,13 +149,9 @@ public class FilePickerActivity extends ListActivity {
 	public void onBackPressed() {
 		Intent openMainMenu = null;
         if(getIntent().hasExtra("Default_Directory")){
-            if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_CHRONI_Directory")){
+            if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_CHRONI_Directory")||getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Device_Directory")){
                 openMainMenu = new Intent("android.intent.action.ALIQUOTMENU");
-            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Device_Directory")){
-                openMainMenu = new Intent("android.intent.action.ALIQUOTMENU");
-            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_CHRONI_Directory")){
-                openMainMenu =new Intent("android.intent.action.REPORTSETTINGSMENU");
-            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Device_Directory")){
+            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_CHRONI_Directory")||getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Device_Directory")){
                 openMainMenu =new Intent("android.intent.action.REPORTSETTINGSMENU");
             }
         }
