@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Where is your file located?"
+        android:text="Select your file directory"
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal"
         android:textSize="45sp"
@@ -28,8 +28,9 @@
         android:textColor="@color/white"
         android:textColorHint="@color/border_grey"
         android:textSize="45sp"
+        android:layout_gravity="center"
         android:layout_below="@+id/textView"
-        android:layout_alignStart="@+id/deviceDirectoryButton" />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:text="Device Directory"
@@ -42,8 +43,8 @@
         android:textColor="@color/white"
         android:textColorHint="@color/border_grey"
         android:textSize="45sp"
-        android:layout_marginTop="87dp"
         android:layout_below="@+id/chroniDirectoryButton"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignStart="@+id/chroniDirectoryButton"
+        android:layout_marginTop="50dp" />
 
 </RelativeLayout>
