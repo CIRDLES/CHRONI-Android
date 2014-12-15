@@ -69,7 +69,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        
+
+        <activity
+            android:name="org.cirdles.chroni.FilePickerMenuActivity"
+            android:screenOrientation="sensorPortrait"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.FILEPICKERMENU" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="org.cirdles.chroni.AliquotMenuActivity"
             android:screenOrientation="sensorPortrait"

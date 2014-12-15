@@ -62,9 +62,8 @@ public class ReportSettingsMenuActivity extends Activity {
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         Intent openFilePicker = new Intent(
-                                "android.intent.action.FILEPICKER");
-                        openFilePicker.putExtra("Default_Directory",
-                                "Report Settings");
+                                "android.intent.action.FILEPICKERMENU");
+                        openFilePicker.putExtra("Directory_Type", "Report Settings");
                         startActivity(openFilePicker);
                     }
                 });

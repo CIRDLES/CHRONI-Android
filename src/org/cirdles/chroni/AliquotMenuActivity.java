@@ -66,8 +66,8 @@ public class AliquotMenuActivity extends Activity {
 	aliquotFileSelectButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
 		Intent openFilePicker = new Intent(
-			"android.intent.action.FILEPICKER");
-		openFilePicker.putExtra("Default_Directory", "Aliquot");
+			"android.intent.action.FILEPICKERMENU");
+		openFilePicker.putExtra("Directory_Type", "Aliquot");
 		startActivity(openFilePicker);
 	    }
 	});

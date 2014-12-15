@@ -27,7 +27,7 @@
         android:textSize="75sp" />
 
     <Button
-        android:id="@+id/chroniDirectoryButton"
+        android:id="@+id/menuProfileButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/menuHistoryButton"
@@ -57,7 +57,7 @@
         android:textSize="75sp" />
 
     <TextView
-        android:id="@+id/versionNumberFileBrowserMenu"
+        android:id="@+id/versionNumberMainMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

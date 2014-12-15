@@ -14,65 +14,47 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MainMenuActivity extends Activity {
+import java.io.File;
 
-    private Button viewButton, historyButton, profileButton;
-    private TextView versionNumber;
+public class FilePickerMenuActivity extends Activity {
+
+    private Button chroniDirectoryButton, deviceDirectoryButtonButton;
+    private String directoryType; // the type of directory to be initialized based on the menu activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	// Sets up layout
 	super.onCreate(savedInstanceState);
 	setTheme(android.R.style.Theme_Holo);
-	setContentView(R.layout.main_menu);
+	setContentView(R.layout.file_browser_menu);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 
-     //Places background image on layout due to theme overriding
-     RelativeLayout layout =(RelativeLayout)findViewById(R.id.mainMenuBackground);
-     layout.setBackground(getResources().getDrawable(R.drawable.background));
+        //Sets the initial directory based on what file user is looking for (Aliquot or Report Settings)
+        if(getIntent().hasExtra("Directory_Type")){
+            if(getIntent().getStringExtra("Directory_Type").contentEquals("Aliquot")){
+                setDirectoryType("Aliquot");
+            }else if(getIntent().getStringExtra("Directory_Type").contentEquals("Report Settings")){
+                setDirectoryType("Report_Settings");
+            }
+        }
 
-	try {
-	    // Puts the versioning information on the App
-	    Context context = this;
-	    int versionCode = context.getPackageManager().getPackageInfo(
-		    context.getPackageName(), 0).versionCode;
-	    String versionName = context.getPackageManager().getPackageInfo(
-		    context.getPackageName(), 0).versionName;
-
-	    versionNumber = (TextView) findViewById(R.id.versionNumberMainMenu);
-	    versionNumber.setText("Version " + versionCode + "." + versionName);
-	    versionNumber.setTextColor(getResources().getColor(
-		    R.color.button_blue));
-
-	} catch (NameNotFoundException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-
-	viewButton = (Button) findViewById(R.id.menuOpenButton);
-	viewButton.setOnClickListener(new View.OnClickListener() {
+    chroniDirectoryButton = (Button) findViewById(R.id.chroniDirectoryButton);
+    chroniDirectoryButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
-		Intent openDisplay = new Intent(
-			"android.intent.action.ALIQUOTMENU");
-		startActivity(openDisplay);
+            Intent openFilePicker = new Intent(
+                    "android.intent.action.FILEPICKER");
+            openFilePicker.putExtra("Default_Directory", getDirectoryType() + "_CHRONI_Directory");
+            startActivity(openFilePicker);
 	    }
 	});
 
-	historyButton = (Button) findViewById(R.id.menuHistoryButton);
-	historyButton.setOnClickListener(new View.OnClickListener() {
+        deviceDirectoryButtonButton = (Button) findViewById(R.id.deviceDirectoryButton);
+        deviceDirectoryButtonButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
-		Intent openHistoryTable = new Intent(
-			"android.intent.action.HISTORY");
-		startActivity(openHistoryTable);
-	    }
-	});
-
-	profileButton = (Button) findViewById(R.id.menuProfileButton);
-	profileButton.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
-		Intent openUserProfile = new Intent(
-			"android.intent.action.USERPROFILE");
-		startActivity(openUserProfile);
+            Intent openFilePicker = new Intent(
+                    "android.intent.action.FILEPICKER");
+            openFilePicker.putExtra("Default_Directory", getDirectoryType() + "_Device_Directory");
+            startActivity(openFilePicker);
 	    }
 	});
 
@@ -128,4 +110,11 @@ public class MainMenuActivity extends Activity {
     }
 
 
+    public String getDirectoryType() {
+        return directoryType;
+    }
+
+    public void setDirectoryType(String directoryType) {
+        this.directoryType = directoryType;
+    }
 }
