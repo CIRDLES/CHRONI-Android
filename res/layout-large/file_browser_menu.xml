@@ -9,13 +9,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Select your file directory"
+        android:text="Select"
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal"
-        android:textSize="45sp"
+        android:textSize="55sp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:textColor="@color/border_grey" />
+
 
     <Button
         android:text="CHRONI Directory"
@@ -30,7 +31,8 @@
         android:textSize="45sp"
         android:layout_gravity="center"
         android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp" />
 
     <Button
         android:text="Device Directory"
@@ -45,6 +47,6 @@
         android:textSize="45sp"
         android:layout_below="@+id/chroniDirectoryButton"
         android:layout_alignStart="@+id/chroniDirectoryButton"
-        android:layout_marginTop="50dp" />
+        android:layout_marginTop="40dp" />
 
 </RelativeLayout>
