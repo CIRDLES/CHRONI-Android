@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainMenuActivity extends Activity {
 
@@ -61,10 +62,13 @@ public class MainMenuActivity extends Activity {
 	historyButton = (Button) findViewById(R.id.menuHistoryButton);
 	historyButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
-		Intent openHistoryTable = new Intent(
-			"android.intent.action.HISTORY");
-		startActivity(openHistoryTable);
-	    }
+//		Intent openHistoryTable = new Intent(
+//			"android.intent.action.HISTORY");
+//		startActivity(openHistoryTable);
+
+            Toast.makeText(MainMenuActivity.this, "This feature is currently unavailable.", Toast.LENGTH_LONG).show();
+
+        }
 	});
 
 	profileButton = (Button) findViewById(R.id.menuProfileButton);
@@ -112,16 +116,16 @@ public class MainMenuActivity extends Activity {
                         "Report Settings");
                 startActivity(openReportSettingsFiles);
                 return true;
-            case R.id.aboutScreen:
-                Intent openAboutScreen = new Intent(
-                        "android.intent.action.ABOUT");
-                startActivity(openAboutScreen);
-                return true;
-            case R.id.helpMenu:
-                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://chronihelpblog.wordpress.com"));
-                startActivity(openHelpBlog);
-                return true;
+//            case R.id.aboutScreen:
+//                Intent openAboutScreen = new Intent(
+//                        "android.intent.action.ABOUT");
+//                startActivity(openAboutScreen);
+//                return true;
+//            case R.id.helpMenu:
+//                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+//                        Uri.parse("http://chronihelpblog.wordpress.com"));
+//                startActivity(openHelpBlog);
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
