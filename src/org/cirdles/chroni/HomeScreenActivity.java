@@ -105,8 +105,8 @@ public class HomeScreenActivity extends Activity  {
      * Report Settings folders
      */
     protected void createDirectories() throws FileNotFoundException {
-        boolean defaultReportSettingsPresent = false; // detemines whether the report settings is present or not
-        boolean defaultReportSettings2Present = false; // detemines whether the report settings is present or not
+        boolean defaultReportSettingsPresent = false; // determines whether the report settings is present or not
+        boolean defaultReportSettings2Present = false; // determines whether the report settings is present or not
 
         // Establishes the CHRONI folders
         File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
