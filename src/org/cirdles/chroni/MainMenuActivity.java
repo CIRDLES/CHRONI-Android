@@ -116,16 +116,16 @@ public class MainMenuActivity extends Activity {
                         "Report Settings");
                 startActivity(openReportSettingsFiles);
                 return true;
-//            case R.id.aboutScreen:
-//                Intent openAboutScreen = new Intent(
-//                        "android.intent.action.ABOUT");
-//                startActivity(openAboutScreen);
-//                return true;
-//            case R.id.helpMenu:
-//                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-//                        Uri.parse("http://chronihelpblog.wordpress.com"));
-//                startActivity(openHelpBlog);
-//                return true;
+            case R.id.aboutScreen:
+                Intent openAboutScreen = new Intent(
+                        "android.intent.action.ABOUT");
+                startActivity(openAboutScreen);
+                return true;
+            case R.id.helpMenu:
+                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://chronihelpblog.wordpress.com"));
+                startActivity(openHelpBlog);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
