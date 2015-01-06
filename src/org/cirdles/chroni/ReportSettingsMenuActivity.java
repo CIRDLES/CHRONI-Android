@@ -61,12 +61,34 @@ public class ReportSettingsMenuActivity extends Activity {
         reportSettingsFileSelectButton
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        Intent openFilePicker = new Intent(
-                                "android.intent.action.FILEPICKERMENU");
-                        openFilePicker.putExtra("Directory_Type", "Report Settings");
-                        startActivity(openFilePicker);
+                        // Creates a dialog box that allows user to select where there file is located
+                        AlertDialog.Builder userFileNameAlert = new AlertDialog.Builder(ReportSettingsMenuActivity.this);
+
+                        userFileNameAlert.setTitle("Report Settings Location");
+                        userFileNameAlert.setMessage("Where is your Report Settings file located?");
+
+                        userFileNameAlert.setPositiveButton("CHRONI Directory", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Intent openFilePicker = new Intent(
+                                        "android.intent.action.FILEPICKER");
+                                openFilePicker.putExtra("Default_Directory", "Report_Settings_CHRONI_Directory");
+                                startActivity(openFilePicker);
+                            }
+                        });
+
+                        userFileNameAlert.setNeutralButton("Device Directory", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Intent openFilePicker = new Intent(
+                                        "android.intent.action.FILEPICKER");
+                                openFilePicker.putExtra("Default_Directory", "Report_Settings_Device_Directory");
+                                startActivity(openFilePicker);                }
+                        });
+
+                        userFileNameAlert.show();
+
                     }
                 });
+
 
         reportSettingsFileSelectText = (EditText) findViewById(R.id.reportSettingsFileSelectText);
         if (getIntent().hasExtra("ReportSettingsXMLFileName")) {

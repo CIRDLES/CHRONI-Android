@@ -65,10 +65,31 @@ public class AliquotMenuActivity extends Activity {
 	aliquotFileSelectButton = (Button) findViewById(R.id.aliquotFileSelectButton);
 	aliquotFileSelectButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
-		Intent openFilePicker = new Intent(
-			"android.intent.action.FILEPICKERMENU");
-		openFilePicker.putExtra("Directory_Type", "Aliquot");
-		startActivity(openFilePicker);
+            // Creates a dialog box that allows user to select where there file is located
+            AlertDialog.Builder userFileNameAlert = new AlertDialog.Builder(AliquotMenuActivity.this);
+
+            userFileNameAlert.setTitle("Aliquot Location");
+            userFileNameAlert.setMessage("Where is your Aliquot file located?");
+
+            userFileNameAlert.setPositiveButton("CHRONI Directory", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    Intent openFilePicker = new Intent(
+                            "android.intent.action.FILEPICKER");
+                    openFilePicker.putExtra("Default_Directory", "Aliquot_CHRONI_Directory");
+                    startActivity(openFilePicker);
+                }
+            });
+
+            userFileNameAlert.setNeutralButton("Device Directory", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    Intent openFilePicker = new Intent(
+                            "android.intent.action.FILEPICKER");
+                    openFilePicker.putExtra("Default_Directory", "Aliquot_Device_Directory");
+                    startActivity(openFilePicker);                }
+            });
+
+            userFileNameAlert.show();
+
 	    }
 	});
 
