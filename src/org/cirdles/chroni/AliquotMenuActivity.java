@@ -33,6 +33,7 @@ public class AliquotMenuActivity extends Activity {
 
     // Global functionality  variables
     private String finalAliquotFileName; // the user specififed filename
+    private boolean invalidFile = false; // true if file attempted to be downloaded is invalid
 	private static String absoluteFilePathOfDownloadedAliquot; // the path of the Aliquot file
     private static String geochronUsername, geochronPassword; // the GeoChron information on file for the user
     public static final String USER_PREFS = "My CIRDLES Settings"; // code to access stored preferences
@@ -339,5 +340,13 @@ public class AliquotMenuActivity extends Activity {
 
     public void setFinalAliquotFileName(String finalAliquotFileName) {
         this.finalAliquotFileName = finalAliquotFileName;
+    }
+
+    public boolean isInvalidFile() {
+        return invalidFile;
+    }
+
+    public static void setInvalidFile(boolean invalidFile) {
+        invalidFile = invalidFile;
     }
 }

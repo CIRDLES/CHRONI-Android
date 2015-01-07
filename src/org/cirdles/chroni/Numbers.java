@@ -3,6 +3,9 @@ package org.cirdles.chroni;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+Class used to store relevant information for data conversions for the table displayin
+ */
 public class Numbers {
     private static final Map<String, Integer> UnitConversions = new HashMap<String, Integer>();
 

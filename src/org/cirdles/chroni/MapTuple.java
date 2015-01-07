@@ -2,6 +2,10 @@ package org.cirdles.chroni;
 
 import java.util.SortedMap;
 
+/*
+Objects of this class are used to hold relevant mapping information used in parsing Aliquot and Report Settings files.
+ */
+
 public class MapTuple {
 
     private SortedMap<Integer, Category> categoryMap ; // Collects the categories in the Report Settings XML file
@@ -16,7 +20,7 @@ public class MapTuple {
 //    }
 
     /*
-    * Creates a MapTuple object for Aliquot files
+    * Creates a MapTuple object for Aliquot files using fractions and images.
      */
 	public MapTuple(SortedMap<String, Fraction> fractionMap, SortedMap<String,Image> imageMap){
 		 this.setFractionMap(fractionMap);

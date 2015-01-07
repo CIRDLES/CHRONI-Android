@@ -46,14 +46,10 @@ public class TablePainterActivity extends Activity {
     private static TreeMap<String, Fraction> fractionMap; // map returned from parsing Aliquot
     private static TreeMap<String, Image> imageMap; // map of image data returned from parsing Aliquot
 
-	private static MapTuple maps; // The fraction and image map from parsing Aliquot file
-    private static Image[] imageArray;  
+    private static Image[] imageArray;
 	
     private static String[][] finalArray; // the completed array for displaying
     private static ArrayList<String> outputVariableName; // output variable names for column work
-
-    private TextView testText;
-    private String test;
 
     private static int columnCount;
 
@@ -72,37 +68,37 @@ public class TablePainterActivity extends Activity {
         File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
 
         // Instantiates the Report Settings Parser
-        ReportSettingsParser RSP = new ReportSettingsParser();
+        ReportSettingsParser reportSettingsParser = new ReportSettingsParser();
         String reportSettingsPath = String.valueOf(new File(chroniDirectory, "Report Settings")) + "/Default Report Settings.xml"; // sets default Report Settings XML
         if (getIntent().getStringExtra("ReportSettingsXML") != null) {
             reportSettingsPath = getIntent().getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
         }
-//        Toast.makeText(TablePainterActivity.this, reportSettingsPath, Toast.LENGTH_LONG).show();
 
-        categoryMap = (TreeMap<Integer, Category>) RSP.runReportSettingsParser(reportSettingsPath);
-        ArrayList<String> outputVariableName = RSP.getOutputVariableName();
+        // Parses the Report Settings XML file
+        categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(reportSettingsPath);
+        ArrayList<String> outputVariableNames = reportSettingsParser.getOutputVariableName();
 
         // Instantiates the Aliquot Parser
-        AliquotParser AP = new AliquotParser();
+        AliquotParser aliquotParser = new AliquotParser();
         String aliquotPath = "";
         if (getIntent().getStringExtra("AliquotXML") != null) {
             aliquotPath = getIntent().getStringExtra("AliquotXML"); // gets the new location of the aliquot xml
         }
 
         // Parses aliquot file and retrieves maps
-        maps = AP.runAliquotParser(aliquotPath);
+        MapTuple maps = aliquotParser.runAliquotParser(aliquotPath);
         fractionMap = (TreeMap<String, Fraction>) maps.getFractionMap();
         imageMap = (TreeMap<String, Image>) maps.getImageMap();
 
-        final String aliquot = AP.getAliquotName();
+        final String aliquot = aliquotParser.getAliquotName();
 
-        // fills the arrays
+        // Fills the Report Setting and Aliquot arrays
         String[][] reportSettingsArray = fillReportSettingsArray(
-                outputVariableName, categoryMap);
-        String[][] fractionArray = fillFractionArray(outputVariableName,
+                outputVariableNames, categoryMap);
+        String[][] fractionArray = fillFractionArray(outputVariableNames,
                 categoryMap, fractionMap, aliquot);
 
-        // handles the array sorting
+        // Sorts the table array
         Arrays.sort(fractionArray, new Comparator<String[]>() {
             @Override
             public int compare(final String[] entry1, final String[] entry2) {
@@ -116,9 +112,8 @@ public class TablePainterActivity extends Activity {
             }
         });
 
-        String[][] finalArray = fillArray(outputVariableName, reportSettingsArray, fractionArray);
+        String[][] finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray); // Creates the final table array for displaying
 
-        // TextView aliquotName = new TextView(this);
         ArrayList<String> contents = new ArrayList<String>();
 
         // Creates database entry from current entry
@@ -126,10 +121,10 @@ public class TablePainterActivity extends Activity {
 //        entryHelper.createEntry(getCurrentTime(), aliquotPath, reportSettingsPath);
 //        Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
 
-        // Setup to add buttons
         TableRow labelRow = (TableRow) findViewById(R.id.labelRow); // Row for buttons
         labelRow.setGravity(Gravity.CENTER);
 
+        // Adds a label with the current report settings
         TextView reportSettingsCell = new TextView(this);
         String[] reportSettingsPathParts = reportSettingsPath.split("/");
         String currentReportSettingsFileName = reportSettingsPathParts[reportSettingsPathParts.length -1];
@@ -151,6 +146,7 @@ public class TablePainterActivity extends Activity {
 //        aliquotCell.setPadding(15, 15, 15, 15);
 //        labelRow.addView(aliquotCell);
 
+        // Setup to add buttons
         TableRow buttonRow = (TableRow) findViewById(R.id.buttonRow);
         buttonRow.setGravity(Gravity.CENTER);
 //    buttonRow.setBackgroundColor(Color.GRAY);
@@ -175,6 +171,7 @@ public class TablePainterActivity extends Activity {
         // Determines whether or not to add additional buttons for images
         imageArray = retrieveImages(imageMap);
 
+        // Adds button to view a concordia image
 //        if ((imageArray[0] != null) && !(imageArray[0].getImageURL().length() == 0)) {
 //            viewConcordiaButton = new Button(this);
 //            viewConcordiaButton.setTextColor(Color.WHITE);
@@ -205,6 +202,7 @@ public class TablePainterActivity extends Activity {
 //            });
 //        }
 //
+       // Adds button to view a probability density image
 //        if ((imageArray[1] != null) && !(imageArray[1].getImageURL().length() == 0)) {
 //            viewProbabilityDensityButton = new Button(this);
 //            viewProbabilityDensityButton.setTextColor(Color.WHITE);
@@ -246,7 +244,7 @@ public class TablePainterActivity extends Activity {
         // calculates number of rows based on the size of the fraction, five is separately
         // added for the Report Settings category rows
         final int ROWS = 5 + fractionMap.size();
-        final int COLS = outputVariableName.size();
+        final int COLS = outputVariableNames.size();
         int rowCount = 0;
 
         // Gets column sizes from string array
@@ -659,6 +657,14 @@ public class TablePainterActivity extends Activity {
 	TablePainterActivity.outputVariableName = outputVariableName;
     }
 
+    public static int getColumnCount() {
+        return columnCount;
+    }
+
+    public static void setColumnCount(int count) {
+        columnCount = count;
+    }
+
     /*
  * This method gets the current time.
  */
@@ -678,37 +684,37 @@ public class TablePainterActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu:
+            case R.id.returnToMenu: // Takes user to main menu
                 Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
                 startActivity(openMainMenu);
                 return true;
-            case R.id.editProfileMenu:
+            case R.id.editProfileMenu: //Takes user to credentials screen
                 Intent openUserProfile = new Intent(
                         "android.intent.action.USERPROFILE");
                 startActivity(openUserProfile);
                 return true;
-            case R.id.viewAliquotsMenu:
+            case R.id.viewAliquotsMenu: // Takes user to aliquot menu
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
                         "Aliquot");
                 startActivity(openAliquotFiles);
                 return true;
-            case R.id.viewReportSettingsMenu:
+            case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
                         "Report Settings");
                 startActivity(openReportSettingsFiles);
                 return true;
-            case R.id.aboutScreen:
+            case R.id.aboutScreen: // Takes user to about screen
                 Intent openAboutScreen = new Intent(
                         "android.intent.action.ABOUT");
                 startActivity(openAboutScreen);
                 return true;
-            case R.id.helpMenu:
+            case R.id.helpMenu: // Takes user to help blog
                 Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("http://chronihelpblog.wordpress.com"));
                 startActivity(openHelpBlog);
@@ -716,13 +722,5 @@ public class TablePainterActivity extends Activity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    public static int getColumnCount() {
-        return columnCount;
-    }
-
-    public static void setColumnCount(int count) {
-        columnCount = count;
     }
 }

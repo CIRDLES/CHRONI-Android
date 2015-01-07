@@ -15,10 +15,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/*
+This activity is used for structuring the main menu layout of the application.
+ */
 public class MainMenuActivity extends Activity {
-
-    private Button viewButton, historyButton, profileButton;
-    private TextView versionNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,26 +40,27 @@ public class MainMenuActivity extends Activity {
 	    String versionName = context.getPackageManager().getPackageInfo(
 		    context.getPackageName(), 0).versionName;
 
-	    versionNumber = (TextView) findViewById(R.id.versionNumberMainMenu);
+	    TextView versionNumber = (TextView) findViewById(R.id.versionNumberMainMenu);
 	    versionNumber.setText("Version " + versionCode + "." + versionName);
 	    versionNumber.setTextColor(getResources().getColor(
 		    R.color.button_blue));
 
 	} catch (NameNotFoundException e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
 
-	viewButton = (Button) findViewById(R.id.menuOpenButton);
-	viewButton.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
-		Intent openDisplay = new Intent(
-			"android.intent.action.ALIQUOTMENU");
-		startActivity(openDisplay);
-	    }
-	});
+    // Allows user to select an aliquot file for viewing in the display table
+    Button openButton = (Button) findViewById(R.id.menuOpenButton);
+	openButton.setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+            Intent openDisplay = new Intent(
+                    "android.intent.action.ALIQUOTMENU");
+            startActivity(openDisplay);
+        }
+    });
 
-	historyButton = (Button) findViewById(R.id.menuHistoryButton);
+    // Allows user to open the history activity
+    Button historyButton = (Button) findViewById(R.id.menuHistoryButton);
 	historyButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
 //		Intent openHistoryTable = new Intent(
@@ -67,18 +68,18 @@ public class MainMenuActivity extends Activity {
 //		startActivity(openHistoryTable);
 
             Toast.makeText(MainMenuActivity.this, "This feature is currently unavailable.", Toast.LENGTH_LONG).show();
-
         }
 	});
 
-	profileButton = (Button) findViewById(R.id.menuProfileButton);
-	profileButton.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
-		Intent openUserProfile = new Intent(
-			"android.intent.action.USERPROFILE");
-		startActivity(openUserProfile);
-	    }
-	});
+    // Allows user to access the profile management feature
+	Button credentialsButton = (Button) findViewById(R.id.menuProfileButton);
+	credentialsButton.setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+            Intent openUserProfile = new Intent(
+                    "android.intent.action.USERPROFILE");
+            startActivity(openUserProfile);
+        }
+    });
 
     }
 
@@ -91,37 +92,37 @@ public class MainMenuActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu:
+            case R.id.returnToMenu: // Takes user to main menu
                 Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
                 startActivity(openMainMenu);
                 return true;
-            case R.id.editProfileMenu:
+            case R.id.editProfileMenu: //Takes user to credentials screen
                 Intent openUserProfile = new Intent(
                         "android.intent.action.USERPROFILE");
                 startActivity(openUserProfile);
                 return true;
-            case R.id.viewAliquotsMenu:
+            case R.id.viewAliquotsMenu: // Takes user to aliquot menu
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
                         "Aliquot");
                 startActivity(openAliquotFiles);
                 return true;
-            case R.id.viewReportSettingsMenu:
+            case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
                         "Report Settings");
                 startActivity(openReportSettingsFiles);
                 return true;
-            case R.id.aboutScreen:
+            case R.id.aboutScreen: // Takes user to about screen
                 Intent openAboutScreen = new Intent(
                         "android.intent.action.ABOUT");
                 startActivity(openAboutScreen);
                 return true;
-            case R.id.helpMenu:
+            case R.id.helpMenu: // Takes user to help blog
                 Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("http://chronihelpblog.wordpress.com"));
                 startActivity(openHelpBlog);
@@ -130,6 +131,5 @@ public class MainMenuActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 }

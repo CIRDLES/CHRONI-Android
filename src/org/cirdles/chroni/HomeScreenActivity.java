@@ -22,31 +22,28 @@ Defines the home screen activity of the application
  */
 public class HomeScreenActivity extends Activity  {
 
-    // Maintains whether app is initalizing for the first time or not
+    // Maintains whether app is initializing for the first time or not
     private static final String PREF_FIRST_LAUNCH = "First Launch";
     private static final String PREF_REPORT_SETTINGS = "Current Report Settings";     // Path of the current report settungs file
 
-    // Version number
-    private TextView versionNumber;
-
+    private TextView versionNumber; // version number
     private CHRONIDatabaseHelper trialDatabaseHelper; // Database
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // sets up layout screen
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.home_screen);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 
-        //Places background image on layout due to theme overriding
+        //Places background image on layout  due to theme overriding
         RelativeLayout layout =(RelativeLayout)findViewById(R.id.homeScreenBackground);
         layout.setBackground(getResources().getDrawable(R.drawable.background));
 
-        // Checks to see if this is launch
-        // checkCredentials();
-
         try {
-            // Puts the versioning information on the App
+            // Puts the versioning information on the layout screen
+            // TODO make this a method accessible by the entire app so that every screen can have the version info
             Context context = this;
             int versionCode = context.getPackageManager().getPackageInfo(
                     context.getPackageName(), 0).versionCode;
@@ -64,8 +61,9 @@ public class HomeScreenActivity extends Activity  {
 //                trialDatabaseHelper.createEntry("01/11/1111", "Demo Aliquot");
 //            }
 
-            // Creates the necessary application directories
+            // Creates the necessary CHRONI directories
             createDirectories();
+
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -74,10 +72,11 @@ public class HomeScreenActivity extends Activity  {
             e.printStackTrace();
         }
 
+        // Waits 3.5 seconds before moving to the main menu
         Thread timer = new Thread() {
             public void run() {
                 try {
-                    sleep(3500); // The home screen is shown for two seconds
+                    sleep(3500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
@@ -85,7 +84,6 @@ public class HomeScreenActivity extends Activity  {
                             "android.intent.action.MAINMENU");
                     openMainMenu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(openMainMenu);
-                    // }
                 }
             }
         };
@@ -120,7 +118,7 @@ public class HomeScreenActivity extends Activity  {
 
         // Checks internet connection before downloading files
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobileWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
         // Checks to see if the default report settings is present
         File[] files = reportSettingsDirectory.listFiles(); // Lists files in CHRONI directory
@@ -132,8 +130,7 @@ public class HomeScreenActivity extends Activity  {
             }
         }
 
-            if (mWifi.isConnected()) {
-
+            if (mobileWifi.isConnected()) {
                 // Downloads default report settings 1 if not present
                 if (!defaultReportSettingsPresent) {
                     // Downloads the default report setting file if absent
@@ -164,7 +161,7 @@ public class HomeScreenActivity extends Activity  {
     }
 
     /*
-     * Storing in Shared Preferences
+     * Stores initial launch in Shared Preferences
      */
     protected void saveInitialLaunch() {
         SharedPreferences settings = getSharedPreferences(PREF_FIRST_LAUNCH, 0);
@@ -175,6 +172,7 @@ public class HomeScreenActivity extends Activity  {
 
     /*
     * Stores Current Report Settings
+    * TODO clean up this process
     */
     protected void saveCurrentReportSettings() {
         // Establishes the CHRONI folders
@@ -184,7 +182,7 @@ public class HomeScreenActivity extends Activity  {
 
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("Current Report Settings", defaultReportSettingsDirectory.getPath()); // gets chosen file from file browser and stores
+        editor.putString("Current Report Settings", defaultReportSettingsDirectory.getPath()); // makes the Default Report Settings the current report settings
         editor.commit(); // Commiting changes
     }
 
