@@ -8,7 +8,9 @@ import android.content.Context;
  * April 8, 2012
  */
 public class FileCache {
- 
+ /*
+ This class is used with the FilePickerActivity to display files
+  */
     private File cacheDir;
  
     public FileCache(Context context){

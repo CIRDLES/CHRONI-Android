@@ -1,20 +1,28 @@
 package org.cirdles.chroni;
 
+/*
+Defines the structure of a column object for Report Settings files
+ */
 public class Column {
 
+    // The display names for the Column
 	private String displayName;
 	private String displayName1;
 	private String displayName2;
 	private String displayName3;
-	private String units;
+
+    private String units;
 	private String methodName;
 	private String variableName;
-	private int positionIndex;
-	private int countOfSignificantDigits;
+	private int positionIndex; // index of the column
+	private int countOfSignificantDigits; // number of specified significant digits
 
-	private Column uncertaintyColumn = null;
+	private Column uncertaintyColumn = null; // the uncertainty column contained within the given column
 	private String uncertaintyType = null;
-	
+
+    /*
+    Instantiates a Column object given several attributes
+     */
 	public Column(String displayName, String displayName1,
 			String displayName2, String displayName3, String units, String methodName, String variableName, int pIndex, int sigFigs) {
 			this.displayName = displayName;
@@ -30,6 +38,9 @@ public class Column {
 
 
 	@Override
+    /*
+    Creates a string of the given column using the attributes found in that column
+     */
 	public String toString() {
 		String columnInformation = "This Column object belongs to the " + displayName + " category. It has displayName1: " + displayName1 + ", displayName2: " + displayName2 + ", displayName3: " + displayName3 + ", methodName: " + methodName + " , variableName: " + variableName + " and positionIndex: " + positionIndex + ".";
 		return columnInformation;

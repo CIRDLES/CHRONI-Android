@@ -1,3 +1,5 @@
+/* This activity provides the user with the Report Settings file selection menu actions and setup */
+
 package org.cirdles.chroni;
 
 import java.io.File;
@@ -5,8 +7,6 @@ import java.io.File;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -23,19 +23,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ReportSettingsMenuActivity extends Activity {
-    private Button reportSettingsFileSelectButton, reportSettingsOpenButton,
-            reportSettingsUrlButton;
-    private EditText reportSettingsFileSelectText, reportSettingsUrlText;
-    private TextView currentReportSettingsFile; // The Name of the current report settings
-    private String selectedReportSettings; // name of Report Settings file that
-    // has been chosen for viewing
+    //layout variables
+    private Button reportSettingsSelectedFileButton; // file browser button for report settings
+    private Button reportSettingsOpenButton; // open button to the display table
+    private EditText reportSettingsSelectedFileText; // contains name of the report settings file for viewing
+
+    private String selectedReportSettings; // name of Report Settings file that has been chosen for viewing
     private String reportSettingsUrl; // name of Report Settings URL
     private String absoluteFilePath; // path of selected Report Settings file
     private String finalReportSettingsFileName; //name of the final report settings
-    private static final String PREF_REPORT_SETTINGS = "Current Report Settings";     // Path of the current report settungs file
+    private static final String PREF_REPORT_SETTINGS = "Current Report Settings";// Path of the current report settings file
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // sets up activity layout
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.report_settings_select);
@@ -50,24 +51,20 @@ public class ReportSettingsMenuActivity extends Activity {
         final File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
 
         // Provides a label of the name of the current report settings file
-        currentReportSettingsFile = (TextView) findViewById(R.id.currentReportSettingsLabel);
-//        String[] reportSettingLabelContents = retrieveReportSettingsFileName().split("/");
-//        String reportSettingsLabel = reportSettingLabelContents[reportSettingLabelContents.length-1];
-//        currentReportSettingsFile.setText("Current Report Settings: " + reportSettingsLabel);
+        TextView currentReportSettingsFile = (TextView) findViewById(R.id.currentReportSettingsLabel);
         currentReportSettingsFile.setText("Current Report Settings: " + splitReportSettingsName(retrieveReportSettingsFileName()));
 
-        // Information about Report Settings file
-        reportSettingsFileSelectButton = (Button) findViewById(R.id.reportSettingsFileSelectButton);
-        reportSettingsFileSelectButton
-                .setOnClickListener(new View.OnClickListener() {
+        reportSettingsSelectedFileButton = (Button) findViewById(R.id.reportSettingsFileSelectButton);
+        reportSettingsSelectedFileButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        // Creates a dialog box that allows user to select where there file is located
-                        AlertDialog.Builder userFileNameAlert = new AlertDialog.Builder(ReportSettingsMenuActivity.this);
+                        // Creates a dialog box that allows user to select where Report Settings file is located
+                        AlertDialog.Builder directorySelectionAlert = new AlertDialog.Builder(ReportSettingsMenuActivity.this);
 
-                        userFileNameAlert.setTitle("Report Settings Location");
-                        userFileNameAlert.setMessage("Where is your Report Settings file located?");
+                        directorySelectionAlert.setTitle("Report Settings Location");
+                        directorySelectionAlert.setMessage("Where is your Report Settings file located?");
 
-                        userFileNameAlert.setPositiveButton("CHRONI Directory", new DialogInterface.OnClickListener() {
+                        // Specifies the CHRONI Report Settings directory for browsing
+                        directorySelectionAlert.setPositiveButton("CHRONI Directory", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 Intent openFilePicker = new Intent(
                                         "android.intent.action.FILEPICKER");
@@ -76,87 +73,48 @@ public class ReportSettingsMenuActivity extends Activity {
                             }
                         });
 
-                        userFileNameAlert.setNeutralButton("Device Directory", new DialogInterface.OnClickListener() {
+                        // Specifies the Device directory for Report Settings browsing
+                        directorySelectionAlert.setNeutralButton("Device Directory", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 Intent openFilePicker = new Intent(
                                         "android.intent.action.FILEPICKER");
                                 openFilePicker.putExtra("Default_Directory", "Report_Settings_Device_Directory");
-                                startActivity(openFilePicker);                }
+                                startActivity(openFilePicker);
+                            }
                         });
 
-                        userFileNameAlert.show();
-
+                        directorySelectionAlert.show(); // displays the directory dialog box
                     }
                 });
 
-
-        reportSettingsFileSelectText = (EditText) findViewById(R.id.reportSettingsFileSelectText);
+        // Displays the selected report settings on the report settings menu
+        reportSettingsSelectedFileText = (EditText) findViewById(R.id.reportSettingsFileSelectText);
         if (getIntent().hasExtra("ReportSettingsXMLFileName")) {
             selectedReportSettings = getIntent().getStringExtra(
                     "ReportSettingsXMLFileName");
             String[] absoluteFileName = selectedReportSettings.split("/");
             String fileName = absoluteFileName[absoluteFileName.length - 1];
-            reportSettingsFileSelectText.setText(fileName);
+            reportSettingsSelectedFileText.setText(fileName);
         }
 
+        // Opens the display screen with the selected report settings file
         reportSettingsOpenButton = (Button) findViewById(R.id.reportSettingsFileOpenButton);
         reportSettingsOpenButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (reportSettingsFileSelectText.getText().length() != 0) {
+                if (reportSettingsSelectedFileText.getText().length() != 0) {
                     Intent openMainMenu = new Intent(
                             "android.intent.action.DISPLAY");
-                    openMainMenu.putExtra("ReportSettingsXML", getIntent()
-                            .getStringExtra("ReportSettingsXMLFileName")); // Sends
-                    // Report
-                    // Setting
-                    // XML
-                    // path
-                    // for
-                    // file
-                    // parsing
-                    // TableBuilder.setReportSettingsPath(getIntent().getStringExtra("ReportSettingsXMLFileName"));
-                    // // Sends Aliquot XML path for file parsing
-                    // TableBuilder.buildTable();
+                    openMainMenu.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
                     saveCurrentReportSettings();
                     startActivity(openMainMenu);
                 }
             }
         });
 
-//        // Information about Report Settings URL
-//        reportSettingsUrlText = (EditText) findViewById(R.id.reportSettingsUrlText);
-//
-//        reportSettingsUrlButton = (Button) findViewById(R.id.reportSettingsUrlButton);
-//        reportSettingsUrlButton.setText("Download");
-//        reportSettingsUrlButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                // Checks internet connection before downloading files
-//                ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//                NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-//
-//                if (mWifi.isConnected()) {
-//                    if (reportSettingsUrlText.getText().length() != 0) {
-//                        reportSettingsUrl = reportSettingsUrlText.getText()
-//                                .toString().trim();
-//                        requestFileName();
-////                        // Downloads Report Settings file from URL
-////                        Toast.makeText(ReportSettingsMenuActivity.this, "Downloading Report Settings...", Toast.LENGTH_LONG).show();
-////
-////                        URLFileReader downloader = new URLFileReader(ReportSettingsMenuActivity.this,   "ReportSettingsMenu", reportSettingsUrl, "url");
-////
-////                        setAbsoluteFilePath(reportSettingsDirectory + "/" + createFileName("url", reportSettingsUrl) + ".xml");
-//                        saveCurrentReportSettings();
-//                    }
-//                }else{
-//                    //Handles lack of wifi connection
-//                    Toast.makeText(ReportSettingsMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
     }
 
     /*
-Currently requests file name from user and then proceeds to download based on input
+Requests file name from user and  proceeds to download based on input
  */
     public void requestFileName(){
 
@@ -226,20 +184,20 @@ Currently requests file name from user and then proceeds to download based on in
     }
 
     /*
+Splits report settings file name returning a displayable version without the entire path
+ */
+    private String splitReportSettingsName(String fileName){
+        String[] fileNameParts = fileName.split("/");
+        String reportSettingsName = fileNameParts[fileNameParts.length-1];
+        return reportSettingsName;
+    }
+
+    /*
     * Accesses current report settings file
     */
     private String retrieveReportSettingsFileName() {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
         return settings.getString("Current Report Settings", "Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
-    }
-
-    /*
-    Splits report settings file name
-     */
-    private String splitReportSettingsName(String fileName){
-        String[] fileNameParts = fileName.split("/");
-        String reportSettingsName = fileNameParts[fileNameParts.length-1];
-        return reportSettingsName;
     }
 
     /*
@@ -259,39 +217,47 @@ Currently requests file name from user and then proceeds to download based on in
         return true;
     }
 
+    public String getFinalReportSettingsFileName() {
+        return finalReportSettingsFileName;
+    }
+
+    public void setFinalReportSettingsFileName(String finalReportSettingsFileName) {
+        this.finalReportSettingsFileName = finalReportSettingsFileName;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu:
+            case R.id.returnToMenu: // Takes user to main menu
                 Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
                 startActivity(openMainMenu);
                 return true;
-            case R.id.editProfileMenu:
+            case R.id.editProfileMenu: //Takes user to credentials screen
                 Intent openUserProfile = new Intent(
                         "android.intent.action.USERPROFILE");
                 startActivity(openUserProfile);
                 return true;
-            case R.id.viewAliquotsMenu:
+            case R.id.viewAliquotsMenu: // Takes user to aliquot menu
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
                         "Aliquot");
                 startActivity(openAliquotFiles);
                 return true;
-            case R.id.viewReportSettingsMenu:
+            case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
                         "Report Settings");
                 startActivity(openReportSettingsFiles);
                 return true;
-            case R.id.aboutScreen:
+            case R.id.aboutScreen: // Takes user to about screen
                 Intent openAboutScreen = new Intent(
                         "android.intent.action.ABOUT");
                 startActivity(openAboutScreen);
                 return true;
-            case R.id.helpMenu:
+            case R.id.helpMenu: // Takes user to help blog
                 Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("http://chronihelpblog.wordpress.com"));
                 startActivity(openHelpBlog);
@@ -299,14 +265,5 @@ Currently requests file name from user and then proceeds to download based on in
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-
-    public String getFinalReportSettingsFileName() {
-        return finalReportSettingsFileName;
-    }
-
-    public void setFinalReportSettingsFileName(String finalReportSettingsFileName) {
-        this.finalReportSettingsFileName = finalReportSettingsFileName;
     }
 }

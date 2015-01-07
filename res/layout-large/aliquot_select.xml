@@ -23,7 +23,7 @@
          android:layout_height="wrap_content"
         android:background="@color/button_blue"
          android:minWidth="50dp"
-         android:text="Open"
+         android:text="Download"
          android:textSize="10sp"
         android:layout_toEndOf="@+id/imageView1"
         android:layout_alignBottom="@+id/aliquotIGSNText"

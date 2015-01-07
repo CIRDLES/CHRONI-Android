@@ -130,7 +130,6 @@ public class AliquotParser {
 	}
 
 	public static String getAliquotFile(String aliquotLocation) {
-		// TODO Auto-generated method stub
 		return fileName;
 	}
 	

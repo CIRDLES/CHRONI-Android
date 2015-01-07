@@ -17,6 +17,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
+/*
+Defines the home screen activity of the application
+ */
 public class HomeScreenActivity extends Activity  {
 
     // Maintains whether app is initalizing for the first time or not
@@ -78,17 +81,6 @@ public class HomeScreenActivity extends Activity  {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    // Tests to see whether the user has completed a profile
-                    // yet.
-                    // If not, proceeds to the User Profile login screen, else
-                    // moves to Main Menu.
-                    // SharedPreferences appSettings =
-                    // getSharedPreferences(USER_REGISTERED, 0);
-                    // if(!appSettings.getBoolean("User Registered", false)){
-                    // Intent openLoginScreen = new
-                    // Intent("android.intent.action.LOGINSCREEN");
-                    // startActivity(openLoginScreen);
-                    // }else{
                     Intent openMainMenu = new Intent(
                             "android.intent.action.MAINMENU");
                     openMainMenu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

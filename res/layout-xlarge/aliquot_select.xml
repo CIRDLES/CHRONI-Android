@@ -38,7 +38,7 @@
          android:layout_alignLeft="@+id/aliquotFileSubmitButton"
          android:background="@color/button_blue"
          android:minWidth="75dip"
-         android:text="Open" />
+         android:text="Download" />
 
      <EditText
          android:id="@+id/aliquotFileSelectText"

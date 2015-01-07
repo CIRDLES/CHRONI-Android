@@ -22,15 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /*
- * Sets up the main Review database table.
+ * Sets up the History database table.
  */
 public class HistoryActivity extends Activity {
 
-    RelativeLayout background;
-    TableLayout table;
-    Button finishButton;
-    ImageView reviewSubtext;
-    CHRONIDatabaseHelper preloadedAliquots; // Database
+    CHRONIDatabaseHelper preloadedAliquots; // Database helper
 
     @SuppressLint("NewApi")
     @Override
@@ -47,7 +43,7 @@ public class HistoryActivity extends Activity {
         layout.setBackground(getResources().getDrawable(R.drawable.background));
 
         // Sets up the finish button
-        finishButton = (Button) findViewById(R.id.historyFinishButton);
+        Button finishButton = (Button) findViewById(R.id.historyFinishButton);
         finishButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 Intent openMainMenu = new Intent(
@@ -60,16 +56,12 @@ public class HistoryActivity extends Activity {
 
         if (!myAliquots.isEmpty()) {
             // Collects information from the database if it isn't empty
-            final String[][] database = myAliquots.fillTableData(); // completes
-            // 2D array
-            // of
-            // aliquot
-            // data
+            final String[][] database = myAliquots.fillTableData(); // completes 2D array of aliquot table
             final long ROWS = myAliquots.getEntryCount() - 1;
             final long COLUMNS = 5;
 
             // sets up the table to display the database
-            table = (TableLayout) findViewById(R.id.historyDatabaseTable);
+            TableLayout table = (TableLayout) findViewById(R.id.historyDatabaseTable);
             table.setGravity(Gravity.CENTER);
             table.setPadding(35, 0, 35, 0);
 
@@ -189,37 +181,37 @@ public class HistoryActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu:
+            case R.id.returnToMenu: // Takes user to main menu
                 Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
                 startActivity(openMainMenu);
                 return true;
-            case R.id.editProfileMenu:
+            case R.id.editProfileMenu: //Takes user to credentials screen
                 Intent openUserProfile = new Intent(
                         "android.intent.action.USERPROFILE");
                 startActivity(openUserProfile);
                 return true;
-            case R.id.viewAliquotsMenu:
+            case R.id.viewAliquotsMenu: // Takes user to aliquot menu
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
                         "Aliquot");
                 startActivity(openAliquotFiles);
                 return true;
-            case R.id.viewReportSettingsMenu:
+            case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
                         "Report Settings");
                 startActivity(openReportSettingsFiles);
                 return true;
-            case R.id.aboutScreen:
+            case R.id.aboutScreen: // Takes user to about screen
                 Intent openAboutScreen = new Intent(
                         "android.intent.action.ABOUT");
                 startActivity(openAboutScreen);
                 return true;
-            case R.id.helpMenu:
+            case R.id.helpMenu: // Takes user to help blog
                 Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("http://chronihelpblog.wordpress.com"));
                 startActivity(openHelpBlog);

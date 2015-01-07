@@ -3,10 +3,12 @@ package org.cirdles.chroni;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+/*
+Structures the Fraction class for Aliquot file parsing.
+ */
 public class Fraction {
 
 	private String fractionID;
-//	private SortedMap<String,Method> methodsMap = new TreeMap<String, Method>();
 	private SortedMap<String,ValueModel> valueModelMap = new TreeMap<String, ValueModel>();
 	
 	public Fraction(String fractionID){
@@ -30,13 +32,6 @@ public class Fraction {
 		this.valueModelMap = valueModelMap;
 	}
 
-//	public SortedMap<String, Method> getMethodsMap() {
-//		return methodsMap;
-//	}
-//
-//	public void setMethodsMap(SortedMap<String, Method> methodsMap) {
-//		this.methodsMap = methodsMap;
-//	}
 
 	@Override
 	public String toString() {

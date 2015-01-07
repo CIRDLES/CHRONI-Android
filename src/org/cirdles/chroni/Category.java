@@ -5,12 +5,17 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+/*
+This class defines a Category object for a Report Settings file.
+ */
 public class Category {
 
-	private String displayName;
-	private int positionIndex;
-	private SortedMap<Integer,Column> categoryColumnMap = null;
+	private String displayName; // name of the category
+	private int positionIndex; // where the category is located
+	private SortedMap<Integer,Column> categoryColumnMap = null; // map containing the columns of a category sorted by ints
 
+    /* Instantiates a Category given a display name and position index
+     */
 	public Category(String dn, int pIndex) {
 		this.displayName = dn;
 		this.positionIndex = pIndex;
@@ -18,9 +23,12 @@ public class Category {
 		}
 
 	@Override
+    /*
+    Creates a string for each category
+     */
 	public String toString() {
 		StringBuilder categoryString = new StringBuilder();
-		categoryString.append("This object of Category has displayName: " + displayName + " and positionIndex: "
+		categoryString.append("This Category has displayName: " + displayName + " and positionIndex: "
 				+ positionIndex + "." + "\n");
 		
 		Iterator<Entry<Integer, Column>> iterator = categoryColumnMap.entrySet().iterator();

@@ -215,7 +215,7 @@ public class URLFileReader{
 						}else{
                             downloadedFilePath = aliquotDirectory+ "/" + fileName + ".xml";
 							output = new FileOutputStream(aliquotDirectory+ "/" + fileName + ".xml");
-//							AliquotMenuActivity.setAbsoluteFilePath(aliquotDirectory+ "/" + fileName + ".xml");
+//							AliquotMenuActivity.setAbsoluteFilePathOfDownloadedAliquot(aliquotDirectory+ "/" + fileName + ".xml");
 						}
 					}else if(fileType.contains("Report Settings")){
                         downloadedFilePath = reportSettingsDirectory + "/" + fileName + ".xml";
