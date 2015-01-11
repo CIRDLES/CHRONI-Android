@@ -269,7 +269,7 @@ public class TablePainterActivity extends Activity {
             for (int j = 0; j < COLS; j++) {
                 TextView cell = new TextView(this);
                 cell.setTypeface(Typeface.MONOSPACE);
-                cell.setMinEms(columnSizes[j] - 1); // sets column spacing based on max character count
+                cell.setMinEms(columnSizes[j]+2); // sets column spacing based on max character count and allows extra space for crowding
 //                cell.setWidth(205);
                 cell.setPadding(3, 4, 3, 4);
                 cell.setTextColor(Color.BLACK);
@@ -350,17 +350,14 @@ public class TablePainterActivity extends Activity {
             int currentCellCharacterCount = 0;
             for (int currentRow = 0; currentRow < ROWS; currentRow++) {
 //                Log.i("Column: " + currentColumn +  " Cell: " + currentRow + " Width: " + currentCellCharacterCount, "Measuring");
-
                 currentCellCharacterCount = finalArray[currentRow][currentColumn].length();
 
                 if(currentCellCharacterCount > widestCellCharacterCount){
                     widestCellCharacterCount = currentCellCharacterCount;
                 }
-
 //                Log.i("Widest Cell: " + widestCellCharacterCount, "Result");
             }
-
-            columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount;
+            columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount/2; // Divides by 2 for appropriate EMS measurement
 //            Log.i("Column: " + currentColumn +  " Widest Cell: " + widestCellCharacterCount, "Measuring");
         }
         return columnMaxCharacterCounts;
