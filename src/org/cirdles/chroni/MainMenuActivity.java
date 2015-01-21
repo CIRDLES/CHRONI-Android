@@ -63,11 +63,11 @@ public class MainMenuActivity extends Activity {
     Button historyButton = (Button) findViewById(R.id.menuHistoryButton);
 	historyButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
-//		Intent openHistoryTable = new Intent(
-//			"android.intent.action.HISTORY");
-//		startActivity(openHistoryTable);
+		Intent openHistoryTable = new Intent(
+			"android.intent.action.HISTORY");
+		startActivity(openHistoryTable);
 
-            Toast.makeText(MainMenuActivity.this, "This feature is currently unavailable.", Toast.LENGTH_LONG).show();
+//            Toast.makeText(MainMenuActivity.this, "This feature is currently unavailable.", Toast.LENGTH_LONG).show();
         }
 	});
 

@@ -57,8 +57,8 @@ public class HistoryActivity extends Activity {
         if (!myAliquots.isEmpty()) {
             // Collects information from the database if it isn't empty
             final String[][] database = myAliquots.fillTableData(); // completes 2D array of aliquot table
-            final long ROWS = myAliquots.getEntryCount() - 1;
-            final long COLUMNS = 5;
+            final long ROWS = myAliquots.getEntryCount() - 1; // TODO why is this -1
+            final long COLUMNS = 3;
 
             // sets up the table to display the database
             TableLayout table = (TableLayout) findViewById(R.id.historyDatabaseTable);
@@ -103,11 +103,12 @@ public class HistoryActivity extends Activity {
 
                         cell.setTypeface(Typeface.DEFAULT_BOLD);
 
-                        if(j != 4){ //TODO: Come back and find a more elegant solution to handle adding multiple buttons
-                            row.addView(cell);}
-                        else if(j==4 && i==0){
-                            row.addView(cell);
-                        }
+//                        if(j != 4){ //TODO: Come back and find a more elegant solution to handle adding multiple buttons
+                        row.addView(cell);
+//                        }
+//                        else if(j==4 && i==0){
+//                            row.addView(cell);
+//                        }
                     } // ends the formatting of the text cells
 
                     // adds the open buttons to the last column
@@ -140,31 +141,7 @@ public class HistoryActivity extends Activity {
 
                     }
 
-                    // adds the delete buttons to the last column
-                    if (j == 4 && i != 0) {
-                        Button deleteButton = new Button(this);
-                        deleteButton.setText("DELETE");
-                        deleteButton.setTextColor(Color.WHITE);
-                        deleteButton.setTextSize((float) 11);
-                        deleteButton.setTypeface(Typeface.DEFAULT_BOLD);
-                        deleteButton.setGravity(Gravity.CENTER);
-                        deleteButton.setHeight(105);
-                        deleteButton.setWidth(50);
-                        deleteButton.setBackgroundColor(Color.GRAY);
-                        row.addView(deleteButton);
 
-                        final int currentRow = i;
-
-                        // adds button functionality
-                        deleteButton.setOnClickListener(new View.OnClickListener() {
-                            // When button clicked, it deletes entry
-                            public void onClick(View v) {
-                                myAliquots.deleteEntry(currentRow);
-                                Toast.makeText(HistoryActivity.this, "Your entry has been deleted!", Toast.LENGTH_LONG).show();
-                            }
-                        });
-
-                    }
                 }
 
             }
