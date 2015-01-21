@@ -92,44 +92,43 @@ public class HistoryActivity extends Activity {
                         cell.setPadding(4, 4, 4, 4);
                         cell.setTextSize((float) 12);
                         cell.setGravity(Gravity.CENTER);
-                        cell.setWidth(150);
+                        cell.setWidth(250);
                         cell.setHeight(100);
 
                         if (i % 2 == 1) {
                             // colors table's odd rows
-                            cell.setBackgroundColor(Color.parseColor("#107AB3"));
                             cell.setTextColor(Color.WHITE);
-
-                        } else {
-                            cell.setBackgroundColor(Color.WHITE);
+                            cell.setBackgroundResource(R.drawable.dark_blue_background);
+                        } else if(i == 0){
+                            // Colors header row
+                            cell.setBackgroundResource(R.drawable.dark_grey_background);
                             cell.setTextColor(Color.BLACK);
+                        }else{
+                            // Colors even rows
+                            cell.setTextColor(Color.BLACK);
+                            cell.setBackgroundResource(R.drawable.white_background);
                         }
 
                         cell.setTypeface(Typeface.DEFAULT_BOLD);
 
-//                        if(j != 4){ //TODO: Come back and find a more elegant solution to handle adding multiple buttons
                         row.addView(cell);
-//                        }
-//                        else if(j==4 && i==0){
-//                            row.addView(cell);
-//                        }
+
                     } // ends the formatting of the text cells
 
                     // adds the open buttons to the last column
                     else if (j == 2 && i != 0) {
                         Button openButton = new Button(this);
                         openButton.setText("OPEN");
-                        openButton.setTextColor(Color.WHITE);
                         openButton.setTextSize((float) 12);
                         openButton.setTypeface(Typeface.DEFAULT_BOLD);
                         openButton.setGravity(Gravity.CENTER);
                         openButton.setWidth(150);
-                                                openButton.setHeight(100);
-                        openButton.setBackgroundColor(Color.GRAY);
+                        openButton.setHeight(100);
                         row.addView(openButton);
 
-                        final int currentRow = i;
-                        final int currentColumn = j;
+                        // Gets the current aliquot info for sending to the display table
+                        final int currentAliquotRow = i;
+                        final int currentAliquotColumn = j-1;
 
                         // adds open button functionality
                         openButton.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +137,7 @@ public class HistoryActivity extends Activity {
                             public void onClick(View v) {
                                 Toast.makeText(HistoryActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
                                 Intent openTableScreen = new Intent("android.intent.action.DISPLAY");
-                                openTableScreen.putExtra("AliquotXML", database[currentRow][currentColumn - 2]);
+                                openTableScreen.putExtra("AliquotXML", database[currentAliquotRow][currentAliquotColumn]); // Opens table to specified aliquot file
                                 startActivity(openTableScreen);
                             }
                         });

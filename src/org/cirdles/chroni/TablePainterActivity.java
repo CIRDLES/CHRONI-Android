@@ -663,7 +663,7 @@ public class TablePainterActivity extends Activity {
  * This method gets the current time.
  */
     public String getCurrentTime(){
-        java.text.DateFormat dateFormat = new SimpleDateFormat("MM/dd KK:mm");
+        java.text.DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy KK:mm");
         Date date = new Date();
         String time = dateFormat.format(date);
         return time;
