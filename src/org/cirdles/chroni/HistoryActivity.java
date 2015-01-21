@@ -75,12 +75,16 @@ public class HistoryActivity extends Activity {
                 for (int j = 0; j < COLUMNS; j++) {
                     // adds columns to the table
                     // j = column number (starting at 1)
-                    if (j != 3 || i == 0) {
+                    if (j != 2 || i == 0) {
                         TextView cell = new TextView(this);
                         // Formats the file names correctly for history table
                         if (database[i][j].contains("/data/")) {
                             String[] fileNameText = database[i][j].split("/");
                             String fileName = fileNameText[fileNameText.length - 1];
+                            if (fileName.contains(".xml")){ // Removes the extension from the Aliquot name
+                               String fileNameWithExtension[] = fileName.split(".xml");
+                               fileName = fileNameWithExtension[fileNameWithExtension.length-1];
+                            }
                             cell.setText(fileName);
                         } else {
                             cell.setText(database[i][j]);
@@ -88,8 +92,8 @@ public class HistoryActivity extends Activity {
                         cell.setPadding(4, 4, 4, 4);
                         cell.setTextSize((float) 12);
                         cell.setGravity(Gravity.CENTER);
-                        cell.setWidth(175);
-                        cell.setHeight(120);
+                        cell.setWidth(150);
+                        cell.setHeight(100);
 
                         if (i % 2 == 1) {
                             // colors table's odd rows
@@ -112,15 +116,15 @@ public class HistoryActivity extends Activity {
                     } // ends the formatting of the text cells
 
                     // adds the open buttons to the last column
-                    else if (j == 3 && i != 0) {
+                    else if (j == 2 && i != 0) {
                         Button openButton = new Button(this);
                         openButton.setText("OPEN");
                         openButton.setTextColor(Color.WHITE);
                         openButton.setTextSize((float) 12);
                         openButton.setTypeface(Typeface.DEFAULT_BOLD);
                         openButton.setGravity(Gravity.CENTER);
-                        openButton.setHeight(105);
-                        openButton.setWidth(50);
+                        openButton.setWidth(150);
+                                                openButton.setHeight(100);
                         openButton.setBackgroundColor(Color.GRAY);
                         row.addView(openButton);
 

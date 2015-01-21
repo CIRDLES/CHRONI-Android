@@ -113,7 +113,7 @@ public class TablePainterActivity extends Activity {
 
         // Creates database entry from current entry
         entryHelper = new CHRONIDatabaseHelper(this);
-        entryHelper.createEntry(getCurrentTime(), aliquotPath, "0");
+        entryHelper.createEntry(getCurrentTime(), aliquotPath, reportSettingsPath);
         Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
 
         // Creates the row for the buttons
@@ -663,7 +663,7 @@ public class TablePainterActivity extends Activity {
  * This method gets the current time.
  */
     public String getCurrentTime(){
-        java.text.DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy a KK:mm");
+        java.text.DateFormat dateFormat = new SimpleDateFormat("MM/dd KK:mm");
         Date date = new Date();
         String time = dateFormat.format(date);
         return time;
