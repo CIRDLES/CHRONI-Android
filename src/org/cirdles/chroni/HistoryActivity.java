@@ -42,9 +42,9 @@ public class HistoryActivity extends Activity {
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.historyBackground);
         layout.setBackground(getResources().getDrawable(R.drawable.background));
 
-        // Sets up the finish button
-        Button finishButton = (Button) findViewById(R.id.historyFinishButton);
-        finishButton.setOnClickListener(new OnClickListener() {
+        // Sets up the home button
+        Button homeButton = (Button) findViewById(R.id.historyFinishButton);
+        homeButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 Intent openMainMenu = new Intent(
                         "android.intent.action.MAINMENU");
@@ -52,12 +52,15 @@ public class HistoryActivity extends Activity {
             }
         });
 
-        final CHRONIDatabaseHelper myAliquots = new CHRONIDatabaseHelper(this);
+        final CHRONIDatabaseHelper myAliquots = new CHRONIDatabaseHelper(this); // used to access the stored CHRONI database
 
         if (!myAliquots.isEmpty()) {
             // Collects information from the database if it isn't empty
-            final String[][] database = myAliquots.fillTableData(); // completes 2D array of aliquot table
-            final long ROWS = myAliquots.getEntryCount() - 1; // TODO why is this -1
+            final String[][] database = myAliquots.fillTableData(); // completes 2D array of aliquot table for history
+            int ROWS = 6; // rows for last five MRV entries plus an extra row reserved for header
+            if (myAliquots.getTotalEntryCount() < 5){
+                ROWS = (int)myAliquots.getTotalEntryCount() + 1; // Sizes the array based on how many entries are in database
+            }
             final long COLUMNS = 3;
 
             // sets up the table to display the database
@@ -66,60 +69,60 @@ public class HistoryActivity extends Activity {
             table.setPadding(35, 0, 35, 0);
 
             // Table Layout Printing
-            for (int i = 0; i < ROWS; i++) {
-                // adds each row to the table
-                // i = row number (starting at 1)
+            for (int currentRow = 0; currentRow < ROWS; currentRow++) {
+                // Adds current row to the table
                 TableRow row = new TableRow(this);
                 table.addView(row);
-                final int rowNum = i;
-                for (int j = 0; j < COLUMNS; j++) {
-                    // adds columns to the table
-                    // j = column number (starting at 1)
-                    if (j != 2 || i == 0) {
-                        TextView cell = new TextView(this);
+                for (int currentColumn = 0; currentColumn < COLUMNS; currentColumn++) {
+
+                    // Adds text to the history cells if not a button row or is header row
+                    if (currentColumn != 2 || currentRow == 0) {
+                        TextView textCell = new TextView(this);
+
                         // Formats the file names correctly for history table
-                        if (database[i][j].contains("/data/")) {
-                            String[] fileNameText = database[i][j].split("/");
+                        if (database[currentRow][currentColumn].contains("/data/")) {
+                            String[] fileNameText = database[currentRow][currentColumn].split("/");
                             String fileName = fileNameText[fileNameText.length - 1];
                             if (fileName.contains(".xml")){ // Removes the extension from the Aliquot name
                                String fileNameWithExtension[] = fileName.split(".xml");
                                fileName = fileNameWithExtension[fileNameWithExtension.length-1];
                             }
-                            cell.setText(fileName);
+                            textCell.setText(fileName); // Sets correctly formatted file name to middle column
                         } else {
-                            cell.setText(database[i][j]);
+                            textCell.setText(database[currentRow][currentColumn]); // Sets date in first column
                         }
-                        cell.setPadding(4, 4, 4, 4);
-                        cell.setTextSize((float) 12);
-                        cell.setGravity(Gravity.CENTER);
-                        cell.setWidth(250);
-                        cell.setHeight(100);
 
-                        if (i % 2 == 1) {
-                            // colors table's odd rows
-                            cell.setTextColor(Color.WHITE);
-                            cell.setBackgroundResource(R.drawable.dark_blue_background);
-                        } else if(i == 0){
+                        // Properly formats all text cells
+                        textCell.setPadding(4, 4, 4, 4);
+                        textCell.setTextSize((float) 15);
+                        textCell.setGravity(Gravity.CENTER);
+                        textCell.setWidth(250);
+                        textCell.setHeight(100);
+                        textCell.setTypeface(Typeface.DEFAULT_BOLD);
+
+                        if(currentRow == 0) {
                             // Colors header row
-                            cell.setBackgroundResource(R.drawable.dark_grey_background);
-                            cell.setTextColor(Color.BLACK);
+                            textCell.setBackgroundResource(R.drawable.dark_grey_background);
+                            textCell.setTextColor(Color.BLACK);
+                        }else if (currentRow % 2 == 1) {
+                            // colors table's odd rows
+                            textCell.setTextColor(Color.WHITE);
+                            textCell.setBackgroundResource(R.drawable.dark_blue_background);
                         }else{
                             // Colors even rows
-                            cell.setTextColor(Color.BLACK);
-                            cell.setBackgroundResource(R.drawable.white_background);
+                            textCell.setTextColor(Color.BLACK);
+                            textCell.setBackgroundResource(R.drawable.white_background);
                         }
 
-                        cell.setTypeface(Typeface.DEFAULT_BOLD);
-
-                        row.addView(cell);
+                        row.addView(textCell); // adds text cell to the row
 
                     } // ends the formatting of the text cells
 
-                    // adds the open buttons to the last column
-                    else if (j == 2 && i != 0) {
+                    // adds the open button to the last column
+                    else if (currentColumn == 2 && currentRow != 0) {
                         Button openButton = new Button(this);
                         openButton.setText("OPEN");
-                        openButton.setTextSize((float) 12);
+                        openButton.setTextSize((float) 15);
                         openButton.setTypeface(Typeface.DEFAULT_BOLD);
                         openButton.setGravity(Gravity.CENTER);
                         openButton.setWidth(150);
@@ -127,8 +130,8 @@ public class HistoryActivity extends Activity {
                         row.addView(openButton);
 
                         // Gets the current aliquot info for sending to the display table
-                        final int currentAliquotRow = i;
-                        final int currentAliquotColumn = j-1;
+                        final int currentAliquotRow = currentRow;
+                        final int currentAliquotColumn = currentColumn-1;
 
                         // adds open button functionality
                         openButton.setOnClickListener(new View.OnClickListener() {
@@ -143,12 +146,8 @@ public class HistoryActivity extends Activity {
                         });
 
                     }
-
-
                 }
-
             }
-
         }
     }
 
