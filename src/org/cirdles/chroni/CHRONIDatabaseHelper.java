@@ -109,7 +109,7 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
         // Fills in the header row
         databaseTable[0][0] = "Last Opened";
         databaseTable[0][1] = "Aliquot";
-        databaseTable[0][2] = "VIEW";	// empty header for buttons
+        databaseTable[0][2] = "View";	// empty header for buttons
 
         // inserts the data into the 2D array
         rowNumber = 1; // Starts on row 1 to avoid the header row
