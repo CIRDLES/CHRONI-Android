@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Environment;
 import android.view.Menu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -91,10 +92,82 @@ public class HomeScreenActivity extends Activity  {
     }
 
     /*
+ * Creates the necessary application directories: CIRDLES, Aliquot and Report Settings folders
+ */
+    protected void createDirectories() throws FileNotFoundException {
+        // Establishes the CIRDLES directories
+        File chroniDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/");
+        File aliquotDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Aliquot");
+        File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Report Settings");
+
+        // Gives default report settings a path
+        File defaultReportSettingsDirectory = new File(reportSettingsDirectory, "Default Report Settings");
+        File defaultReportSettings2Directory = new File(reportSettingsDirectory, "Default Report Settings 2");
+
+        boolean defaultReportSettingsPresent = false; // determines whether the report settings is present or not
+        boolean defaultReportSettings2Present = false; // determines whether the report settings is present or not
+
+        //Creates the directories if they are not there
+//        if(chroniDirectory.exists()){
+            chroniDirectory.mkdirs();
+//        }
+//        if(aliquotDirectory.exists()){
+            aliquotDirectory.mkdirs();
+//        }
+//        if(reportSettingsDirectory.exists()){
+            reportSettingsDirectory.mkdirs();
+//        }
+
+        // Checks internet connection before downloading files
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mobileWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+        // Checks to see if the default report settings is present
+        File[] files = reportSettingsDirectory.listFiles(); // Lists files in CHRONI directory
+        for (File f : files) {
+            if (f.getName().contentEquals("Default Report Settings.xml")) {
+                defaultReportSettingsPresent = true;
+            }if (f.getName().contentEquals("Default Report Settings 2.xml")) {
+                defaultReportSettings2Present = true;
+            }
+        }
+
+        if (mobileWifi.isConnected()) {
+            // Downloads default report settings 1 if not present
+            if (!defaultReportSettingsPresent) {
+                // Downloads the default report setting file if absent
+                URLFileReader downloader = new URLFileReader(
+                        HomeScreenActivity.this,
+                        "HomeScreen",
+                        "http://cirdles.org/sites/default/files/Downloads/CIRDLESDefaultReportSettings.xml",
+                        "url");
+                saveInitialLaunch();
+                saveCurrentReportSettings();         // Notes that files have been downloaded and application has been properly initialized
+            }
+
+            if (!defaultReportSettings2Present) {
+                // Downloads the default report setting file if absent
+                URLFileReader downloader2 = new URLFileReader(
+                        HomeScreenActivity.this,
+                        "HomeScreen",
+                        "http://cirdles.org/sites/default/files/Downloads/Default%20Report%20Settings%202.xml",
+                        "url");
+                saveInitialLaunch();
+                saveCurrentReportSettings();         // Notes that files have been downloaded and application has been properly initialized
+            }
+
+        }else {
+            Toast.makeText(HomeScreenActivity.this, "Please connect to your local wifi network to download your Default Report Settings files.", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+
+    /*
      * Creates the necessary application directories: CIRDLES, Aliquot and
      * Report Settings folders
      */
-    protected void createDirectories() throws FileNotFoundException {
+    protected void oldCreateDirectories() throws FileNotFoundException {
         boolean defaultReportSettingsPresent = false; // determines whether the report settings is present or not
         boolean defaultReportSettings2Present = false; // determines whether the report settings is present or not
 

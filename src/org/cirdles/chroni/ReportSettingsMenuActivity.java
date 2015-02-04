@@ -47,8 +47,8 @@ public class ReportSettingsMenuActivity extends Activity {
         layout.setBackground(getResources().getDrawable(R.drawable.background));
 
         // Directories needed for file locations
-        final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE);
-        final File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
+//        final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE);
+//        final File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
 
         // Provides a label of the name of the current report settings file
         TextView currentReportSettingsFile = (TextView) findViewById(R.id.currentReportSettingsLabel);
@@ -144,7 +144,7 @@ Requests file name from user and  proceeds to download based on input
                     URLFileReader downloader = new URLFileReader(
                             ReportSettingsMenuActivity.this, "ReportSettingsMenu",
                             reportSettingsUrl, "url", getFinalReportSettingsFileName()); // Downloads the file and sets user name
-                    setAbsoluteFilePath(reportSettingsDirectory + "/" + getFinalReportSettingsFileName() + ".xml");
+//                    setAbsoluteFilePath(reportSettingsDirectory + "/" + getFinalReportSettingsFileName() + ".xml");
                     Toast.makeText(ReportSettingsMenuActivity.this, "Downloading Report Settings...", Toast.LENGTH_LONG).show();
                 }
             }

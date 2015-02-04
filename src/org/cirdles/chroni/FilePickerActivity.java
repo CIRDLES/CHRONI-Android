@@ -36,6 +36,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class FilePickerActivity extends ListActivity {
 	
@@ -168,11 +169,15 @@ public class FilePickerActivity extends ListActivity {
 		    	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
 		    	openAliquotMenu.putExtra("AliquotXMLFileName", newFile.getAbsolutePath());
 		    	startActivity(openAliquotMenu);
+//                Toast.makeText(FilePickerActivity.this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
             }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_CHRONI_Directory")||getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Device_Directory")){
 				Intent openRSMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
 				openRSMenu.putExtra("ReportSettingsXMLFileName", newFile.getAbsolutePath());
 		    	startActivity(openRSMenu);
-			}
+//                Toast.makeText(FilePickerActivity.this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+            }
 //			setResult(RESULT_OK, extra);
 			
 			// Finish the activity

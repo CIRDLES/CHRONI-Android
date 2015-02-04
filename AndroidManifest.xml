@@ -9,7 +9,6 @@
         android:targetSdkVersion="20" />
     
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
         <uses-permission android:name="android.permission.WAKE_LOCK" />
     	<uses-permission android:name="android.permission.INTERNET" />
     	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -66,16 +65,6 @@
            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.FILEPICKER" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="org.cirdles.chroni.FilePickerMenuActivity"
-            android:screenOrientation="sensorPortrait"
-            android:noHistory="true">
-            <intent-filter>
-                <action android:name="android.intent.action.FILEPICKERMENU" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

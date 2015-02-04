@@ -21,6 +21,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,12 +60,10 @@ public class TablePainterActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         setContentView(R.layout.display);
 
-        // Directory needed to place files in accurate locations
-        File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
-
         // Instantiates the Report Settings Parser
         ReportSettingsParser reportSettingsParser = new ReportSettingsParser();
-        String reportSettingsPath = String.valueOf(new File(chroniDirectory, "Report Settings")) + "/Default Report Settings.xml"; // sets default Report Settings XML
+        String reportSettingsPath = Environment.getExternalStorageDirectory()
+                + "/CHRONI/Report Settings/Default Report Settings.xml"; // sets default Report Settings XML
         if (getIntent().getStringExtra("ReportSettingsXML") != null) {
             reportSettingsPath = getIntent().getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
         }
@@ -93,7 +92,7 @@ public class TablePainterActivity extends Activity {
         String[][] fractionArray = fillFractionArray(outputVariableNames,
                 categoryMap, fractionMap, aliquot);
 
-        // Sorts the table array
+        //Sorts the table array
         Arrays.sort(fractionArray, new Comparator<String[]>() {
             @Override
             public int compare(final String[] entry1, final String[] entry2) {
@@ -332,9 +331,6 @@ public class TablePainterActivity extends Activity {
             }
             rowCount++;
         }
-
-
-
     }
 
     /*

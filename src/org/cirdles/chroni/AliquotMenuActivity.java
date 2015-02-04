@@ -110,7 +110,7 @@ public class AliquotMenuActivity extends Activity {
 	    public void onClick(View v) {
             if (aliquotSelectedFileText.getText().length() != 0) {
                 // Makes sure there is a file selected
-                Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
+//                Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
                 Intent openMainMenu = new Intent("android.intent.action.DISPLAY"); // Opens display table
                 openMainMenu.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
                 startActivity(openMainMenu);
@@ -145,7 +145,6 @@ public class AliquotMenuActivity extends Activity {
                     String aliquotIGSN = igsnText.getText().toString().toUpperCase().trim(); // Captures igsn from user input
                     URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn"); // Downloads Aliquot file
 
-                    setAbsoluteFilePathOfDownloadedAliquot(aliquotDirectory + "/" + aliquotIGSN + ".xml"); // sets file path of downloaded aliquot
                     // Note: Setting above is useful for download-then-open functionality
                 }
             } else {//Handles lack of wifi connection
@@ -227,7 +226,8 @@ public class AliquotMenuActivity extends Activity {
 		    File f = new File(data.getStringExtra(FilePickerActivity.EXTRA_FILE_PATH));
 
 		    String aliquotLocation = f.getPath();
-		    boolean aliquotFound = true;
+
+            boolean aliquotFound = true;
 
 		    String[] aliquotName = aliquotLocation.toString()
 			    .split("/");
