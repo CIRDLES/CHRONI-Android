@@ -65,33 +65,10 @@ public class AliquotMenuActivity extends Activity {
 	    aliquotFileSelectButton = (Button) findViewById(R.id.aliquotFileSelectButton);
 	    aliquotFileSelectButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
-            // Creates a dialog box that allows user to select where the Aliquot file is located
-            AlertDialog.Builder directorySelectionAlert = new AlertDialog.Builder(AliquotMenuActivity.this);
-
-            directorySelectionAlert.setTitle("Aliquot Location");
-            directorySelectionAlert.setMessage("Where is your Aliquot file located?");
-
-            // Sets up button to go to the CHRONI aliquot directory
-            directorySelectionAlert.setPositiveButton("CHRONI Directory", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    Intent openFilePicker = new Intent(
-                            "android.intent.action.FILEPICKER");
-                    openFilePicker.putExtra("Default_Directory", "Aliquot_CHRONI_Directory");
-                    startActivity(openFilePicker);
-                }
-            });
-
-            // Sets up button to go to the Device directory
-            directorySelectionAlert.setNeutralButton("Device Directory", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    Intent openFilePicker = new Intent(
-                            "android.intent.action.FILEPICKER");
-                    openFilePicker.putExtra("Default_Directory", "Aliquot_Device_Directory");
-                    startActivity(openFilePicker);
-                }
-            });
-
-            directorySelectionAlert.show(); // displays dialog
+            // Opens file picker activity to main menu
+            Intent openFilePicker = new Intent("android.intent.action.FILEPICKER");
+            openFilePicker.putExtra("Default_Directory", "Aliquot_Directory");
+            startActivity(openFilePicker);
 	    }
 	});
 

@@ -57,33 +57,10 @@ public class ReportSettingsMenuActivity extends Activity {
         reportSettingsSelectedFileButton = (Button) findViewById(R.id.reportSettingsFileSelectButton);
         reportSettingsSelectedFileButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        // Creates a dialog box that allows user to select where Report Settings file is located
-                        AlertDialog.Builder directorySelectionAlert = new AlertDialog.Builder(ReportSettingsMenuActivity.this);
-
-                        directorySelectionAlert.setTitle("Report Settings Location");
-                        directorySelectionAlert.setMessage("Where is your Report Settings file located?");
-
-                        // Specifies the CHRONI Report Settings directory for browsing
-                        directorySelectionAlert.setPositiveButton("CHRONI Directory", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                Intent openFilePicker = new Intent(
-                                        "android.intent.action.FILEPICKER");
-                                openFilePicker.putExtra("Default_Directory", "Report_Settings_CHRONI_Directory");
-                                startActivity(openFilePicker);
-                            }
-                        });
-
-                        // Specifies the Device directory for Report Settings browsing
-                        directorySelectionAlert.setNeutralButton("Device Directory", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                Intent openFilePicker = new Intent(
-                                        "android.intent.action.FILEPICKER");
-                                openFilePicker.putExtra("Default_Directory", "Report_Settings_Device_Directory");
-                                startActivity(openFilePicker);
-                            }
-                        });
-
-                        directorySelectionAlert.show(); // displays the directory dialog box
+                        // Opens file picker activity to main menu
+                        Intent openFilePicker = new Intent("android.intent.action.FILEPICKER");
+                        openFilePicker.putExtra("Default_Directory", "Report_Settings_Directory");
+                        startActivity(openFilePicker);
                     }
                 });
 
