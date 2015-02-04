@@ -80,6 +80,7 @@ public class ReportSettingsMenuActivity extends Activity {
                             "android.intent.action.DISPLAY");
                     openMainMenu.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
                     reportSettingsApplyButton.setBackgroundColor(Color.GREEN);
+                    reportSettingsApplyButton.setTextColor(Color.BLACK);
                     saveCurrentReportSettings();
                     startActivity(openMainMenu);
                 }
@@ -90,15 +91,12 @@ public class ReportSettingsMenuActivity extends Activity {
         Button reportSettingsCancelButton = (Button) findViewById(R.id.reportSettingsMenuCancelButton);
         reportSettingsCancelButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                if (reportSettingsSelectedFileText.getText().length() != 0) {
-//                    Intent openMainMenu = new Intent(
-//                            "android.intent.action.DISPLAY");
-//                    openMainMenu.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
-//                    saveCurrentReportSettings();
-//                    startActivity(openMainMenu);
-//                }
-                Toast.makeText(ReportSettingsMenuActivity.this, "Still in progress!", Toast.LENGTH_LONG).show();
-
+                    Intent openMainMenu = new Intent(
+                            "android.intent.action.DISPLAY");
+                    openMainMenu.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
+                    saveCurrentReportSettings();
+                    startActivity(openMainMenu);
+//
             }
         });
     }

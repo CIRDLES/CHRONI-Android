@@ -92,6 +92,7 @@ public class AliquotMenuActivity extends Activity {
                 Intent openMainMenu = new Intent("android.intent.action.DISPLAY"); // Opens display table
                 openMainMenu.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
                 aliquotFileSubmitButton.setBackgroundColor(Color.GREEN);
+                aliquotFileSubmitButton.setTextColor(Color.BLACK);
                 startActivity(openMainMenu);
             }else{
                 // Tells user to select a file for viewing
