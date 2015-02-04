@@ -5,6 +5,9 @@
         android:id="@+id/returnToMenu"
         android:title="Main Menu"/>
     <item
+        android:id="@+id/historyMenu"
+        android:title="History"/>
+    <item
         android:id="@+id/editProfileMenu"
         android:title="Edit Credentials"/>
     

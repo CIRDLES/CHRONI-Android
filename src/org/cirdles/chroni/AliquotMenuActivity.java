@@ -269,48 +269,6 @@ public class AliquotMenuActivity extends Activity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.returnToMenu:
-                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-                startActivity(openMainMenu);
-                return true;
-            case R.id.editProfileMenu:
-                Intent openUserProfile = new Intent(
-                        "android.intent.action.USERPROFILE");
-                startActivity(openUserProfile);
-                return true;
-            case R.id.viewAliquotsMenu:
-                Intent openAliquotFiles = new Intent(
-                        "android.intent.action.FILEPICKER");
-                openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot");
-                startActivity(openAliquotFiles);
-                return true;
-            case R.id.viewReportSettingsMenu:
-                Intent openReportSettingsFiles = new Intent(
-                        "android.intent.action.FILEPICKER");
-                openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report Settings");
-                startActivity(openReportSettingsFiles);
-                return true;
-            case R.id.aboutScreen:
-                Intent openAboutScreen = new Intent(
-                        "android.intent.action.ABOUT");
-                startActivity(openAboutScreen);
-                return true;
-            case R.id.helpMenu:
-                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://chronihelpblog.wordpress.com"));
-                startActivity(openHelpBlog);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     public String getFinalAliquotFileName() {
         return finalAliquotFileName;
     }
@@ -325,5 +283,52 @@ public class AliquotMenuActivity extends Activity {
 
     public static void setInvalidFile(boolean invalidFile) {
         invalidFile = invalidFile;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handles menu item selection
+        switch (item.getItemId()) {
+            case R.id.returnToMenu: // Takes user to main menu
+                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
+                startActivity(openMainMenu);
+                return true;
+            case R.id.editProfileMenu: //Takes user to credentials screen
+                Intent openUserProfile = new Intent(
+                        "android.intent.action.USERPROFILE");
+                startActivity(openUserProfile);
+                return true;
+            case R.id.historyMenu: //Takes user to credentials screen
+                Intent openHistoryTable = new Intent(
+                        "android.intent.action.HISTORY");
+                startActivity(openHistoryTable);
+                return true;
+            case R.id.viewAliquotsMenu: // Takes user to aliquot menu
+                Intent openAliquotFiles = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openAliquotFiles.putExtra("Default_Directory",
+                        "Aliquot_CHRONI_Directory");
+                startActivity(openAliquotFiles);
+                return true;
+            case R.id.viewReportSettingsMenu: // Takes user to report settings menu
+                Intent openReportSettingsFiles = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openReportSettingsFiles.putExtra("Default_Directory",
+                        "Report_Settings_CHRONI_Directory");
+                startActivity(openReportSettingsFiles);
+                return true;
+            case R.id.aboutScreen: // Takes user to about screen
+                Intent openAboutScreen = new Intent(
+                        "android.intent.action.ABOUT");
+                startActivity(openAboutScreen);
+                return true;
+            case R.id.helpMenu: // Takes user to help blog
+                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://chronihelpblog.wordpress.com"));
+                startActivity(openHelpBlog);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

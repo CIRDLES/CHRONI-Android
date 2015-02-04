@@ -96,37 +96,42 @@ public class ViewAnalysisImageActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu:
+            case R.id.returnToMenu: // Takes user to main menu
                 Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
                 startActivity(openMainMenu);
                 return true;
-            case R.id.editProfileMenu:
+            case R.id.editProfileMenu: //Takes user to credentials screen
                 Intent openUserProfile = new Intent(
                         "android.intent.action.USERPROFILE");
                 startActivity(openUserProfile);
                 return true;
-            case R.id.viewAliquotsMenu:
+            case R.id.historyMenu: //Takes user to credentials screen
+                Intent openHistoryTable = new Intent(
+                        "android.intent.action.HISTORY");
+                startActivity(openHistoryTable);
+                return true;
+            case R.id.viewAliquotsMenu: // Takes user to aliquot menu
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot");
+                        "Aliquot_CHRONI_Directory");
                 startActivity(openAliquotFiles);
                 return true;
-            case R.id.viewReportSettingsMenu:
+            case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report Settings");
+                        "Report_Settings_CHRONI_Directory");
                 startActivity(openReportSettingsFiles);
                 return true;
-            case R.id.aboutScreen:
+            case R.id.aboutScreen: // Takes user to about screen
                 Intent openAboutScreen = new Intent(
                         "android.intent.action.ABOUT");
                 startActivity(openAboutScreen);
                 return true;
-            case R.id.helpMenu:
+            case R.id.helpMenu: // Takes user to help blog
                 Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("http://chronihelpblog.wordpress.com"));
                 startActivity(openHelpBlog);
@@ -134,6 +139,7 @@ public class ViewAnalysisImageActivity extends Activity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+
     }
 
 

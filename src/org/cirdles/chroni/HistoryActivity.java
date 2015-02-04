@@ -171,18 +171,23 @@ public class HistoryActivity extends Activity {
                         "android.intent.action.USERPROFILE");
                 startActivity(openUserProfile);
                 return true;
+            case R.id.historyMenu: //Takes user to credentials screen
+                Intent openHistoryTable = new Intent(
+                        "android.intent.action.HISTORY");
+                startActivity(openHistoryTable);
+                return true;
             case R.id.viewAliquotsMenu: // Takes user to aliquot menu
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot");
+                        "Aliquot_CHRONI_Directory");
                 startActivity(openAliquotFiles);
                 return true;
             case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report Settings");
+                        "Report_Settings_CHRONI_Directory");
                 startActivity(openReportSettingsFiles);
                 return true;
             case R.id.aboutScreen: // Takes user to about screen
@@ -199,6 +204,4 @@ public class HistoryActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
 }

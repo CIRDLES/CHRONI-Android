@@ -46,10 +46,6 @@ public class ReportSettingsMenuActivity extends Activity {
         RelativeLayout layout =(RelativeLayout)findViewById(R.id.reportSettingsBackground);
         layout.setBackground(getResources().getDrawable(R.drawable.background));
 
-        // Directories needed for file locations
-//        final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE);
-//        final File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
-
         // Provides a label of the name of the current report settings file
         TextView currentReportSettingsFile = (TextView) findViewById(R.id.currentReportSettingsLabel);
         currentReportSettingsFile.setText("Current Report Settings: " + splitReportSettingsName(retrieveReportSettingsFileName()));
@@ -121,7 +117,6 @@ Requests file name from user and  proceeds to download based on input
                     URLFileReader downloader = new URLFileReader(
                             ReportSettingsMenuActivity.this, "ReportSettingsMenu",
                             reportSettingsUrl, "url", getFinalReportSettingsFileName()); // Downloads the file and sets user name
-//                    setAbsoluteFilePath(reportSettingsDirectory + "/" + getFinalReportSettingsFileName() + ".xml");
                     Toast.makeText(ReportSettingsMenuActivity.this, "Downloading Report Settings...", Toast.LENGTH_LONG).show();
                 }
             }
@@ -215,18 +210,23 @@ Splits report settings file name returning a displayable version without the ent
                         "android.intent.action.USERPROFILE");
                 startActivity(openUserProfile);
                 return true;
+            case R.id.historyMenu: //Takes user to credentials screen
+                Intent openHistoryTable = new Intent(
+                        "android.intent.action.HISTORY");
+                startActivity(openHistoryTable);
+                return true;
             case R.id.viewAliquotsMenu: // Takes user to aliquot menu
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot");
+                        "Aliquot_CHRONI_Directory");
                 startActivity(openAliquotFiles);
                 return true;
             case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report Settings");
+                        "Report_Settings_CHRONI_Directory");
                 startActivity(openReportSettingsFiles);
                 return true;
             case R.id.aboutScreen: // Takes user to about screen
