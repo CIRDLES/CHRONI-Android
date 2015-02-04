@@ -150,8 +150,9 @@ public class TablePainterActivity extends Activity {
         // Creates the Report Settings button
         Button changeReportSettingsButton = new Button(this);
         changeReportSettingsButton.setTextColor(Color.WHITE);
-        changeReportSettingsButton.setTextSize((float) 18);
+        changeReportSettingsButton.setTextSize((float) 15);
         changeReportSettingsButton.setText("Change Report Settings");
+        changeReportSettingsButton.setTypeface(Typeface.DEFAULT_BOLD);
         changeReportSettingsButton.setPadding(15, 15, 15, 15);
         changeReportSettingsButton.setGravity(Gravity.CENTER);
         changeReportSettingsButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
@@ -171,8 +172,9 @@ public class TablePainterActivity extends Activity {
         if ((imageArray[0] != null) && !(imageArray[0].getImageURL().length() == 0)) {
             Button viewConcordiaButton = new Button(this);
             viewConcordiaButton.setTextColor(Color.BLACK);
-            viewConcordiaButton.setTextSize((float) 18);
+            viewConcordiaButton.setTextSize((float) 15);
             viewConcordiaButton.setText("Concordia Plot");
+            viewConcordiaButton.setTypeface(Typeface.DEFAULT_BOLD);
             viewConcordiaButton.setPadding(15, 15, 15, 15);
             viewConcordiaButton.setGravity(Gravity.CENTER);
             viewConcordiaButton.setBackgroundColor(getResources().getColor(R.color.light_grey));
@@ -205,6 +207,7 @@ public class TablePainterActivity extends Activity {
             Button viewProbabilityDensityButton = new Button(this);
             viewProbabilityDensityButton.setTextSize((float) 18);
             viewProbabilityDensityButton.setText("Probability Density");
+            viewProbabilityDensityButton.setTypeface(Typeface.DEFAULT_BOLD);
             viewProbabilityDensityButton.setPadding(15, 15, 15, 15);
             viewProbabilityDensityButton.setGravity(Gravity.CENTER);
             // Decides what color button should be based on if there is a concordia button
