@@ -24,7 +24,7 @@
         android:background="@color/button_blue"
         android:minHeight="48dp"
         android:minWidth="50dp"
-        android:text="Open"
+        android:text="Apply"
         android:textSize="10sp" />
 
     <TextView
@@ -82,6 +82,18 @@
         android:textSize="18sp"
         android:layout_marginTop="84dp"
         android:layout_below="@+id/imageView1"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/reportSettingsMenuCancelButton"
+        android:background="@color/button_blue"
+        android:textSize="10sp"
+        android:minHeight="38dp"
+        android:minWidth="50dp"
+        android:layout_below="@+id/reportSettingsFileOpenButton"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
