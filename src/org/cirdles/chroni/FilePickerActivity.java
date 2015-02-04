@@ -27,9 +27,11 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -162,16 +164,17 @@ public class FilePickerActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		File newFile = (File)l.getItemAtPosition(position);
-		
+
+        // If item selected is a file (and not a directory), allows user to select file
 		if(newFile.isFile()) {		
 			// Sends back selected file name
-			if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory")){
+			if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory") || getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_CHRONI_Directory")){
 		    	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
 		    	openAliquotMenu.putExtra("AliquotXMLFileName", newFile.getAbsolutePath());
 		    	startActivity(openAliquotMenu);
 //                Toast.makeText(FilePickerActivity.this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
 
-            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory")){
+            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory") || getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_CHRONI_Directory")){
 				Intent openRSMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
 				openRSMenu.putExtra("ReportSettingsXMLFileName", newFile.getAbsolutePath());
 		    	startActivity(openRSMenu);
@@ -280,4 +283,51 @@ public class FilePickerActivity extends ListActivity {
 			return true;
 		}
 	}
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handles menu item selection
+        switch (item.getItemId()) {
+            case R.id.returnToMenu: // Takes user to main menu
+                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
+                startActivity(openMainMenu);
+                return true;
+            case R.id.editProfileMenu: //Takes user to credentials screen
+                Intent openUserProfile = new Intent(
+                        "android.intent.action.USERPROFILE");
+                startActivity(openUserProfile);
+                return true;
+            case R.id.historyMenu: //Takes user to credentials screen
+                Intent openHistoryTable = new Intent(
+                        "android.intent.action.HISTORY");
+                startActivity(openHistoryTable);
+                return true;
+            case R.id.viewAliquotsMenu: // Takes user to aliquot menu
+                Intent openAliquotFiles = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openAliquotFiles.putExtra("Default_Directory",
+                        "Aliquot_CHRONI_Directory");
+                startActivity(openAliquotFiles);
+                return true;
+            case R.id.viewReportSettingsMenu: // Takes user to report settings menu
+                Intent openReportSettingsFiles = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openReportSettingsFiles.putExtra("Default_Directory",
+                        "Report_Settings_CHRONI_Directory");
+                startActivity(openReportSettingsFiles);
+                return true;
+            case R.id.aboutScreen: // Takes user to about screen
+                Intent openAboutScreen = new Intent(
+                        "android.intent.action.ABOUT");
+                startActivity(openAboutScreen);
+                return true;
+            case R.id.helpMenu: // Takes user to help blog
+                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://chronihelpblog.wordpress.com"));
+                startActivity(openHelpBlog);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
