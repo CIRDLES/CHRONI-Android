@@ -5,6 +5,7 @@ package org.cirdles.chroni;
 import java.io.File;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -87,9 +88,10 @@ public class AliquotMenuActivity extends Activity {
 	    public void onClick(View v) {
             if (aliquotSelectedFileText.getText().length() != 0) {
                 // Makes sure there is a file selected
-//                Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
+                Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
                 Intent openMainMenu = new Intent("android.intent.action.DISPLAY"); // Opens display table
                 openMainMenu.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
+                aliquotFileSubmitButton.setBackgroundColor(Color.GREEN);
                 startActivity(openMainMenu);
             }else{
                 // Tells user to select a file for viewing
