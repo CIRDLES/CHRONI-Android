@@ -119,7 +119,8 @@ public class ReportSettingsParser {
 									if (uncertaintyVisibility.contains("true")) {
 										// Instantiates a new Column object if the column is visible and adds it to an Uncertainty Column Map
 										Column visibleUncertaintyColumn = new Column(categoryDisplayName,uncertaintyName1,uncertaintyName2,	uncertaintyName3, uncertaintyUnits, uncertaintyMethodName, uncertaintyVariableName, Integer.parseInt(uncertaintyPositionIndex), Integer.parseInt(uncertaintyCountOfSignificantDigits));
-										visibleColumn.setUncertaintyColumn(visibleUncertaintyColumn); 
+										visibleColumn.setUncertaintyColumn(visibleUncertaintyColumn);
+                                        visibleColumn.setUncertaintyColumn(true); // indicates that the column is an uncertainty column
 										outputVariableNames.add(uncertaintyVariableName);
 //										occupyAbsentInfo(visibleUncertaintyColumn,uncertaintyName1,uncertaintyName2,uncertaintyName3, uncertaintyMethodName, uncertaintyVariableName);
 									} // Closes visible uncertainty column

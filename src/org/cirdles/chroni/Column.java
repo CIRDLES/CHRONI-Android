@@ -19,6 +19,7 @@ public class Column {
 
 	private Column uncertaintyColumn = null; // the uncertainty column contained within the given column
 	private String uncertaintyType = null;
+    private boolean isUncertaintyColumn = false; // true if the column is an uncertainty column
 
     /*
     Instantiates a Column object given several attributes
@@ -159,4 +160,11 @@ public class Column {
 		this.uncertaintyType = uncertaintyType;
 	}
 
+    public boolean isUncertaintyColumn() {
+        return isUncertaintyColumn;
+    }
+
+    public void setUncertaintyColumn(boolean isUncertaintyColumn) {
+        this.isUncertaintyColumn = isUncertaintyColumn;
+    }
 }
