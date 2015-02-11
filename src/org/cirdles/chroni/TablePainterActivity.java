@@ -123,53 +123,69 @@ public class TablePainterActivity extends Activity {
         TableRow labelRow = (TableRow) findViewById(R.id.labelRow);
         labelRow.setGravity(Gravity.CENTER);
 
-        // Adds a label with the current report settings and aliquot files
-        TextView fileNameCell = new TextView(this);
-        String[] reportSettingsPathParts = reportSettingsPath.split("/");
-        String currentReportSettingsFileName = reportSettingsPathParts[reportSettingsPathParts.length -1];
-        String[] aliquotPathParts = aliquotPath.split("/");
-        String aliquotFileName = aliquotPathParts[aliquotPathParts.length -1];
-        String fileNameLabel = "Report Settings: " + splitFileName(retrieveReportSettingsFileName()) + " | Aliquot: " + splitFileName(retrieveAliquotFileName());
-
+        // Adds a button with the current report settings files
+        Button reportSettingsCell = new Button(this);
+        String fileNameLabel = "Report Settings: " + splitFileName(retrieveReportSettingsFileName());
         // Adjust texts size if expected to flow onto two lines
         //TODO: Figure out more elegant way to code this
-        if(fileNameLabel.length() > 60){
-            fileNameCell.setTextSize((float) 15);
-        }else{
-            fileNameCell.setTextSize((float) 18);
-        }
-        fileNameCell.setText(fileNameLabel);
-        fileNameCell.setTextColor(Color.BLACK);
-        fileNameCell.setTypeface(Typeface.DEFAULT_BOLD);
-        fileNameCell.setBackgroundResource(R.drawable.background_blue_background);
-        fileNameCell.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        fileNameCell.setPadding(25, 25, 25, 25);
-        labelRow.addView(fileNameCell);
+        reportSettingsCell.setTextSize((float) 15);
+        reportSettingsCell.setText(fileNameLabel);
+        reportSettingsCell.setTextColor(Color.BLACK);
+        reportSettingsCell.setTypeface(Typeface.DEFAULT_BOLD);
+        reportSettingsCell.setBackgroundColor(getResources().getColor(R.color.button_blue));
+        reportSettingsCell.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        reportSettingsCell.setPadding(25, 25, 25, 25);
+        labelRow.addView(reportSettingsCell);
+        reportSettingsCell.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+                startActivity(openReportSettingsMenu);
+            }
+        });
+
+        // Adds a label button with the current aliquot files
+        Button aliquotCell = new Button(this);
+        String aliquotCellText = "Aliquot: " + splitFileName(retrieveAliquotFileName());
+        // Adjust texts size if expected to flow onto two lines
+        //TODO: Figure out more elegant way to code this
+            aliquotCell.setTextSize((float) 15);
+        aliquotCell.setText(aliquotCellText);
+        aliquotCell.setTextColor(Color.BLACK);
+        aliquotCell.setTypeface(Typeface.DEFAULT_BOLD);
+        aliquotCell.setBackgroundResource(R.drawable.background_blue_background);
+        aliquotCell.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        aliquotCell.setPadding(25, 25, 25, 25);
+        labelRow.addView(aliquotCell);
+        aliquotCell.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
+                startActivity(openAliquotMenu);
+            }
+        });
 
         // Setup to add buttons
         TableRow buttonRow = (TableRow) findViewById(R.id.buttonRow);
         buttonRow.setGravity(Gravity.CENTER);
         buttonRow.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//    buttonRow.setBackgroundColor(Color.GRAY);
 
-        // Creates the Report Settings button
-        Button changeReportSettingsButton = new Button(this);
-        changeReportSettingsButton.setTextColor(Color.WHITE);
-        changeReportSettingsButton.setTextSize((float) 15);
-        changeReportSettingsButton.setText("Change Report Settings");
-        changeReportSettingsButton.setTypeface(Typeface.DEFAULT_BOLD);
-        changeReportSettingsButton.setPadding(15, 15, 15, 15);
-        changeReportSettingsButton.setGravity(Gravity.CENTER);
-        changeReportSettingsButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-        changeReportSettingsButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        buttonRow.addView(changeReportSettingsButton);
-        changeReportSettingsButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-                openReportSettingsMenu.putExtra("AliquotXML", aliquotPath); // Sends selected aliquot file name to keep current aliquot for label
-                startActivity(openReportSettingsMenu);
-            }
-        });
+//        // Creates the Report Settings button
+//        Button changeReportSettingsButton = new Button(this);
+//        changeReportSettingsButton.setTextColor(Color.WHITE);
+//        changeReportSettingsButton.setTextSize((float) 15);
+//        changeReportSettingsButton.setText("Change Report Settings");
+//        changeReportSettingsButton.setTypeface(Typeface.DEFAULT_BOLD);
+//        changeReportSettingsButton.setPadding(15, 15, 15, 15);
+//        changeReportSettingsButton.setGravity(Gravity.CENTER);
+//        changeReportSettingsButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+//        changeReportSettingsButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//        buttonRow.addView(changeReportSettingsButton);
+//        changeReportSettingsButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+//                openReportSettingsMenu.putExtra("AliquotXML", aliquotPath); // Sends selected aliquot file name to keep current aliquot for label
+//                startActivity(openReportSettingsMenu);
+//            }
+//        });
 
         // Determines whether or not to add additional buttons for images
         imageArray = retrieveImages(imageMap);
