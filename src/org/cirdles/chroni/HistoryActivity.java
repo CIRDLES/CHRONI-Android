@@ -46,6 +46,7 @@ public class HistoryActivity extends Activity {
         Button homeButton = (Button) findViewById(R.id.historyFinishButton);
         homeButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
+
                 Intent openMainMenu = new Intent(
                         "android.intent.action.MAINMENU");
                 startActivity(openMainMenu);
@@ -96,7 +97,7 @@ public class HistoryActivity extends Activity {
                         textCell.setPadding(4, 4, 4, 4);
                         textCell.setTextSize((float) 15);
                         textCell.setGravity(Gravity.CENTER);
-                        textCell.setWidth(250);
+                        textCell.setWidth(350);
                         textCell.setHeight(100);
                         textCell.setTypeface(Typeface.DEFAULT_BOLD);
 
@@ -120,7 +121,7 @@ public class HistoryActivity extends Activity {
 
                     // adds the open button to the last column
                     else if (currentColumn == 2 && currentRow != 0) {
-                        Button openButton = new Button(this);
+                        final Button openButton = new Button(this);
                         openButton.setText("OPEN");
                         openButton.setTextSize((float) 15);
                         openButton.setTypeface(Typeface.DEFAULT_BOLD);
@@ -133,11 +134,19 @@ public class HistoryActivity extends Activity {
                         final int currentAliquotRow = currentRow;
                         final int currentAliquotColumn = currentColumn-1;
 
+                        //Changes button color back to blue if it is not already
+                        openButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+                        openButton.setTextColor(Color.WHITE);
+
                         // adds open button functionality
                         openButton.setOnClickListener(new View.OnClickListener() {
                             // When view/edit is clicked, the review screen is
                             // opened
                             public void onClick(View v) {
+                                // Changes button color to indicate it has been opened
+                                openButton.setBackgroundColor(Color.LTGRAY);
+                                openButton.setTextColor(Color.BLACK);
+
                                 Toast.makeText(HistoryActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
                                 Intent openTableScreen = new Intent("android.intent.action.DISPLAY");
                                 openTableScreen.putExtra("AliquotXML", database[currentAliquotRow][currentAliquotColumn]); // Opens table to specified aliquot file

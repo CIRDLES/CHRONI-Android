@@ -73,13 +73,17 @@ public class ReportSettingsMenuActivity extends Activity {
 
         // Opens the display screen with the selected report settings file
         reportSettingsApplyButton = (Button) findViewById(R.id.reportSettingsFileOpenButton);
+        //Changes button color back to blue if it is not already
+        reportSettingsApplyButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+        reportSettingsApplyButton.setTextColor(Color.WHITE);
         reportSettingsApplyButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (reportSettingsSelectedFileText.getText().length() != 0) {
                     Intent openMainMenu = new Intent(
                             "android.intent.action.DISPLAY");
                     openMainMenu.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
-                    reportSettingsApplyButton.setBackgroundColor(Color.GREEN);
+                    // Changes button color to indicate it has been opened
+                    reportSettingsApplyButton.setBackgroundColor(Color.LTGRAY);
                     reportSettingsApplyButton.setTextColor(Color.BLACK);
                     saveCurrentReportSettings();
                     startActivity(openMainMenu);

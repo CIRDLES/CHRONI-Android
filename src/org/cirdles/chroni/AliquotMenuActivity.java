@@ -83,6 +83,9 @@ public class AliquotMenuActivity extends Activity {
 	}
 
 	aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
+        //Changes button color back to blue if it is not already
+        aliquotFileSubmitButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+        aliquotFileSubmitButton.setTextColor(Color.WHITE);
 	aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
     // Submits aliquot file to display activity for parsing and displaying in table
 	    public void onClick(View v) {
@@ -91,9 +94,10 @@ public class AliquotMenuActivity extends Activity {
                 Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
                 Intent openMainMenu = new Intent("android.intent.action.DISPLAY"); // Opens display table
                 openMainMenu.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
-                aliquotFileSubmitButton.setBackgroundColor(Color.GREEN);
+                // Changes button color to indicate it has been opened
+                aliquotFileSubmitButton.setBackgroundColor(Color.LTGRAY);
                 aliquotFileSubmitButton.setTextColor(Color.BLACK);
-                startActivity(openMainMenu);
+                startActivity(openMainMenu); // Starts display activity
             }else{
                 // Tells user to select a file for viewing
                 Toast.makeText(AliquotMenuActivity.this, "Please select an aliquot file to view.", Toast.LENGTH_LONG).show(); // lets user know table is opening
