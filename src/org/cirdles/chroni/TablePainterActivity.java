@@ -125,11 +125,9 @@ public class TablePainterActivity extends Activity {
 
         // Adds a button with the current report settings files
         Button reportSettingsCell = new Button(this);
-        String fileNameLabel = "Report Settings: " + splitFileName(retrieveReportSettingsFileName());
-        // Adjust texts size if expected to flow onto two lines
-        //TODO: Figure out more elegant way to code this
+        String reportSettingsText = "Report Settings: " + splitFileName(retrieveReportSettingsFileName());
         reportSettingsCell.setTextSize((float) 15);
-        reportSettingsCell.setText(fileNameLabel);
+        reportSettingsCell.setText(reportSettingsText);
         reportSettingsCell.setTextColor(Color.BLACK);
         reportSettingsCell.setTypeface(Typeface.DEFAULT_BOLD);
         reportSettingsCell.setBackgroundColor(getResources().getColor(R.color.button_blue));
@@ -146,9 +144,7 @@ public class TablePainterActivity extends Activity {
         // Adds a label button with the current aliquot files
         Button aliquotCell = new Button(this);
         String aliquotCellText = "Aliquot: " + splitFileName(retrieveAliquotFileName());
-        // Adjust texts size if expected to flow onto two lines
-        //TODO: Figure out more elegant way to code this
-            aliquotCell.setTextSize((float) 15);
+        aliquotCell.setTextSize((float) 15);
         aliquotCell.setText(aliquotCellText);
         aliquotCell.setTextColor(Color.BLACK);
         aliquotCell.setTypeface(Typeface.DEFAULT_BOLD);
@@ -163,29 +159,10 @@ public class TablePainterActivity extends Activity {
             }
         });
 
-        // Setup to add buttons
+        // Setup to add image buttons
         TableRow buttonRow = (TableRow) findViewById(R.id.buttonRow);
         buttonRow.setGravity(Gravity.CENTER);
         buttonRow.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
-//        // Creates the Report Settings button
-//        Button changeReportSettingsButton = new Button(this);
-//        changeReportSettingsButton.setTextColor(Color.WHITE);
-//        changeReportSettingsButton.setTextSize((float) 15);
-//        changeReportSettingsButton.setText("Change Report Settings");
-//        changeReportSettingsButton.setTypeface(Typeface.DEFAULT_BOLD);
-//        changeReportSettingsButton.setPadding(15, 15, 15, 15);
-//        changeReportSettingsButton.setGravity(Gravity.CENTER);
-//        changeReportSettingsButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-//        changeReportSettingsButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//        buttonRow.addView(changeReportSettingsButton);
-//        changeReportSettingsButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-//                openReportSettingsMenu.putExtra("AliquotXML", aliquotPath); // Sends selected aliquot file name to keep current aliquot for label
-//                startActivity(openReportSettingsMenu);
-//            }
-//        });
 
         // Determines whether or not to add additional buttons for images
         imageArray = retrieveImages(imageMap);
@@ -200,7 +177,7 @@ public class TablePainterActivity extends Activity {
             viewConcordiaButton.setPadding(15, 15, 15, 15);
             viewConcordiaButton.setGravity(Gravity.CENTER);
             viewConcordiaButton.setBackgroundColor(getResources().getColor(R.color.light_grey));
-//            viewConcordiaButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            viewConcordiaButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             buttonRow.addView(viewConcordiaButton);
             viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -240,7 +217,7 @@ public class TablePainterActivity extends Activity {
                 viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.light_grey));
                 viewProbabilityDensityButton.setTextColor(Color.BLACK);
             }
-//            viewProbabilityDensityButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            viewProbabilityDensityButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             buttonRow.addView(viewProbabilityDensityButton);
             viewProbabilityDensityButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -276,13 +253,15 @@ public class TablePainterActivity extends Activity {
         // added for the Report Settings category rows
         final int ROWS = 5 + fractionMap.size();
         final int COLS = outputVariableNames.size();
-        int rowCount = 0;
+//        int rowCount = 0;
+//        final int ROWS = 6 + fractionMap.size(); //adds extra row to make a copy of header row
+        int rowCount = 0; // doesn't count the copy row
 
         // Gets column sizes from string array
         int[] columnSizes = distributeColumnsAppropriately(finalArray, ROWS, COLS);
 
         // Table Layout Printing
-        for (int i = 0; i < ROWS; i++) {
+        for (int currentRow = 0; currentRow < ROWS; currentRow++) {
 
             TableRow row = new TableRow(this);
 
@@ -297,10 +276,10 @@ public class TablePainterActivity extends Activity {
 
             // loops through number of columns and adds text views to each row.
             // this creates cells!
-            for (int j = 0; j < COLS; j++) {
+            for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
                 TextView cell = new TextView(this);
                 cell.setTypeface(Typeface.MONOSPACE);
-                cell.setMinEms(columnSizes[j]+2); // sets column spacing based on max character count and allows extra space for crowding
+                cell.setMinEms(columnSizes[currentColumn]+2); // sets column spacing based on max character count and allows extra space for crowding
 //                cell.setWidth(205);
                 cell.setPadding(3, 4, 3, 4);
                 cell.setTextColor(Color.BLACK);
@@ -345,17 +324,21 @@ public class TablePainterActivity extends Activity {
                 // sets duplicates to invisible if a specified category name is
                 // already presently being displayed
                 if (rowCount == 0) {
-                    if (contents.size() != 0  && contents.contains(finalArray[i][j])) {
-                        cell.setText(finalArray[i][j]);
+                    if (contents.size() != 0  && contents.contains(finalArray[currentRow][currentColumn])) {
+                        cell.setText(finalArray[currentRow][currentColumn]);
                         cell.setTextColor(Color.TRANSPARENT);
                     } else {
                         //category name doesn't exist in contents arraylist
-                        cell.setText(finalArray[i][j]);
+                        cell.setText(finalArray[currentRow][currentColumn]);
                         cell.setVisibility(View.VISIBLE);
-                        contents.add(finalArray[i][j]);
+                        contents.add(finalArray[currentRow][currentColumn]);
                     }
-                } else {
-                    cell.setText(finalArray[i][j]);
+                }
+//                else if(rowCount==-1) { // adds copy header row
+//                    cell.setText(finalArray[0][currentColumn]);
+//                }
+                else {
+                    cell.setText(finalArray[currentRow][currentColumn]);
                 }
 
                 if (cell.getText().equals("-")) {
