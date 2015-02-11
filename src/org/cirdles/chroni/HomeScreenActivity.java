@@ -25,7 +25,7 @@ public class HomeScreenActivity extends Activity  {
 
     // Maintains whether app is initializing for the first time or not
     private static final String PREF_FIRST_LAUNCH = "First Launch";
-    private static final String PREF_REPORT_SETTINGS = "Current Report Settings";     // Path of the current report settungs file
+    private static final String PREF_REPORT_SETTINGS = "Current Report Settings";     // Path of the current report settings file
 
     private TextView versionNumber; // version number
     private CHRONIDatabaseHelper trialDatabaseHelper; // Database
@@ -35,12 +35,12 @@ public class HomeScreenActivity extends Activity  {
         // sets up layout screen
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
+
         setContentView(R.layout.home_screen);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 
         //Places background image on layout  due to theme overriding
         RelativeLayout layout =(RelativeLayout)findViewById(R.id.homeScreenBackground);
-        layout.setBackground(getResources().getDrawable(R.drawable.background));
 
         try {
             // Puts the versioning information on the layout screen
@@ -51,10 +51,10 @@ public class HomeScreenActivity extends Activity  {
             String versionName = context.getPackageManager().getPackageInfo(
                     context.getPackageName(), 0).versionName;
 
+
             versionNumber = (TextView) findViewById(R.id.versionNumber);
             versionNumber.setText("Version " + versionCode + "." + versionName);
-            versionNumber.setTextColor(getResources().getColor(
-                    R.color.button_blue));
+            versionNumber.setTextColor(getResources().getColor(R.color.button_blue));
 
             // Puts demo items in the history database if first launch
 //            trialDatabaseHelper = new CHRONIDatabaseHelper(this);
