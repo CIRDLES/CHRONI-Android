@@ -34,6 +34,9 @@ public class ReportSettingsMenuActivity extends Activity {
     private String absoluteFilePath; // path of selected Report Settings file
     private String finalReportSettingsFileName; //name of the final report settings
     private static final String PREF_REPORT_SETTINGS = "Current Report Settings";// Path of the current report settings file
+    private static final String PREF_ALIQUOT = "Current Aliquot";// Path of the current aliquot file
+
+    String aliquotPath; // the path containing the Aliquot file
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,7 @@ public class ReportSettingsMenuActivity extends Activity {
                         Intent openFilePicker = new Intent("android.intent.action.FILEPICKER");
                         openFilePicker.putExtra("Default_Directory", "Report_Settings_Directory");
                         startActivity(openFilePicker);
+                        saveCurrentReportSettings();
                     }
                 });
 
@@ -95,12 +99,11 @@ public class ReportSettingsMenuActivity extends Activity {
         Button reportSettingsCancelButton = (Button) findViewById(R.id.reportSettingsMenuCancelButton);
         reportSettingsCancelButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                    Intent openMainMenu = new Intent(
+                    Intent openDisplayTable = new Intent(
                             "android.intent.action.DISPLAY");
-                    openMainMenu.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
+                    openDisplayTable.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
                     saveCurrentReportSettings();
-                    startActivity(openMainMenu);
-//
+                    startActivity(openDisplayTable);
             }
         });
     }
@@ -109,11 +112,6 @@ public class ReportSettingsMenuActivity extends Activity {
 Requests file name from user and  proceeds to download based on input
  */
     public void requestFileName(){
-
-        // Directories needed for file locations
-        final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE);
-        final File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
-
         AlertDialog.Builder userFileNameAlert = new AlertDialog.Builder(ReportSettingsMenuActivity.this);
 
         userFileNameAlert.setTitle("Choose a file name");

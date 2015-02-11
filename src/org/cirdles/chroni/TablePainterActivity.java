@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -48,10 +49,13 @@ public class TablePainterActivity extends Activity {
     private static Image[] imageArray; // holds images from parsed Aliquot files
     private static String[][] finalArray; // the completely parsed array for displaying
     private static ArrayList<String> outputVariableName; // output variable names for column work
-
     private static int columnCount; // maintains a count of the number of columns in the final display table
 
+    private String aliquotPath; // The path of the aliquot file to be displayed in the table
+
     private CHRONIDatabaseHelper entryHelper; // used to help with history database
+    private static final String PREF_REPORT_SETTINGS = "Current Report Settings";// Path of the current report settings file
+    private static final String PREF_ALIQUOT = "Current Aliquot";// Path of the current report settings file
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +78,7 @@ public class TablePainterActivity extends Activity {
 
         // Instantiates the Aliquot Parser
         AliquotParser aliquotParser = new AliquotParser();
-        String aliquotPath = "";
+        aliquotPath = "";
         if (getIntent().getStringExtra("AliquotXML") != null) {
             aliquotPath = getIntent().getStringExtra("AliquotXML"); // gets the new location of the aliquot xml
         }
@@ -125,7 +129,8 @@ public class TablePainterActivity extends Activity {
         String currentReportSettingsFileName = reportSettingsPathParts[reportSettingsPathParts.length -1];
         String[] aliquotPathParts = aliquotPath.split("/");
         String aliquotFileName = aliquotPathParts[aliquotPathParts.length -1];
-        String fileNameLabel = "Report Settings: " + currentReportSettingsFileName + " | Aliquot: " + aliquotFileName;
+        String fileNameLabel = "Report Settings: " + splitFileName(retrieveReportSettingsFileName()) + " | Aliquot: " + splitFileName(retrieveAliquotFileName());
+
         // Adjust texts size if expected to flow onto two lines
         //TODO: Figure out more elegant way to code this
         if(fileNameLabel.length() > 60){
@@ -161,6 +166,7 @@ public class TablePainterActivity extends Activity {
         changeReportSettingsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+                openReportSettingsMenu.putExtra("AliquotXML", aliquotPath); // Sends selected aliquot file name to keep current aliquot for label
                 startActivity(openReportSettingsMenu);
             }
         });
@@ -344,6 +350,31 @@ public class TablePainterActivity extends Activity {
             }
             rowCount++;
         }
+    }
+
+    /*
+* Accesses current report settings file
+*/
+    private String retrieveReportSettingsFileName() {
+        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+        return settings.getString("Current Report Settings", "Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
+    }
+
+    /*
+* Accesses current report settings file
+*/
+    private String retrieveAliquotFileName() {
+        SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
+        return settings.getString("Current Aliquot", "No Aliquot Selected"); // Gets current RS and if no file there, returns default as the current file
+    }
+
+    /*
+Splits report settings file name returning a displayable version without the entire path
+*/
+    private String splitFileName(String fileName){
+        String[] fileNameParts = fileName.split("/");
+        String newFileName = fileNameParts[fileNameParts.length-1];
+        return newFileName;
     }
 
     /*
