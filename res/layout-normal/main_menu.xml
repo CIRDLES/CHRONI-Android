@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="34dp"
+        android:layout_marginBottom="20dp"
         android:text="Version Number"
         android:textSize="25sp" />
 
@@ -28,11 +27,11 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/menuOpenButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="128dp"
         android:text="Home"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="100sp" />
+        android:textSize="60dp"
+        android:layout_marginBottom="70dp" />
 
     <Button
         android:id="@+id/menuHistoryButton"
@@ -40,14 +39,16 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/menuProfileButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/button_blue"
-        android:minHeight="100dp"
+        android:minHeight="60dp"
         android:minWidth="400dp"
         android:text="History"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="50sp" />
+        android:textSize="30dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
 
     <Button
         android:id="@+id/menuOpenButton"
@@ -55,14 +56,15 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/menuHistoryButton"
         android:layout_alignLeft="@+id/menuHistoryButton"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/button_blue"
-        android:minHeight="100dp"
+        android:minHeight="60dp"
         android:minWidth="400dp"
         android:text="Open"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="50sp" />
+        android:textSize="30dp"
+        android:layout_marginRight="15dp" />
 
     <Button
         android:id="@+id/menuProfileButton"
@@ -70,14 +72,15 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/versionNumberMainMenu"
         android:layout_alignLeft="@+id/menuHistoryButton"
-        android:layout_marginBottom="33dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/button_blue"
-        android:minHeight="100dip"
+        android:minHeight="60dp"
         android:minWidth="400dip"
         android:text="Credentials"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="50sp" />
+        android:textSize="30dp"
+        android:layout_marginRight="15dp" />
 
     <ImageView
         android:id="@+id/imageView1"
@@ -85,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/testText"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="92dp"
+        android:layout_marginBottom="40dp"
         android:src="@drawable/cirdles_logo" />
 
 </RelativeLayout>

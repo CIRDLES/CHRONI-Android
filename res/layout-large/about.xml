@@ -2,9 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/logo_background"
-    android:id="@+id/aboutBackground">
-    <![CDATA[
+    android:background="@drawable/background"
+    android:id="@+id/userProfileBackground"><![CDATA[
 
 
 
@@ -28,24 +27,24 @@
         android:id="@+id/aboutTextHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:text="About"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="60sp" />
+        android:textSize="60sp"
+        android:layout_below="@+id/logoImageView"
+        android:layout_alignEnd="@+id/testFileNameInputButton" />
 
     TextView
-        android:id="@+id/TextView02"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TextView03"
-        android:layout_below="@+id/TextView01"
-        android:layout_marginTop="29dp"
-        android:text="Username"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/border_grey"
-        android:textSize="25sp" />
+    android:id="@+id/TextView02"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@+id/TextView03"
+    android:layout_below="@+id/TextView01"
+    android:layout_marginTop="29dp"
+    android:text="Username"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:textColor="@color/border_grey"
+    android:textSize="25sp" />
 
     <Button
         android:id="@+id/fileBrowserHomeButton"
@@ -61,6 +60,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="47dp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter Filename"
+        android:id="@+id/testFileNameInputButton"
+        android:layout_above="@+id/fileBrowserHomeButton"
+        android:layout_centerHorizontal="true" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -68,21 +75,36 @@
         android:id="@+id/aboutText"
         android:layout_gravity="center"
         android:gravity="center"
+        android:text="@string/about_text"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        android:paddingRight="50dp"
+        android:paddingBottom="30dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="50dp"
+        android:textColor="@color/black"
         android:layout_below="@+id/aboutTextHeader"
+        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:editable="false"
-        android:paddingLeft="30dp"
-        android:paddingTop="10dp"
-        android:paddingRight="30dp"
-        android:paddingBottom="10dp"
+        android:layout_above="@+id/testFileNameInputButton"
+        android:editable="true"
         android:scrollbars = "vertical"
-        android:text="@string/about_text"
-        android:layout_above="@+id/fileBrowserHomeButton"
-        android:textSize="18sp" />
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
 
+    <ImageView
+        android:layout_width="151dp"
+        android:layout_height="250dp"
+        android:id="@+id/logoImageView"
+        android:background="@drawable/cirdles_logo"
+        android:layout_alignWithParentIfMissing="false"
+        android:clickable="false"
+        android:cropToPadding="false"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/aboutTextHeader"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="5dp" />
 
 </RelativeLayout>

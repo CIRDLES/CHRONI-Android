@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="52dp"
+        android:layout_marginBottom="35dp"
         android:text="Version"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/versionNumber"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="52dp"
+        android:layout_marginBottom="30dp"
         android:text="LOADING"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -40,7 +40,7 @@
         android:text="CHRONI"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="100sp" />
+        android:textSize="75dp" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
@@ -58,6 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/TextView01"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/cirdles_logo" />
+        android:src="@drawable/cirdles_logo"
+        android:layout_alignParentStart="false" />
 
 </RelativeLayout>

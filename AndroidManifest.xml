@@ -23,7 +23,7 @@
         
         <activity
             android:name="org.cirdles.chroni.HomeScreenActivity"
-             android:screenOrientation="sensorPortrait"
+
              android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
