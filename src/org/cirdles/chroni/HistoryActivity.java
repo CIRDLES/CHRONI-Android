@@ -36,7 +36,7 @@ public class HistoryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.history);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         //Places background image on layout due to theme overriding
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.historyBackground);

@@ -30,21 +30,21 @@
         android:text="About"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="60sp"
+        android:textSize="35dp"
         android:layout_below="@+id/logoImageView"
-        android:layout_alignEnd="@+id/testFileNameInputButton" />
+        android:layout_alignStart="@+id/fileBrowserHomeButton" />
 
     TextView
-        android:id="@+id/TextView02"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TextView03"
-        android:layout_below="@+id/TextView01"
-        android:layout_marginTop="29dp"
-        android:text="Username"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/border_grey"
-        android:textSize="25sp" />
+    android:id="@+id/TextView02"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@+id/TextView03"
+    android:layout_below="@+id/TextView01"
+    android:layout_marginTop="29dp"
+    android:text="Username"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:textColor="@color/border_grey"
+    android:textSize="25sp" />
 
     <Button
         android:id="@+id/fileBrowserHomeButton"
@@ -58,7 +58,7 @@
         android:textSize="20sp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="47dp" />
+        android:layout_marginBottom="15dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
         android:gravity="center"
         android:text="@string/about_text"
         android:textAlignment="center"
-        android:textSize="25sp"
+        android:textSize="17dp"
         android:paddingRight="50dp"
         android:paddingBottom="30dp"
         android:paddingTop="10dp"
@@ -91,20 +91,21 @@
         android:layout_above="@+id/testFileNameInputButton"
         android:editable="true"
         android:scrollbars = "vertical"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp" />
 
     <ImageView
-        android:layout_width="212dp"
-        android:layout_height="350dp"
+        android:layout_width="76dp"
+        android:layout_height="125dp"
         android:id="@+id/logoImageView"
         android:background="@drawable/cirdles_logo"
         android:layout_alignWithParentIfMissing="false"
         android:clickable="false"
         android:cropToPadding="false"
-        android:layout_marginTop="70dp"
+        android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginRight="15dp" />
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="5dp" />
 
 </RelativeLayout>
