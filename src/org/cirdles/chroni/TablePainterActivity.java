@@ -242,12 +242,12 @@ public class TablePainterActivity extends Activity {
 
         // calculates number of rows based on the size of the fraction, five is separately
         // added for the Report Settings category rows
-        final int ROWS = 5 + fractionMap.size();
+        final int ROWS = 4 + fractionMap.size();
         final int COLS = outputVariableNames.size();
 
         // Gets column sizes from string array
         int[] columnSizes = distributeTableColumns(finalArray, ROWS, COLS);
-        int[] headerCellSizes = distributeHeaderCells(columnSizes, COLS);
+        int[] headerCellSizes = distributeHeaderCells(columnSizes);
 
         // Creates the row just reserved for header names
         TableRow categoryRow = new TableRow(this);
@@ -259,33 +259,38 @@ public class TablePainterActivity extends Activity {
         Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Entry<Integer, Category> category = iterator.next();
-            TextView categoryCell = new TextView(this);
-            categoryCell.setText(category.getValue().getDisplayName());
-            categoryCell.setPadding(3, 4, 3, 4);
-            categoryCell.setTextColor(Color.BLACK);
-            categoryCell.setBackgroundResource(R.drawable.background_blue_background);
-            categoryCell.setTextSize((float) 14.5);
-            categoryCell.setGravity(Gravity.LEFT);
-//            Log.i("Current Category: " + category.getValue().getDisplayName() + " Cols: " + category.getValue().getColumnCount(), "Test");
-//            Log.i("--------------------------------------------------------------------------------------", "Test");
+            if(category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
+                TextView categoryCell = new TextView(this);
+                categoryCell.setText(category.getValue().getDisplayName());
+                categoryCell.setTypeface(Typeface.MONOSPACE);
+                if(category.getValue().getDisplayName().contentEquals("Fraction") && categoryCount != 0){ // Easy fix to handle the issue of sizing with last fraction category TODO: Make better!
+                    categoryCell.setMinEms(columnSizes[columnSizes.length-1] + 2); // Simply sets same size as fraction because its always the same length with last column
+                }else {
+                    categoryCell.setMinEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount())); // sets column spacing based on max character count and allows extra space for crowding
+                }
+                categoryCell.setPadding(3, 4, 3, 4);
+                categoryCell.setTextSize((float) 14.5);
+                categoryCell.setTextColor(Color.BLACK);
+                categoryCell.setBackgroundResource(R.drawable.background_blue_background);
+                categoryCell.setGravity(Gravity.LEFT);
+                categoryRow.addView(categoryCell); // Adds cell to row
+                categoryCount++;
+            }
 
-
-            categoryCell.setMinEms(headerCellSizes[categoryCount] + (2*category.getValue().getColumnCount())); // sets column spacing based on max character count and allows extra space for crowding
-            categoryRow.addView(categoryCell); // Adds cell to row
-            categoryCount++;
         }
 
-        int rowCount = 0; // doesn't count the copy row
+        int rowCount = 1; // starts counting under the category name row
 
         // Table Layout Printing
-        for (int currentRow = 0; currentRow < ROWS; currentRow++) {
+        for (int currentRow = 1; currentRow < ROWS; currentRow++) {
 
             TableRow row = new TableRow(this);
 
             // puts rows in appropriate place on layout
-            if (rowCount < 5) {
+            if (currentRow < 4) {
                 // Report Settings and aliquot name rows
                 headerInformationTable.addView(row);
+
             } else {
                 // Adds aliquot rows to the aliquot scroll table
                 aliquotDataTable.addView(row);
@@ -302,64 +307,37 @@ public class TablePainterActivity extends Activity {
                 cell.setTextSize((float) 14.5);
                 cell.setGravity(Gravity.RIGHT);
 
-                if (rowCount < 5) {
+                if (currentRow < 5) {
+                    // Handles all header row and aliquot name row design
                     cell.setTypeface(Typeface.DEFAULT_BOLD);
                     cell.setTypeface(Typeface.MONOSPACE);
                     cell.setGravity(Gravity.CENTER);
-                }
-
-                if (rowCount == 0) {
-                    cell.setGravity(Gravity.LEFT);
                 }
 
                 // sets appropriate background color for cells
-                if (rowCount < 4) {
-                    // colors header rows
-                    // if(rowCount % 2 == 0){ // colors header rows
+                if (currentRow < 4) {
+                    // Colors all header cells same color
                     cell.setBackgroundResource(R.drawable.background_blue_background);
-                    // }else{
-                    // cell.setBackgroundResource(R.drawable.dark_grey_background);
-                    // }
-                } else if (rowCount > 4 && rowCount % 2 == 1) {
-                    // colors odd body rows
-                    cell.setBackgroundResource(R.drawable.light_grey_background);
-                } else if (rowCount == 4) {
-                    // aliquot name cell
+                } else if (currentRow == 4) {
+                    // Handles aliquot name cell
                     cell.setTextColor(Color.WHITE);
                     cell.setBackgroundResource(R.drawable.light_blue_background);
-                    cell.setTypeface(Typeface.DEFAULT_BOLD);
-                    cell.setTypeface(Typeface.MONOSPACE);
-
-                } else {
-                    // header rows and all other body rows
+                }  else if (currentRow > 4 && currentRow % 2 == 1) {
+                    // colors odd body rows
+                    cell.setBackgroundResource(R.drawable.light_grey_background);
+                }else {
+                    // colors all even body rows
                     cell.setBackgroundResource(R.drawable.white_background);
                 }
 
-                // populates the first row with the associated category info
-                // corresponding to each column
-                // sets duplicates to invisible if a specified category name is
-                // already presently being displayed
-                if (rowCount == 0) {
-                    if (contents.size() != 0  && contents.contains(finalArray[currentRow][currentColumn])) {
-                        cell.setText(finalArray[currentRow][currentColumn]);
-                        cell.setTextColor(Color.TRANSPARENT);
-                    } else {
-                        //category name doesn't exist in contents arraylist
-                        cell.setText(finalArray[currentRow][currentColumn]);
-                        cell.setVisibility(View.VISIBLE);
-                        contents.add(finalArray[currentRow][currentColumn]);
+                // Adds text to cells
+                cell.setText(finalArray[currentRow][currentColumn]);
+                cell.setVisibility(View.VISIBLE);
+//
+                    if (cell.getText().equals("-")) {
+                        cell.setGravity(Gravity.CENTER);
                     }
-                }
-//                else if(rowCount==-1) { // adds copy header row
-//                    cell.setText(finalArray[0][currentColumn]);
 //                }
-                else {
-                    cell.setText(finalArray[currentRow][currentColumn]);
-                }
-
-                if (cell.getText().equals("-")) {
-                    cell.setGravity(Gravity.CENTER);
-                }
                 // append an individual cell to a content row
                 row.addView(cell);
             }
@@ -395,8 +373,8 @@ Splits report settings file name returning a displayable version without the ent
     /*
  Goes through and figures out header cell lengths given a table
   */
-    protected int[] distributeHeaderCells(int[] columnWidths, int COLS){
-        int[] headerMaxCharacterCounts = new int[COLS];
+    protected int[] distributeHeaderCells(int[] columnWidths){
+        int[] headerMaxCharacterCounts = new int[categoryMap.size()];
         int currentCategoryCount = 0;
         int currentColumnCount = 0;
 
@@ -404,18 +382,20 @@ Splits report settings file name returning a displayable version without the ent
         while (iterator.hasNext()) {
             Entry<Integer, Category> category = iterator.next();
             int categoryCellWidth = 0;
+            if(category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
 
-            Iterator<Entry<Integer, Column>> columnIterator = category
-                    .getValue().getCategoryColumnMap().entrySet().iterator();
-            while (columnIterator.hasNext()) {
-                Entry<Integer, Column> column = columnIterator.next();
+                Iterator<Entry<Integer, Column>> columnIterator = category
+                        .getValue().getCategoryColumnMap().entrySet().iterator();
+                while (columnIterator.hasNext()) {
+                    Entry<Integer, Column> column = columnIterator.next();
 
-                categoryCellWidth += columnWidths[currentColumnCount];
-                currentColumnCount++;
-
-                if (column.getValue().getUncertaintyColumn() != null) {
                     categoryCellWidth += columnWidths[currentColumnCount];
                     currentColumnCount++;
+
+                    if (column.getValue().getUncertaintyColumn() != null) {
+                        categoryCellWidth += columnWidths[currentColumnCount];
+                        currentColumnCount++;
+                    }
                 }
             }
             headerMaxCharacterCounts[currentCategoryCount] = categoryCellWidth;
