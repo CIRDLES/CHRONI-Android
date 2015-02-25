@@ -187,7 +187,7 @@ Splits report settings file name returning a displayable version without the ent
     */
     private String retrieveReportSettingsFileName() {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
-        return settings.getString("Current Report Settings", "N/A"); // Gets current RS and if no file there, returns default as the current file
+        return settings.getString("Current Report Settings", "Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
     }
 
     /*
