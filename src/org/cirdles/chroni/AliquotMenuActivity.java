@@ -90,10 +90,12 @@ public class AliquotMenuActivity extends Activity {
                 Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
                 Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
                 openDisplayTable.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
+
                 // Changes button color to indicate it has been opened
                 aliquotFileSubmitButton.setBackgroundColor(Color.LTGRAY);
                 aliquotFileSubmitButton.setTextColor(Color.BLACK);
                 saveCurrentAliquot();
+
                 startActivity(openDisplayTable); // Starts display activity
             }else{
                 // Tells user to select a file for viewing

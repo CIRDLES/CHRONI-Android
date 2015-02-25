@@ -83,14 +83,15 @@ public class ReportSettingsMenuActivity extends Activity {
         reportSettingsApplyButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (reportSettingsSelectedFileText.getText().length() != 0) {
-                    Intent openMainMenu = new Intent(
+                    Intent openDisplayTable = new Intent(
                             "android.intent.action.DISPLAY");
-                    openMainMenu.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
+                    openDisplayTable.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
+
                     // Changes button color to indicate it has been opened
                     reportSettingsApplyButton.setBackgroundColor(Color.LTGRAY);
                     reportSettingsApplyButton.setTextColor(Color.BLACK);
                     saveCurrentReportSettings();
-                    startActivity(openMainMenu);
+                    startActivity(openDisplayTable);
                 }
             }
         });
@@ -186,7 +187,7 @@ Splits report settings file name returning a displayable version without the ent
     */
     private String retrieveReportSettingsFileName() {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
-        return settings.getString("Current Report Settings", "Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
+        return settings.getString("Current Report Settings", "N/A"); // Gets current RS and if no file there, returns default as the current file
     }
 
     /*

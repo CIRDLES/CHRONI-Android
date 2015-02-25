@@ -1,6 +1,5 @@
 package org.cirdles.chroni;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,12 +46,11 @@ public class TablePainterActivity extends Activity {
     private static TreeMap<Integer, Category> categoryMap; // map returned from parsing Report Settings
     private static TreeMap<String, Fraction> fractionMap; // map returned from parsing Aliquot
     private static TreeMap<String, Image> imageMap; // map of image data returned from parsing Aliquot
-    private static Image[] imageArray; // holds images from parsed Aliquot files
     private static String[][] finalArray; // the completely parsed array for displaying
     private static ArrayList<String> outputVariableName; // output variable names for column work
     private static int columnCount; // maintains a count of the number of columns in the final display table
 
-    private String aliquotPath; // The path of the aliquot file to be displayed in the table
+    private String aliquotFilePath, reportSettingsFilePath; // The complete path of the aliquot and report settings files to be parsed and display
 
     private CHRONIDatabaseHelper entryHelper; // used to help with history database
     private static final String PREF_REPORT_SETTINGS = "Current Report Settings";// Path of the current report settings file
@@ -64,27 +63,31 @@ public class TablePainterActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         setContentView(R.layout.display);
 
+        // Sets the file paths for the files to be parsed
+        setReportSettingsFilePath(retrieveReportSettingsFilePath());
+        setAliquotFilePath(retrieveAliquotFilePath());
+
         // Instantiates the Report Settings Parser
         ReportSettingsParser reportSettingsParser = new ReportSettingsParser();
-        String reportSettingsPath = Environment.getExternalStorageDirectory()
-                + "/CHRONI/Report Settings/Default Report Settings.xml"; // sets default Report Settings XML
-        if (getIntent().getStringExtra("ReportSettingsXML") != null) {
-            reportSettingsPath = getIntent().getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
-        }
+//        String reportSettingsPath = Environment.getExternalStorageDirectory()
+//                + "/CHRONI/Report Settings/Default Report Settings.xml"; // sets default Report Settings XML
+//        if (getIntent().getStringExtra("ReportSettingsXML") != null) {
+//            reportSettingsPath = getIntent().getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
+//        }
 
         // Parses the Report Settings XML file
-        categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(reportSettingsPath);
+        categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
         ArrayList<String> outputVariableNames = reportSettingsParser.getOutputVariableName();
 
         // Instantiates the Aliquot Parser
         AliquotParser aliquotParser = new AliquotParser();
-        aliquotPath = "";
-        if (getIntent().getStringExtra("AliquotXML") != null) {
-            aliquotPath = getIntent().getStringExtra("AliquotXML"); // gets the new location of the aliquot xml
-        }
+//        setAliquotFilePath("");
+//        if (getIntent().getStringExtra("AliquotXML") != null) {
+//            setAliquotFilePath(getIntent().getStringExtra("AliquotXML")); // gets the new location of the aliquot xml
+//        }
 
         // Parses aliquot file and retrieves maps
-        MapTuple maps = aliquotParser.runAliquotParser(aliquotPath);
+        MapTuple maps = aliquotParser.runAliquotParser(getAliquotFilePath());
         fractionMap = (TreeMap<String, Fraction>) maps.getFractionMap();
         imageMap = (TreeMap<String, Image>) maps.getImageMap();
 
@@ -116,7 +119,7 @@ public class TablePainterActivity extends Activity {
 
         // Creates database entry from current entry
         entryHelper = new CHRONIDatabaseHelper(this);
-        entryHelper.createEntry(getCurrentTime(), aliquotPath, reportSettingsPath);
+        entryHelper.createEntry(getCurrentTime(), getAliquotFilePath(), getReportSettingsFilePath());
         Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
 
         // Creates the row for the buttons
@@ -125,7 +128,7 @@ public class TablePainterActivity extends Activity {
 
         // Adds a button with the current report settings files
         Button reportSettingsCell = new Button(this);
-        String reportSettingsText = "Report Settings: " + splitFileName(retrieveReportSettingsFileName());
+        String reportSettingsText = "Report Settings: " + splitFileName(retrieveReportSettingsFilePath());
         reportSettingsCell.setTextSize((float) 15);
         reportSettingsCell.setText(reportSettingsText);
         reportSettingsCell.setTextColor(Color.BLACK);
@@ -143,7 +146,7 @@ public class TablePainterActivity extends Activity {
 
         // Adds a label button with the current aliquot files
         Button aliquotCell = new Button(this);
-        String aliquotCellText = "Aliquot: " + splitFileName(retrieveAliquotFileName());
+        String aliquotCellText = "Aliquot: " + splitFileName(retrieveAliquotFilePath());
         aliquotCell.setTextSize((float) 15);
         aliquotCell.setText(aliquotCellText);
         aliquotCell.setTextColor(Color.BLACK);
@@ -164,8 +167,6 @@ public class TablePainterActivity extends Activity {
         buttonRow.setGravity(Gravity.CENTER);
         buttonRow.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-        // Determines whether or not to add additional buttons for images
-        imageArray = retrieveImages(imageMap);
 
         // Adds button to view a concordia image
         if ((imageMap.containsKey("concordia"))) {
@@ -237,7 +238,6 @@ public class TablePainterActivity extends Activity {
                         Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
                     }
 
-
                 }
             });
         }
@@ -245,10 +245,42 @@ public class TablePainterActivity extends Activity {
         HorizontalScrollView screenScroll = (HorizontalScrollView) findViewById(R.id.horizontalScrollView); // controls the horizontal scrolling of the table
 
         LinearLayout tableLayout = (LinearLayout) findViewById(R.id.displayTableLayout); // gives inner table layout for displaying
-        TableLayout headerInformationTable = (TableLayout) findViewById(R.id.tableForHeader); // Report Settings header table
+        TableLayout categoryNameTable = (TableLayout) findViewById(R.id.categoryNameTable); // Header table specifically for category names
+        TableLayout headerInformationTable = (TableLayout) findViewById(R.id.tableForHeader); // Report Settings header table for display names 1-3
 
         ScrollView scrollPane = (ScrollView) findViewById(R.id.scrollPane); // Vertical scrolling for the aliquot portion of the table
         TableLayout aliquotDataTable = (TableLayout) findViewById(R.id.finalTable); // the aliquot specific info contained here
+
+        // Creates the row just reserved for header names
+        TableRow categoryRow = new TableRow(this);
+        categoryNameTable.addView(categoryRow);
+//        for (int currentCategory = 0; currentCategory < categoryMap.size(); currentCategory++){
+//            // Adds just enough cells for every category name
+//            TextView categoryCell = new TextView(this);
+//            categoryCell.setText(categoryMap.get(currentCategory).getDisplayName());
+//            categoryCell.setTypeface(Typeface.DEFAULT_BOLD);
+//            categoryCell.setPadding(3, 4, 3, 4);
+//            categoryCell.setTextColor(Color.BLACK);
+//            categoryCell.setBackgroundResource(R.drawable.background_blue_background);
+//            categoryCell.setTextSize((float) 14.5);
+//            categoryCell.setGravity(Gravity.LEFT);
+//            categoryRow.addView(categoryCell); // Adds cell to row
+//        }
+
+        // Adds just enough cells for every category name
+        Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Entry<Integer, Category> category = iterator.next();
+            TextView categoryCell = new TextView(this);
+            categoryCell.setText(category.getValue().getDisplayName());
+            categoryCell.setPadding(3, 4, 3, 4);
+            categoryCell.setTextColor(Color.BLACK);
+            categoryCell.setBackgroundResource(R.drawable.background_blue_background);
+            categoryCell.setTextSize((float) 14.5);
+            categoryCell.setGravity(Gravity.LEFT);
+            categoryRow.addView(categoryCell); // Adds cell to row
+        }
+
 
         // calculates number of rows based on the size of the fraction, five is separately
         // added for the Report Settings category rows
@@ -259,7 +291,7 @@ public class TablePainterActivity extends Activity {
         int rowCount = 0; // doesn't count the copy row
 
         // Gets column sizes from string array
-        int[] columnSizes = distributeColumnsAppropriately(finalArray, ROWS, COLS);
+        int[] columnSizes = distributeTableColumns(finalArray, ROWS, COLS);
 
         // Table Layout Printing
         for (int currentRow = 0; currentRow < ROWS; currentRow++) {
@@ -280,8 +312,9 @@ public class TablePainterActivity extends Activity {
             for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
                 TextView cell = new TextView(this);
                 cell.setTypeface(Typeface.MONOSPACE);
-                cell.setMinEms(columnSizes[currentColumn]+2); // sets column spacing based on max character count and allows extra space for crowding
-//                cell.setWidth(205);
+//                if(rowCount != 0) {
+                    cell.setMinEms(columnSizes[currentColumn] + 2); // sets column spacing based on max character count and allows extra space for crowding
+//                }
                 cell.setPadding(3, 4, 3, 4);
                 cell.setTextColor(Color.BLACK);
                 cell.setTextSize((float) 14.5);
@@ -355,17 +388,17 @@ public class TablePainterActivity extends Activity {
     /*
 * Accesses current report settings file
 */
-    private String retrieveReportSettingsFileName() {
+    private String retrieveReportSettingsFilePath() {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
-        return settings.getString("Current Report Settings", "Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
+        return settings.getString("Current Report Settings", Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings/Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
     }
 
     /*
 * Accesses current report settings file
 */
-    private String retrieveAliquotFileName() {
+    private String retrieveAliquotFilePath() {
         SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
-        return settings.getString("Current Aliquot", "No Aliquot Selected"); // Gets current RS and if no file there, returns default as the current file
+        return settings.getString("Current Aliquot", "Error"); // Gets current RS and if no file there, returns default as the current file
     }
 
     /*
@@ -380,40 +413,34 @@ Splits report settings file name returning a displayable version without the ent
     /*
     Goes through and figures out columns lengths given a table
      */
-    protected int[] distributeColumnsAppropriately(String[][] finalArray, int ROWS, int COLS){
+    protected int[] distributeTableColumns(String[][] finalArray, int ROWS, int COLS){
         int[] columnMaxCharacterCounts = new int[COLS];
         for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
             int widestCellCharacterCount = 0;
             int currentCellCharacterCount = 0;
             for (int currentRow = 0; currentRow < ROWS; currentRow++) {
-//                Log.i("Column: " + currentColumn +  " Cell: " + currentRow + " Width: " + currentCellCharacterCount, "Measuring");
+             if(currentRow == 0) { // Skips counting the header row
+                 Log.i("Column: " + currentColumn + " is skipping header!", "Measuring");
+//                 continue;
+             }else{
                 currentCellCharacterCount = finalArray[currentRow][currentColumn].length();
+                Log.i("Column: " + currentColumn + " Cell: " + currentRow + " Width: " + currentCellCharacterCount, "Measuring");
 
-                if(currentCellCharacterCount > widestCellCharacterCount){
+                if (currentCellCharacterCount > widestCellCharacterCount) {
                     widestCellCharacterCount = currentCellCharacterCount;
                 }
 //                Log.i("Widest Cell: " + widestCellCharacterCount, "Result");
             }
+            }
+
             columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount/2; // Divides by 2 for appropriate EMS measurement
-//            Log.i("Column: " + currentColumn +  " Widest Cell: " + widestCellCharacterCount, "Measuring");
+            Log.i("Column: " + currentColumn +  " Widest Cell: " + widestCellCharacterCount, "Measuring");
+            Log.i("----------------------------------------------------------------------------", "Measuring");
+
         }
         return columnMaxCharacterCounts;
     }
 
-    /*
-     * Retrieves the images from the image map
-     */
-    private static Image[] retrieveImages(TreeMap<String, Image> imageMap) {
-        Image[] imageArray = new Image[3]; // two spaces allotted for the probability and concordia images, 3rd for report csv image
-        Iterator<Entry<String, Image>> iterator = imageMap.entrySet().iterator();
-        int imageCount = 0; // image iterator
-        while (iterator.hasNext()) {
-            Entry<String, Image> image = iterator.next();
-            imageArray[imageCount] = image.getValue(); // places image in array
-        }
-
-        return imageArray;
-    }
 
     /*
      * Fills the Report Settings portion of the array
@@ -761,5 +788,21 @@ Splits report settings file name returning a displayable version without the ent
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public String getAliquotFilePath() {
+        return aliquotFilePath;
+    }
+
+    public void setAliquotFilePath(String aliquotFilePath) {
+        this.aliquotFilePath = aliquotFilePath;
+    }
+
+    public String getReportSettingsFilePath() {
+        return reportSettingsFilePath;
+    }
+
+    public void setReportSettingsFilePath(String reportSettingsFilePath) {
+        this.reportSettingsFilePath = reportSettingsFilePath;
     }
 }

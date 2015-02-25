@@ -31,6 +31,11 @@
             android:orientation="vertical" >
 
             <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/categoryNameTable"></TableLayout>
+
+            <TableLayout
                 android:id="@+id/tableForHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
