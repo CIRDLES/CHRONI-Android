@@ -168,11 +168,11 @@ public class TablePainterActivity extends Activity {
         imageArray = retrieveImages(imageMap);
 
         // Adds button to view a concordia image
-        if ((imageArray[0] != null) && !(imageArray[0].getImageURL().length() == 0)) {
+        if ((imageMap.containsKey("concordia"))) {
             Button viewConcordiaButton = new Button(this);
             viewConcordiaButton.setTextColor(Color.BLACK);
-            viewConcordiaButton.setTextSize((float) 15);
-            viewConcordiaButton.setText("Concordia Plot");
+            viewConcordiaButton.setTextSize((float) 13);
+            viewConcordiaButton.setText("Concordia");
             viewConcordiaButton.setTypeface(Typeface.DEFAULT_BOLD);
             viewConcordiaButton.setPadding(15, 15, 15, 15);
             viewConcordiaButton.setGravity(Gravity.CENTER);
@@ -181,36 +181,35 @@ public class TablePainterActivity extends Activity {
             buttonRow.addView(viewConcordiaButton);
             viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Toast.makeText(TablePainterActivity.this, "Feature still in progress!!", Toast.LENGTH_LONG).show();
+                     // Checks internet connection before getting images
+                    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-//                    // Checks internet connection before getting images
-//                    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//                    NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-//
-//                    if (mobileWifi.isConnected()) {
-//                        Toast.makeText(TablePainterActivity.this, "Opening Concordia Image...", Toast.LENGTH_LONG).show();
-//                        Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageArray[0].getImageURL()));
-////                    Intent viewConcordiaIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
-//                        viewConcordiaIntent.putExtra("ConcordiaImage", imageArray[0].getImageURL());
-//                        startActivity(viewConcordiaIntent);
-//                    } else {
-//                        //Handles lack of wifi connection
-//                        Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
-//                    }
+                    if (mobileWifi.isConnected()) {
+                        // Displays concordia images
+                        Toast.makeText(TablePainterActivity.this, "Opening Concordia Image...", Toast.LENGTH_LONG).show();
+                        Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageMap.get("concordia").getImageURL()));
+//                    Intent viewConcordiaIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
+//                        viewConcordiaIntent.putExtra("ConcordiaImage", imageMap.get("concordia").getImageURL());
+                        startActivity(viewConcordiaIntent);
+                    } else {
+                        //Handles lack of wifi connection
+                        Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
         }
 
         //Adds button to view a probability density image
-        if ((imageArray[1] != null) && !(imageArray[1].getImageURL().length() == 0)) {
+        if ((imageMap.containsKey("probability_density"))) {
             Button viewProbabilityDensityButton = new Button(this);
-            viewProbabilityDensityButton.setTextSize((float) 18);
+            viewProbabilityDensityButton.setTextSize((float) 13);
             viewProbabilityDensityButton.setText("Probability Density");
             viewProbabilityDensityButton.setTypeface(Typeface.DEFAULT_BOLD);
             viewProbabilityDensityButton.setPadding(15, 15, 15, 15);
             viewProbabilityDensityButton.setGravity(Gravity.CENTER);
             // Decides what color button should be based on if there is a concordia button
-            if((imageArray[1] != null) && !(imageArray[1].getImageURL().length() == 0)){
+            if ((imageMap.containsKey("concordia"))) {
                 viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
                 viewProbabilityDensityButton.setTextColor(Color.WHITE);
             }else{
@@ -219,24 +218,26 @@ public class TablePainterActivity extends Activity {
             }
             viewProbabilityDensityButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             buttonRow.addView(viewProbabilityDensityButton);
+
+            //Adds on click functionality
             viewProbabilityDensityButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Toast.makeText(TablePainterActivity.this, "Feature still in progress!!", Toast.LENGTH_LONG).show();
+                    // Checks internet connection before getting images
+                    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-//                    // Checks internet connection before getting images
-//                    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//                    NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-//
-//                    if (mobileWifi.isConnected()) {
-//                        Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
-//                        Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageArray[1].getImageURL()));
-////                    Intent viewProbabilityDensityIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
-////                    viewProbabilityDensityIntent.putExtra("ProbabilityDensityImage", imageArray[1].getImageURL());
-//                        startActivity(viewProbabilityDensityIntent);
-//                    } else {
-//                        //Handles lack of wifi connection
-//                        Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
-//                    }
+                    if (mobileWifi.isConnected()) {
+                        Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
+                        Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse( imageMap.get("probability_density").getImageURL()));
+//                    Intent viewProbabilityDensityIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
+//                    viewProbabilityDensityIntent.putExtra("ProbabilityDensityImage",  imageMap.get("probability_density").getImageURL());
+                        startActivity(viewProbabilityDensityIntent);
+                    } else {
+                        //Handles lack of wifi connection
+                        Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
+                    }
+
+
                 }
             });
         }
