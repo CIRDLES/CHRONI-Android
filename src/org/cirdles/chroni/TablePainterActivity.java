@@ -63,28 +63,17 @@ public class TablePainterActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         setContentView(R.layout.display);
 
-        // Sets the file paths for the files to be parsed
-        setReportSettingsFilePath(retrieveReportSettingsFilePath());
-        setAliquotFilePath(retrieveAliquotFilePath());
-
-        // Instantiates the Report Settings Parser
+        // Instantiates the Report Settings Parser and gets the current Report Settings path
         ReportSettingsParser reportSettingsParser = new ReportSettingsParser();
-//        String reportSettingsPath = Environment.getExternalStorageDirectory()
-//                + "/CHRONI/Report Settings/Default Report Settings.xml"; // sets default Report Settings XML
-//        if (getIntent().getStringExtra("ReportSettingsXML") != null) {
-//            reportSettingsPath = getIntent().getStringExtra("ReportSettingsXML"); // gets the new location of the report settings xml
-//        }
+        setReportSettingsFilePath(retrieveReportSettingsFilePath());
 
         // Parses the Report Settings XML file
         categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
         ArrayList<String> outputVariableNames = reportSettingsParser.getOutputVariableName();
 
-        // Instantiates the Aliquot Parser
+        // Instantiates the Aliquot Parser and gets the current Aliquot path
         AliquotParser aliquotParser = new AliquotParser();
-//        setAliquotFilePath("");
-//        if (getIntent().getStringExtra("AliquotXML") != null) {
-//            setAliquotFilePath(getIntent().getStringExtra("AliquotXML")); // gets the new location of the aliquot xml
-//        }
+        setAliquotFilePath(retrieveAliquotFilePath());
 
         // Parses aliquot file and retrieves maps
         MapTuple maps = aliquotParser.runAliquotParser(getAliquotFilePath());
@@ -182,7 +171,7 @@ public class TablePainterActivity extends Activity {
             buttonRow.addView(viewConcordiaButton);
             viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                     // Checks internet connection before getting images
+                    // Checks internet connection before getting images
                     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
@@ -251,22 +240,21 @@ public class TablePainterActivity extends Activity {
         ScrollView scrollPane = (ScrollView) findViewById(R.id.scrollPane); // Vertical scrolling for the aliquot portion of the table
         TableLayout aliquotDataTable = (TableLayout) findViewById(R.id.finalTable); // the aliquot specific info contained here
 
+        // calculates number of rows based on the size of the fraction, five is separately
+        // added for the Report Settings category rows
+        final int ROWS = 5 + fractionMap.size();
+        final int COLS = outputVariableNames.size();
+
+        // Gets column sizes from string array
+        int[] columnSizes = distributeTableColumns(finalArray, ROWS, COLS);
+        int[] headerCellSizes = distributeHeaderCells(columnSizes, COLS);
+
         // Creates the row just reserved for header names
         TableRow categoryRow = new TableRow(this);
         categoryNameTable.addView(categoryRow);
-//        for (int currentCategory = 0; currentCategory < categoryMap.size(); currentCategory++){
-//            // Adds just enough cells for every category name
-//            TextView categoryCell = new TextView(this);
-//            categoryCell.setText(categoryMap.get(currentCategory).getDisplayName());
-//            categoryCell.setTypeface(Typeface.DEFAULT_BOLD);
-//            categoryCell.setPadding(3, 4, 3, 4);
-//            categoryCell.setTextColor(Color.BLACK);
-//            categoryCell.setBackgroundResource(R.drawable.background_blue_background);
-//            categoryCell.setTextSize((float) 14.5);
-//            categoryCell.setGravity(Gravity.LEFT);
-//            categoryRow.addView(categoryCell); // Adds cell to row
-//        }
+//        //TODO: Figure out more elegant way to calculate the width of a column
 
+        int categoryCount = 0;
         // Adds just enough cells for every category name
         Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -278,20 +266,16 @@ public class TablePainterActivity extends Activity {
             categoryCell.setBackgroundResource(R.drawable.background_blue_background);
             categoryCell.setTextSize((float) 14.5);
             categoryCell.setGravity(Gravity.LEFT);
+//            Log.i("Current Category: " + category.getValue().getDisplayName() + " Cols: " + category.getValue().getColumnCount(), "Test");
+//            Log.i("--------------------------------------------------------------------------------------", "Test");
+
+
+            categoryCell.setMinEms(headerCellSizes[categoryCount] + (2*category.getValue().getColumnCount())); // sets column spacing based on max character count and allows extra space for crowding
             categoryRow.addView(categoryCell); // Adds cell to row
+            categoryCount++;
         }
 
-
-        // calculates number of rows based on the size of the fraction, five is separately
-        // added for the Report Settings category rows
-        final int ROWS = 5 + fractionMap.size();
-        final int COLS = outputVariableNames.size();
-//        int rowCount = 0;
-//        final int ROWS = 6 + fractionMap.size(); //adds extra row to make a copy of header row
         int rowCount = 0; // doesn't count the copy row
-
-        // Gets column sizes from string array
-        int[] columnSizes = distributeTableColumns(finalArray, ROWS, COLS);
 
         // Table Layout Printing
         for (int currentRow = 0; currentRow < ROWS; currentRow++) {
@@ -312,9 +296,7 @@ public class TablePainterActivity extends Activity {
             for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
                 TextView cell = new TextView(this);
                 cell.setTypeface(Typeface.MONOSPACE);
-//                if(rowCount != 0) {
-                    cell.setMinEms(columnSizes[currentColumn] + 2); // sets column spacing based on max character count and allows extra space for crowding
-//                }
+                cell.setMinEms(columnSizes[currentColumn] + 2); // sets column spacing based on max character count and allows extra space for crowding
                 cell.setPadding(3, 4, 3, 4);
                 cell.setTextColor(Color.BLACK);
                 cell.setTextSize((float) 14.5);
@@ -411,6 +393,38 @@ Splits report settings file name returning a displayable version without the ent
     }
 
     /*
+ Goes through and figures out header cell lengths given a table
+  */
+    protected int[] distributeHeaderCells(int[] columnWidths, int COLS){
+        int[] headerMaxCharacterCounts = new int[COLS];
+        int currentCategoryCount = 0;
+        int currentColumnCount = 0;
+
+        Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Entry<Integer, Category> category = iterator.next();
+            int categoryCellWidth = 0;
+
+            Iterator<Entry<Integer, Column>> columnIterator = category
+                    .getValue().getCategoryColumnMap().entrySet().iterator();
+            while (columnIterator.hasNext()) {
+                Entry<Integer, Column> column = columnIterator.next();
+
+                categoryCellWidth += columnWidths[currentColumnCount];
+                currentColumnCount++;
+
+                if (column.getValue().getUncertaintyColumn() != null) {
+                    categoryCellWidth += columnWidths[currentColumnCount];
+                    currentColumnCount++;
+                }
+            }
+            headerMaxCharacterCounts[currentCategoryCount] = categoryCellWidth;
+            currentCategoryCount++;
+        }
+        return headerMaxCharacterCounts;
+    }
+
+    /*
     Goes through and figures out columns lengths given a table
      */
     protected int[] distributeTableColumns(String[][] finalArray, int ROWS, int COLS){
@@ -419,24 +433,18 @@ Splits report settings file name returning a displayable version without the ent
             int widestCellCharacterCount = 0;
             int currentCellCharacterCount = 0;
             for (int currentRow = 0; currentRow < ROWS; currentRow++) {
-             if(currentRow == 0) { // Skips counting the header row
-                 Log.i("Column: " + currentColumn + " is skipping header!", "Measuring");
-//                 continue;
-             }else{
-                currentCellCharacterCount = finalArray[currentRow][currentColumn].length();
-                Log.i("Column: " + currentColumn + " Cell: " + currentRow + " Width: " + currentCellCharacterCount, "Measuring");
-
-                if (currentCellCharacterCount > widestCellCharacterCount) {
-                    widestCellCharacterCount = currentCellCharacterCount;
-                }
+                if(currentRow != 0) { // Skips counting the header row
+                    currentCellCharacterCount = finalArray[currentRow][currentColumn].length();
+//                Log.i("Column: " + currentColumn + " Cell: " + currentRow + " Width: " + currentCellCharacterCount, "Measuring");
+                    if (currentCellCharacterCount > widestCellCharacterCount) {
+                        widestCellCharacterCount = currentCellCharacterCount;
+                    }
 //                Log.i("Widest Cell: " + widestCellCharacterCount, "Result");
+                }
             }
-            }
-
             columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount/2; // Divides by 2 for appropriate EMS measurement
-            Log.i("Column: " + currentColumn +  " Widest Cell: " + widestCellCharacterCount, "Measuring");
-            Log.i("----------------------------------------------------------------------------", "Measuring");
-
+//            Log.i("Column: " + currentColumn +  " Widest Cell: " + widestCellCharacterCount, "Measuring");
+//            Log.i("----------------------------------------------------------------------------", "Measuring");
         }
         return columnMaxCharacterCounts;
     }
@@ -718,13 +726,7 @@ Splits report settings file name returning a displayable version without the ent
         TablePainterActivity.outputVariableName = outputVariableName;
     }
 
-    public static int getColumnCount() {
-        return columnCount;
-    }
 
-    public static void setColumnCount(int count) {
-        columnCount = count;
-    }
 
     /*
  * This method gets the current time.
@@ -806,3 +808,4 @@ Splits report settings file name returning a displayable version without the ent
         this.reportSettingsFilePath = reportSettingsFilePath;
     }
 }
+

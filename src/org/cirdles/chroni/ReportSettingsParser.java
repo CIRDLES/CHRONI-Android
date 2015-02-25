@@ -58,6 +58,7 @@ public class ReportSettingsParser {
 					// Creates a new instance of a Category and puts it in the map if the category is visible
 					Category visibleCategory = new Category(categoryDisplayName, Integer.parseInt(categoryPosition)); 
 					categoryMap.put(Integer.parseInt(categoryPosition),	visibleCategory);
+                    int columnCount = 0; // keeps track of columns in a visible category
 
 					// BEGINS PARSING CATEGORIES FOR ACTUAL REPORT COLUMN INFO
 					NodeList categoryElements = doc.getElementsByTagName(categoryName); // list of elements that contain category info
@@ -87,7 +88,8 @@ public class ReportSettingsParser {
                         if (columnVisibility.equals("true")) {
 							// Instantiates a new Column and adds visible columns to the Category's Column map
 							Column visibleColumn = new Column(categoryDisplayName, displayName1, displayName2, displayName3, units, methodName, variableName, Integer.parseInt(positionIndex), Integer.parseInt(countOfSignificantDigits));
-							if(uncertaintyType.equals("ABS")|| uncertaintyType.equals("PCT")){
+                            columnCount++;
+                            if(uncertaintyType.equals("ABS")|| uncertaintyType.equals("PCT")){
 								visibleColumn.setUncertaintyType(uncertaintyType);
 							}
 							
@@ -119,7 +121,8 @@ public class ReportSettingsParser {
 									if (uncertaintyVisibility.contains("true")) {
 										// Instantiates a new Column object if the column is visible and adds it to an Uncertainty Column Map
 										Column visibleUncertaintyColumn = new Column(categoryDisplayName,uncertaintyName1,uncertaintyName2,	uncertaintyName3, uncertaintyUnits, uncertaintyMethodName, uncertaintyVariableName, Integer.parseInt(uncertaintyPositionIndex), Integer.parseInt(uncertaintyCountOfSignificantDigits));
-										visibleColumn.setUncertaintyColumn(visibleUncertaintyColumn);
+                                        columnCount++;
+                                        visibleColumn.setUncertaintyColumn(visibleUncertaintyColumn);
                                         visibleColumn.setUncertaintyColumn(true); // indicates that the column is an uncertainty column
 										outputVariableNames.add(uncertaintyVariableName);
 //										occupyAbsentInfo(visibleUncertaintyColumn,uncertaintyName1,uncertaintyName2,uncertaintyName3, uncertaintyMethodName, uncertaintyVariableName);
@@ -127,9 +130,9 @@ public class ReportSettingsParser {
 								} // Closes loop through uncertainty columns
 							} // Closes navigation through dates and isotopic ratios categories
                         } // Closes iterations through all visible columns
-
                     } // Closes going into visible category for columns
-				} // Closes going into visible category
+                    visibleCategory.setColumnCount(columnCount);
+                } // Closes going into visible category
 			} // Closes loop through file for category nodes
 		} // Closes try statement
 		catch (Exception e) {
