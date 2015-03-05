@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".HomeScreenActivity"
-    android:id="@+id/homeScreenBackground">
+    android:id="@+id/historyBackground">
 
     <TextView
         android:id="@+id/versionNumber"
@@ -21,43 +21,46 @@
         android:text="Version"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cirdles_logo"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/TextView01"
+        android:layout_marginEnd="49dp" />
+
     <TextView
         android:id="@+id/testText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/versionNumber"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="52dp"
         android:text="LOADING"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/TextView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/progressBar1"
-        android:layout_centerHorizontal="true"
-        android:text="CHRONI"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/border_grey"
-        android:textSize="100sp" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="20sp"
+        android:layout_above="@+id/versionNumber"
+        android:layout_alignStart="@+id/versionNumber"
+        android:layout_marginBottom="5dp" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/testText"
+        android:minHeight="150dp"
+        android:minWidth="150dp"
+        android:layout_above="@+id/versionNumber"
         android:layout_centerHorizontal="true"
-        android:minHeight="100dp"
-        android:minWidth="100dp" />
+        android:layout_marginBottom="51dp" />
 
-    <ImageView
-        android:id="@+id/imageView1"
+    <TextView
+        android:id="@+id/TextView01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/TextView01"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/cirdles_logo" />
+        android:text="CHRONI"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/border_grey"
+        android:textSize="120sp"
+        android:layout_above="@+id/progressBar1"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
