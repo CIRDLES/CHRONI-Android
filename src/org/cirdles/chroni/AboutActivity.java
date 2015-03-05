@@ -24,7 +24,7 @@ public class AboutActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.about);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         // Makes About text scrollable
         TextView aboutText = (TextView) findViewById(R.id.aboutText);
