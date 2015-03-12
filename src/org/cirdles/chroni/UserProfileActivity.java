@@ -19,6 +19,7 @@ import org.xml.sax.SAXException;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -50,6 +51,8 @@ public class UserProfileActivity extends Activity {
 
 	public static final String USER_REGISTERED = "My CIRDLES Application";
     public static final String USER_PREFS = "My CIRDLES Settings";
+
+    public int CIRDLES_ORANGE_RGB = Color.rgb(242, 136, 58);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +93,10 @@ public class UserProfileActivity extends Activity {
                 editor.putString("Geochron Password", geochronPasswordInput
                         .getText().toString());
                 editor.commit();
+
+                profileValidateButton.setBackgroundColor(CIRDLES_ORANGE_RGB); // changes color to cirdles orange
+
+
 
                 // Provides feedback that credentials have been saved
                 Toast.makeText(UserProfileActivity.this, "Your Geochron Profile information is saved!", Toast.LENGTH_SHORT).show();
@@ -136,18 +143,19 @@ public class UserProfileActivity extends Activity {
 	profileEraseButton = (Button) findViewById(R.id.profileEraseButton);
 	profileEraseButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
-	    	if(geochronUsernameInput.getText().length() != 0 || geochronPasswordInput.getText().length() != 0){
+	    	if(geochronUsernameInput.getText().length() != 0 || geochronPasswordInput.getText().length() != 0) {
 
-			SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
-			SharedPreferences.Editor editor = settings.edit();
-			editor.clear(); // Clears previously stored prefs
-			
-			geochronUsernameInput.setText("");
-			geochronPasswordInput.setText("");
-			
-    		Toast.makeText(UserProfileActivity.this, "Credentials erased!", Toast.LENGTH_LONG).show();
-	    	}
-	    }
+                SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.clear(); // Clears previously stored prefs
+
+                geochronUsernameInput.setText("");
+                geochronPasswordInput.setText("");
+
+                profileEraseButton.setBackgroundColor(CIRDLES_ORANGE_RGB);
+            }
+
+        }
 	 	});
 			
 	// Initializes profile information with currently stored profile or, if
@@ -176,7 +184,7 @@ public class UserProfileActivity extends Activity {
     
     /**
     * Validates currently stored geochron credentials 
-    * From U-Pb Redux's ReduxPersistantState.class
+    * From ET Redux's ReduxPersistantState.class
     * http://www.geochronportal.org/post_to_credentials_service.html
     * 
     * @param username

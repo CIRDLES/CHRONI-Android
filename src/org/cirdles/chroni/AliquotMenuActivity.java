@@ -2,19 +2,16 @@
 
 package org.cirdles.chroni;
 
-import java.io.File;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +19,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import java.io.File;
+
 
 public class AliquotMenuActivity extends Activity {
 
@@ -45,6 +45,8 @@ public class AliquotMenuActivity extends Activity {
     public static String BASE_SAMPLE_URI = "http://www.geosamples.org/display.php?igsn=";
 
     private static final int REQUEST_PICK_FILE = 1;
+    public int CIRDLES_ORANGE_RGB = Color.rgb(242, 136, 58);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +93,7 @@ public class AliquotMenuActivity extends Activity {
                 Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
                 Intent openMainMenu = new Intent("android.intent.action.DISPLAY"); // Opens display table
                 openMainMenu.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
-                aliquotFileSubmitButton.setBackgroundColor(Color.rgb(242, 136, 58)); // changes color to cirdles orange
+                aliquotFileSubmitButton.setBackgroundColor(CIRDLES_ORANGE_RGB); // changes color to cirdles orange
                 aliquotFileSubmitButton.setTextColor(Color.WHITE);
                 startActivity(openMainMenu);
             }else{
@@ -124,6 +126,7 @@ public class AliquotMenuActivity extends Activity {
 
                     String aliquotIGSN = igsnText.getText().toString().toUpperCase().trim(); // Captures igsn from user input
                     URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn"); // Downloads Aliquot file
+                    igsnDownloadButton.setBackgroundColor(CIRDLES_ORANGE_RGB);
 
                     // Note: Setting above is useful for download-then-open functionality
                 }
@@ -133,6 +136,8 @@ public class AliquotMenuActivity extends Activity {
         }
 
     });
+
+
 
     }
 
