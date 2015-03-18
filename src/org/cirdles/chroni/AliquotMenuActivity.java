@@ -2,6 +2,13 @@
 
 package org.cirdles.chroni;
 
+
+import java.io.File;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +46,8 @@ public class AliquotMenuActivity extends Activity {
     private static String geochronUsername, geochronPassword; // the GeoChron information on file for the user
     public static final String USER_PREFS = "My CIRDLES Settings"; // code to access stored preferences
 
+    private static final String PREF_ALIQUOT = "Current Aliquot";// Path of the current aliquot file
+
     // Base URLs for IGSN downloads
     public static String BASE_ALIQUOT_URI = "http://www.geochronportal.org/getxml.php?igsn=";
     // public static String BASE_ALIQUOT_URI = "http://picasso.kgs.ku.edu/geochron/getxml.php?igsn=";
@@ -61,10 +70,6 @@ public class AliquotMenuActivity extends Activity {
         //Places background image on layout after theme overriding
         aliquotMenuLayout.setBackground(getResources().getDrawable(R.drawable.background));
 
-    	// Instantiates directories needed for file locations
-	    final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE);
-	    final File aliquotDirectory = new File(chroniDirectory, "Aliquot");
-
 	    aliquotFileSelectButton = (Button) findViewById(R.id.aliquotFileSelectButton);
 	    aliquotFileSelectButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
@@ -85,17 +90,30 @@ public class AliquotMenuActivity extends Activity {
 	}
 
 	aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
+    //Changes button color back to blue if it is not already
+    aliquotFileSubmitButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+    aliquotFileSubmitButton.setTextColor(Color.WHITE);
 	aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
     // Submits aliquot file to display activity for parsing and displaying in table
 	    public void onClick(View v) {
             if (aliquotSelectedFileText.getText().length() != 0) {
                 // Makes sure there is a file selected
                 Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
+
                 Intent openMainMenu = new Intent("android.intent.action.DISPLAY"); // Opens display table
                 openMainMenu.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
-                aliquotFileSubmitButton.setBackgroundColor(CIRDLES_ORANGE_RGB); // changes color to cirdles orange
-                aliquotFileSubmitButton.setTextColor(Color.WHITE);
                 startActivity(openMainMenu);
+
+                Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
+                openDisplayTable.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
+
+                // Changes button color to indicate it has been opened
+                aliquotFileSubmitButton.setBackgroundColor(Color.LTGRAY);
+                aliquotFileSubmitButton.setTextColor(Color.BLACK);
+                saveCurrentAliquot();
+
+                startActivity(openDisplayTable); // Starts display activity
+
             }else{
                 // Tells user to select a file for viewing
                 Toast.makeText(AliquotMenuActivity.this, "Please select an aliquot file to view.", Toast.LENGTH_LONG).show(); // lets user know table is opening
@@ -140,6 +158,17 @@ public class AliquotMenuActivity extends Activity {
 
 
     }
+
+    /*
+* Stores Current Aliquot
+*/
+    protected void saveCurrentAliquot() {
+        SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("Current Aliquot", getIntent().getStringExtra("AliquotXMLFileName")); // gets chosen file from file browser and stores
+        editor.commit(); // Commiting changes
+    }
+
 
     /*
     Requests file name from user and proceeds to download based on input

@@ -58,6 +58,7 @@ public class ReportSettingsParser {
 					// Creates a new instance of a Category and puts it in the map if the category is visible
 					Category visibleCategory = new Category(categoryDisplayName, Integer.parseInt(categoryPosition)); 
 					categoryMap.put(Integer.parseInt(categoryPosition),	visibleCategory);
+                    int columnCount = 0; // keeps track of columns in a visible category
 
 					// BEGINS PARSING CATEGORIES FOR ACTUAL REPORT COLUMN INFO
 					NodeList categoryElements = doc.getElementsByTagName(categoryName); // list of elements that contain category info
@@ -76,18 +77,19 @@ public class ReportSettingsParser {
 						String displayName1 = parser.getNodeValue("displayName1", columnNodes);
 						String displayName2 = parser.getNodeValue("displayName2", columnNodes);
 						String displayName3 = parser.getNodeValue("displayName3", columnNodes);
-						String units = parser.getNodeValue("units", columnNodes);
-						String methodName = parser.getNodeValue("retrieveMethodName", columnNodes);
-						String variableName = parser.getNodeValue("retrieveVariableName", columnNodes);
+						String units = parser.getNodeValue("units", columnNodes);  // Used to calculate correct value for table
+						String methodName = parser.getNodeValue("retrieveMethodName", columnNodes); // specifies where to retrieve value model
+						String variableName = parser.getNodeValue("retrieveVariableName", columnNodes); // used to map appropriate value model to column
 						String countOfSignificantDigits = parser.getNodeValue("countOfSignificantDigits", columnNodes);
 						String columnVisibility = parser.getNodeValue("visible", columnNodes);
 						String positionIndex = parser.getNodeValue("positionIndex", columnNodes);
-						String uncertaintyType = parser.getNodeValue("uncertaintyType", columnNodes);
+						String uncertaintyType = parser.getNodeValue("uncertaintyType", columnNodes); // used to figure out what calculation is needed for uncertainty column
 
                         if (columnVisibility.equals("true")) {
 							// Instantiates a new Column and adds visible columns to the Category's Column map
 							Column visibleColumn = new Column(categoryDisplayName, displayName1, displayName2, displayName3, units, methodName, variableName, Integer.parseInt(positionIndex), Integer.parseInt(countOfSignificantDigits));
-							if(uncertaintyType.equals("ABS")|| uncertaintyType.equals("PCT")){
+                            columnCount++;
+                            if(uncertaintyType.equals("ABS")|| uncertaintyType.equals("PCT")){
 								visibleColumn.setUncertaintyType(uncertaintyType);
 							}
 							
@@ -109,9 +111,9 @@ public class ReportSettingsParser {
 									String uncertaintyName1 = parser.getNodeValue("displayName1",specificUncertaintyColumnNodes);
 									String uncertaintyName2 = parser.getNodeValue("displayName2",specificUncertaintyColumnNodes);
 									String uncertaintyName3 = parser.getNodeValue("displayName3", specificUncertaintyColumnNodes);
-									String uncertaintyUnits = parser.getNodeValue("units", columnNodes);
-									String uncertaintyMethodName = parser.getNodeValue("retrieveMethodName", specificUncertaintyColumnNodes);
-									String uncertaintyVariableName = parser.getNodeValue("retrieveVariableName", specificUncertaintyColumnNodes);
+									String uncertaintyUnits = parser.getNodeValue("units", columnNodes); // used to calculate correct value in column
+									String uncertaintyMethodName = parser.getNodeValue("retrieveMethodName", specificUncertaintyColumnNodes); // used to find group of value models
+									String uncertaintyVariableName = parser.getNodeValue("retrieveVariableName", specificUncertaintyColumnNodes); // used to find specific value model for that column
 									String uncertaintyCountOfSignificantDigits = parser.getNodeValue("countOfSignificantDigits", specificUncertaintyColumnNodes);
 									String uncertaintyVisibility = parser.getNodeValue("visible", specificUncertaintyColumnNodes);
 									String uncertaintyPositionIndex = parser.getNodeValue("positionIndex", specificUncertaintyColumnNodes);
@@ -119,16 +121,18 @@ public class ReportSettingsParser {
 									if (uncertaintyVisibility.contains("true")) {
 										// Instantiates a new Column object if the column is visible and adds it to an Uncertainty Column Map
 										Column visibleUncertaintyColumn = new Column(categoryDisplayName,uncertaintyName1,uncertaintyName2,	uncertaintyName3, uncertaintyUnits, uncertaintyMethodName, uncertaintyVariableName, Integer.parseInt(uncertaintyPositionIndex), Integer.parseInt(uncertaintyCountOfSignificantDigits));
-										visibleColumn.setUncertaintyColumn(visibleUncertaintyColumn); 
+                                        columnCount++;
+                                        visibleColumn.setUncertaintyColumn(visibleUncertaintyColumn);
+                                        visibleColumn.setUncertaintyColumn(true); // indicates that the column is an uncertainty column
 										outputVariableNames.add(uncertaintyVariableName);
 //										occupyAbsentInfo(visibleUncertaintyColumn,uncertaintyName1,uncertaintyName2,uncertaintyName3, uncertaintyMethodName, uncertaintyVariableName);
 									} // Closes visible uncertainty column
 								} // Closes loop through uncertainty columns
 							} // Closes navigation through dates and isotopic ratios categories
                         } // Closes iterations through all visible columns
-
                     } // Closes going into visible category for columns
-				} // Closes going into visible category
+                    visibleCategory.setColumnCount(columnCount);
+                } // Closes going into visible category
 			} // Closes loop through file for category nodes
 		} // Closes try statement
 		catch (Exception e) {

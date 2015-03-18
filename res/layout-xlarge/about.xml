@@ -32,7 +32,7 @@
         android:textColor="@color/border_grey"
         android:textSize="60sp"
         android:layout_below="@+id/logoImageView"
-        android:layout_alignEnd="@+id/testFileNameInputButton" />
+        android:layout_centerHorizontal="true" />
 
     TextView
         android:id="@+id/TextView02"
@@ -60,7 +60,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="47dp" />
 
-    <Button
+    Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Enter Filename"
@@ -88,11 +88,11 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/testFileNameInputButton"
         android:editable="true"
         android:scrollbars = "vertical"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
+        android:layout_marginRight="15dp"
+        android:layout_above="@+id/fileBrowserHomeButton" />
 
     <ImageView
         android:layout_width="212dp"

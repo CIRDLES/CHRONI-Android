@@ -13,6 +13,7 @@ public class Category {
 	private String displayName; // name of the category
 	private int positionIndex; // where the category is located
 	private SortedMap<Integer,Column> categoryColumnMap = null; // map containing the columns of a category sorted by ints
+    private int columnCount; // keeps track of how many visible columns are within a category
 
     /* Instantiates a Category given a display name and position index
      */
@@ -63,4 +64,12 @@ public class Category {
 	public void setCategoryColumnMap(SortedMap<Integer,Column> categoryColumnMap) {
 		this.categoryColumnMap = categoryColumnMap;
 	}
+
+    public int getColumnCount() {
+        return columnCount;
+    }
+
+    public void setColumnCount(int columnCount) {
+        this.columnCount = columnCount;
+    }
 }
