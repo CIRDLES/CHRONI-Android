@@ -77,13 +77,13 @@ public class ReportSettingsParser {
 						String displayName1 = parser.getNodeValue("displayName1", columnNodes);
 						String displayName2 = parser.getNodeValue("displayName2", columnNodes);
 						String displayName3 = parser.getNodeValue("displayName3", columnNodes);
-						String units = parser.getNodeValue("units", columnNodes);
-						String methodName = parser.getNodeValue("retrieveMethodName", columnNodes);
-						String variableName = parser.getNodeValue("retrieveVariableName", columnNodes);
+						String units = parser.getNodeValue("units", columnNodes);  // Used to calculate correct value for table
+						String methodName = parser.getNodeValue("retrieveMethodName", columnNodes); // specifies where to retrieve value model
+						String variableName = parser.getNodeValue("retrieveVariableName", columnNodes); // used to map appropriate value model to column
 						String countOfSignificantDigits = parser.getNodeValue("countOfSignificantDigits", columnNodes);
 						String columnVisibility = parser.getNodeValue("visible", columnNodes);
 						String positionIndex = parser.getNodeValue("positionIndex", columnNodes);
-						String uncertaintyType = parser.getNodeValue("uncertaintyType", columnNodes);
+						String uncertaintyType = parser.getNodeValue("uncertaintyType", columnNodes); // used to figure out what calculation is needed for uncertainty column
 
                         if (columnVisibility.equals("true")) {
 							// Instantiates a new Column and adds visible columns to the Category's Column map
@@ -111,9 +111,9 @@ public class ReportSettingsParser {
 									String uncertaintyName1 = parser.getNodeValue("displayName1",specificUncertaintyColumnNodes);
 									String uncertaintyName2 = parser.getNodeValue("displayName2",specificUncertaintyColumnNodes);
 									String uncertaintyName3 = parser.getNodeValue("displayName3", specificUncertaintyColumnNodes);
-									String uncertaintyUnits = parser.getNodeValue("units", columnNodes);
-									String uncertaintyMethodName = parser.getNodeValue("retrieveMethodName", specificUncertaintyColumnNodes);
-									String uncertaintyVariableName = parser.getNodeValue("retrieveVariableName", specificUncertaintyColumnNodes);
+									String uncertaintyUnits = parser.getNodeValue("units", columnNodes); // used to calculate correct value in column
+									String uncertaintyMethodName = parser.getNodeValue("retrieveMethodName", specificUncertaintyColumnNodes); // used to find group of value models
+									String uncertaintyVariableName = parser.getNodeValue("retrieveVariableName", specificUncertaintyColumnNodes); // used to find specific value model for that column
 									String uncertaintyCountOfSignificantDigits = parser.getNodeValue("countOfSignificantDigits", specificUncertaintyColumnNodes);
 									String uncertaintyVisibility = parser.getNodeValue("visible", specificUncertaintyColumnNodes);
 									String uncertaintyPositionIndex = parser.getNodeValue("positionIndex", specificUncertaintyColumnNodes);
