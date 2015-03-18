@@ -242,7 +242,7 @@ public class TablePainterActivity extends Activity {
 
         // calculates number of rows based on the size of the fraction, five is separately
         // added for the Report Settings category rows
-        final int ROWS = 4 + fractionMap.size();
+        final int ROWS = 5 + fractionMap.size();
         final int COLS = outputVariableNames.size();
 
         // Gets column sizes from string array
