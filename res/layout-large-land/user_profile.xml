@@ -25,7 +25,7 @@
         android:layout_alignBaseline="@+id/TextView02"
         android:layout_alignBottom="@+id/TextView02"
         android:layout_alignLeft="@+id/testText"
-        android:layout_marginLeft="51dp"
+        android:layout_marginLeft="30dp"
         android:ems="10"
         android:hint="Email Address"
         android:inputType="textEmailAddress"
@@ -43,7 +43,7 @@
         android:text="Password"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="35sp" />
+        android:textSize="25dp" />
 
     <Button
         android:id="@+id/profileValidateButton"
@@ -56,10 +56,10 @@
         android:textColor="@color/white"
         android:textSize="22dp"
         android:layout_alignTop="@+id/TextView03"
-        android:layout_alignEnd="@+id/TextView03"
-        android:layout_marginRight="20dp"
         android:layout_alignParentBottom="false"
-        android:layout_marginTop="55dp" />
+        android:layout_marginTop="55dp"
+        android:layout_marginLeft="225dp"
+        android:layout_marginBottom="20dp" />
 
     <Button
         android:id="@+id/fileBrowserHomeButton"
@@ -73,7 +73,8 @@
         android:textSize="25dp"
         android:layout_alignTop="@+id/profileValidateButton"
         android:layout_toEndOf="@+id/testText"
-        android:layout_marginLeft="25dp" />
+        android:layout_marginLeft="25dp"
+        android:layout_marginBottom="20dp" />
 
     <TextView
         android:id="@+id/testText"
@@ -83,7 +84,7 @@
         android:text="Profile"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="55dp"
+        android:textSize="45dp"
         android:layout_marginTop="125dp" />
 
     <TextView
@@ -95,7 +96,7 @@
         android:text="Geochron Portal"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="40dp" />
+        android:textSize="30dp" />
 
     <TextView
         android:id="@+id/TextView02"
@@ -107,7 +108,8 @@
         android:text="Username"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="35sp" />
+        android:textSize="25dp"
+        android:layout_marginRight="30dp" />
 
     <TextView
         android:id="@+id/validationText"
@@ -134,8 +136,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="100dp"
-        android:layout_height="164dp"
+        android:layout_width="80dp"
+        android:layout_height="150dp"
         android:src="@drawable/cirdles_logo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
