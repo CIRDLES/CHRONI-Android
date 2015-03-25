@@ -196,34 +196,5 @@ public class IntuitiveStringComparator<T extends CharSequence>
 
         return ch1 - ch2;
     }
-
-    /**
-     * 
-     * @param args
-     */
-    public static void main ( String[] args ) {
-        String[] list = {
-            "1d","1c",
-            "1b",
-            "foo 03",
-            "foo 00003",
-            "foo 5",
-            "foo 003",
-            "foo~03",
-            "foo 10far",
-            "foo 10boo",
-            "foo 10bar",
-            "foo 10",
-            "foo!03", "IRA00-1", "IRA00-2", "IRA00-10"
-        };
-
-
-        Arrays.sort( list, new IntuitiveStringComparator<String>() );
-
-
-        for (String s : list) {
-            System.out.println( s );
-
-        }
-    }
+    
 }
