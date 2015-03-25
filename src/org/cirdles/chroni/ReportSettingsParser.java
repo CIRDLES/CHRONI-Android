@@ -33,8 +33,8 @@ public class ReportSettingsParser {
 			
 			// hardcoded array of all the category names
 			String[] categoryNames = { "fractionCategory",
-					"compositionCategory", "isotopicRatiosCategory",
-					"datesCategory", "rhosCategory", "fractionCategory2" };
+					"compositionCategory", "isotopicRatiosCategory", "isotopicRatiosPbcCorrCategory",
+					"datesCategory", "datesPbcCorrCategory", "rhosCategory", "traceElementsCategory","fractionCategory2" };
 
 			// Get the document's root XML nodes to begin parsing
 			NodeList root = doc.getChildNodes();
