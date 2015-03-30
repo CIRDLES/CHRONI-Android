@@ -314,6 +314,7 @@ public class TablePainterActivity extends Activity {
                     cell.setGravity(Gravity.CENTER);
                 }
 
+
                 // sets appropriate background color for cells
                 if (currentRow < 4) {
                     // Colors all header cells same color
@@ -333,10 +334,17 @@ public class TablePainterActivity extends Activity {
                 // Adds text to cells
                 cell.setText(finalArray[currentRow][currentColumn]);
                 cell.setVisibility(View.VISIBLE);
-//
-                    if (cell.getText().equals("-")) {
-                        cell.setGravity(Gravity.CENTER);
-                    }
+
+
+                if (cell.getText().equals("-")) {
+                    cell.setGravity(Gravity.CENTER);
+                }
+
+                //left justify fraction column
+                boolean isFraction = isFractionColumn(finalArray, currentColumn);
+                if(isFraction) {
+                    cell.setGravity(Gravity.LEFT);
+                }
 //                }
                 // append an individual cell to a content row
                 row.addView(cell);
@@ -368,6 +376,20 @@ Splits report settings file name returning a displayable version without the ent
         String[] fileNameParts = fileName.split("/");
         String newFileName = fileNameParts[fileNameParts.length-1];
         return newFileName;
+    }
+
+    /*
+    Figures out if something is a part of the Fraction column.
+     */
+    private boolean isFractionColumn(String[][] displayArray, int columnIndex){
+        boolean isFractionColumn = false;
+        String categoryName = displayArray[0][columnIndex]; // gets name of category from the top of column
+        if (categoryName.contentEquals("Fraction")){
+            isFractionColumn = true;
+        }else {
+            isFractionColumn = false;
+        }
+        return isFractionColumn;
     }
 
     /*
@@ -571,7 +593,7 @@ Splits report settings file name returning a displayable version without the ent
                 while (fractionIterator.hasNext()) {
                     Entry<String, Fraction> currentFraction = fractionIterator.next();
                     if (variableName.equals("")) {
-                    // Value Models under Fraction don't have variable names so have to account for those specifically
+                        // Value Models under Fraction don't have variable names so have to account for those specifically
                         if(methodName.equals("getFractionID")) {
                             fractionArray[arrayRowCount][arrayColumnCount] = currentFraction
                                     .getValue().getFractionID();
@@ -594,7 +616,7 @@ Splits report settings file name returning a displayable version without the ent
                             if (Numbers.getUnitConversionsMap().containsKey(
                                     currentUnit)) {
                                 Integer dividingNumber = Numbers.getUnitConversionsMap().get(
-                                                currentUnit); // gets the exponent for conversion
+                                        currentUnit); // gets the exponent for conversion
                                 valueToBeRounded = new BigDecimal(initialValue
                                         / (Math.pow(10, dividingNumber))); // does initial calculation
                                 roundedValue = valueToBeRounded.setScale(
@@ -808,4 +830,3 @@ Splits report settings file name returning a displayable version without the ent
         this.reportSettingsFilePath = reportSettingsFilePath;
     }
 }
-

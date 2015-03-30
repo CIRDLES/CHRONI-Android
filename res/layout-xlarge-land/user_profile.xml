@@ -9,69 +9,78 @@
         android:id="@+id/geochronPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/TextView03"
-        android:layout_alignBottom="@+id/TextView03"
-        android:layout_alignLeft="@+id/geochronUsername"
         android:ems="10"
-        android:inputType="textPassword"
-        android:minWidth="400dip"
+        android:minWidth="300dip"
         android:textColor="@color/black"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        android:layout_above="@+id/profileValidateButton"
+        android:layout_alignStart="@id/fileBrowserHomeButton"
+        android:layout_marginLeft="32.5dp"
+        android:layout_marginBottom="65dp"
+        android:hint="Password"
+        android:inputType="textPassword" />
 
     <EditText
         android:id="@+id/geochronUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/TextView02"
-        android:layout_alignBottom="@+id/TextView02"
-        android:layout_alignLeft="@+id/testText"
-        android:layout_marginLeft="51dp"
         android:ems="10"
         android:hint="Email Address"
         android:inputType="textEmailAddress"
-        android:minWidth="400dip"
+        android:minWidth="300dip"
         android:textColor="@color/black"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        android:layout_above="@+id/geochronPassword"
+        android:layout_alignLeft="@+id/geochronPassword"
+        android:layout_marginBottom="20dp" />
 
     <TextView
         android:id="@+id/TextView03"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TextView02"
-        android:layout_below="@+id/geochronUsername"
-        android:layout_marginTop="50dp"
         android:text="Password"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="35sp" />
+        android:textSize="35sp"
+        android:layout_above="@+id/fileBrowserHomeButton"
+        android:layout_marginBottom="65dp"
+        android:layout_toStartOf="@id/geochronPassword"
+        android:layout_marginRight="45dp" />
 
     <Button
         android:id="@+id/profileValidateButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/TextView03"
+        android:layout_width="130dp"
+        android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="58dp"
         android:background="@color/button_blue"
         android:minHeight="80dip"
         android:minWidth="130dip"
         android:text="Validate"
         android:textColor="@color/white"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="false"
+        android:layout_toStartOf="@id/fileBrowserHomeButton"
+        android:layout_marginRight="45dp" />
+
 
     <Button
         android:id="@+id/fileBrowserHomeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="130dp"
+        android:layout_height="80dp"
         android:background="@color/button_blue"
         android:minHeight="80dp"
         android:minWidth="130dp"
         android:text="Home"
         android:textColor="@color/white"
         android:textSize="35sp"
-        android:layout_alignTop="@+id/profileValidateButton"
-        android:layout_toEndOf="@+id/testText"
-        android:layout_marginLeft="25dp" />
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:layout_centerHorizontal="true" />
+
 
     <TextView
         android:id="@+id/testText"
@@ -81,8 +90,8 @@
         android:text="Profile"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="70dp"
-        android:layout_marginTop="200dp" />
+        android:textSize="90dp"
+        android:layout_marginTop="100dp" />
 
     <TextView
         android:id="@+id/TextView01"
@@ -93,19 +102,19 @@
         android:text="Geochron Portal"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="50sp" />
+        android:textSize="70dp" />
 
     <TextView
         android:id="@+id/TextView02"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/TextView01"
-        android:layout_marginTop="33dp"
-        android:layout_toLeftOf="@+id/geochronUsername"
         android:text="Username"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="35sp" />
+        android:textSize="35sp"
+        android:layout_alignRight="@+id/TextView03"
+        android:layout_above="@+id/TextView03"
+        android:layout_marginBottom="20dp" />
 
     <TextView
         android:id="@+id/validationText"
@@ -119,8 +128,8 @@
 
     <Button
         android:id="@+id/profileEraseButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="130dp"
+        android:layout_height="80dp"
         android:layout_alignBottom="@+id/fileBrowserHomeButton"
         android:layout_centerHorizontal="true"
         android:background="@color/button_blue"
@@ -128,14 +137,21 @@
         android:minWidth="130dip"
         android:text="Erase"
         android:textColor="@color/white"
-        android:textSize="35sp" />
+        android:textSize="35sp"
+        android:layout_toEndOf="@id/fileBrowserHomeButton"
+        android:layout_marginLeft="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp" />
+
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="150dp"
-        android:layout_height="247dp"
+        android:layout_width="90dp"
+        android:layout_height="115dp"
         android:src="@drawable/cirdles_logo"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="70dp"
+        android:layout_marginTop="15dp" />
 
 </RelativeLayout>
