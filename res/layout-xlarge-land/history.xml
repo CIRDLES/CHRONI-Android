@@ -12,10 +12,10 @@
         android:layout_height="750dp"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="120dp"
-        android:layout_marginTop="450dp"
+        android:layout_marginTop="350dp"
         android:orientation="vertical"
-        android:layout_marginLeft="525dp"
-        android:layout_marginRight="525dp">
+        android:layout_marginLeft="400dp"
+        android:layout_marginRight="400dp">
 
         <ScrollView
             android:id="@+id/tableScroll"
@@ -48,7 +48,8 @@
         android:layout_alignParentTop="true"
         android:src="@drawable/cirdles_logo"
         android:layout_above="@+id/testText"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp" />
 
     <TextView
         android:id="@+id/testText"
