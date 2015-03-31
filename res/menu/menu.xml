@@ -19,6 +19,8 @@
                 android:title="Aliquot Files" />
             <item android:id="@+id/viewReportSettingsMenu"
                 android:title="Report Settings Files" />
+            <item android:id="@+id/viewRootMenu"
+            android:title="Device Files" />
         </menu>
     </item>
 

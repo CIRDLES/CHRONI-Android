@@ -247,6 +247,13 @@ Splits report settings file name returning a displayable version without the ent
                         "Report_Settings_Directory");
                 startActivity(openReportSettingsFiles);
                 return true;
+            case R.id.viewRootMenu:
+                Intent openRootDirectory = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openRootDirectory.putExtra("Default_Directory",
+                        "Root_Directory");
+                startActivity(openRootDirectory);
+                return true;
             case R.id.aboutScreen: // Takes user to about screen
                 Intent openAboutScreen = new Intent(
                         "android.intent.action.ABOUT");
@@ -261,4 +268,5 @@ Splits report settings file name returning a displayable version without the ent
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }
