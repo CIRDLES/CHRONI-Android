@@ -47,8 +47,6 @@ ADDED from AndroidManifest.xml:18:5
 		ADDED from AndroidManifest.xml:22:9
 activity#org.cirdles.chroni.HomeScreenActivity
 ADDED from AndroidManifest.xml:24:9
-	android:screenOrientation
-		ADDED from AndroidManifest.xml:26:14
 	android:noHistory
 		ADDED from AndroidManifest.xml:27:14
 	android:name
