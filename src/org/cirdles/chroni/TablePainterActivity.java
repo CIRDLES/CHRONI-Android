@@ -676,11 +676,12 @@ Splits report settings file name returning a displayable version without the ent
                                                     dividingNumber))) * 200);
                                 }
 
-                                roundedValue = valueToBeRounded.setScale(
-                                        uncertaintyCountOfSignificantDigits,
-                                        valueToBeRounded.ROUND_HALF_UP);
+//                                roundedValue = valueToBeRounded.setScale(
+//                                        uncertaintyCountOfSignificantDigits,
+//                                        valueToBeRounded.ROUND_HALF_UP);
+                                String newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits);
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
-                                        .valueOf(roundedValue); // places final value in array
+                                        .valueOf(newValue); // places final value in array
                             }
                         } // closes if
                         else { // if value model is null
@@ -697,6 +698,13 @@ Splits report settings file name returning a displayable version without the ent
 
         return fractionArray;
     } // closes method
+
+
+
+
+    public static String toSignificantFiguresUncertaintyString(BigDecimal originalNumber, int significantFigures){
+        return String.format("%."+significantFigures+"G", originalNumber);
+    }
 
     /*
      * Fills the entire application array.

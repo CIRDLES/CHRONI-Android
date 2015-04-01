@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.BigDecimal;
+
 /*
 This activity is used for structuring the main menu layout of the application.
  */
@@ -82,6 +84,8 @@ public class MainMenuActivity extends Activity {
     });
 
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
