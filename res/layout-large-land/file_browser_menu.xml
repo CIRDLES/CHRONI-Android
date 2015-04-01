@@ -6,27 +6,24 @@
     android:id="@+id/aboutBackground">
 
     <ImageView
-        android:layout_width="160dp"
-        android:layout_height="300dp"
+        android:layout_width="66dp"
+        android:layout_height="115dp"
         android:id="@+id/logo"
         android:background="@drawable/cirdles_logo"
-        android:layout_marginEnd="34dp"
-        android:layout_above="@+id/deviceDirectoryButton"
-        android:layout_toStartOf="@+id/chroniDirectoryButton" />
-
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="50dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Select"
         android:id="@+id/textView"
-        android:layout_gravity="center_horizontal"
         android:textSize="60dp"
         android:textColor="@color/border_grey"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="55dp" />
-
     <Button
         android:text="CHRONI Directory"
         android:id="@+id/chroniDirectoryButton"
@@ -38,11 +35,7 @@
         android:textColor="@color/white"
         android:textColorHint="@color/border_grey"
         android:textSize="40dp"
-        android:layout_gravity="center"
-        android:layout_above="@+id/deviceDirectoryButton"
-        android:layout_alignStart="@+id/deviceDirectoryButton"
-        android:layout_marginBottom="58dp" />
-
+        android:layout_centerInParent="true" />
     <Button
         android:text="Device Directory"
         android:id="@+id/deviceDirectoryButton"
@@ -54,8 +47,8 @@
         android:textColor="@color/white"
         android:textColorHint="@color/border_grey"
         android:textSize="40dp"
-        android:layout_marginBottom="71dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/chroniDirectoryButton"
+        android:layout_marginTop="45dp" />
 
 </RelativeLayout>
