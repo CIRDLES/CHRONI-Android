@@ -1,6 +1,7 @@
 package org.cirdles.chroni;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -619,11 +620,21 @@ Splits report settings file name returning a displayable version without the ent
                                         currentUnit); // gets the exponent for conversion
                                 valueToBeRounded = new BigDecimal(initialValue
                                         / (Math.pow(10, dividingNumber))); // does initial calculation
-                                roundedValue = valueToBeRounded.setScale(
-                                        countOfSignificantDigits,
-                                        valueToBeRounded.ROUND_HALF_UP); // performs rounding
-                                fractionArray[arrayRowCount][arrayColumnCount] = String
-                                        .valueOf(roundedValue); // places final value in array
+//                                roundedValue = valueToBeRounded.setScale(
+//                                        countOfSignificantDigits,
+//                                        valueToBeRounded.ROUND_HALF_UP); // performs rounding
+
+                                String[] valueParts = String.valueOf(valueToBeRounded).split("\\."); //splits off fractional part
+                                String newValue = toSignificantFiguresString(valueParts[1], countOfSignificantDigits); // Sends in fractional part of value to be rounded properly
+
+//                                String pattern = "####,####.###";
+//                                DecimalFormat decimalFormat = new DecimalFormat(pattern);
+//
+//                                String number = decimalFormat.format(123456789.123);
+//                                System.out.println(number);
+
+                                fractionArray[arrayRowCount][arrayColumnCount] =  valueParts[0] + "." + newValue; // places final value in array
+//                                Log.e("JOYEEE", "Sig Figs: " + newValue);
                             }
                         }
 
@@ -675,11 +686,7 @@ Splits report settings file name returning a displayable version without the ent
                                             (oneSigma / (Math.pow(10,
                                                     dividingNumber))) * 200);
                                 }
-
-//                                roundedValue = valueToBeRounded.setScale(
-//                                        uncertaintyCountOfSignificantDigits,
-//                                        valueToBeRounded.ROUND_HALF_UP);
-                                String newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits);
+                                String newValue = toSignificantFiguresString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
                                         .valueOf(newValue); // places final value in array
                             }
@@ -700,10 +707,23 @@ Splits report settings file name returning a displayable version without the ent
     } // closes method
 
 
+    /*
+Calculates number of sig figs for columns
+For uncertainty columns, numberToCalculate is the entire number.
+For parent columns, numberToCalculate is the portion after the decimal
+ */
+    public static String toSignificantFiguresString(String numberToCalculate, int significantFigures){
+       BigDecimal numberToRound = new BigDecimal(numberToCalculate); // turns passed in number to bigdecimal
+        return String.format("%."+significantFigures+"G", numberToRound);
+    }
 
-
-    public static String toSignificantFiguresUncertaintyString(BigDecimal originalNumber, int significantFigures){
-        return String.format("%."+significantFigures+"G", originalNumber);
+/*
+Calculates number of sig figs for columns
+For uncertainty columns, numberToCalculate is the entire number.
+For parent columns, numberToCalculate is the portion after the decimal
+ */
+    public static String toSignificantFiguresString(BigDecimal numberToCalculate, int significantFigures){
+        return String.format("%."+significantFigures+"G", numberToCalculate);
     }
 
     /*
