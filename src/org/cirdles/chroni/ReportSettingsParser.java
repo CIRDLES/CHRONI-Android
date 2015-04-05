@@ -83,6 +83,7 @@ public class ReportSettingsParser {
 						String units = parser.getNodeValue("units", columnNodes);  // Used to calculate correct value for table
 						String methodName = parser.getNodeValue("retrieveMethodName", columnNodes); // specifies where to retrieve value model
 						String variableName = parser.getNodeValue("retrieveVariableName", columnNodes); // used to map appropriate value model to column
+					    String displayedWithArbitraryDigitCount = parser.getNodeValue("displayedWithArbitraryDigitCount", columnNodes); // used to determine appropriate number of sigfigs
 						String countOfSignificantDigits = parser.getNodeValue("countOfSignificantDigits", columnNodes);
 						String columnVisibility = parser.getNodeValue("visible", columnNodes);
 						String positionIndex = parser.getNodeValue("positionIndex", columnNodes);
@@ -90,7 +91,7 @@ public class ReportSettingsParser {
 
                         if (columnVisibility.equals("true")) {
 							// Instantiates a new Column and adds visible columns to the Category's Column map
-							Column visibleColumn = new Column(categoryDisplayName, displayName1, displayName2, displayName3, units, methodName, variableName, Integer.parseInt(positionIndex), Integer.parseInt(countOfSignificantDigits));
+							Column visibleColumn = new Column(categoryDisplayName, displayName1, displayName2, displayName3, units, methodName, variableName, Integer.parseInt(positionIndex), Boolean.getBoolean(displayedWithArbitraryDigitCount) ,Integer.parseInt(countOfSignificantDigits));
                             columnCount++;
                             if(uncertaintyType.equals("ABS")|| uncertaintyType.equals("PCT")){
 								visibleColumn.setUncertaintyType(uncertaintyType);
@@ -117,13 +118,14 @@ public class ReportSettingsParser {
 									String uncertaintyUnits = parser.getNodeValue("units", columnNodes); // used to calculate correct value in column
 									String uncertaintyMethodName = parser.getNodeValue("retrieveMethodName", specificUncertaintyColumnNodes); // used to find group of value models
 									String uncertaintyVariableName = parser.getNodeValue("retrieveVariableName", specificUncertaintyColumnNodes); // used to find specific value model for that column
-									String uncertaintyCountOfSignificantDigits = parser.getNodeValue("countOfSignificantDigits", specificUncertaintyColumnNodes);
+                                    String uncertaintyDisplayedWithArbitraryDigitCount = parser.getNodeValue("displayedWithArbitraryDigitCount", columnNodes); // used to determine appropriate number of sigfigs
+                                    String uncertaintyCountOfSignificantDigits = parser.getNodeValue("countOfSignificantDigits", specificUncertaintyColumnNodes);
 									String uncertaintyVisibility = parser.getNodeValue("visible", specificUncertaintyColumnNodes);
 									String uncertaintyPositionIndex = parser.getNodeValue("positionIndex", specificUncertaintyColumnNodes);
 
 									if (uncertaintyVisibility.contains("true")) {
 										// Instantiates a new Column object if the column is visible and adds it to an Uncertainty Column Map
-										Column visibleUncertaintyColumn = new Column(categoryDisplayName,uncertaintyName1,uncertaintyName2,	uncertaintyName3, uncertaintyUnits, uncertaintyMethodName, uncertaintyVariableName, Integer.parseInt(uncertaintyPositionIndex), Integer.parseInt(uncertaintyCountOfSignificantDigits));
+										Column visibleUncertaintyColumn = new Column(categoryDisplayName,uncertaintyName1,uncertaintyName2,	uncertaintyName3, uncertaintyUnits, uncertaintyMethodName, uncertaintyVariableName, Integer.parseInt(uncertaintyPositionIndex), Boolean.getBoolean(uncertaintyDisplayedWithArbitraryDigitCount), Integer.parseInt(uncertaintyCountOfSignificantDigits));
                                         columnCount++;
                                         visibleColumn.setUncertaintyColumn(visibleUncertaintyColumn);
                                         visibleColumn.setUncertaintyColumn(true); // indicates that the column is an uncertainty column

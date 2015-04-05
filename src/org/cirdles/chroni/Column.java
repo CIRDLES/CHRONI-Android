@@ -15,6 +15,7 @@ public class Column {
 	private String methodName;
 	private String variableName;
 	private int positionIndex; // index of the column
+    private boolean displayedWithArbitraryDigitCount; // determines how many digits will be displayed
 	private int countOfSignificantDigits; // number of specified significant digits
 
 	private Column uncertaintyColumn = null; // the uncertainty column contained within the given column
@@ -25,7 +26,7 @@ public class Column {
     Instantiates a Column object given several attributes
      */
 	public Column(String displayName, String displayName1,
-			String displayName2, String displayName3, String units, String methodName, String variableName, int pIndex, int sigFigs) {
+			String displayName2, String displayName3, String units, String methodName, String variableName, int pIndex, boolean displayedWithArbitraryDigitCount, int sigFigs) {
 			this.displayName = displayName;
         	this.displayName1 = displayName1;
     		this.displayName2 = displayName2;
@@ -34,6 +35,7 @@ public class Column {
     		this.methodName = methodName;
     		this.variableName = variableName;
     		this.positionIndex = pIndex;
+            this.displayedWithArbitraryDigitCount = displayedWithArbitraryDigitCount;
     		this.countOfSignificantDigits = sigFigs;
 	}
 
