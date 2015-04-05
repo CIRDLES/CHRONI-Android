@@ -35,7 +35,7 @@ public class Column {
     		this.methodName = methodName;
     		this.variableName = variableName;
     		this.positionIndex = pIndex;
-            this.displayedWithArbitraryDigitCount = displayedWithArbitraryDigitCount;
+            this.setDisplayedWithArbitraryDigitCount(displayedWithArbitraryDigitCount);
     		this.countOfSignificantDigits = sigFigs;
 	}
 
@@ -168,5 +168,13 @@ public class Column {
 
     public void setUncertaintyColumn(boolean isUncertaintyColumn) {
         this.isUncertaintyColumn = isUncertaintyColumn;
+    }
+
+    public boolean isDisplayedWithArbitraryDigitCount() {
+        return displayedWithArbitraryDigitCount;
+    }
+
+    public void setDisplayedWithArbitraryDigitCount(boolean displayedWithArbitraryDigitCount) {
+        this.displayedWithArbitraryDigitCount = displayedWithArbitraryDigitCount;
     }
 }
