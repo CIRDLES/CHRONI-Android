@@ -32,9 +32,12 @@ public class ReportSettingsParser {
 			Document doc = dBuilder.parse(fXmlFile);
 			
 			// hardcoded array of all the category names
-			String[] categoryNames = { "fractionCategory",
-					"compositionCategory", "isotopicRatiosCategory", "isotopicRatiosPbcCorrCategory",
-					"datesCategory", "datesPbcCorrCategory", "rhosCategory", "traceElementsCategory","fractionCategory2" };
+//			String[] categoryNames = { "fractionCategory",
+//					"compositionCategory", "isotopicRatiosCategory", "isotopicRatiosPbcCorrCategory",
+//					"datesCategory", "datesPbcCorrCategory", "rhosCategory", "traceElementsCategory","fractionCategory2" }; // Issue with table columns
+            String[] categoryNames = { "fractionCategory",
+                    "compositionCategory", "isotopicRatiosCategory",
+                    "datesCategory", "rhosCategory", "fractionCategory2" };
 
 			// Get the document's root XML nodes to begin parsing
 			NodeList root = doc.getChildNodes();

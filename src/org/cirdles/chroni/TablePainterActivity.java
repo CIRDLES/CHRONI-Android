@@ -633,6 +633,7 @@ Splits report settings file name returning a displayable version without the ent
 //                                String number = decimalFormat.format(123456789.123);
 //                                System.out.println(number);
 
+
                                 fractionArray[arrayRowCount][arrayColumnCount] =  valueParts[0] + "." + newValue; // places final value in array
 //                                Log.e("JOYEEE", "Sig Figs: " + newValue);
                             }
@@ -689,6 +690,7 @@ Splits report settings file name returning a displayable version without the ent
                                 String newValue = toSignificantFiguresString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
                                         .valueOf(newValue); // places final value in array
+
                             }
                         } // closes if
                         else { // if value model is null
