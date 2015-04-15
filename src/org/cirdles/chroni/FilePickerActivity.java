@@ -71,7 +71,6 @@ public class FilePickerActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		setTheme(android.R.style.Theme_Holo);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         // Set the view to be shown if the list is empty

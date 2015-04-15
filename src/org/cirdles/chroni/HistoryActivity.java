@@ -34,7 +34,6 @@ public class HistoryActivity extends Activity {
 
         // sets up the layout
         super.onCreate(savedInstanceState);
-//        setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.history);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 

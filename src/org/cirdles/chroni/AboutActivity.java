@@ -22,7 +22,6 @@ public class AboutActivity extends Activity  {
     protected void onCreate(Bundle savedInstanceState) {
         // Sets up activity screen
         super.onCreate(savedInstanceState);
-//        setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.about);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 

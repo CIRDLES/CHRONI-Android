@@ -42,7 +42,6 @@ public class ReportSettingsMenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         // sets up activity layout
         super.onCreate(savedInstanceState);
-//        setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.report_settings_select);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 

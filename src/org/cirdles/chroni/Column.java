@@ -15,7 +15,7 @@ public class Column {
 	private String methodName;
 	private String variableName;
 	private int positionIndex; // index of the column
-    private boolean displayedWithArbitraryDigitCount; // determines how many digits will be displayed
+    private boolean displayedWithArbitraryDigitCount; // determines mode of sigfig display
 	private int countOfSignificantDigits; // number of specified significant digits
 
 	private Column uncertaintyColumn = null; // the uncertainty column contained within the given column

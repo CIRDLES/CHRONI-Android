@@ -62,7 +62,6 @@ public class AliquotMenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         //Sets up activity layout
 	    super.onCreate(savedInstanceState);
-//	    setTheme(android.R.style.Theme_Holo);
 	    setContentView(R.layout.aliquot_select);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
