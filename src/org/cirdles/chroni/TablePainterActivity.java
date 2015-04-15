@@ -2,6 +2,7 @@ package org.cirdles.chroni;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -202,7 +203,7 @@ public class TablePainterActivity extends Activity {
             if ((imageMap.containsKey("concordia"))) {
                 viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
                 viewProbabilityDensityButton.setTextColor(Color.WHITE);
-            }else{
+            } else {
                 viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.light_grey));
                 viewProbabilityDensityButton.setTextColor(Color.BLACK);
             }
@@ -218,7 +219,7 @@ public class TablePainterActivity extends Activity {
 
                     if (mobileWifi.isConnected()) {
                         Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
-                        Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse( imageMap.get("probability_density").getImageURL()));
+                        Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageMap.get("probability_density").getImageURL()));
 //                    Intent viewProbabilityDensityIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
 //                    viewProbabilityDensityIntent.putExtra("ProbabilityDensityImage",  imageMap.get("probability_density").getImageURL());
                         startActivity(viewProbabilityDensityIntent);
@@ -259,13 +260,13 @@ public class TablePainterActivity extends Activity {
         Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Entry<Integer, Category> category = iterator.next();
-            if(category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
+            if (category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
                 TextView categoryCell = new TextView(this);
                 categoryCell.setText(category.getValue().getDisplayName());
                 categoryCell.setTypeface(Typeface.MONOSPACE);
-                if(category.getValue().getDisplayName().contentEquals("Fraction") && categoryCount != 0){ // Easy fix to handle the issue of sizing with last fraction category TODO: Make better!
-                    categoryCell.setMinEms(columnSizes[columnSizes.length-1] + 2); // Simply sets same size as fraction because its always the same length with last column
-                }else {
+                if (category.getValue().getDisplayName().contentEquals("Fraction") && categoryCount != 0) { // Easy fix to handle the issue of sizing with last fraction category TODO: Make better!
+                    categoryCell.setMinEms(columnSizes[columnSizes.length - 1] + 2); // Simply sets same size as fraction because its always the same length with last column
+                } else {
                     categoryCell.setMinEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount())); // sets column spacing based on max character count and allows extra space for crowding
                 }
                 categoryCell.setPadding(3, 4, 3, 4);
@@ -323,10 +324,10 @@ public class TablePainterActivity extends Activity {
                     // Handles aliquot name cell
                     cell.setTextColor(Color.WHITE);
                     cell.setBackgroundResource(R.drawable.light_blue_background);
-                }  else if (currentRow > 4 && currentRow % 2 == 1) {
+                } else if (currentRow > 4 && currentRow % 2 == 1) {
                     // colors odd body rows
                     cell.setBackgroundResource(R.drawable.light_grey_background);
-                }else {
+                } else {
                     // colors all even body rows
                     cell.setBackgroundResource(R.drawable.white_background);
                 }
@@ -342,7 +343,7 @@ public class TablePainterActivity extends Activity {
 
                 //left justify fraction column
                 boolean isFraction = isFractionColumn(finalArray, currentColumn);
-                if(isFraction) {
+                if (isFraction) {
                     cell.setGravity(Gravity.LEFT);
                 }
 //                }
@@ -351,6 +352,7 @@ public class TablePainterActivity extends Activity {
             }
             rowCount++;
         }
+
     }
 
     /*
@@ -372,21 +374,21 @@ public class TablePainterActivity extends Activity {
     /*
 Splits report settings file name returning a displayable version without the entire path
 */
-    private String splitFileName(String fileName){
+    private String splitFileName(String fileName) {
         String[] fileNameParts = fileName.split("/");
-        String newFileName = fileNameParts[fileNameParts.length-1];
+        String newFileName = fileNameParts[fileNameParts.length - 1];
         return newFileName;
     }
 
     /*
     Figures out if something is a part of the Fraction column.
      */
-    private boolean isFractionColumn(String[][] displayArray, int columnIndex){
+    private boolean isFractionColumn(String[][] displayArray, int columnIndex) {
         boolean isFractionColumn = false;
         String categoryName = displayArray[0][columnIndex]; // gets name of category from the top of column
-        if (categoryName.contentEquals("Fraction")){
+        if (categoryName.contentEquals("Fraction")) {
             isFractionColumn = true;
-        }else {
+        } else {
             isFractionColumn = false;
         }
         return isFractionColumn;
@@ -395,7 +397,7 @@ Splits report settings file name returning a displayable version without the ent
     /*
  Goes through and figures out header cell lengths given a table
   */
-    protected int[] distributeHeaderCells(int[] columnWidths){
+    protected int[] distributeHeaderCells(int[] columnWidths) {
         int[] headerMaxCharacterCounts = new int[categoryMap.size()];
         int currentCategoryCount = 0;
         int currentColumnCount = 0;
@@ -404,7 +406,7 @@ Splits report settings file name returning a displayable version without the ent
         while (iterator.hasNext()) {
             Entry<Integer, Category> category = iterator.next();
             int categoryCellWidth = 0;
-            if(category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
+            if (category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
 
                 Iterator<Entry<Integer, Column>> columnIterator = category
                         .getValue().getCategoryColumnMap().entrySet().iterator();
@@ -429,13 +431,13 @@ Splits report settings file name returning a displayable version without the ent
     /*
     Goes through and figures out columns lengths given a table
      */
-    protected int[] distributeTableColumns(String[][] finalArray, int ROWS, int COLS){
+    protected int[] distributeTableColumns(String[][] finalArray, int ROWS, int COLS) {
         int[] columnMaxCharacterCounts = new int[COLS];
         for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
             int widestCellCharacterCount = 0;
             int currentCellCharacterCount = 0;
             for (int currentRow = 0; currentRow < ROWS; currentRow++) {
-                if(currentRow != 0) { // Skips counting the header row
+                if (currentRow != 0) { // Skips counting the header row
                     currentCellCharacterCount = finalArray[currentRow][currentColumn].length();
 //                Log.i("Column: " + currentColumn + " Cell: " + currentRow + " Width: " + currentCellCharacterCount, "Measuring");
                     if (currentCellCharacterCount > widestCellCharacterCount) {
@@ -444,7 +446,7 @@ Splits report settings file name returning a displayable version without the ent
 //                Log.i("Widest Cell: " + widestCellCharacterCount, "Result");
                 }
             }
-            columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount/2; // Divides by 2 for appropriate EMS measurement
+            columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount / 2; // Divides by 2 for appropriate EMS measurement
 //            Log.i("Column: " + currentColumn +  " Widest Cell: " + widestCellCharacterCount, "Measuring");
 //            Log.i("----------------------------------------------------------------------------", "Measuring");
         }
@@ -595,10 +597,10 @@ Splits report settings file name returning a displayable version without the ent
                     Entry<String, Fraction> currentFraction = fractionIterator.next();
                     if (variableName.equals("")) {
                         // Value Models under Fraction don't have variable names so have to account for those specifically
-                        if(methodName.equals("getFractionID")) {
+                        if (methodName.equals("getFractionID")) {
                             fractionArray[arrayRowCount][arrayColumnCount] = currentFraction
                                     .getValue().getFractionID();
-                        }else if(methodName.equals("getNumberOfGrains")){
+                        } else if (methodName.equals("getNumberOfGrains")) {
                             fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getNumberOfGrains();
                         }
                         arrayRowCount++;
@@ -633,22 +635,22 @@ Splits report settings file name returning a displayable version without the ent
                                 // Testing rounding method
                                 //TODO:Do this better
                                 String columnMode = ""; // determines column mode based on uncertainty
-                                if(column.getValue().getUncertaintyColumn() != null){
+                                if (column.getValue().getUncertaintyColumn() != null) {
                                     boolean uncertaintyInArbitraryMode = column.getValue().getUncertaintyColumn().isDisplayedWithArbitraryDigitCount();
-                                    if(!uncertaintyInArbitraryMode && !isArbitraryMode){
+                                    if (!uncertaintyInArbitraryMode && !isArbitraryMode) {
                                         columnMode = "bothSigFig";
-                                    }else if(uncertaintyInArbitraryMode && !isArbitraryMode){
+                                    } else if (uncertaintyInArbitraryMode && !isArbitraryMode) {
                                         columnMode = "parentSigFig";
-                                    }else if(!uncertaintyInArbitraryMode && isArbitraryMode){
+                                    } else if (!uncertaintyInArbitraryMode && isArbitraryMode) {
                                         columnMode = "parentArbitrary";
                                     }
                                     int uncertaintyCountOfSigFigs = column.getValue().getUncertaintyColumn().getCountOfSignificantDigits();
                                     roundParentCellValue(columnMode, String.valueOf(valueToBeRounded), countOfSignificantDigits, uncertaintyCountOfSigFigs);
 
-                                }else{
-                                    if(isArbitraryMode){
+                                } else {
+                                    if (isArbitraryMode) {
                                         columnMode = "parentArbitrary";
-                                    }else{
+                                    } else {
                                         columnMode = "parentSigFig";
                                     }
                                     roundParentCellValue(columnMode, String.valueOf(valueToBeRounded), countOfSignificantDigits, countOfSignificantDigits);
@@ -656,10 +658,8 @@ Splits report settings file name returning a displayable version without the ent
                                 }
 
 
-                                  }
-                        }
-
-                        else { // if value model is null puts a hyphen in place
+                            }
+                        } else { // if value model is null puts a hyphen in place
                             fractionArray[arrayRowCount][arrayColumnCount] = "-";
                         }
                         arrayRowCount++;
@@ -742,50 +742,53 @@ Splits report settings file name returning a displayable version without the ent
     @param parentSigFigCount: the parent sigfig value for rounding the current number
     @param uncertaintySigFigCount: the uncertainty sigfig value for rounding the current number
      */
-    public static String roundParentCellValue(String currentMode, String value, int parentSigFigCount, int uncertaintySigFigCount){
+    public static String roundParentCellValue(String currentMode, String value, int parentSigFigCount, int uncertaintySigFigCount) {
         String roundedValue = "";
-        Log.e("Rounding", "PARENT" );
-        Log.e("Rounding", "Original: " + value );
+        Log.e("Rounding", "PARENT");
+        Log.e("Rounding", "Original: " + value);
 
-        if(currentMode.contentEquals("parentSigFig")){
-                // Sends entire number in for rounding based on total number of sigfigs as specified in the parent column
-                Log.e("Rounding", "Parent(Whole) Sig Figs: " + parentSigFigCount );
-                if(parentSigFigCount != 0){
-                    if (value.contains("-")) {
-                        roundedValue = value.substring(0, parentSigFigCount + 2); // adds two to account for decimal place and negative sign
-                    }else{
-                        roundedValue = value.substring(0, parentSigFigCount + 1); // adds one to account for decimal place
-                    }
-                }else{
+
+        if (currentMode.contentEquals("parentSigFig")) {
+            // Sends entire number in for rounding based on total number of sigfigs as specified in the parent column
+            Log.e("Rounding", "Parent(Whole) Sig Figs: " + parentSigFigCount);
+            if (parentSigFigCount != 0) {
+                if (value.contains("-")) {
+                    roundedValue = value.substring(0, parentSigFigCount + 2); // adds two to account for decimal place and negative sign
+                } else {
+                    roundedValue = value.substring(0, parentSigFigCount + 1); // adds one to account for decimal place
+                }
+            } else {
+                roundedValue = value;
+            }
+//            countSignificantFigures(value, parentSigFigCount);
+        } else {
+            // Splits number in two parts to access fractional half
+            String[] valueParts = value.split("\\."); //splits off fractional part from parent value
+            String wholeNumber = valueParts[0];
+            String fractional = valueParts[1];
+
+            if (currentMode.contentEquals("bothSigFig")) {
+                //sends fractional portion and uncertainty sig fig count to display based on uncertainty sigfig
+                Log.e("Rounding", "Uncertainty Sig Figs: " + uncertaintySigFigCount);
+                if (uncertaintySigFigCount != 0) {
+                    roundedValue = wholeNumber + "." + fractional.substring(0, uncertaintySigFigCount);
+//                    countSignificantFigures(fractional, uncertaintySigFigCount);
+                } else {
                     roundedValue = value;
                 }
-            }else {
-                // Splits number in two parts to access fractional half
-                String[] valueParts = value.split("\\."); //splits off fractional part from parent value
-                String wholeNumber = valueParts[0];
-                String fractional = valueParts[1];
 
-
-                if (currentMode.contentEquals("bothSigFig")) {
-                    //sends fractional portion and uncertainty sig fig count to display based on uncertainty sigfig
-                    Log.e("Rounding", "Uncertainty Sig Figs: " + uncertaintySigFigCount);
-                    if(uncertaintySigFigCount != 0) {
-                        roundedValue = wholeNumber + "." + fractional.substring(0, uncertaintySigFigCount);
-                    }else{
-                        roundedValue = value;
-                    }
-
-                } else if (currentMode.contentEquals("parentArbitrary")) {
-                    //sends fractional portion and parent sig fig count to display based on parent sigfig
-                    Log.e("Rounding", "Parent Sig Figs: " + parentSigFigCount);
-                    if(parentSigFigCount != 0) {
-                        roundedValue = wholeNumber + "." + fractional.substring(0, parentSigFigCount);
-                    }else{
-                        roundedValue = value;
-                    }
-
+            } else if (currentMode.contentEquals("parentArbitrary")) {
+                //sends fractional portion and parent sig fig count to display based on parent sigfig
+                Log.e("Rounding", "Parent Sig Figs: " + parentSigFigCount);
+                if (parentSigFigCount != 0) {
+                    roundedValue = wholeNumber + "." + fractional.substring(0, parentSigFigCount);
+//                    countSignificantFigures(fractional, parentSigFigCount);
+                } else {
+                    roundedValue = value;
                 }
+
             }
+        }
         Log.e("Rounding", "Rounded: " + roundedValue);
         Log.e("Rounding", "-------------------------------------------------------------------------------------");
 
@@ -798,33 +801,38 @@ Splits report settings file name returning a displayable version without the ent
  @param value: the value in the cell to be rounded
  @param uncertaintySigFigCount: the uncertainty sigfig value for rounding the current number
   */
-    public static String roundUncertaintyCellValue(boolean isArbitrary, String value, int uncertaintySigFigCount){
+    public static String roundUncertaintyCellValue(boolean isArbitrary, String value, int uncertaintySigFigCount) {
         String roundedValue = "";
 
         Log.e("Rounding", "UNCERTAINTY");
         Log.e("Rounding", "Original: " + value);
 
-            // Splits number in two parts to access fractional half
-            String[] valueParts = value.split("\\."); //splits off fractional part from parent value
-            String wholeNumber = valueParts[0];
-            String fractional = valueParts[1];
+        NumberFormat formatter = new DecimalFormat();
 
-            if(isArbitrary){ //ARBITRARY MODE
-                //sends fractional portion and parent sig fig count to display based on uncertainty sigfig
-                Log.e("Rounding", "Arb Sig Figs: " + uncertaintySigFigCount);
-                roundedValue = wholeNumber + "." + fractional.substring(0, uncertaintySigFigCount);
-            }else { // SIGFIG MODE
-                //sends fractional portion and uncertainty sig fig count to display based on uncertainty sigfig
-                Log.e("Rounding", "SIGFIG (Whole) Sig Figs: " + uncertaintySigFigCount);
-                if (value.contains("-")) {
-                    roundedValue = value.substring(0, uncertaintySigFigCount + 2); //adds two to account for decimal place and negatice
-                } else {
-                    roundedValue = value.substring(0, uncertaintySigFigCount + 1); //adds one to account for decimal place
-                }
+        // Splits number in two parts to access fractional half
+        String[] valueParts = value.split("\\."); //splits off fractional part from parent value
+        String wholeNumber = valueParts[0];
+        String fractional = valueParts[1];
+
+        if (isArbitrary) { //ARBITRARY MODE
+            //sends fractional portion and parent sig fig count to display based on uncertainty sigfig
+            Log.e("Rounding", "Arb Sig Figs: " + uncertaintySigFigCount);
+            roundedValue = wholeNumber + "." + fractional.substring(0, uncertaintySigFigCount);
+//            countSignificantFigures(fractional, uncertaintySigFigCount);
+
+        } else { // SIGFIG MODE
+            //sends fractional portion and uncertainty sig fig count to display based on uncertainty sigfig
+            Log.e("Rounding", "SIGFIG (Whole) Sig Figs: " + uncertaintySigFigCount);
+            if (value.contains("-")) {
+                roundedValue = value.substring(0, uncertaintySigFigCount + 2); //adds two to account for decimal place and negative
+            } else {
+                roundedValue = value.substring(0, uncertaintySigFigCount + 1); //adds one to account for decimal place
             }
+//            countSignificantFigures(value, uncertaintySigFigCount);
+        }
 
         // handles cases with 0 sigfig counts
-        if(uncertaintySigFigCount == 0) {
+        if (uncertaintySigFigCount == 0) {
             roundedValue = value;
         }
 
@@ -834,72 +842,25 @@ Splits report settings file name returning a displayable version without the ent
         return roundedValue;
     }
 
-
-   /*
-   Determines what method a number should use to calculate rounding correctly
-    */
-   public static String[] getCorrectDigitCalculations(boolean parentColumnDigitMode, boolean uncertaintyColumnDigitMode, BigDecimal value, BigDecimal uncertaintyValue, int parentTotalSigFigs, int uncertaintyTotalSigFigs){
-       String[] cellNumbers = new String[3]; // contains an array of the values to be manipulated for rounding
-       String[] valueParts = String.valueOf(value).split("\\."); //splits off fractional part from parent value
-       Log.e("TABLE", "Split works? " + valueParts[1]);
-       String[] uncertaintyParts = String.valueOf(uncertaintyValue).split("\\."); //splits off fractional part from uncertainty
-
-       // Does the appropriate rounding for the digits being displayed
-       if (!parentColumnDigitMode == !uncertaintyColumnDigitMode){ // both are in sig fig mode
-         // PARENT: digits after decimal have same digit count as uncertainty count of digits
-         // returns the digits after the decimal
-           String newValue = toDigitCountString(String.valueOf(valueParts[1]), uncertaintyTotalSigFigs);
-           newValue = toSignificantFiguresString(newValue, uncertaintyTotalSigFigs-1); // creates rounded number from decimal
-           cellNumbers[0] = valueParts[0] + "." + newValue; // adds fractional part with whole number
-
-         // UNCERTAINTY: total number of digits is uncertainty count of digits
-           String newUncertaintyValue = toDigitCountString(String.valueOf(uncertaintyParts[1]), uncertaintyTotalSigFigs);
-           newUncertaintyValue = toSignificantFiguresString(newUncertaintyValue, uncertaintyTotalSigFigs-1); // creates rounded number from decimal
-           cellNumbers[1] = newUncertaintyValue;
-
-       }else{
-        // Determines Parent Column
-        if(parentColumnDigitMode){ // ARBITRARY
-            String newValue = toDigitCountString(String.valueOf(valueParts[1]), parentTotalSigFigs); // sends in decimal to be cut off for rounding
-            newValue = toSignificantFiguresString(newValue, parentTotalSigFigs-1); // creates rounded number from decimal
-            cellNumbers[0] = valueParts[0] + "." + newValue; // adds fractional part with whole number
-        }else{ // SIGFIG
-            String newValue = toDigitCountString(String.valueOf(value), parentTotalSigFigs); // sends entire number in to be cut off for rounding
-            newValue = toSignificantFiguresString(newValue, parentTotalSigFigs-1); // creates rounded number
-            cellNumbers[0] = valueParts[0] + "." + newValue; // adds fractional part with whole number
+    /*
+Will be able to count the number of sigfigs in a float
+@param value: value to be examined for number of sigfigs
+@param numOfSigFigs: number of sigfigs to adjust string to
+@return correctValue: value with appropriate number of sigfigs
+*/
+    public static void countSignificantFigures(String value, int numOfSigFigs) {
+        Log.e("Rounding", "Original: " + value);
+        // Practice with regexes
+        String[] sig_figs = value.split("(^0+(\\.?)0*" + // 1 or more leading zeros followed by decimal and more zeros
+                "|(~\\.)0+$" + // take off ending zeros if not before decimal
+                "|\\.)"); // splits whatever is left by decimal
+        int sum = 0;
+        for(String fig:sig_figs){
+            sum += fig.length();
         }
 
-        // Determines uncertainty column if mode is arbitrary
-        if(uncertaintyColumnDigitMode){
-            String newUncertaintyValue = toDigitCountString(String.valueOf(uncertaintyParts[1]), uncertaintyTotalSigFigs);
-            cellNumbers[1] = newUncertaintyValue;
-        }
-
-       }
-
-       return cellNumbers;
-   }
-
-    /*
-Calculates number of sig figs for columns
-For uncertainty columns, numberToCalculate is the entire number.
-For parent columns, numberToCalculate is the portion after the decimal
- */
-    public static String toSignificantFiguresString(String numberToCalculate, int significantFigures){
-       BigDecimal numberToRound = new BigDecimal(numberToCalculate); // turns passed in number to bigdecimal
-        return String.format("%."+significantFigures+"G", numberToRound);
-    }
-
-
-    /*
-Cuts off string at appropriate length
-@param totalNumberOfDigits should be number of sigfigs plus one for rounding
- */
-    public static String toDigitCountString(String numberToTrim, int totalNumberOfDigits){
-
-        String truncatedString = (numberToTrim.length() > totalNumberOfDigits) ? numberToTrim.substring(0, totalNumberOfDigits) : numberToTrim;
-
-        return truncatedString;
+        Log.e("Rounding", "FinalSigFigCt: " + sum);
+        Log.e("Rounding", "------------------------------------------------------------------------------------------");
     }
 
     /*
