@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:id="@+id/aboutBackground">
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/logoImageView"
+        android:src="@drawable/cirdles_logo"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Select"
+        android:id="@+id/textView"
+        android:textSize="68dp"
+        android:textColor="@color/border_grey"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/chroniDirectoryButton"
+        android:layout_marginBottom="80dp" />
+
+    <Button
+        android:text="CHRONI Directory"
+        android:id="@+id/chroniDirectoryButton"
+        android:layout_width="425dp"
+        android:layout_height="90dp"
+        android:background="@color/button_blue"
+        android:minHeight="115dip"
+        android:minWidth="550dip"
+        android:textColor="@color/white"
+        android:textColorHint="@color/border_grey"
+        android:textSize="44dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/deviceDirectoryButton"
+        android:layout_marginBottom="75dp" />
+
+    <Button
+        android:text="Device Directory"
+        android:id="@+id/deviceDirectoryButton"
+        android:layout_width="425dp"
+        android:layout_height="90dp"
+        android:layout_centerHorizontal="true"
+        android:background="@color/button_blue"
+        android:minHeight="105dip"
+        android:minWidth="550dip"
+        android:textColor="@color/white"
+        android:textColorHint="@color/border_grey"
+        android:textSize="44dp"
+        android:layout_marginBottom="150dp"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>
