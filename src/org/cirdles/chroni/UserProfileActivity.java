@@ -58,7 +58,7 @@ public class UserProfileActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-	setTheme(android.R.style.Theme_Holo);
+//	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.user_profile);
 
     //Places background image on layout due to theme overriding

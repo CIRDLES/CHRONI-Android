@@ -34,7 +34,7 @@ public class ViewAnalysisImageActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_analysis_image);
-        setTheme(android.R.style.Theme_Holo);
+//        setTheme(android.R.style.Theme_Holo);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         viewAnalysisImage = (ImageView)findViewById(R.id.viewAnalysisImage);
