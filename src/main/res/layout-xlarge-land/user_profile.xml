@@ -17,7 +17,6 @@
         android:layout_alignStart="@id/fileBrowserHomeButton"
         android:layout_marginLeft="32.5dp"
         android:layout_marginBottom="65dp"
-        android:hint="Password"
         android:inputType="textPassword" />
 
     <EditText
