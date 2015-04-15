@@ -623,28 +623,33 @@ Splits report settings file name returning a displayable version without the ent
                                 valueToBeRounded = new BigDecimal(initialValue
                                         / (Math.pow(10, dividingNumber))); // does initial calculation
 
+                                roundedValue = valueToBeRounded.setScale(
+                                        countOfSignificantDigits,
+                                        valueToBeRounded.ROUND_HALF_UP);
+                                fractionArray[arrayRowCount][arrayColumnCount] = String
+                                        .valueOf(roundedValue);
 
-                                // Sends numbers for calculation if there is an uncertainty column
-//                                if(column.getValue().getUncertaintyColumn() != null) {
-//                                    boolean parentColumnDigitMode = column.getValue().isDisplayedWithArbitraryDigitCount();
-//                                    boolean uncertaintyColumnDigitMode = column.getValue().getUncertaintyColumn().isDisplayedWithArbitraryDigitCount();
-//                                    cellCalculations = getCorrectDigitCalculations(parentColumnDigitMode, uncertaintyColumnDigitMode, valueToBeRounded, new BigDecimal(7.333), countOfSignificantDigits+1, column.getValue().getUncertaintyColumn().getCountOfSignificantDigits()+1);
-//                                }
-
-                                String[] valueParts = String.valueOf(valueToBeRounded).split("\\."); //splits off fractional part
-                                String newValue = toSignificantFiguresString(valueParts[1], countOfSignificantDigits); // Sends in fractional part of value to be rounded properly
-
-//                                String pattern = "####,####.###";
-//                                DecimalFormat decimalFormat = new DecimalFormat(pattern);
+//                                // Sends numbers for calculation if there is an uncertainty column
+////                                if(column.getValue().getUncertaintyColumn() != null) {
+////                                    boolean parentColumnDigitMode = column.getValue().isDisplayedWithArbitraryDigitCount();
+////                                    boolean uncertaintyColumnDigitMode = column.getValue().getUncertaintyColumn().isDisplayedWithArbitraryDigitCount();
+////                                    cellCalculations = getCorrectDigitCalculations(parentColumnDigitMode, uncertaintyColumnDigitMode, valueToBeRounded, new BigDecimal(7.333), countOfSignificantDigits+1, column.getValue().getUncertaintyColumn().getCountOfSignificantDigits()+1);
+////                                }
 //
-//                                String number = decimalFormat.format(123456789.123);
-//                                System.out.println(number);
-
-//                                if(column.getValue().getUncertaintyColumn() == null) {
-                                    fractionArray[arrayRowCount][arrayColumnCount] = valueParts[0] + "." + newValue; // places final value in array
-//                                }else{
-//                                    fractionArray[arrayRowCount][arrayColumnCount] =  cellCalculations[0]; // places final value in array
-//                                }
+//                                String[] valueParts = String.valueOf(valueToBeRounded).split("\\."); //splits off fractional part
+//                                String newValue = toSignificantFiguresString(valueParts[1], countOfSignificantDigits); // Sends in fractional part of value to be rounded properly
+//
+////                                String pattern = "####,####.###";
+////                                DecimalFormat decimalFormat = new DecimalFormat(pattern);
+////
+////                                String number = decimalFormat.format(123456789.123);
+////                                System.out.println(number);
+//
+////                                if(column.getValue().getUncertaintyColumn() == null) {
+//                                    fractionArray[arrayRowCount][arrayColumnCount] = valueParts[0] + "." + newValue; // places final value in array
+////                                }else{
+////                                    fractionArray[arrayRowCount][arrayColumnCount] =  cellCalculations[0]; // places final value in array
+////                                }
                             }
                         }
 
@@ -696,19 +701,24 @@ Splits report settings file name returning a displayable version without the ent
                                             (oneSigma / initialValue) * 200);
                                 }
 
+                                roundedValue = valueToBeRounded.setScale(
+                                        uncertaintyCountOfSignificantDigits,
+                                        valueToBeRounded.ROUND_HALF_UP);
+                                fractionArray[arrayRowCount][arrayColumnCount] = String
+                                        .valueOf(roundedValue);
                                 // Sends numbers for calculation if there is an uncertainty column
 //                                boolean parentColumnDigitMode = column.getValue().isDisplayedWithArbitraryDigitCount();
 //                                boolean uncertaintyColumnDigitMode = column.getValue().getUncertaintyColumn().isDisplayedWithArbitraryDigitCount();
 //                                cellCalculations = getCorrectDigitCalculations(parentColumnDigitMode, uncertaintyColumnDigitMode, new BigDecimal(7.333), valueToBeRounded, column.getValue().getCountOfSignificantDigits()+1, uncertaintyCountOfSignificantDigits+1);
 
-                                String newValue = toSignificantFiguresString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
-                                fractionArray[arrayRowCount][arrayColumnCount] = String
-                                        .valueOf(newValue); // places final value in array
-                                Log.e("Table", "Original: " + valueToBeRounded);
-                                String testValue = toDigitCountString(newValue, (uncertaintyCountOfSignificantDigits +1));
-                                Log.e("Table", "Truncated: " + testValue);
-                                Log.e("Table", "Sig Figs: " + uncertaintyCountOfSignificantDigits);
-                                Log.e("Table", "---------------------------------------------------------------------------------");
+//                                String newValue = toSignificantFiguresString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
+//                                fractionArray[arrayRowCount][arrayColumnCount] = String
+//                                        .valueOf(newValue); // places final value in array
+//                                Log.e("Table", "Original: " + valueToBeRounded);
+//                                String testValue = toDigitCountString(newValue, (uncertaintyCountOfSignificantDigits +1));
+//                                Log.e("Table", "Truncated: " + testValue);
+//                                Log.e("Table", "Sig Figs: " + uncertaintyCountOfSignificantDigits);
+//                                Log.e("Table", "---------------------------------------------------------------------------------");
 
 //                                  fractionArray[arrayRowCount][arrayColumnCount] =  cellCalculations[1]; // places final value in array
 
