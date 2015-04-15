@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:id="@+id/aliquotSelectBackground">
+
+    <EditText
+        android:id="@+id/aliquotIGSNText"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:minWidth="325dp"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="55dp"
+        android:layout_toStartOf="@id/aliquotIGSNSubmitButton"
+        android:layout_marginRight="10dp" />
+
+    <Button
+        android:id="@+id/aliquotFileSelectButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@color/dark_grey"
+        android:minHeight="48dp"
+        android:minWidth="48dp"
+        android:text="+"
+        android:textSize="14dp"
+        android:layout_toRightOf="@+id/aliquotFileSelectText"
+        android:layout_alignBottom="@+id/aliquotFileSelectText" />
+
+    <Button
+        android:id="@+id/aliquotIGSNSubmitButton"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:background="@color/button_blue"
+        android:minWidth="75dip"
+        android:text="Download"
+        android:layout_alignBottom="@+id/aliquotIGSNText"
+        android:layout_alignParentRight="false"
+        android:layout_toLeftOf="@+id/imageView1"
+        android:layout_alignParentStart="false"
+        android:textColor="@color/white"
+        android:textSize="14dp"
+        android:layout_marginRight="8dp" />
+
+    <EditText
+        android:id="@+id/aliquotFileSelectText"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:editable="false"
+        android:ems="10"
+        android:hint="Select a file from this device"
+        android:minWidth="275dp"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:layout_alignLeft="@+id/aliquotIGSNText"
+        android:layout_above="@+id/aliquotIGSNText"
+        android:layout_marginBottom="15dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Saved Aliquot"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:layout_alignBottom="@+id/aliquotFileSelectText"
+        android:layout_alignRight="@+id/TextView01" />
+
+    <TextView
+        android:id="@+id/testText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aliquot"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/border_grey"
+        android:textSize="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="60dp" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="54dp"
+        android:layout_height="90dp"
+        android:minHeight="400dp"
+        android:minWidth="400dp"
+        android:src="@drawable/cirdles_logo"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GeoChron IGSN"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:layout_alignBottom="@+id/aliquotIGSNText"
+        android:layout_toLeftOf="@+id/aliquotIGSNText"
+        android:layout_marginRight="5dp" />
+
+    <Button
+        android:id="@+id/aliquotFileSubmitButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@color/button_blue"
+        android:minWidth="75dip"
+        android:text="Open"
+        android:layout_alignBottom="@+id/aliquotFileSelectButton"
+        android:layout_toRightOf="@+id/aliquotFileSelectButton"
+        android:textColor="@color/white"
+        android:textSize="14dp"
+        android:layout_alignRight="@+id/aliquotIGSNSubmitButton"
+        android:layout_alignLeft="@+id/aliquotIGSNSubmitButton" />
+
+</RelativeLayout>
+
