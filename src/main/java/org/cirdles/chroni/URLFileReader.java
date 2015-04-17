@@ -54,14 +54,14 @@ public class URLFileReader{
     }
 
 	public void startFileDownload(Context classContext, String className){
-		if(className.contentEquals("HomeScreen")){
+		if(className.contentEquals("HomeScreen") || !getFileURL().contains("Aliquot")){
             // Sets the type of file and URL being accessed for saving purposes of the default Report Settings
             setFileType("Report Settings");
             setFileName(createFileName());	// Always downloading Default RS here
 
-            // Sets up the Download thread
-            final DownloadTask downloadTask = new DownloadTask(classContext);
-            downloadTask.execute(fileURL); // retrieves the file from the specified URL
+//            // Sets up the Download thread
+//            final DownloadTask downloadTask = new DownloadTask(classContext);
+//            downloadTask.execute(fileURL); // retrieves the file from the specified URL
 		}else{
 			if(className.contentEquals("AliquotMenu")){
 				// Sets the type of file and URL being accessed for saving purposes
@@ -118,7 +118,7 @@ public class URLFileReader{
         if(getClassName().contentEquals("HomeScreen")) {
             if(fileURL.contentEquals("http://cirdles.org/sites/default/files/Downloads/CIRDLESDefaultReportSettings.xml")){
                 name = "Default Report Settings";
-            }if(fileURL.contentEquals("http://cirdles.org/sites/default/files/Downloads/Default%20Report%20Settings%202.xml")){
+            }else if(fileURL.contentEquals("http://cirdles.org/sites/default/files/Downloads/Default%20Report%20Settings%202.xml")){
                 name = "Default Report Settings 2";
             }
         }

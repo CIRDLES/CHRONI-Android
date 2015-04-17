@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.File;
+import java.math.BigDecimal;
 
 
 public class AliquotMenuActivity extends Activity {
@@ -61,7 +62,6 @@ public class AliquotMenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         //Sets up activity layout
 	    super.onCreate(savedInstanceState);
-	    setTheme(android.R.style.Theme_Holo);
 	    setContentView(R.layout.aliquot_select);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
@@ -154,8 +154,6 @@ public class AliquotMenuActivity extends Activity {
         }
 
     });
-
-
 
     }
 
@@ -344,15 +342,22 @@ public class AliquotMenuActivity extends Activity {
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot_CHRONI_Directory");
+                        "Aliquot_Directory");
                 startActivity(openAliquotFiles);
                 return true;
             case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report_Settings_CHRONI_Directory");
+                        "Report_Settings_Directory");
                 startActivity(openReportSettingsFiles);
+                return true;
+            case R.id.viewRootMenu:
+                Intent openRootDirectory = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openRootDirectory.putExtra("Default_Directory",
+                        "Root_Directory");
+                startActivity(openRootDirectory);
                 return true;
             case R.id.aboutScreen: // Takes user to about screen
                 Intent openAboutScreen = new Intent(
@@ -368,4 +373,5 @@ public class AliquotMenuActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

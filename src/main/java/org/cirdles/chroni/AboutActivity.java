@@ -22,7 +22,6 @@ public class AboutActivity extends Activity  {
     protected void onCreate(Bundle savedInstanceState) {
         // Sets up activity screen
         super.onCreate(savedInstanceState);
-        setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.about);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
@@ -69,15 +68,22 @@ public class AboutActivity extends Activity  {
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot_CHRONI_Directory");
+                        "Aliquot_Directory");
                 startActivity(openAliquotFiles);
                 return true;
             case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report_Settings_CHRONI_Directory");
+                        "Report_Settings_Directory");
                 startActivity(openReportSettingsFiles);
+                return true;
+            case R.id.viewRootMenu:
+                Intent openRootDirectory = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openRootDirectory.putExtra("Default_Directory",
+                        "Root_Directory");
+                startActivity(openRootDirectory);
                 return true;
             case R.id.aboutScreen: // Takes user to about screen
                 Intent openAboutScreen = new Intent(

@@ -67,11 +67,10 @@ public class FilePickerActivity extends ListActivity {
 	protected FilePickerListAdapter mAdapter;
 	protected boolean mShowHiddenFiles = false;
 	protected String[] acceptedFileExtensions;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTheme(android.R.style.Theme_Holo);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         // Set the view to be shown if the list is empty
@@ -83,15 +82,14 @@ public class FilePickerActivity extends ListActivity {
 		// Set initial directory
         mainDirectory = Environment.getExternalStorageDirectory(); // Takes user to root directory folder
 
-        //Sets the initial directory based on what file user is looking for (Aliquot or Report Settings)
+        //Sets the initial directory based on what file user is looking for (Aliquot or Report Settings or Main)
 		if(getIntent().hasExtra("Default_Directory")){
-            if (getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory")||getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory"))
+            if (getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory"))
             {
                 mainDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot"); // Takes user to the Aliquot folder
-		    }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_CHRONI_Directory")) {
-                mainDirectory = new File(Environment.getExternalStorageDirectory() + "CHRONI/Report Settings");
+		    }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory")) {
+                mainDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings");
             }
-
         }
 		
 		// Initialize the ArrayList
@@ -150,12 +148,14 @@ public class FilePickerActivity extends ListActivity {
 	
 	@Override
 	public void onBackPressed() {
-		Intent openMainMenu = null;
+        Intent openMainMenu = null;
         if(getIntent().hasExtra("Default_Directory")){
             if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory")){
                 openMainMenu = new Intent("android.intent.action.ALIQUOTMENU");
             }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory")){
                 openMainMenu =new Intent("android.intent.action.REPORTSETTINGSMENU");
+            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Root_Directory")){
+                openMainMenu =new Intent("android.intent.action.MAINMENU");
             }
         }
         startActivity(openMainMenu);
@@ -168,19 +168,23 @@ public class FilePickerActivity extends ListActivity {
         // If item selected is a file (and not a directory), allows user to select file
 		if(newFile.isFile()) {		
 			// Sends back selected file name
-			if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory") || getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_CHRONI_Directory")){
+			if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory")){
 		    	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
 		    	openAliquotMenu.putExtra("AliquotXMLFileName", newFile.getAbsolutePath());
 		    	startActivity(openAliquotMenu);
-//                Toast.makeText(FilePickerActivity.this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
 
-            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory") || getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_CHRONI_Directory")){
+            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory")){
 				Intent openRSMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
 				openRSMenu.putExtra("ReportSettingsXMLFileName", newFile.getAbsolutePath());
 		    	startActivity(openRSMenu);
-//                Toast.makeText(FilePickerActivity.this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
-
+            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Root_Directory")){
+                Intent openRSMenu = new Intent("android.intent.action.MAINMENU");
+                openRSMenu.putExtra("XMLFileName", newFile.getAbsolutePath());
+                Toast.makeText(FilePickerActivity.this, "Please move your selected file to one of the CHRONI directories.", Toast.LENGTH_LONG).show();
+                startActivity(openRSMenu);
             }
+
+
 //			setResult(RESULT_OK, extra);
 			
 			// Finish the activity
@@ -306,15 +310,22 @@ public class FilePickerActivity extends ListActivity {
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot_CHRONI_Directory");
+                        "Aliquot_Directory");
                 startActivity(openAliquotFiles);
                 return true;
             case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report_Settings_CHRONI_Directory");
+                        "Report_Settings_Directory");
                 startActivity(openReportSettingsFiles);
+                return true;
+            case R.id.viewRootMenu:
+                Intent openRootDirectory = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openRootDirectory.putExtra("Default_Directory",
+                        "Root_Directory");
+                startActivity(openRootDirectory);
                 return true;
             case R.id.aboutScreen: // Takes user to about screen
                 Intent openAboutScreen = new Intent(
@@ -330,4 +341,5 @@ public class FilePickerActivity extends ListActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }
