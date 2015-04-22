@@ -81,7 +81,8 @@
         android:layout_alignBottom="@+id/reportSettingsFileSelectButton"
         android:layout_toRightOf="@+id/reportSettingsFileSelectButton"
         android:layout_marginLeft="15dp"
-        android:textSize="22dp" />
+        android:textSize="22dp"
+        android:textColor="@color/white" />
 
     <Button
         android:layout_width="100dp"
@@ -92,6 +93,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="45dp"
         android:textSize="22dp"
-        android:background="@color/button_blue" />
+        android:background="@color/button_blue"
+        android:textColor="@color/white" />
 
 </RelativeLayout>
