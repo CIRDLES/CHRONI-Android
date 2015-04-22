@@ -352,6 +352,7 @@ public class TablePainterActivity extends Activity {
             }
             rowCount++;
         }
+        Log.e("TABLE", "Output Variable Size: " + COLS);
 
     }
 
@@ -744,13 +745,13 @@ Splits report settings file name returning a displayable version without the ent
      */
     public static String roundParentCellValue(String currentMode, String value, int parentSigFigCount, int uncertaintySigFigCount) {
         String roundedValue = "";
-        Log.e("Rounding", "PARENT");
-        Log.e("Rounding", "Original: " + value);
+//        Log.e("Rounding", "PARENT");
+//        Log.e("Rounding", "Original: " + value);
 
 
         if (currentMode.contentEquals("parentSigFig")) {
             // Sends entire number in for rounding based on total number of sigfigs as specified in the parent column
-            Log.e("Rounding", "Parent(Whole) Sig Figs: " + parentSigFigCount);
+//            Log.e("Rounding", "Parent(Whole) Sig Figs: " + parentSigFigCount);
             if (parentSigFigCount != 0) {
                 if (value.contains("-")) {
                     roundedValue = value.substring(0, parentSigFigCount + 2); // adds two to account for decimal place and negative sign
@@ -769,7 +770,7 @@ Splits report settings file name returning a displayable version without the ent
 
             if (currentMode.contentEquals("bothSigFig")) {
                 //sends fractional portion and uncertainty sig fig count to display based on uncertainty sigfig
-                Log.e("Rounding", "Uncertainty Sig Figs: " + uncertaintySigFigCount);
+//                Log.e("Rounding", "Uncertainty Sig Figs: " + uncertaintySigFigCount);
                 if (uncertaintySigFigCount != 0) {
                     roundedValue = wholeNumber + "." + fractional.substring(0, uncertaintySigFigCount);
 //                    countSignificantFigures(fractional, uncertaintySigFigCount);
@@ -779,7 +780,7 @@ Splits report settings file name returning a displayable version without the ent
 
             } else if (currentMode.contentEquals("parentArbitrary")) {
                 //sends fractional portion and parent sig fig count to display based on parent sigfig
-                Log.e("Rounding", "Parent Sig Figs: " + parentSigFigCount);
+//                Log.e("Rounding", "Parent Sig Figs: " + parentSigFigCount);
                 if (parentSigFigCount != 0) {
                     roundedValue = wholeNumber + "." + fractional.substring(0, parentSigFigCount);
 //                    countSignificantFigures(fractional, parentSigFigCount);
@@ -789,8 +790,8 @@ Splits report settings file name returning a displayable version without the ent
 
             }
         }
-        Log.e("Rounding", "Rounded: " + roundedValue);
-        Log.e("Rounding", "-------------------------------------------------------------------------------------");
+//        Log.e("Rounding", "Rounded: " + roundedValue);
+//        Log.e("Rounding", "-------------------------------------------------------------------------------------");
 
         return roundedValue;
     }
@@ -804,8 +805,8 @@ Splits report settings file name returning a displayable version without the ent
     public static String roundUncertaintyCellValue(boolean isArbitrary, String value, int uncertaintySigFigCount) {
         String roundedValue = "";
 
-        Log.e("Rounding", "UNCERTAINTY");
-        Log.e("Rounding", "Original: " + value);
+//        Log.e("Rounding", "UNCERTAINTY");
+//        Log.e("Rounding", "Original: " + value);
 
         NumberFormat formatter = new DecimalFormat();
 
@@ -816,13 +817,13 @@ Splits report settings file name returning a displayable version without the ent
 
         if (isArbitrary) { //ARBITRARY MODE
             //sends fractional portion and parent sig fig count to display based on uncertainty sigfig
-            Log.e("Rounding", "Arb Sig Figs: " + uncertaintySigFigCount);
+//            Log.e("Rounding", "Arb Sig Figs: " + uncertaintySigFigCount);
             roundedValue = wholeNumber + "." + fractional.substring(0, uncertaintySigFigCount);
 //            countSignificantFigures(fractional, uncertaintySigFigCount);
 
         } else { // SIGFIG MODE
             //sends fractional portion and uncertainty sig fig count to display based on uncertainty sigfig
-            Log.e("Rounding", "SIGFIG (Whole) Sig Figs: " + uncertaintySigFigCount);
+//            Log.e("Rounding", "SIGFIG (Whole) Sig Figs: " + uncertaintySigFigCount);
             if (value.contains("-")) {
                 roundedValue = value.substring(0, uncertaintySigFigCount + 2); //adds two to account for decimal place and negative
             } else {
@@ -836,8 +837,8 @@ Splits report settings file name returning a displayable version without the ent
             roundedValue = value;
         }
 
-        Log.e("Rounding", "Rounded: " + roundedValue);
-        Log.e("Rounding", "-------------------------------------------------------------------------------------");
+//        Log.e("Rounding", "Rounded: " + roundedValue);
+//        Log.e("Rounding", "-------------------------------------------------------------------------------------");
 
         return roundedValue;
     }
