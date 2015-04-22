@@ -124,9 +124,6 @@ public class ReportSettingsParser {
 									String uncertaintyName1 = parser.getNodeValue("displayName1",specificUncertaintyColumnNodes);
 									String uncertaintyName2 = parser.getNodeValue("displayName2",specificUncertaintyColumnNodes);
 									String uncertaintyName3 = parser.getNodeValue("displayName3", specificUncertaintyColumnNodes);
-
-                                    Log.e("Test", "Uncertainty Column: " + uncertaintyName3);
-
                                     String uncertaintyUnits = parser.getNodeValue("units", columnNodes); // used to calculate correct value in column
 									String uncertaintyMethodName = parser.getNodeValue("retrieveMethodName", specificUncertaintyColumnNodes); // used to find group of value models
 									String uncertaintyVariableName = parser.getNodeValue("retrieveVariableName", specificUncertaintyColumnNodes); // used to find specific value model for that column
