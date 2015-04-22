@@ -15,8 +15,8 @@
         android:layout_marginRight="320dp"
         android:layout_below="@+id/testText"
         android:layout_above="@+id/historyFinishButton"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp">
+        android:layout_marginTop="75dp"
+        android:layout_marginBottom="75dp">
 
         <ScrollView
             android:id="@+id/tableScroll"
