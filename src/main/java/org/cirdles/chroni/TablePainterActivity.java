@@ -220,6 +220,8 @@ public class TablePainterActivity extends Activity {
                     if (mobileWifi.isConnected()) {
                         Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
                         Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageMap.get("probability_density").getImageURL()));
+//                    Intent viewProbabilityDensityIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
+//                    viewProbabilityDensityIntent.putExtra("ProbabilityDensityImage",  imageMap.get("probability_density").getImageURL());
                         startActivity(viewProbabilityDensityIntent);
                     } else {
                         //Handles lack of wifi connection
@@ -245,7 +247,7 @@ public class TablePainterActivity extends Activity {
         final int COLS = outputVariableNames.size();
 
         // Gets column sizes from string array
-        int[] columnSizes = getDistributedColumnWidths(finalArray, ROWS, COLS);
+        int[] columnSizes = distributeTableColumns(finalArray, ROWS, COLS);
         int[] headerCellSizes = distributeHeaderCells(columnSizes);
 
         // Creates the row just reserved for header names
@@ -258,15 +260,13 @@ public class TablePainterActivity extends Activity {
         Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Entry<Integer, Category> category = iterator.next();
-            Iterator<Entry<Integer, Column>> columnIterator = category.getValue().getCategoryColumnMap().entrySet().iterator(); // used to see how many columns
-
             if (category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
                 TextView categoryCell = new TextView(this);
                 categoryCell.setText(category.getValue().getDisplayName());
                 categoryCell.setTypeface(Typeface.MONOSPACE);
                 if (category.getValue().getDisplayName().contentEquals("Fraction") && categoryCount != 0) { // Easy fix to handle the issue of sizing with last fraction category TODO: Make better!
                     categoryCell.setMinEms(columnSizes[columnSizes.length - 1] + 2); // Simply sets same size as fraction because its always the same length with last column
-                } else{
+                } else {
                     categoryCell.setMinEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount())); // sets column spacing based on max character count and allows extra space for crowding
                 }
                 categoryCell.setPadding(3, 4, 3, 4);
@@ -303,11 +303,6 @@ public class TablePainterActivity extends Activity {
                 TextView cell = new TextView(this);
                 cell.setTypeface(Typeface.MONOSPACE);
                 cell.setMinEms(columnSizes[currentColumn] + 2); // sets column spacing based on max character count and allows extra space for crowding
-
-//                if(finalArray[0][currentColumn].contentEquals("")) { // if only one column, automatically sets width to size of category cell
-//                    categoryCell.setMinEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount())); // sets column spacing based on max character count and allows extra space for crowding
-//                }
-
                 cell.setPadding(3, 4, 3, 4);
                 cell.setTextColor(Color.BLACK);
                 cell.setTextSize((float) 14.5);
@@ -357,7 +352,6 @@ public class TablePainterActivity extends Activity {
             }
             rowCount++;
         }
-        Log.e("TABLE", "Output Variable Size: " + COLS);
 
     }
 
@@ -434,51 +428,10 @@ Splits report settings file name returning a displayable version without the ent
         return headerMaxCharacterCounts;
     }
 
-//    /*
-//Goes through and figures out header cell lengths given a table
-//*/
-//    protected int[] distributeColumns(int[] columnWidths) {
-//        int[] columnMaxCharacterCounts = new int[columnWidths.length];
-//        int currentCategoryCount = 0;
-//        int currentColumnCount = 0;
-//
-//        Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
-//        while (iterator.hasNext()) {
-//            Entry<Integer, Category> category = iterator.next();
-//            int categoryCellWidth = 0;
-//            if (category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
-//
-//                Iterator<Entry<Integer, Column>> columnIterator = category
-//                        .getValue().getCategoryColumnMap().entrySet().iterator();
-//
-//                if (category.getValue().getCategoryColumnMap().size() == 1 && columnIterator.next().getValue().getUncertaintyColumn() == null) { // if only one column, automatically sets width to size of category cell
-//                    columnMaxCharacterCounts[currentColumnCount] = category.getValue().getDisplayName().length();
-//                    currentColumnCount++;
-//                    currentCategoryCount++;
-//                } else {
-//                    while (columnIterator.hasNext()) {
-//                        Entry<Integer, Column> column = columnIterator.next();
-//
-//                        categoryCellWidth += columnWidths[currentColumnCount];
-//                        currentColumnCount++;
-//
-//                        if (column.getValue().getUncertaintyColumn() != null) {
-//                            categoryCellWidth += columnWidths[currentColumnCount];
-//                            currentColumnCount++;
-//                        }
-//                    }
-//                }
-//                columnMaxCharacterCounts[currentColumnCount] = categoryCellWidth;
-//                currentCategoryCount++;
-//            }
-//        }
-//        return columnMaxCharacterCounts;
-//    }
-
     /*
-    Goes through and figures out columns widths given a table
+    Goes through and figures out columns lengths given a table
      */
-    protected int[] getDistributedColumnWidths(String[][] finalArray, int ROWS, int COLS) {
+    protected int[] distributeTableColumns(String[][] finalArray, int ROWS, int COLS) {
         int[] columnMaxCharacterCounts = new int[COLS];
         for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
             int widestCellCharacterCount = 0;
@@ -493,9 +446,7 @@ Splits report settings file name returning a displayable version without the ent
 //                Log.i("Widest Cell: " + widestCellCharacterCount, "Result");
                 }
             }
-
-                columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount/2;
-
+            columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount / 2; // Divides by 2 for appropriate EMS measurement
 //            Log.i("Column: " + currentColumn +  " Widest Cell: " + widestCellCharacterCount, "Measuring");
 //            Log.i("----------------------------------------------------------------------------", "Measuring");
         }
@@ -793,13 +744,13 @@ Splits report settings file name returning a displayable version without the ent
      */
     public static String roundParentCellValue(String currentMode, String value, int parentSigFigCount, int uncertaintySigFigCount) {
         String roundedValue = "";
-//        Log.e("Rounding", "PARENT");
-//        Log.e("Rounding", "Original: " + value);
+        Log.e("Rounding", "PARENT");
+        Log.e("Rounding", "Original: " + value);
 
 
         if (currentMode.contentEquals("parentSigFig")) {
             // Sends entire number in for rounding based on total number of sigfigs as specified in the parent column
-//            Log.e("Rounding", "Parent(Whole) Sig Figs: " + parentSigFigCount);
+            Log.e("Rounding", "Parent(Whole) Sig Figs: " + parentSigFigCount);
             if (parentSigFigCount != 0) {
                 if (value.contains("-")) {
                     roundedValue = value.substring(0, parentSigFigCount + 2); // adds two to account for decimal place and negative sign
@@ -818,7 +769,7 @@ Splits report settings file name returning a displayable version without the ent
 
             if (currentMode.contentEquals("bothSigFig")) {
                 //sends fractional portion and uncertainty sig fig count to display based on uncertainty sigfig
-//                Log.e("Rounding", "Uncertainty Sig Figs: " + uncertaintySigFigCount);
+                Log.e("Rounding", "Uncertainty Sig Figs: " + uncertaintySigFigCount);
                 if (uncertaintySigFigCount != 0) {
                     roundedValue = wholeNumber + "." + fractional.substring(0, uncertaintySigFigCount);
 //                    countSignificantFigures(fractional, uncertaintySigFigCount);
@@ -828,7 +779,7 @@ Splits report settings file name returning a displayable version without the ent
 
             } else if (currentMode.contentEquals("parentArbitrary")) {
                 //sends fractional portion and parent sig fig count to display based on parent sigfig
-//                Log.e("Rounding", "Parent Sig Figs: " + parentSigFigCount);
+                Log.e("Rounding", "Parent Sig Figs: " + parentSigFigCount);
                 if (parentSigFigCount != 0) {
                     roundedValue = wholeNumber + "." + fractional.substring(0, parentSigFigCount);
 //                    countSignificantFigures(fractional, parentSigFigCount);
@@ -838,8 +789,8 @@ Splits report settings file name returning a displayable version without the ent
 
             }
         }
-//        Log.e("Rounding", "Rounded: " + roundedValue);
-//        Log.e("Rounding", "-------------------------------------------------------------------------------------");
+        Log.e("Rounding", "Rounded: " + roundedValue);
+        Log.e("Rounding", "-------------------------------------------------------------------------------------");
 
         return roundedValue;
     }
@@ -853,8 +804,8 @@ Splits report settings file name returning a displayable version without the ent
     public static String roundUncertaintyCellValue(boolean isArbitrary, String value, int uncertaintySigFigCount) {
         String roundedValue = "";
 
-//        Log.e("Rounding", "UNCERTAINTY");
-//        Log.e("Rounding", "Original: " + value);
+        Log.e("Rounding", "UNCERTAINTY");
+        Log.e("Rounding", "Original: " + value);
 
         NumberFormat formatter = new DecimalFormat();
 
@@ -865,13 +816,13 @@ Splits report settings file name returning a displayable version without the ent
 
         if (isArbitrary) { //ARBITRARY MODE
             //sends fractional portion and parent sig fig count to display based on uncertainty sigfig
-//            Log.e("Rounding", "Arb Sig Figs: " + uncertaintySigFigCount);
+            Log.e("Rounding", "Arb Sig Figs: " + uncertaintySigFigCount);
             roundedValue = wholeNumber + "." + fractional.substring(0, uncertaintySigFigCount);
 //            countSignificantFigures(fractional, uncertaintySigFigCount);
 
         } else { // SIGFIG MODE
             //sends fractional portion and uncertainty sig fig count to display based on uncertainty sigfig
-//            Log.e("Rounding", "SIGFIG (Whole) Sig Figs: " + uncertaintySigFigCount);
+            Log.e("Rounding", "SIGFIG (Whole) Sig Figs: " + uncertaintySigFigCount);
             if (value.contains("-")) {
                 roundedValue = value.substring(0, uncertaintySigFigCount + 2); //adds two to account for decimal place and negative
             } else {
@@ -885,8 +836,8 @@ Splits report settings file name returning a displayable version without the ent
             roundedValue = value;
         }
 
-//        Log.e("Rounding", "Rounded: " + roundedValue);
-//        Log.e("Rounding", "-------------------------------------------------------------------------------------");
+        Log.e("Rounding", "Rounded: " + roundedValue);
+        Log.e("Rounding", "-------------------------------------------------------------------------------------");
 
         return roundedValue;
     }
