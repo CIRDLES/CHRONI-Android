@@ -220,8 +220,6 @@ public class TablePainterActivity extends Activity {
                     if (mobileWifi.isConnected()) {
                         Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
                         Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageMap.get("probability_density").getImageURL()));
-//                    Intent viewProbabilityDensityIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
-//                    viewProbabilityDensityIntent.putExtra("ProbabilityDensityImage",  imageMap.get("probability_density").getImageURL());
                         startActivity(viewProbabilityDensityIntent);
                     } else {
                         //Handles lack of wifi connection
@@ -247,7 +245,7 @@ public class TablePainterActivity extends Activity {
         final int COLS = outputVariableNames.size();
 
         // Gets column sizes from string array
-        int[] columnSizes = distributeTableColumns(finalArray, ROWS, COLS);
+        int[] columnSizes = getDistributedColumnWidths(finalArray, ROWS, COLS);
         int[] headerCellSizes = distributeHeaderCells(columnSizes);
 
         // Creates the row just reserved for header names
@@ -260,13 +258,15 @@ public class TablePainterActivity extends Activity {
         Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Entry<Integer, Category> category = iterator.next();
+            Iterator<Entry<Integer, Column>> columnIterator = category.getValue().getCategoryColumnMap().entrySet().iterator(); // used to see how many columns
+
             if (category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
                 TextView categoryCell = new TextView(this);
                 categoryCell.setText(category.getValue().getDisplayName());
                 categoryCell.setTypeface(Typeface.MONOSPACE);
                 if (category.getValue().getDisplayName().contentEquals("Fraction") && categoryCount != 0) { // Easy fix to handle the issue of sizing with last fraction category TODO: Make better!
                     categoryCell.setMinEms(columnSizes[columnSizes.length - 1] + 2); // Simply sets same size as fraction because its always the same length with last column
-                } else {
+                } else{
                     categoryCell.setMinEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount())); // sets column spacing based on max character count and allows extra space for crowding
                 }
                 categoryCell.setPadding(3, 4, 3, 4);
@@ -303,6 +303,11 @@ public class TablePainterActivity extends Activity {
                 TextView cell = new TextView(this);
                 cell.setTypeface(Typeface.MONOSPACE);
                 cell.setMinEms(columnSizes[currentColumn] + 2); // sets column spacing based on max character count and allows extra space for crowding
+
+//                if(finalArray[0][currentColumn].contentEquals("")) { // if only one column, automatically sets width to size of category cell
+//                    categoryCell.setMinEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount())); // sets column spacing based on max character count and allows extra space for crowding
+//                }
+
                 cell.setPadding(3, 4, 3, 4);
                 cell.setTextColor(Color.BLACK);
                 cell.setTextSize((float) 14.5);
@@ -429,10 +434,51 @@ Splits report settings file name returning a displayable version without the ent
         return headerMaxCharacterCounts;
     }
 
+//    /*
+//Goes through and figures out header cell lengths given a table
+//*/
+//    protected int[] distributeColumns(int[] columnWidths) {
+//        int[] columnMaxCharacterCounts = new int[columnWidths.length];
+//        int currentCategoryCount = 0;
+//        int currentColumnCount = 0;
+//
+//        Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
+//        while (iterator.hasNext()) {
+//            Entry<Integer, Category> category = iterator.next();
+//            int categoryCellWidth = 0;
+//            if (category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
+//
+//                Iterator<Entry<Integer, Column>> columnIterator = category
+//                        .getValue().getCategoryColumnMap().entrySet().iterator();
+//
+//                if (category.getValue().getCategoryColumnMap().size() == 1 && columnIterator.next().getValue().getUncertaintyColumn() == null) { // if only one column, automatically sets width to size of category cell
+//                    columnMaxCharacterCounts[currentColumnCount] = category.getValue().getDisplayName().length();
+//                    currentColumnCount++;
+//                    currentCategoryCount++;
+//                } else {
+//                    while (columnIterator.hasNext()) {
+//                        Entry<Integer, Column> column = columnIterator.next();
+//
+//                        categoryCellWidth += columnWidths[currentColumnCount];
+//                        currentColumnCount++;
+//
+//                        if (column.getValue().getUncertaintyColumn() != null) {
+//                            categoryCellWidth += columnWidths[currentColumnCount];
+//                            currentColumnCount++;
+//                        }
+//                    }
+//                }
+//                columnMaxCharacterCounts[currentColumnCount] = categoryCellWidth;
+//                currentCategoryCount++;
+//            }
+//        }
+//        return columnMaxCharacterCounts;
+//    }
+
     /*
-    Goes through and figures out columns lengths given a table
+    Goes through and figures out columns widths given a table
      */
-    protected int[] distributeTableColumns(String[][] finalArray, int ROWS, int COLS) {
+    protected int[] getDistributedColumnWidths(String[][] finalArray, int ROWS, int COLS) {
         int[] columnMaxCharacterCounts = new int[COLS];
         for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
             int widestCellCharacterCount = 0;
@@ -447,7 +493,9 @@ Splits report settings file name returning a displayable version without the ent
 //                Log.i("Widest Cell: " + widestCellCharacterCount, "Result");
                 }
             }
-            columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount / 2; // Divides by 2 for appropriate EMS measurement
+
+                columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount/2;
+
 //            Log.i("Column: " + currentColumn +  " Widest Cell: " + widestCellCharacterCount, "Measuring");
 //            Log.i("----------------------------------------------------------------------------", "Measuring");
         }
