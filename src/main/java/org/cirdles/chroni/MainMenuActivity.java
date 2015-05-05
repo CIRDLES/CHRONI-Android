@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -95,19 +96,29 @@ public class MainMenuActivity extends Activity {
 //            // and multiply the numbers
 //            number = new SignificantFigures(args[i]).setNumberSignificantFigures(sigs);
 //            Log.e("Rounding", "With Setter: " + String.valueOf(number));
-//
 //        }
 
-        //Practice with create sig fig from fractional half
-//        String value = "8.905";
-//        String[] values = value.split("\\.");
-//        number = new SignificantFigures(values[1]).setNumberSignificantFigures(2);
-//        String strNum = String.valueOf(number);
-//        Log.e("Rounding", "8.905 second half without Edit: " + strNum);
-//        if(strNum.contains(".")){
-//            Log.e("Rounding", "8.905 second half with Edit: " + strNum.replace(".", ""));
-//        }
+        // Testing sigfig manipulation
+        String[] args = {"40.7", "87.009", "0.095987", "0.0009", "85.00", "9.000", "300"};
+        SignificantFigures number;
+        int sigs = 2;
+        for (int i = 0; i < args.length; i++) {
+            number = new SignificantFigures(args[i]).setNumberSignificantFigures(2);
+            System.out.println("Converts to: " + number);
+            if (String.valueOf(number).contains("E")) {
+                System.out.println("Result: " + toCorrectDigits(String.valueOf(number)));
+            }
+            System.out.println("--------------------------------");
+        }
+    }
 
+    /*
+    Correctly formats string
+     */
+    public static String toCorrectDigits(String value){
+            System.out.println("Value is " + value);
+            String res = new BigDecimal(value).toPlainString();
+            return res;
     }
 
    @Override
