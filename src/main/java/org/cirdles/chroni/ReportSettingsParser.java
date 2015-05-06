@@ -112,7 +112,7 @@ public class ReportSettingsParser {
 
 							// UNCERTAINTY COLUMNS
 							if (categoryName.contentEquals("datesCategory")
-									|| categoryName.contentEquals("isotopicRatios") || categoryName.contentEquals("datesPbcCorrCategory") || categoryName.contentEquals("isotopicRatiosPbcCorrCategory")) {
+									|| categoryName.contentEquals("isotopicRatiosCategory") || categoryName.contentEquals("datesPbcCorrCategory") || categoryName.contentEquals("isotopicRatiosPbcCorrCategory")) {
 								// determines if uncertainty column is visible
 								NodeList uncertaintyColumnNodes = specificReportElement.getElementsByTagName("uncertaintyColumn");
 

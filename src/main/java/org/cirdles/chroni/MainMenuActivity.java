@@ -99,17 +99,17 @@ public class MainMenuActivity extends Activity {
 //        }
 
         // Testing sigfig manipulation
-        String[] args = {"40.7", "87.009", "0.095987", "0.0009", "85.00", "9.000", "300"};
-        SignificantFigures number;
-        int sigs = 2;
-        for (int i = 0; i < args.length; i++) {
-            number = new SignificantFigures(args[i]).setNumberSignificantFigures(2);
-            System.out.println("Converts to: " + number);
-            if (String.valueOf(number).contains("E")) {
-                System.out.println("Result: " + toCorrectDigits(String.valueOf(number)));
-            }
-            System.out.println("--------------------------------");
-        }
+//        String[] args = {"40.7", "87.009", "0.095987", "0.0009", "85.00", "9.000", "300"};
+//        SignificantFigures number;
+//        int sigs = 2;
+//        for (int i = 0; i < args.length; i++) {
+//            number = new SignificantFigures(args[i]).setNumberSignificantFigures(2);
+//            System.out.println("Converts to: " + number);
+//            if (String.valueOf(number).contains("E")) {
+//                System.out.println("Result: " + toCorrectDigits(String.valueOf(number)));
+//            }
+//            System.out.println("--------------------------------");
+//        }
     }
 
     /*

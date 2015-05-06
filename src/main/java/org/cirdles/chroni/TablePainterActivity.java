@@ -697,26 +697,43 @@ Splits report settings file name returning a displayable version without the ent
                                         .getUnitConversionsMap().get(
                                                 currentUnit);
 
-                                valueToBeRounded = new BigDecimal(0.0); // initializes value
+//                                valueToBeRounded = new BigDecimal(0.0); // initializes value
+//                                if (column.getValue().getUncertaintyType().equals("ABS")) {     // Calculates value if column is ABS uncertainty
+//                                    valueToBeRounded = new BigDecimal(
+//                                            (oneSigma / (Math.pow(10,
+//                                                    dividingNumber))) * 2);
+//                                } else if (column.getValue().getUncertaintyType().equals("PCT")) {     // Calculates value if column is PCT uncertainty
+//                                    valueToBeRounded = new BigDecimal(
+//                                            (oneSigma / initialValue) * 200);
+//                                }
+//
+//                                roundedValue = valueToBeRounded.setScale(
+//                                        uncertaintyCountOfSignificantDigits,
+//                                        valueToBeRounded.ROUND_HALF_UP);
+//                                fractionArray[arrayRowCount][arrayColumnCount] = String
+//                                        .valueOf(roundedValue);
+
+                                // Formats Uncertainty correctly
+                                SignificantFigures valueToRound = new SignificantFigures("0.0");
                                 if (column.getValue().getUncertaintyType().equals("ABS")) {     // Calculates value if column is ABS uncertainty
-                                    valueToBeRounded = new BigDecimal(
+                                    valueToRound = new SignificantFigures(
                                             (oneSigma / (Math.pow(10,
                                                     dividingNumber))) * 2);
                                 } else if (column.getValue().getUncertaintyType().equals("PCT")) {     // Calculates value if column is PCT uncertainty
-                                    valueToBeRounded = new BigDecimal(
+                                    valueToRound = new SignificantFigures(
                                             (oneSigma / initialValue) * 200);
                                 }
 
-                                roundedValue = valueToBeRounded.setScale(
-                                        uncertaintyCountOfSignificantDigits,
-                                        valueToBeRounded.ROUND_HALF_UP);
+                                SignificantFigures newValue = valueToRound.setNumberSignificantFigures(uncertaintyCountOfSignificantDigits);
+                                if (String.valueOf(newValue).contains("E")) {
+                                    toCorrectDigits(String.valueOf(newValue));
+                                }
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
-                                        .valueOf(roundedValue);
+                                        .valueOf(newValue);
 
                                 // Test sigfig method
                                 boolean isArbitraryMode = column.getValue().isDisplayedWithArbitraryDigitCount(); // determines if parent column is in arbitrary mode
-                                roundUncertaintyCellValue(isArbitraryMode, String.valueOf(valueToBeRounded), uncertaintyCountOfSignificantDigits);
-
+//                                roundUncertaintyCellValue(isArbitraryMode, String.valueOf(valueToBeRounded), uncertaintyCountOfSignificantDigits);
 
                             }
                         } // closes if
@@ -734,6 +751,15 @@ Splits report settings file name returning a displayable version without the ent
 
         return fractionArray;
     } // closes method
+
+    /*
+Correctly formats string
+ */
+    public static String toCorrectDigits(String value){
+        System.out.println("Value is " + value);
+        String res = new BigDecimal(value).toPlainString();
+        return res;
+    }
 
     /*
     Creates the appropriate rounded version of a number for a parent cell
