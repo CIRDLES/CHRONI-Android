@@ -727,8 +727,16 @@ Splits report settings file name returning a displayable version without the ent
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
                                         .valueOf(newUncertaintyValue);
                                 // goes back and fixes parent cell value to match uncertainty
-                                String parentFractional = formatShape(String.valueOf(newUncertaintyValue), fractionArray[arrayRowCount][arrayColumnCount-1]);
-                                fractionArray[arrayRowCount][arrayColumnCount-1] = parentFractional;
+                                if(String.valueOf(newUncertaintyValue).contains(".")) {
+                                    String parentFractional = formatShape(String.valueOf(newUncertaintyValue), fractionArray[arrayRowCount][arrayColumnCount - 1]);
+                                    fractionArray[arrayRowCount][arrayColumnCount - 1] = parentFractional;
+                                }else{
+                                    String oldParentValue =fractionArray[arrayRowCount][arrayColumnCount - 1];
+                                    int uncertaintySigFigCount = newUncertaintyValue.getNumberSignificantFigures();
+                                    SignificantFigures newParentValue = new SignificantFigures(oldParentValue).setNumberSignificantFigures(uncertaintySigFigCount);
+                                    fractionArray[arrayRowCount][arrayColumnCount - 1] = String.valueOf(newParentValue);
+
+                                }
 
                                 // Test sigfig method
 //                                boolean isArbitraryMode = column.getValue().isDisplayedWithArbitraryDigitCount(); // determines if parent column is in arbitrary mode
@@ -756,20 +764,24 @@ Splits report settings file name returning a displayable version without the ent
  */
     public static String formatShape(String uncertaintyValue, String parentValue){
         String newParentValue = "";
+        int lengthOfFraction = 0;
+        System.out.println("Original: " + parentValue);
 
         if(uncertaintyValue.contains(".")){
             String[] uncertaintyParts = uncertaintyValue.split("\\.");
-            int lengthOfFraction = uncertaintyParts[1].length();
-            System.out.println("Digits: " + lengthOfFraction);
-
+            lengthOfFraction = uncertaintyParts[1].length();
+//            System.out.println("Digits: " + lengthOfFraction);
             String[] parentParts = parentValue.split("\\.");
-
             String formattedParentFraction = parentParts[1].substring(0, lengthOfFraction);
             newParentValue = parentParts[0] + "." + formattedParentFraction;
+//            System.out.println("Unct: " + uncertaintyValue);
+//            System.out.println("New: " + newParentValue);
+        }else{
+            lengthOfFraction = uncertaintyValue.length();
 
         }
-        System.out.println("Unct: " + uncertaintyValue);
-        System.out.println("Parent: " + newParentValue);
+
+
         System.out.println("-----------------------------------------------------------------------");
 
         return newParentValue;
