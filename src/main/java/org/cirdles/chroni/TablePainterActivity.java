@@ -755,7 +755,6 @@ Splits report settings file name returning a displayable version without the ent
  *
  */
     public static String formatShape(String uncertaintyValue, String parentValue){
-        int numberOfDigits = 0;
         String newParentValue = "";
 
         if(uncertaintyValue.contains(".")){
@@ -769,8 +768,8 @@ Splits report settings file name returning a displayable version without the ent
             newParentValue = parentParts[0] + "." + formattedParentFraction;
 
         }
-
-        System.out.println("New: " + newParentValue);
+        System.out.println("Unct: " + uncertaintyValue);
+        System.out.println("Parent: " + newParentValue);
         System.out.println("-----------------------------------------------------------------------");
 
         return newParentValue;
