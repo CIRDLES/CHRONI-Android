@@ -1,7 +1,10 @@
 package org.cirdles.chroni;
 
+import android.util.Log;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -24,33 +27,39 @@ public class ReportSettingsParser {
 	public SortedMap<Integer, Category> runReportSettingsParser(String fileName){
 
 		try {
-			// Begins the parsing of the file
-			File fXmlFile = new File(fileName);
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			DomParser parser = new DomParser();
-			Document doc = dBuilder.parse(fXmlFile);
-			
-			// hardcoded array of all the category names
-//			String[] categoryNames = { "fractionCategory",
-//					"compositionCategory", "isotopicRatiosCategory", "isotopicRatiosPbcCorrCategory",
-//					"datesCategory", "datesPbcCorrCategory", "rhosCategory", "traceElementsCategory","fractionCategory2" }; // Issue with table columns
-            String[] categoryNames = { "fractionCategory",
-                    "compositionCategory", "isotopicRatiosCategory",
-                    "datesCategory", "rhosCategory", "fractionCategory2" };
+            // Begins the parsing of the file
+            File fXmlFile = new File(fileName);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            DomParser parser = new DomParser();
+            Document doc = dBuilder.parse(fXmlFile);
 
-			// Get the document's root XML nodes to begin parsing
-			NodeList root = doc.getChildNodes();
-			Node rootNode = parser.getNode("ReportSettings", root);
-			NodeList rootNodes = rootNode.getChildNodes();
-			
-			// Instantiates the map needed to store the visible categories
+            // Get the document's root XML nodes to begin parsing
+            NodeList root = doc.getChildNodes();
+            Node rootNode = parser.getNode("ReportSettings", root);
+            NodeList rootNodes = rootNode.getChildNodes();
+            // hardcoded array of all the category names
+            ArrayList<String> categoryNames = new ArrayList();
+            categoryNames.add("fractionCategory");
+            categoryNames.add("compositionCategory");
+            categoryNames.add("isotopicRatiosCategory");
+            categoryNames.add("datesCategory");
+            categoryNames.add("rhosCategory");
+            categoryNames.add("fractionCategory2");
+
+           if(rootNodes.getLength() >  21){ // Adds new categories for parsing if there is a newer report setting file
+                categoryNames.add("isotopicRatiosPbcCorrCategory");
+                categoryNames.add("datesPbcCorrCategory");
+                categoryNames.add("traceElementsCategory");
+            }
+
+            // Instantiates the map needed to store the visible categories
 			categoryMap = new TreeMap<Integer, Category>();
 
 			for (String categoryName : categoryNames) {
 				// Creates a NodeList of the child nodes under the individual category
 				Node category = parser.getNode(categoryName, rootNodes); 
-				NodeList categoryNodes = category.getChildNodes();  
+				NodeList categoryNodes = category.getChildNodes();
 
 				// Gets the Category information
 				String categoryDisplayName = parser.getNodeValue("displayName",categoryNodes);
@@ -102,8 +111,8 @@ public class ReportSettingsParser {
 //							occupyAbsentInfo(visibleColumn, displayName1,displayName2, displayName3, methodName, variableName);
 
 							// UNCERTAINTY COLUMNS
-							if (categoryName.contains("datesCategory")
-									|| categoryName.contains("isotopicRatios")) {
+							if (categoryName.contentEquals("datesCategory")
+									|| categoryName.contentEquals("isotopicRatiosCategory") || categoryName.contentEquals("datesPbcCorrCategory") || categoryName.contentEquals("isotopicRatiosPbcCorrCategory")) {
 								// determines if uncertainty column is visible
 								NodeList uncertaintyColumnNodes = specificReportElement.getElementsByTagName("uncertaintyColumn");
 
@@ -115,7 +124,7 @@ public class ReportSettingsParser {
 									String uncertaintyName1 = parser.getNodeValue("displayName1",specificUncertaintyColumnNodes);
 									String uncertaintyName2 = parser.getNodeValue("displayName2",specificUncertaintyColumnNodes);
 									String uncertaintyName3 = parser.getNodeValue("displayName3", specificUncertaintyColumnNodes);
-									String uncertaintyUnits = parser.getNodeValue("units", columnNodes); // used to calculate correct value in column
+                                    String uncertaintyUnits = parser.getNodeValue("units", columnNodes); // used to calculate correct value in column
 									String uncertaintyMethodName = parser.getNodeValue("retrieveMethodName", specificUncertaintyColumnNodes); // used to find group of value models
 									String uncertaintyVariableName = parser.getNodeValue("retrieveVariableName", specificUncertaintyColumnNodes); // used to find specific value model for that column
                                     String uncertaintyDisplayedWithArbitraryDigitCount = parser.getNodeValue("displayedWithArbitraryDigitCount", columnNodes); // used to determine appropriate number of sigfigs

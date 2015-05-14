@@ -70,7 +70,8 @@
         android:textSize="28dp"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/reportSettingsFileSelectText"
-        android:layout_marginBottom="140dp" />
+        android:layout_marginBottom="140dp"
+        android:layout_gravity="center" />
 
     <Button
         android:layout_width="100dp"
@@ -81,7 +82,8 @@
         android:layout_alignBottom="@+id/reportSettingsFileSelectButton"
         android:layout_toRightOf="@+id/reportSettingsFileSelectButton"
         android:layout_marginLeft="15dp"
-        android:textSize="22dp" />
+        android:textSize="22dp"
+        android:textColor="@color/white" />
 
     <Button
         android:layout_width="100dp"
@@ -92,6 +94,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="45dp"
         android:textSize="22dp"
-        android:background="@color/button_blue" />
+        android:background="@color/button_blue"
+        android:textColor="@color/white" />
 
 </RelativeLayout>

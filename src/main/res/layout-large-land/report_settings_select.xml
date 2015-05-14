@@ -64,7 +64,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="65dp"
-        android:layout_marginRight="135dp" />
+        android:layout_marginRight="135dp"
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/textView2"
