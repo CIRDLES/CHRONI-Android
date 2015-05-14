@@ -714,6 +714,10 @@ Splits report settings file name returning a displayable version without the ent
                                     valueToRound = new SignificantFigures(
                                             (oneSigma / (Math.pow(10,
                                                     dividingNumber))) * 2);
+                                                System.out.println("ABS:" + valueToRound);
+                                                System.out.println("%: " + (oneSigma / initialValue) * 200);
+                                                System.out.println("------------------------------------------");
+
                                 } else if (column.getValue().getUncertaintyType().equals("PCT")) {     // Calculates value if column is PCT uncertainty
                                     valueToRound = new SignificantFigures(
                                             (oneSigma / initialValue) * 200);
@@ -726,18 +730,30 @@ Splits report settings file name returning a displayable version without the ent
                                 }
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
                                         .valueOf(newUncertaintyValue);
-                                // goes back and fixes parent cell value to match uncertainty
-                                if(String.valueOf(newUncertaintyValue).contains(".")) {
-                                    String parentFractional = formatShape(String.valueOf(newUncertaintyValue), fractionArray[arrayRowCount][arrayColumnCount - 1]);
-                                    fractionArray[arrayRowCount][arrayColumnCount - 1] = parentFractional;
-                                }else{
-                                    String oldParentValue =fractionArray[arrayRowCount][arrayColumnCount - 1];
-                                    int uncertaintySigFigCount = newUncertaintyValue.getNumberSignificantFigures();
-                                    SignificantFigures newParentValue = new SignificantFigures(oldParentValue).setNumberSignificantFigures(uncertaintySigFigCount);
-                                    fractionArray[arrayRowCount][arrayColumnCount - 1] = String.valueOf(newParentValue);
 
-                                }
-
+                                // goes back and formats parent cell value to match uncertainty
+                                String oldParentValue = fractionArray[arrayRowCount][arrayColumnCount - 1];
+//                                if(column.getValue().getUncertaintyType().equals("PCT")){
+//                                    BigDecimal parent = new BigDecimal(oldParentValue);
+//                                    BigDecimal percentUncertainty = new BigDecimal(String.valueOf(newUncertaintyValue));
+//                                    BigDecimal absoluteUncertaintyValue = parent.multiply(percentUncertainty);
+//                                    SignificantFigures absValue = new SignificantFigures(String.valueOf(absoluteUncertaintyValue)).setNumberSignificantFigures(uncertaintyCountOfSignificantDigits);
+//                                    System.out.println("Parent: " + parent);
+//                                    System.out.println("%: " + percentUncertainty);
+//                                    System.out.println("ABS/FINAL: " + absValue);
+//                                    System.out.println("---------------------------------");
+//                                    String newParentValue = formatShape(String.valueOf(absValue), oldParentValue);
+//                                    fractionArray[arrayRowCount][arrayColumnCount - 1] = String.valueOf(newParentValue);
+//                                }else {
+                                    if (String.valueOf(newUncertaintyValue).contains(".")) {
+                                        String parentFractional = formatShape(String.valueOf(newUncertaintyValue), fractionArray[arrayRowCount][arrayColumnCount - 1]);
+                                        fractionArray[arrayRowCount][arrayColumnCount - 1] = parentFractional;
+                                    } else {
+                                        int uncertaintySigFigCount = newUncertaintyValue.getNumberSignificantFigures();
+                                        SignificantFigures newParentValue = new SignificantFigures(oldParentValue).setNumberSignificantFigures(uncertaintySigFigCount);
+                                        fractionArray[arrayRowCount][arrayColumnCount - 1] = String.valueOf(newParentValue);
+                                    }
+//                                }
                                 // Test sigfig method
 //                                boolean isArbitraryMode = column.getValue().isDisplayedWithArbitraryDigitCount(); // determines if parent column is in arbitrary mode
 //                                roundUncertaintyCellValue(isArbitraryMode, String.valueOf(valueToBeRounded), uncertaintyCountOfSignificantDigits);
@@ -765,7 +781,7 @@ Splits report settings file name returning a displayable version without the ent
     public static String formatShape(String uncertaintyValue, String parentValue){
         String newParentValue = "";
         int lengthOfFraction = 0;
-        System.out.println("Original: " + parentValue);
+//        System.out.println("Original: " + parentValue);
 
         if(uncertaintyValue.contains(".")){
             String[] uncertaintyParts = uncertaintyValue.split("\\.");
