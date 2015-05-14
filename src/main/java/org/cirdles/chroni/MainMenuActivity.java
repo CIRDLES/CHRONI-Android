@@ -86,42 +86,9 @@ public class MainMenuActivity extends Activity {
             }
         });
 
-
-        // Creates Significant Figures
-//        String[] args = {"40.7", "87.009", "0.095987", "0.0009", "85.00", "9.000", "300"};
-//        SignificantFigures number;
-//        int sigs = 2;
-//        for (int i = 0; i < args.length; i++){
-//            // For each number, figure out significant figures
-//            // and multiply the numbers
-//            number = new SignificantFigures(args[i]).setNumberSignificantFigures(sigs);
-//            Log.e("Rounding", "With Setter: " + String.valueOf(number));
-//        }
-
-        // Testing sigfig manipulation
-//        String[] args = {"40.7", "87.009", "0.095987", "0.0009", "85.00", "9.000", "300"};
-//        SignificantFigures number;
-//        int sigs = 2;
-//        for (int i = 0; i < args.length; i++) {
-//            number = new SignificantFigures(args[i]).setNumberSignificantFigures(2);
-//            System.out.println("Converts to: " + number);
-//            if (String.valueOf(number).contains("E")) {
-//                System.out.println("Result: " + toCorrectDigits(String.valueOf(number)));
-//            }
-//            System.out.println("--------------------------------");
-//        }
     }
 
-    /*
-    Correctly formats string
-     */
-    public static String toCorrectDigits(String value){
-            System.out.println("Value is " + value);
-            String res = new BigDecimal(value).toPlainString();
-            return res;
-    }
-
-   @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
