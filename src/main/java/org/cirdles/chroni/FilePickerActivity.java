@@ -145,7 +145,9 @@ public class FilePickerActivity extends ListActivity {
 		}
 		mAdapter.notifyDataSetChanged();
 	}
-	
+
+
+    //TODO FIX THIS. THIS IS THE BACK OPTION!
 	@Override
 	public void onBackPressed() {
         Intent openMainMenu = null;
