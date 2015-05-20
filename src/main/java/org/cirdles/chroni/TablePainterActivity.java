@@ -64,6 +64,8 @@ public class TablePainterActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setContentView(R.layout.display);
 
+
+
         // Instantiates the Report Settings Parser and gets the current Report Settings path
         ReportSettingsParser reportSettingsParser = new ReportSettingsParser();
         setReportSettingsFilePath(retrieveReportSettingsFilePath());
@@ -157,9 +159,9 @@ public class TablePainterActivity extends Activity {
         buttonRow.setGravity(Gravity.CENTER);
         buttonRow.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-
+        //TODO fix imageMap key / not storing image url
         // Adds button to view a concordia image
-        if ((imageMap.containsKey("concordia"))) {
+        //if ((imageMap.containsKey("concordia"))) {
             Button viewConcordiaButton = new Button(this);
             viewConcordiaButton.setTextColor(Color.BLACK);
             viewConcordiaButton.setTextSize((float) 13);
@@ -179,17 +181,17 @@ public class TablePainterActivity extends Activity {
                     if (mobileWifi.isConnected()) {
                         // Displays concordia images
                         Toast.makeText(TablePainterActivity.this, "Opening Concordia Image...", Toast.LENGTH_LONG).show();
-                        Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageMap.get("concordia").getImageURL()));
+                        //Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageMap.get("concordia").getImageURL()));
 //                    Intent viewConcordiaIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
 //                        viewConcordiaIntent.putExtra("ConcordiaImage", imageMap.get("concordia").getImageURL());
-                        startActivity(viewConcordiaIntent);
+                        //startActivity(viewConcordiaIntent);
                     } else {
                         //Handles lack of wifi connection
                         Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
                     }
                 }
             });
-        }
+       // }
 
         //Adds button to view a probability density image
         if ((imageMap.containsKey("probability_density"))) {
