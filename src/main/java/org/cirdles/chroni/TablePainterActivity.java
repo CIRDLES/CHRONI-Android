@@ -787,7 +787,7 @@ Splits report settings file name returning a displayable version without the ent
 
         if(uncertaintyValue.contains(".")){
             String[] uncertaintyParts = uncertaintyValue.split("\\.");
-            lengthOfFraction = uncertaintyParts[1].length();
+            lengthOfFraction = uncertaintyParts[0].length();
 //            System.out.println("Digits: " + lengthOfFraction);
             String[] parentParts = parentValue.split("\\.");
             String formattedParentFraction = parentParts[1].substring(0, lengthOfFraction);
