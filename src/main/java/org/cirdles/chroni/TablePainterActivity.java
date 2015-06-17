@@ -354,7 +354,6 @@ public class TablePainterActivity extends Activity {
             }
             rowCount++;
         }
-        Log.e("TABLE", "Output Variable Size: " + COLS);
 
     }
 
@@ -625,42 +624,53 @@ Splits report settings file name returning a displayable version without the ent
                                     currentUnit)) {
                                 Integer dividingNumber = Numbers.getUnitConversionsMap().get(
                                         currentUnit); // gets the exponent for conversion
-                                valueToBeRounded = new BigDecimal(initialValue
+                                SignificantFigures valueToRound = new SignificantFigures(initialValue
                                         / (Math.pow(10, dividingNumber))); // does initial calculation
 
-                                // Puts Parent value in the cell
-                                roundedValue = valueToBeRounded.setScale(
+                                // Testing rounding work
+                                // If there is an uncertainty column, figures out number of digits for shape in next column
+                                if (column.getValue().getUncertaintyColumn() != null) {
+                                    fractionArray[arrayRowCount][arrayColumnCount] = String.valueOf(valueToRound);
+                                }else {
+                                    // Puts Parent value in the cell with just parent amount of digits if no uncertainty column
+                                    valueToBeRounded= new BigDecimal(initialValue / (Math.pow(10, dividingNumber))); // does initial calculation
+                                    roundedValue = valueToBeRounded.setScale(
                                         countOfSignificantDigits,
                                         valueToBeRounded.ROUND_HALF_UP);
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
                                         .valueOf(roundedValue);
+                                }
+                                // Puts Parent value in the cell
+//                                roundedValue = valueToBeRounded.setScale(
+//                                        countOfSignificantDigits,
+//                                        valueToBeRounded.ROUND_HALF_UP);
+//                                fractionArray[arrayRowCount][arrayColumnCount] = String
+//                                        .valueOf(roundedValue);
+
 
                                 // Testing rounding method
                                 //TODO:Do this better
-                                String columnMode = ""; // determines column mode based on uncertainty
-                                if (column.getValue().getUncertaintyColumn() != null) {
-                                    boolean uncertaintyInArbitraryMode = column.getValue().getUncertaintyColumn().isDisplayedWithArbitraryDigitCount();
-                                    if (!uncertaintyInArbitraryMode && !isArbitraryMode) {
-                                        columnMode = "bothSigFig";
-                                    } else if (uncertaintyInArbitraryMode && !isArbitraryMode) {
-                                        columnMode = "parentSigFig";
-                                    } else if (!uncertaintyInArbitraryMode && isArbitraryMode) {
-                                        columnMode = "parentArbitrary";
-                                    }
-                                    int uncertaintyCountOfSigFigs = column.getValue().getUncertaintyColumn().getCountOfSignificantDigits();
-                                    roundParentCellValue(columnMode, String.valueOf(valueToBeRounded), countOfSignificantDigits, uncertaintyCountOfSigFigs);
-
-                                } else {
-                                    if (isArbitraryMode) {
-                                        columnMode = "parentArbitrary";
-                                    } else {
-                                        columnMode = "parentSigFig";
-                                    }
-                                    roundParentCellValue(columnMode, String.valueOf(valueToBeRounded), countOfSignificantDigits, countOfSignificantDigits);
-
-                                }
-
-
+//                                String columnMode = ""; // determines column mode based on uncertainty
+//                                if (column.getValue().getUncertaintyColumn() != null) {
+//                                    boolean uncertaintyInArbitraryMode = column.getValue().getUncertaintyColumn().isDisplayedWithArbitraryDigitCount();
+//                                    if (!uncertaintyInArbitraryMode && !isArbitraryMode) {
+//                                        columnMode = "bothSigFig";
+//                                    } else if (uncertaintyInArbitraryMode && !isArbitraryMode) {
+//                                        columnMode = "parentSigFig";
+//                                    } else if (!uncertaintyInArbitraryMode && isArbitraryMode) {
+//                                        columnMode = "parentArbitrary";
+//                                    }
+//                                    int uncertaintyCountOfSigFigs = column.getValue().getUncertaintyColumn().getCountOfSignificantDigits();
+//                                    roundParentCellValue(columnMode, String.valueOf(valueToBeRounded), countOfSignificantDigits, uncertaintyCountOfSigFigs);
+//
+//                                } else {
+//                                    if (isArbitraryMode) {
+//                                        columnMode = "parentArbitrary";
+//                                    } else {
+//                                        columnMode = "parentSigFig";
+//                                    }
+//                                    roundParentCellValue(columnMode, String.valueOf(valueToBeRounded), countOfSignificantDigits, countOfSignificantDigits);
+//                                }
                             }
                         } else { // if value model is null puts a hyphen in place
                             fractionArray[arrayRowCount][arrayColumnCount] = "-";
@@ -700,26 +710,55 @@ Splits report settings file name returning a displayable version without the ent
                                         .getUnitConversionsMap().get(
                                                 currentUnit);
 
-                                valueToBeRounded = new BigDecimal(0.0); // initializes value
+                                // Formats Uncertainty correctly
+                                SignificantFigures valueToRound = new SignificantFigures("0.0");
                                 if (column.getValue().getUncertaintyType().equals("ABS")) {     // Calculates value if column is ABS uncertainty
-                                    valueToBeRounded = new BigDecimal(
+                                    valueToRound = new SignificantFigures(
                                             (oneSigma / (Math.pow(10,
                                                     dividingNumber))) * 2);
+                                                System.out.println("ABS:" + valueToRound);
+                                                System.out.println("%: " + (oneSigma / initialValue) * 200);
+                                                System.out.println("------------------------------------------");
+
                                 } else if (column.getValue().getUncertaintyType().equals("PCT")) {     // Calculates value if column is PCT uncertainty
-                                    valueToBeRounded = new BigDecimal(
+                                    valueToRound = new SignificantFigures(
                                             (oneSigma / initialValue) * 200);
                                 }
 
-                                roundedValue = valueToBeRounded.setScale(
-                                        uncertaintyCountOfSignificantDigits,
-                                        valueToBeRounded.ROUND_HALF_UP);
+                                // Puts value of uncertainty column in cell
+                                SignificantFigures newUncertaintyValue = valueToRound.setNumberSignificantFigures(uncertaintyCountOfSignificantDigits);
+                                if (String.valueOf(newUncertaintyValue).contains("E")) {
+                                    toCorrectDigits(String.valueOf(newUncertaintyValue));
+                                }
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
-                                        .valueOf(roundedValue);
+                                        .valueOf(newUncertaintyValue);
 
+                                // goes back and formats parent cell value to match uncertainty
+                                String oldParentValue = fractionArray[arrayRowCount][arrayColumnCount - 1];
+//                                if(column.getValue().getUncertaintyType().equals("PCT")){
+//                                    BigDecimal parent = new BigDecimal(oldParentValue);
+//                                    BigDecimal percentUncertainty = new BigDecimal(String.valueOf(newUncertaintyValue));
+//                                    BigDecimal absoluteUncertaintyValue = parent.multiply(percentUncertainty);
+//                                    SignificantFigures absValue = new SignificantFigures(String.valueOf(absoluteUncertaintyValue)).setNumberSignificantFigures(uncertaintyCountOfSignificantDigits);
+//                                    System.out.println("Parent: " + parent);
+//                                    System.out.println("%: " + percentUncertainty);
+//                                    System.out.println("ABS/FINAL: " + absValue);
+//                                    System.out.println("---------------------------------");
+//                                    String newParentValue = formatShape(String.valueOf(absValue), oldParentValue);
+//                                    fractionArray[arrayRowCount][arrayColumnCount - 1] = String.valueOf(newParentValue);
+//                                }else {
+                                    if (String.valueOf(newUncertaintyValue).contains(".")) {
+                                        String parentFractional = formatShape(String.valueOf(newUncertaintyValue), fractionArray[arrayRowCount][arrayColumnCount - 1]);
+                                        fractionArray[arrayRowCount][arrayColumnCount - 1] = parentFractional;
+                                    } else {
+                                        int uncertaintySigFigCount = newUncertaintyValue.getNumberSignificantFigures();
+                                        SignificantFigures newParentValue = new SignificantFigures(oldParentValue).setNumberSignificantFigures(uncertaintySigFigCount);
+                                        fractionArray[arrayRowCount][arrayColumnCount - 1] = String.valueOf(newParentValue);
+                                    }
+//                                }
                                 // Test sigfig method
-                                boolean isArbitraryMode = column.getValue().isDisplayedWithArbitraryDigitCount(); // determines if parent column is in arbitrary mode
-                                roundUncertaintyCellValue(isArbitraryMode, String.valueOf(valueToBeRounded), uncertaintyCountOfSignificantDigits);
-
+//                                boolean isArbitraryMode = column.getValue().isDisplayedWithArbitraryDigitCount(); // determines if parent column is in arbitrary mode
+//                                roundUncertaintyCellValue(isArbitraryMode, String.valueOf(valueToBeRounded), uncertaintyCountOfSignificantDigits);
 
                             }
                         } // closes if
@@ -739,6 +778,43 @@ Splits report settings file name returning a displayable version without the ent
     } // closes method
 
     /*
+ *
+ */
+    public static String formatShape(String uncertaintyValue, String parentValue){
+        String newParentValue = "";
+        int lengthOfFraction = 0;
+//        System.out.println("Original: " + parentValue);
+
+        if(uncertaintyValue.contains(".")){
+            String[] uncertaintyParts = uncertaintyValue.split("\\.");
+            lengthOfFraction = uncertaintyParts[1].length();
+//            System.out.println("Digits: " + lengthOfFraction);
+            String[] parentParts = parentValue.split("\\.");
+            String formattedParentFraction = parentParts[1].substring(0, lengthOfFraction);
+            newParentValue = parentParts[0] + "." + formattedParentFraction;
+//            System.out.println("Unct: " + uncertaintyValue);
+//            System.out.println("New: " + newParentValue);
+        }else{
+            lengthOfFraction = uncertaintyValue.length();
+
+        }
+
+
+        System.out.println("-----------------------------------------------------------------------");
+
+        return newParentValue;
+    }
+
+    /*
+    Correctly formats string
+    */
+    public static String toCorrectDigits(String value){
+        System.out.println("Value is " + value);
+        String res = new BigDecimal(value).toPlainString();
+        return res;
+    }
+
+    /*
     Creates the appropriate rounded version of a number for a parent cell
     @param currentMode: bothSigFig, parentArbitrary, parentSigFig, uncertaintyArbitrary, uncertaintySigFig
     @param value: the value in the cell to be rounded
@@ -747,13 +823,13 @@ Splits report settings file name returning a displayable version without the ent
      */
     public static String roundParentCellValue(String currentMode, String value, int parentSigFigCount, int uncertaintySigFigCount) {
         String roundedValue = "";
-//        Log.e("Rounding", "PARENT");
-//        Log.e("Rounding", "Original: " + value);
+        Log.e("Rounding", "PARENT");
+        Log.e("Rounding", "Original: " + value);
 
 
         if (currentMode.contentEquals("parentSigFig")) {
             // Sends entire number in for rounding based on total number of sigfigs as specified in the parent column
-//            Log.e("Rounding", "Parent(Whole) Sig Figs: " + parentSigFigCount);
+            Log.e("Rounding", "Parent(Whole) Sig Figs: " + parentSigFigCount);
             if (parentSigFigCount != 0) {
                 if (value.contains("-")) {
                     roundedValue = value.substring(0, parentSigFigCount + 2); // adds two to account for decimal place and negative sign
@@ -772,7 +848,7 @@ Splits report settings file name returning a displayable version without the ent
 
             if (currentMode.contentEquals("bothSigFig")) {
                 //sends fractional portion and uncertainty sig fig count to display based on uncertainty sigfig
-//                Log.e("Rounding", "Uncertainty Sig Figs: " + uncertaintySigFigCount);
+                Log.e("Rounding", "Uncertainty Sig Figs: " + uncertaintySigFigCount);
                 if (uncertaintySigFigCount != 0) {
                     roundedValue = wholeNumber + "." + fractional.substring(0, uncertaintySigFigCount);
 //                    countSignificantFigures(fractional, uncertaintySigFigCount);
@@ -782,7 +858,7 @@ Splits report settings file name returning a displayable version without the ent
 
             } else if (currentMode.contentEquals("parentArbitrary")) {
                 //sends fractional portion and parent sig fig count to display based on parent sigfig
-//                Log.e("Rounding", "Parent Sig Figs: " + parentSigFigCount);
+                Log.e("Rounding", "Parent Sig Figs: " + parentSigFigCount);
                 if (parentSigFigCount != 0) {
                     roundedValue = wholeNumber + "." + fractional.substring(0, parentSigFigCount);
 //                    countSignificantFigures(fractional, parentSigFigCount);
@@ -792,8 +868,8 @@ Splits report settings file name returning a displayable version without the ent
 
             }
         }
-//        Log.e("Rounding", "Rounded: " + roundedValue);
-//        Log.e("Rounding", "-------------------------------------------------------------------------------------");
+        Log.e("Rounding", "Rounded: " + roundedValue);
+        Log.e("Rounding", "-------------------------------------------------------------------------------------");
 
         return roundedValue;
     }
@@ -807,8 +883,8 @@ Splits report settings file name returning a displayable version without the ent
     public static String roundUncertaintyCellValue(boolean isArbitrary, String value, int uncertaintySigFigCount) {
         String roundedValue = "";
 
-//        Log.e("Rounding", "UNCERTAINTY");
-//        Log.e("Rounding", "Original: " + value);
+        Log.e("Rounding", "UNCERTAINTY");
+        Log.e("Rounding", "Original: " + value);
 
         NumberFormat formatter = new DecimalFormat();
 
@@ -819,13 +895,13 @@ Splits report settings file name returning a displayable version without the ent
 
         if (isArbitrary) { //ARBITRARY MODE
             //sends fractional portion and parent sig fig count to display based on uncertainty sigfig
-//            Log.e("Rounding", "Arb Sig Figs: " + uncertaintySigFigCount);
+            Log.e("Rounding", "Arb Sig Figs: " + uncertaintySigFigCount);
             roundedValue = wholeNumber + "." + fractional.substring(0, uncertaintySigFigCount);
 //            countSignificantFigures(fractional, uncertaintySigFigCount);
 
         } else { // SIGFIG MODE
             //sends fractional portion and uncertainty sig fig count to display based on uncertainty sigfig
-//            Log.e("Rounding", "SIGFIG (Whole) Sig Figs: " + uncertaintySigFigCount);
+            Log.e("Rounding", "SIGFIG (Whole) Sig Figs: " + uncertaintySigFigCount);
             if (value.contains("-")) {
                 roundedValue = value.substring(0, uncertaintySigFigCount + 2); //adds two to account for decimal place and negative
             } else {
@@ -839,8 +915,8 @@ Splits report settings file name returning a displayable version without the ent
             roundedValue = value;
         }
 
-//        Log.e("Rounding", "Rounded: " + roundedValue);
-//        Log.e("Rounding", "-------------------------------------------------------------------------------------");
+        Log.e("Rounding", "Rounded: " + roundedValue);
+        Log.e("Rounding", "-------------------------------------------------------------------------------------");
 
         return roundedValue;
     }

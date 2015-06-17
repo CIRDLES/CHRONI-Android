@@ -111,8 +111,8 @@ public class ReportSettingsParser {
 //							occupyAbsentInfo(visibleColumn, displayName1,displayName2, displayName3, methodName, variableName);
 
 							// UNCERTAINTY COLUMNS
-							if (categoryName.contains("datesCategory")
-									|| categoryName.contains("isotopicRatios")) {
+							if (categoryName.contentEquals("datesCategory")
+									|| categoryName.contentEquals("isotopicRatiosCategory") || categoryName.contentEquals("datesPbcCorrCategory") || categoryName.contentEquals("isotopicRatiosPbcCorrCategory")) {
 								// determines if uncertainty column is visible
 								NodeList uncertaintyColumnNodes = specificReportElement.getElementsByTagName("uncertaintyColumn");
 
@@ -124,7 +124,7 @@ public class ReportSettingsParser {
 									String uncertaintyName1 = parser.getNodeValue("displayName1",specificUncertaintyColumnNodes);
 									String uncertaintyName2 = parser.getNodeValue("displayName2",specificUncertaintyColumnNodes);
 									String uncertaintyName3 = parser.getNodeValue("displayName3", specificUncertaintyColumnNodes);
-									String uncertaintyUnits = parser.getNodeValue("units", columnNodes); // used to calculate correct value in column
+                                    String uncertaintyUnits = parser.getNodeValue("units", columnNodes); // used to calculate correct value in column
 									String uncertaintyMethodName = parser.getNodeValue("retrieveMethodName", specificUncertaintyColumnNodes); // used to find group of value models
 									String uncertaintyVariableName = parser.getNodeValue("retrieveVariableName", specificUncertaintyColumnNodes); // used to find specific value model for that column
                                     String uncertaintyDisplayedWithArbitraryDigitCount = parser.getNodeValue("displayedWithArbitraryDigitCount", columnNodes); // used to determine appropriate number of sigfigs
