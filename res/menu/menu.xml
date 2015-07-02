@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/returnToMenu"
+        android:title="Main Menu"/>
+    <item
+        android:id="@+id/historyMenu"
+        android:title="History"/>
+    <item
+        android:id="@+id/editProfileMenu"
+        android:title="Edit Credentials"/>
+    
+    <item android:id="@+id/viewFilesMenu"
+        android:title="View Files" >
+        <!-- "View Files" submenu -->
+        <menu>
+            <item android:id="@+id/viewAliquotsMenu"
+                android:title="Aliquot Files" />
+            <item android:id="@+id/viewReportSettingsMenu"
+                android:title="Report Settings Files" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/aboutScreen"
+        android:title="About"/>
+    <item
+        android:id="@+id/helpMenu"
+        android:title="Help"/>
+    
+</menu>

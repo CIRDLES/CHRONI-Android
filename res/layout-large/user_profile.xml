@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:id="@+id/userProfileBackground">
+
+    <EditText
+        android:id="@+id/geochronUsername"
+        android:layout_width="290dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Email Address"
+        android:inputType="textEmailAddress"
+        android:minWidth="300dip"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:layout_toRightOf="@+id/TextView02"
+        android:layout_alignBottom="@+id/TextView02" />
+
+    <TextView
+        android:id="@+id/TextView03"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Password"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/border_grey"
+        android:textSize="26dp"
+        android:layout_marginLeft="105dp"
+        android:layout_above="@+id/profileEraseButton"
+        android:layout_marginBottom="60dp" />
+
+    <EditText
+        android:id="@+id/geochronPassword"
+        android:layout_width="290dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:minWidth="300dip"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:layout_alignBottom="@+id/TextView03"
+        android:layout_marginRight="15dp"
+        android:layout_toRightOf="@+id/TextView03" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Geochron Portal"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/border_grey"
+        android:textSize="35sp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/geochronUsername"
+        android:layout_marginBottom="100dp" />
+
+    <TextView
+        android:id="@+id/testText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profile"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/border_grey"
+        android:textSize="60sp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/TextView01" />
+
+    <TextView
+        android:id="@+id/TextView02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Username"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/border_grey"
+        android:textSize="26dp"
+        android:layout_above="@+id/TextView03"
+        android:layout_alignRight="@+id/TextView03"
+        android:layout_marginBottom="25dp" />
+
+    <Button
+        android:id="@+id/fileBrowserHomeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/button_blue"
+        android:minHeight="50dp"
+        android:minWidth="100dp"
+        android:text="Home"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_alignBottom="@+id/profileEraseButton"
+        android:layout_toRightOf="@+id/profileEraseButton"
+        android:layout_marginLeft="25dp" />
+
+    <TextView
+        android:id="@+id/validationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/profileEraseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/button_blue"
+        android:minHeight="50dip"
+        android:minWidth="100dip"
+        android:text="Erase"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp" />
+
+    <Button
+        android:id="@+id/profileValidateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:background="@color/button_blue"
+        android:minHeight="50dip"
+        android:minWidth="100dip"
+        android:text="Validate"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_toLeftOf="@+id/profileEraseButton"
+        android:layout_alignBottom="@+id/profileEraseButton"
+        android:layout_marginRight="25dp" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="150dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/cirdles_logo"
+        android:layout_marginTop="10dp" />
+
+</RelativeLayout>

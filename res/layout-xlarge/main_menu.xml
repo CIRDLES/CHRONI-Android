@@ -1,0 +1,87 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".HomeScreenActivity"
+    android:id="@+id/mainMenuBackground">
+
+    <Button
+        android:id="@+id/menuHistoryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/button_blue"
+        android:minHeight="115dip"
+        android:minWidth="500dip"
+        android:text="History"
+        android:textColor="@color/white"
+        android:textColorHint="@color/border_grey"
+        android:textSize="75sp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/menuProfileButton"
+        android:layout_marginBottom="45dp" />
+
+    <Button
+        android:id="@+id/menuProfileButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/button_blue"
+        android:minHeight="115dip"
+        android:minWidth="500dip"
+        android:text="Credentials"
+        android:textColor="@color/white"
+        android:textColorHint="@color/border_grey"
+        android:textSize="75sp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/versionNumberMainMenu"
+        android:layout_marginBottom="50dp" />
+
+    <Button
+        android:id="@+id/menuOpenButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/button_blue"
+        android:minHeight="115dip"
+        android:minWidth="500dip"
+        android:text="Open"
+        android:textColor="@color/white"
+        android:textColorHint="@color/border_grey"
+        android:textSize="75sp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/menuHistoryButton"
+        android:layout_marginBottom="45dp" />
+
+    <TextView
+        android:id="@+id/versionNumberMainMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Version"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:textSize="32dp"
+        android:layout_marginBottom="85dp" />
+
+    <TextView
+        android:id="@+id/testText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/border_grey"
+        android:textSize="120dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/menuOpenButton"
+        android:layout_marginBottom="70dp" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="180dp"
+        android:layout_height="300dp"
+        android:minHeight="430dp"
+        android:minWidth="430dp"
+        android:src="@drawable/cirdles_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp" />
+
+</RelativeLayout>

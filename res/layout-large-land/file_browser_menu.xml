@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:id="@+id/aboutBackground">
+
+    <ImageView
+        android:layout_width="66dp"
+        android:layout_height="115dp"
+        android:id="@+id/logo"
+        android:background="@drawable/cirdles_logo"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="50dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Select"
+        android:id="@+id/textView"
+        android:textSize="60dp"
+        android:textColor="@color/border_grey"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="55dp" />
+    <Button
+        android:text="CHRONI Directory"
+        android:id="@+id/chroniDirectoryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/button_blue"
+        android:minHeight="76dp"
+        android:minWidth="400dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/border_grey"
+        android:textSize="40dp"
+        android:layout_centerInParent="true" />
+    <Button
+        android:text="Device Directory"
+        android:id="@+id/deviceDirectoryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/button_blue"
+        android:minHeight="76dp"
+        android:minWidth="400dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/border_grey"
+        android:textSize="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/chroniDirectoryButton"
+        android:layout_marginTop="45dp" />
+
+</RelativeLayout>
