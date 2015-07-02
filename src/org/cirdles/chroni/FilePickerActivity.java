@@ -83,15 +83,11 @@ public class FilePickerActivity extends ListActivity {
 		// Set initial directory
         mainDirectory = Environment.getExternalStorageDirectory(); // Takes user to root directory folder
 
-        //Sets the initial directory based on what file user is looking for (Aliquot or Report Settings)
-		if(getIntent().hasExtra("Default_Directory")){
-			if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_CHRONI_Directory")){
-                mainDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot"); // Takes user to Aliquot CHRONI Folder
-			}else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_CHRONI_Directory")) {
-                mainDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings"); // Takes user to Report Settings CHRONI Folder
-            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory")||getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory")){
-				mainDirectory = Environment.getExternalStorageDirectory(); // Takes user to root directory folder
-            }
+
+		if (getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory") || getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory")){
+			mainDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot"); // Takes user to the Aliquot folder
+		} else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_CHRONI_Directory")) {
+			mainDirectory = new File(Environment.getExternalStorageDirectory() + "CHRONI/Report Settings");
 		}
 		
 		// Initialize the ArrayList
