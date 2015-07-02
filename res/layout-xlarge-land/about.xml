@@ -3,25 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    android:id="@+id/userProfileBackground"><![CDATA[
-
-
-
-    TextView
-        android:id="@+id/TextView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/testText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="79dp"
-        android:text="Geochron Portal"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/border_grey"
-        android:textSize="35sp" />
-
-
-
-    ]]>
+    android:id="@+id/userProfileBackground">
 
     <TextView
         android:id="@+id/aboutTextHeader"
@@ -30,23 +12,12 @@
         android:text="About"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="60sp"
+        android:textSize="65dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="55dp" />
+        android:layout_marginTop="50dp" />
 
-    TextView
-    android:id="@+id/TextView02"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignLeft="@+id/TextView03"
-    android:layout_below="@+id/TextView01"
-    android:layout_marginTop="29dp"
-    android:text="Username"
-    android:textAppearance="?android:attr/textAppearanceLarge"
-    android:textColor="@color/border_grey"
-    android:textSize="25sp" />
-
+  
     <Button
         android:id="@+id/fileBrowserHomeButton"
         android:layout_width="wrap_content"
@@ -59,21 +30,14 @@
         android:textSize="20sp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="47dp" />
+        android:layout_marginBottom="45dp" />
 
-    Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enter Filename"
-        android:id="@+id/testFileNameInputButton"
-        android:layout_above="@+id/fileBrowserHomeButton"
-        android:layout_centerHorizontal="true" />
 
     <TextView
+        android:id="@+id/aboutText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:id="@+id/aboutText"
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/about_text"
@@ -86,13 +50,16 @@
         android:textColor="@color/black"
         android:layout_below="@+id/aboutTextHeader"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentEnd="false"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentStart="false"
         android:editable="true"
         android:scrollbars = "vertical"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/fileBrowserHomeButton"
+        android:layout_marginTop="15dp" />
 
     <ImageView
         android:layout_width="90dp"
@@ -101,10 +68,9 @@
         android:background="@drawable/cirdles_logo"
         android:layout_alignWithParentIfMissing="false"
         android:clickable="false"
-        android:cropToPadding="false"
-        android:layout_marginStart="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/aboutText"
-        android:layout_marginBottom="30dp" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="70dp"
+        android:layout_marginTop="15dp" />
 
 </RelativeLayout>
