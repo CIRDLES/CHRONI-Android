@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:id="@+id/aliquotSelectBackground">
+
+<Button
+         android:id="@+id/aliquotFileSubmitButton"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignBottom="@+id/aliquotFileSelectText"
+         android:layout_marginLeft="15dp"
+         android:layout_toRightOf="@+id/aliquotFileSelectButton"
+         android:background="@color/button_blue"
+         android:minWidth="50dp"
+         android:text="Open"
+         android:textSize="10sp" />
+
+    <Button
+         android:id="@+id/aliquotIGSNSubmitButton"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+        android:background="@color/button_blue"
+         android:minWidth="50dp"
+         android:text="Download"
+         android:textSize="10sp"
+        android:layout_toEndOf="@+id/imageView1"
+        android:layout_alignBottom="@+id/aliquotIGSNText"
+        android:layout_alignStart="@+id/aliquotFileSubmitButton" />
+
+     <TextView
+         android:id="@+id/TextView01"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignBottom="@+id/aliquotIGSNText"
+         android:layout_alignLeft="@+id/textView2"
+         android:text="GeoChron IGSN"
+         android:textAppearance="?android:attr/textAppearanceLarge"
+         android:textColor="@color/black"
+         android:textSize="20sp" />
+
+     <EditText
+         android:id="@+id/aliquotFileSelectText"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/aliquotIGSNSubmitButton"
+         android:layout_centerHorizontal="true"
+         android:layout_marginBottom="48dp"
+         android:editable="false"
+         android:ems="10"
+         android:hint="Select a file from this device"
+         android:minWidth="250dp"
+         android:textColor="@color/black"
+         android:textSize="17sp" />
+
+     <Button
+         android:id="@+id/aliquotFileSelectButton"
+         style="?android:attr/buttonStyleSmall"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:background="@color/dark_grey"
+         android:minHeight="48dp"
+         android:minWidth="48dp"
+         android:text="+"
+         android:textSize="15sp"
+         android:layout_toEndOf="@+id/aliquotIGSNText"
+         android:layout_alignTop="@+id/aliquotFileSubmitButton" />
+
+     <TextView
+         android:id="@+id/textView2"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignBottom="@+id/aliquotFileSelectText"
+         android:layout_toLeftOf="@+id/aliquotFileSelectText"
+         android:text="Saved Aliquot"
+         android:textAppearance="?android:attr/textAppearanceLarge"
+         android:textColor="@color/black"
+         android:textSize="20sp" />
+
+     <ImageView
+         android:id="@+id/imageView1"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/testText"
+         android:layout_centerHorizontal="true"
+         android:maxHeight="200dp"
+         android:maxWidth="200dp"
+         android:src="@drawable/cirdles_logo" />
+
+     <TextView
+         android:id="@+id/testText"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/aliquotFileSelectButton"
+         android:layout_centerHorizontal="true"
+         android:layout_marginBottom="69dp"
+         android:text="Aliquot"
+         android:textAppearance="?android:attr/textAppearanceLarge"
+         android:textColor="@color/border_grey"
+         android:textSize="70sp" />
+
+     <EditText
+         android:id="@+id/aliquotIGSNText"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:ems="10"
+         android:minWidth="270dp"
+         android:textColor="@color/black"
+         android:textSize="15sp"
+         android:layout_alignParentBottom="true"
+         android:layout_toEndOf="@+id/textView2"
+         android:layout_marginBottom="65dp" />
+
+</RelativeLayout>
