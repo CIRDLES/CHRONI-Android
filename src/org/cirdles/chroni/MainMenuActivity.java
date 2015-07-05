@@ -26,7 +26,7 @@ public class MainMenuActivity extends Activity {
 	super.onCreate(savedInstanceState);
 	setTheme(android.R.style.Theme_Holo);
 	setContentView(R.layout.main_menu);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
      //Places background image on layout due to theme overriding
      RelativeLayout layout =(RelativeLayout)findViewById(R.id.mainMenuBackground);

@@ -60,7 +60,7 @@ public class TablePainterActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setContentView(R.layout.display);
 
         // Instantiates the Report Settings Parser and gets the current Report Settings path
@@ -242,7 +242,7 @@ public class TablePainterActivity extends Activity {
 
         // calculates number of rows based on the size of the fraction, five is separately
         // added for the Report Settings category rows
-        final int ROWS = 4 + fractionMap.size();
+        final int ROWS = 5 + fractionMap.size();
         final int COLS = outputVariableNames.size();
 
         // Gets column sizes from string array
@@ -499,6 +499,7 @@ Splits report settings file name returning a displayable version without the ent
                             .getUncertaintyColumn().getDisplayName1();
                     currentRowNum++;
 
+                    // Puts display names in the header array and handles formating of special characters
                     reportSettingsArray[currentRowNum][totalColumnCount] = column.getValue()
                             .getUncertaintyColumn().getDisplayName2();
                     if (reportSettingsArray[currentRowNum][totalColumnCount]
@@ -515,12 +516,6 @@ Splits report settings file name returning a displayable version without the ent
                     }
 
                     currentRowNum++;
-
-                    // String uncertaintyMethodName =
-                    // column.getValue().getUncertaintyColumn().getMethodName();
-                    // String uncertaintyVariableName =
-                    // column.getValue().getUncertaintyColumn().getVariableName();
-
                     totalColumnCount++;
                     currentCategoryColumnCount++;
                 }
@@ -582,30 +577,28 @@ Splits report settings file name returning a displayable version without the ent
                         }
                         arrayRowCount++;
                     } else {
+                        // Retrieves the correct value model based off the variable name
                         ValueModel valueModel = DomParser.getValueModelByName(
                                 currentFraction.getValue(), variableName);
 
                         if (valueModel != null) {
                             float initialValue = valueModel.getValue();
                             String currentUnit = column.getValue().getUnits();
-                            int countOfSignificantDigits = column.getValue()
-                                    .getCountOfSignificantDigits();
-                            if (Numbers.getUnitConversionsMap().containsKey(
-                                    currentUnit)) {
-                                Integer dividingNumber = Numbers
-                                        .getUnitConversionsMap().get(
-                                                currentUnit);
-                                valueToBeRounded = new BigDecimal(initialValue
-                                        / (Math.pow(10, dividingNumber)));
+                            int countOfSignificantDigits = column.getValue().getCountOfSignificantDigits();
+
+                            // Performs the mathematical operations for the table
+                            if (Numbers.getUnitConversionsMap().containsKey(currentUnit)) {
+                                Integer dividingNumber = Numbers.getUnitConversionsMap().get(currentUnit); // gets the exponent for conversion
+                                valueToBeRounded = new BigDecimal(initialValue / (Math.pow(10, dividingNumber))); // does initial calculation
                                 roundedValue = valueToBeRounded.setScale(
                                         countOfSignificantDigits,
-                                        valueToBeRounded.ROUND_HALF_UP);
+                                        valueToBeRounded.ROUND_HALF_UP); // performs rounding
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
-                                        .valueOf(roundedValue);
+                                        .valueOf(roundedValue); // places final value in array
                             }
                         }
 
-                        else { // if value model is null
+                        else { // if value model is null puts a hyphen in place
                             fractionArray[arrayRowCount][arrayColumnCount] = "-";
                         }
                         arrayRowCount++;
@@ -614,6 +607,7 @@ Splits report settings file name returning a displayable version without the ent
                 } // ends while
                 arrayColumnCount++;
 
+                // Handles the mathematics of the uncertainty column
                 if (column.getValue().getUncertaintyColumn() != null) {
                     Iterator<Entry<String, Fraction>> fractionIterator2 = fractionMap
                             .entrySet().iterator();
@@ -627,11 +621,14 @@ Splits report settings file name returning a displayable version without the ent
                                 fraction.getValue(), variableName);
 
                         if (valueModel != null) {
+                            // Retrieves info necessary to do calculations and fill table
                             float oneSigma = valueModel.getOneSigma();
                             String currentUnit = column.getValue().getUnits();
                             int uncertaintyCountOfSignificantDigits = column
                                     .getValue().getUncertaintyColumn()
                                     .getCountOfSignificantDigits();
+
+                            // Performs the mathematical operations for the table
                             if (Numbers.getUnitConversionsMap().containsKey(
                                     currentUnit)) {
                                 Integer dividingNumber = Numbers
@@ -641,6 +638,7 @@ Splits report settings file name returning a displayable version without the ent
                                         (oneSigma / (Math.pow(10,
                                                 dividingNumber))) * 2);
 
+                                // Calculatees value if column is percent uncertainty
                                 if (column.getValue().getUncertaintyType()
                                         .equals("PCT")) {
                                     valueToBeRounded = new BigDecimal(
@@ -652,7 +650,7 @@ Splits report settings file name returning a displayable version without the ent
                                         uncertaintyCountOfSignificantDigits,
                                         valueToBeRounded.ROUND_HALF_UP);
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
-                                        .valueOf(roundedValue);
+                                        .valueOf(roundedValue); // places final value in array
                             }
                         } // closes if
                         else { // if value model is null
