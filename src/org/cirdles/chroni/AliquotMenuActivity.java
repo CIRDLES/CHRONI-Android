@@ -45,6 +45,7 @@ public class AliquotMenuActivity extends Activity {
     public static String BASE_SAMPLE_URI = "http://www.geosamples.org/display.php?igsn=";
 
     private static final int REQUEST_PICK_FILE = 1;
+    public int CIRDLES_ORANGE_RGB = Color.rgb(242, 136, 58);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +128,7 @@ public class AliquotMenuActivity extends Activity {
 
                     String aliquotIGSN = igsnText.getText().toString().toUpperCase().trim(); // Captures igsn from user input
                     URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn"); // Downloads Aliquot file
+                    igsnDownloadButton.setBackgroundColor(CIRDLES_ORANGE_RGB);
 
                     // Note: Setting above is useful for download-then-open functionality
                 }
