@@ -334,11 +334,16 @@ public class TablePainterActivity extends Activity {
                 cell.setText(finalArray[currentRow][currentColumn]);
                 cell.setVisibility(View.VISIBLE);
 
-                    if (cell.getText().equals("-")) {
-                        cell.setGravity(Gravity.CENTER);
-                    } else if (currentColumn == 0) {
-                        cell.setGravity(Gravity.LEFT);
-                    }
+                if (cell.getText().equals("-")) {
+                    cell.setGravity(Gravity.CENTER);
+                }
+
+                //left justify fraction column
+                boolean isFraction = isFractionColumn(finalArray, currentColumn);
+                if(isFraction) {
+                    cell.setGravity(Gravity.LEFT);
+                }
+
 
                 // append an individual cell to a content row
                 row.addView(cell);
@@ -376,9 +381,9 @@ Splits report settings file name returning a displayable version without the ent
     Figures out if something is a part of the Fraction column.
      */
 
-    private boolean isFractionColumn(int columnIndex) {
-        boolean isFractionColumn;
-        String categoryName = getFinalArray()[0][columnIndex]; // gets name of category from the top of column
+    private boolean isFractionColumn(String[][] displayArray, int columnIndex) {
+        boolean isFractionColumn = false;
+        String categoryName = displayArray[0][columnIndex];
 
         if (categoryName.contentEquals("Fraction")) {
             isFractionColumn = true;
@@ -388,17 +393,6 @@ Splits report settings file name returning a displayable version without the ent
         return isFractionColumn;
     }
 
-    /*
-    Returns the correct alignment for a cell
-     */
-
-    private String alignFractionColumn(int columnIndex) {
-        String alignment = "RIGHT";
-        if (isFractionColumn(columnIndex)) {
-            alignment = "LEFT";
-        }
-        return alignment;
-     }
 
     /*
      Goes through and figures out header cell lengths given a table
