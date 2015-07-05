@@ -432,6 +432,10 @@ Splits report settings file name returning a displayable version without the ent
 
     /*
      * Fills the Report Settings portion of the array
+     * @param outputVariableName used to get size of the array
+     * @param categoryMap used to populate the array
+     * @return reportSettingsArray the array of the report settings
+     * TODO: figure out smarter way to handle output variable name param (i.e. just need to send the number)
      */
     private static String[][] fillReportSettingsArray(
             ArrayList<String> outputVariableName,
@@ -465,7 +469,7 @@ Splits report settings file name returning a displayable version without the ent
                     rowNum++;
                 }
 
-                // puts the displayNames in the array
+                // puts the displayNames in each row of the header array
                 reportSettingsArray[rowNum][columnNum] = column.getValue()
                         .getDisplayName1();
                 rowNum++;
@@ -487,7 +491,7 @@ Splits report settings file name returning a displayable version without the ent
                 // Fills in uncertainty column information
                 if (column.getValue().getUncertaintyColumn() != null) {
                     rowNum = 0;
-                    reportSettingsArray[rowNum][columnNum] = "";
+                    reportSettingsArray[rowNum][columnNum] = ""; // Initialized as blank because no uncertainty display name will ever be on the first row
                     rowNum++;
 
                     // puts the displayNames in the array
@@ -527,6 +531,11 @@ Splits report settings file name returning a displayable version without the ent
 
     /*
      * Fills the Aliquot portion of the array
+     * @param outputVariableName keeps track of the number of columns and to retrieve value models
+     * @param categoryMap used to fill table
+     * @param fractionMap used to fill the faction array with the information
+     * @param aliquotName puts the correct name in the table
+     * @return fractionArray the bottom half of the array
      */
     public static String[][] fillFractionArray(
             ArrayList<String> outputVariableName,

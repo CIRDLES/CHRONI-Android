@@ -67,7 +67,8 @@ public class AliquotParser {
 				Element specificAnalysisFraction = (Element) analysisFraction;
 				
 				NodeList analysisFractionNodes = analysisFraction.getChildNodes(); 
-								
+
+				// Collects the overall info about the fraction necessary for parsing
 				String fractionID = parser.getNodeValue("fractionID",analysisFractionNodes);
 				
 				// Creates a new Fraction with the information parsed from the XML file and puts it in the map
@@ -82,11 +83,13 @@ public class AliquotParser {
 					Element specificValueModel = (Element) valueModelNode;
 					NodeList valueModelNodes = specificValueModel.getChildNodes(); // list of nodes that contain the information in the current Value Model
 								
-					String name = parser.getNodeValue("name",valueModelNodes);
-					String value = parser.getNodeValue("value", valueModelNodes);
-					String uncertaintyType = parser.getNodeValue("uncertaintyType",valueModelNodes);
-					String oneSigma = parser.getNodeValue("oneSigma", valueModelNodes);
-				
+					String name = parser.getNodeValue("name",valueModelNodes); // Used to link to a column's variable name
+					String value = parser.getNodeValue("value", valueModelNodes); // Used to display numerical value of normal columns
+					String uncertaintyType = parser.getNodeValue("uncertaintyType",valueModelNodes); // Used to determine how to calculate uncertainty value
+					String oneSigma = parser.getNodeValue("oneSigma", valueModelNodes); // Used to display numerical value of uncertainty column
+
+					// Creates a new value model for the fraction
+					// Every fraction has several value models used to build the table
 					ValueModel valueModel = new ValueModel(name, Float.parseFloat(value), uncertaintyType, Float.parseFloat(oneSigma));
 					newFraction.getValueModelMap().put(valueModel.getName(), valueModel);
 					}			
