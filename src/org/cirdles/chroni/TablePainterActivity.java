@@ -445,84 +445,84 @@ Splits report settings file name returning a displayable version without the ent
         // in the array
 
         String[][] reportSettingsArray = new String[ROWS][COLUMNS];
-        int columnNum = 0; // the current column number for the array
+        int totalColumnCount = 0; // the current column number for the array
 
         Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Entry<Integer, Category> category = iterator.next();
-            int columnCount = 1; // the number of columns under each category
+            int currentCategoryColumnCount = 1; // the number of columns under each category
 
             Iterator<Entry<Integer, Column>> columnIterator = category
                     .getValue().getCategoryColumnMap().entrySet().iterator();
             while (columnIterator.hasNext()) {
                 Entry<Integer, Column> column = columnIterator.next();
-                int rowNum = 0; // the current row number for the array
+                int currentRowNum = 0; // the current row number for the array
 
-                // Will always be in the 0th row, Category Information stored
-                // here
-                if (columnCount <= 1) {
-                    reportSettingsArray[rowNum][columnNum] = category
+                // If this is the first column, then puts the CATEGORY information there
+                // This populates the first row of the table, or skips it
+                if (currentCategoryColumnCount <= 1) {
+                    reportSettingsArray[currentRowNum][totalColumnCount] = category
                             .getValue().getDisplayName();
-                    rowNum++;
+                    currentRowNum++;
                 } else {
-                    reportSettingsArray[rowNum][columnNum] = "";
-                    rowNum++;
+                    reportSettingsArray[currentRowNum][totalColumnCount] = "";
+                    currentRowNum++;
                 }
 
                 // puts the displayNames in each row of the header array
-                reportSettingsArray[rowNum][columnNum] = column.getValue()
+                reportSettingsArray[currentRowNum][totalColumnCount] = column.getValue()
                         .getDisplayName1();
-                rowNum++;
+                currentRowNum++;
 
-                reportSettingsArray[rowNum][columnNum] = column.getValue()
+                reportSettingsArray[currentRowNum][totalColumnCount] = column.getValue()
                         .getDisplayName2();
-                rowNum++;
+                currentRowNum++;
 
-                reportSettingsArray[rowNum][columnNum] = column.getValue()
+                reportSettingsArray[currentRowNum][totalColumnCount] = column.getValue()
                         .getDisplayName3();
-                rowNum++;
+                currentRowNum++;
 
                 // String methodName = column.getValue().getMethodName();
                 // String variableName = column.getValue().getVariableName();
 
-                columnNum++;
-                columnCount++;
+                totalColumnCount++;
+                currentCategoryColumnCount++;
 
                 // Fills in uncertainty column information
                 if (column.getValue().getUncertaintyColumn() != null) {
-                    rowNum = 0;
-                    reportSettingsArray[rowNum][columnNum] = ""; // Initialized as blank because no uncertainty display name will ever be on the first row
-                    rowNum++;
+                    currentRowNum = 0;
+                    reportSettingsArray[currentRowNum][totalColumnCount] = ""; // Initialized as blank because no uncertainty display name will ever be on the first row
+                    currentRowNum++;
 
                     // puts the displayNames in the array
-                    reportSettingsArray[rowNum][columnNum] = column.getValue()
+                    reportSettingsArray[currentRowNum][totalColumnCount] = column.getValue()
                             .getUncertaintyColumn().getDisplayName1();
-                    rowNum++;
+                    currentRowNum++;
 
-                    reportSettingsArray[rowNum][columnNum] = column.getValue()
+                    reportSettingsArray[currentRowNum][totalColumnCount] = column.getValue()
                             .getUncertaintyColumn().getDisplayName2();
-                    if (reportSettingsArray[rowNum][columnNum]
+                    if (reportSettingsArray[currentRowNum][totalColumnCount]
                             .equals("PLUSMINUS2SIGMA")) {
-                        reportSettingsArray[rowNum][columnNum] = "\u00B12\u03C3";
+                        reportSettingsArray[currentRowNum][totalColumnCount] = "\u00B12\u03C3";
                     }
-                    rowNum++;
+                    currentRowNum++;
 
-                    reportSettingsArray[rowNum][columnNum] = column.getValue()
+                    reportSettingsArray[currentRowNum][totalColumnCount] = column.getValue()
                             .getUncertaintyColumn().getDisplayName3();
-                    if (reportSettingsArray[rowNum][columnNum]
+                    if (reportSettingsArray[currentRowNum][totalColumnCount]
                             .equals("PLUSMINUS2SIGMA%")) {
-                        reportSettingsArray[rowNum][columnNum] = "\u00B12\u03C3%";
+                        reportSettingsArray[currentRowNum][totalColumnCount] = "\u00B12\u03C3%";
                     }
 
-                    rowNum++;
+                    currentRowNum++;
 
                     // String uncertaintyMethodName =
                     // column.getValue().getUncertaintyColumn().getMethodName();
                     // String uncertaintyVariableName =
                     // column.getValue().getUncertaintyColumn().getVariableName();
 
-                    columnNum++;
-                    columnCount++;
+                    totalColumnCount++;
+                    currentCategoryColumnCount++;
                 }
             }
         }
@@ -564,6 +564,7 @@ Splits report settings file name returning a displayable version without the ent
             while (columnIterator.hasNext()) {
                 Entry<Integer, Column> column = columnIterator.next();
                 String variableName = column.getValue().getVariableName();
+                String methodName = column.getValue().getMethodName();
 
                 // going to iterate through all fractions for every column
                 Iterator<Entry<String, Fraction>> fractionIterator = fractionMap
@@ -571,14 +572,18 @@ Splits report settings file name returning a displayable version without the ent
                 int arrayRowCount = 0; // the current row number for the array;
 
                 while (fractionIterator.hasNext()) {
-                    Entry<String, Fraction> fraction = fractionIterator.next();
+                    Entry<String, Fraction> currentFraction = fractionIterator.next();
                     if (variableName.equals("")) {
-                        fractionArray[arrayRowCount][arrayColumnCount] = fraction
-                                .getValue().getFractionID();
+                        // Value Models under Fraction don't have variable names so have to account for those specifically
+                        if(methodName.equals("getFractionID")) {
+                            fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getFractionID();
+                        } else if(methodName.equals("getNumberOfGrains")) {
+                            fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getNumberOfGrains();
+                        }
                         arrayRowCount++;
                     } else {
                         ValueModel valueModel = DomParser.getValueModelByName(
-                                fraction.getValue(), variableName);
+                                currentFraction.getValue(), variableName);
 
                         if (valueModel != null) {
                             float initialValue = valueModel.getValue();

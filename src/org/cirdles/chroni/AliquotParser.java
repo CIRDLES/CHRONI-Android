@@ -70,9 +70,12 @@ public class AliquotParser {
 
 				// Collects the overall info about the fraction necessary for parsing
 				String fractionID = parser.getNodeValue("fractionID",analysisFractionNodes);
-				
+
+				String numberOfGrains = parser.getNodeValue("numberOfGrains", analysisFractionNodes);
+
+
 				// Creates a new Fraction with the information parsed from the XML file and puts it in the map
-				Fraction newFraction = new Fraction(fractionID);
+				Fraction newFraction = new Fraction(fractionID, numberOfGrains);
 				fractionMap.put(fractionID, newFraction);	
 								
 //				Gets all the value models in the specific fraction
