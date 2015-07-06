@@ -333,11 +333,18 @@ public class TablePainterActivity extends Activity {
                 // Adds text to cells
                 cell.setText(finalArray[currentRow][currentColumn]);
                 cell.setVisibility(View.VISIBLE);
-//
-                    if (cell.getText().equals("-")) {
-                        cell.setGravity(Gravity.CENTER);
-                    }
-//                }
+
+                if (cell.getText().equals("-")) {
+                    cell.setGravity(Gravity.CENTER);
+                }
+
+                //left justify fraction column
+                boolean isFraction = isFractionColumn(finalArray, currentColumn);
+                if(isFraction) {
+                    cell.setGravity(Gravity.LEFT);
+                }
+
+
                 // append an individual cell to a content row
                 row.addView(cell);
             }
@@ -371,8 +378,26 @@ Splits report settings file name returning a displayable version without the ent
     }
 
     /*
- Goes through and figures out header cell lengths given a table
-  */
+    Figures out if something is a part of the Fraction column.
+     */
+
+    private boolean isFractionColumn(String[][] displayArray, int columnIndex) {
+        boolean isFractionColumn = false;
+        String categoryName = displayArray[0][columnIndex];
+
+        if (categoryName.contentEquals("Fraction")) {
+            isFractionColumn = true;
+        } else {
+            isFractionColumn = false;
+        }
+        return isFractionColumn;
+    }
+
+
+    /*
+     Goes through and figures out header cell lengths given a table
+     */
+
     protected int[] distributeHeaderCells(int[] columnWidths){
         int[] headerMaxCharacterCounts = new int[categoryMap.size()];
         int currentCategoryCount = 0;
@@ -645,12 +670,14 @@ Splits report settings file name returning a displayable version without the ent
                                             (oneSigma / (Math.pow(10,
                                                     dividingNumber))) * 200);
                                 }
-
+                                /*
                                 roundedValue = valueToBeRounded.setScale(
                                         uncertaintyCountOfSignificantDigits,
                                         valueToBeRounded.ROUND_HALF_UP);
+                                        */
+                                String newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits);
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
-                                        .valueOf(roundedValue); // places final value in array
+                                        .valueOf(newValue); // places final value in array
                             }
                         } // closes if
                         else { // if value model is null
@@ -667,6 +694,10 @@ Splits report settings file name returning a displayable version without the ent
 
         return fractionArray;
     } // closes method
+
+    public static String toSignificantFiguresUncertaintyString(BigDecimal originalNumber, int significantFigures) {
+        return String.format("%." + significantFigures + "G", originalNumber);
+    }
 
     /*
      * Fills the entire application array.
@@ -759,15 +790,22 @@ Splits report settings file name returning a displayable version without the ent
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot_CHRONI_Directory");
+                        "Aliquot_Directory");
                 startActivity(openAliquotFiles);
                 return true;
             case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report_Settings_CHRONI_Directory");
+                        "Report_Settings_Directory");
                 startActivity(openReportSettingsFiles);
+                return true;
+            case R.id.viewRootMenu:
+                Intent openRootDirectory = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openRootDirectory.putExtra("Default_Directory",
+                        "Root_Directory");
+                startActivity(openRootDirectory);
                 return true;
             case R.id.aboutScreen: // Takes user to about screen
                 Intent openAboutScreen = new Intent(

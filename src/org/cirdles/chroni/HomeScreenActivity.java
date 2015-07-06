@@ -26,6 +26,7 @@ public class HomeScreenActivity extends Activity  {
     // Maintains whether app is initializing for the first time or not
     private static final String PREF_FIRST_LAUNCH = "First Launch";
     private static final String PREF_REPORT_SETTINGS = "Current Report Settings";     // Path of the current report settings file
+    private static final String PREF_ALIQUOT = "Current Aliquot"; // Path of the current aliquot file
 
     private TextView versionNumber; // version number
     private CHRONIDatabaseHelper trialDatabaseHelper; // Database
@@ -104,8 +105,12 @@ public class HomeScreenActivity extends Activity  {
         File defaultReportSettingsDirectory = new File(reportSettingsDirectory, "Default Report Settings");
         File defaultReportSettings2Directory = new File(reportSettingsDirectory, "Default Report Settings 2");
 
-        boolean defaultReportSettingsPresent = false; // determines whether the report settings is present or not
-        boolean defaultReportSettings2Present = false; // determines whether the report settings is present or not
+        // Gives default aliquot a path
+        File defaultAliquotDirectory = new File(reportSettingsDirectory, "Default Aliquot");
+
+        boolean defaultReportSettingsPresent = false; // determines whether the default report settings is present or not
+        boolean defaultReportSettings2Present = false; // determines whether the default report settings 2 is present or not
+        boolean defaultAliquotPresent = false; // determines whether the aliquot is present or not
 
         //Creates the directories if they are not there
 //        if(chroniDirectory.exists()){
@@ -129,6 +134,8 @@ public class HomeScreenActivity extends Activity  {
                 defaultReportSettingsPresent = true;
             }if (f.getName().contentEquals("Default Report Settings 2.xml")) {
                 defaultReportSettings2Present = true;
+            }if(f.getName().contentEquals("Default Aliquot.xml")) {
+                defaultAliquotPresent = true;
             }
         }
 
@@ -155,6 +162,16 @@ public class HomeScreenActivity extends Activity  {
                 saveInitialLaunch();
                 saveCurrentReportSettings();         // Notes that files have been downloaded and application has been properly initialized
             }
+
+            /*
+            if(!defaultAliquotPresent) {
+                // Downloads the default report setting file if absent
+                URLFileReader downloader3 = new URLFileReader(HomeScreenActivity.this, "HomeScreen",
+                    "http://cirdles.org/sites/default/files/Downloads/TempAliquot.xml", "url");
+                saveInitialLaunch();
+                saveCurrentAliquot(); // Notes that files have been downloaded and application has been properly initialized
+            }
+             */
 
         }else {
             Toast.makeText(HomeScreenActivity.this, "Please connect to your local wifi network to download your Default Report Settings files.", Toast.LENGTH_LONG).show();
@@ -232,6 +249,17 @@ public class HomeScreenActivity extends Activity  {
             }
 
     }
+
+    /*
+    Stores Current Aliquot
+     */
+    protected void saveCurrentAliquot() {
+        SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("Current Aliquot", getIntent().getStringExtra("AliquotXMLFileName")); // Gets chosen file from file browser and stores
+        editor.commit(); // Committing changes
+    }
+
 
     /*
      * Stores initial launch in Shared Preferences
