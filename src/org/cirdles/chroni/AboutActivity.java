@@ -79,6 +79,12 @@ public class AboutActivity extends Activity  {
                         "Report_Settings_Directory");
                 startActivity(openReportSettingsFiles);
                 return true;
+            case R.id.viewRootMenu:
+                Intent openRootDirectory = new Intent(
+                        "android.intent.action.FILEPICKER");
+                openRootDirectory.putExtra("Default_Directory",
+                        "Root_Directory");
+                return true;
             case R.id.aboutScreen: // Takes user to about screen
                 Intent openAboutScreen = new Intent(
                         "android.intent.action.ABOUT");
