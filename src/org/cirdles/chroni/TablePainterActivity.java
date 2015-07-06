@@ -648,6 +648,7 @@ Splits report settings file name returning a displayable version without the ent
                         if (valueModel != null) {
                             // Retrieves info necessary to do calculations and fill table
                             float oneSigma = valueModel.getOneSigma();
+                            float initialValue = valueModel.getValue();
                             String currentUnit = column.getValue().getUnits();
                             int uncertaintyCountOfSignificantDigits = column
                                     .getValue().getUncertaintyColumn()
@@ -666,9 +667,7 @@ Splits report settings file name returning a displayable version without the ent
                                 // Calculatees value if column is percent uncertainty
                                 if (column.getValue().getUncertaintyType()
                                         .equals("PCT")) {
-                                    valueToBeRounded = new BigDecimal(
-                                            (oneSigma / (Math.pow(10,
-                                                    dividingNumber))) * 200);
+                                    valueToBeRounded = new BigDecimal((oneSigma / initialValue) * 200);
                                 }
 
                                 String newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
