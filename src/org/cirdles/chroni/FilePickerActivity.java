@@ -84,10 +84,10 @@ public class FilePickerActivity extends ListActivity {
         mainDirectory = Environment.getExternalStorageDirectory(); // Takes user to root directory folder
 
 
-		if (getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory") || getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory")){
+		if (getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory")){
 			mainDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot"); // Takes user to the Aliquot folder
-		} else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_CHRONI_Directory")) {
-			mainDirectory = new File(Environment.getExternalStorageDirectory() + "CHRONI/Report Settings");
+		} else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory")) {
+			mainDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings");
 		}
 		
 		// Initialize the ArrayList
@@ -302,14 +302,14 @@ public class FilePickerActivity extends ListActivity {
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot_CHRONI_Directory");
+                        "Aliquot_Directory");
                 startActivity(openAliquotFiles);
                 return true;
             case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report_Settings_CHRONI_Directory");
+                        "Report_Settings_Directory");
                 startActivity(openReportSettingsFiles);
                 return true;
             case R.id.aboutScreen: // Takes user to about screen
