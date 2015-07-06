@@ -615,21 +615,11 @@ Splits report settings file name returning a displayable version without the ent
                             if (Numbers.getUnitConversionsMap().containsKey(currentUnit)) {
                                 Integer dividingNumber = Numbers.getUnitConversionsMap().get(currentUnit); // gets the exponent for conversion
                                 valueToBeRounded = new BigDecimal(initialValue / (Math.pow(10, dividingNumber))); // does initial calculation
-                                //roundedValue = valueToBeRounded.setScale(
-                                //        countOfSignificantDigits,
-                                //        valueToBeRounded.ROUND_HALF_UP); // performs rounding
+                                roundedValue = valueToBeRounded.setScale(
+                                        countOfSignificantDigits,
+                                        valueToBeRounded.ROUND_HALF_UP); // performs rounding
+                                fractionArray[arrayRowCount][arrayColumnCount] = String.valueOf(roundedValue); // Places final value in array
 
-                                String[] valueParts = String.valueOf(valueToBeRounded).split("\\."); // Splits off fraction part
-                                String newValue = toSignificantFiguresString(valueParts[1], countOfSignificantDigits); // Sends in fractional part of value to be rounded properly
-
-                                //String pattern = "####,####.###";
-                                //DecimalFormat decimalFormat = new DecimalFormat(patttern);
-
-                                //String number = decimalFormate.format(123456789.123);
-                                //System.out.println(number);
-
-                                fractionArray[arrayRowCount][arrayColumnCount] = valueParts[0] + "." + newValue; // Places final value in array
-                                //Log.e("JOYEEE", "Sig Figs: " + newValue);
                             }
                         }
 
@@ -681,7 +671,7 @@ Splits report settings file name returning a displayable version without the ent
                                                     dividingNumber))) * 200);
                                 }
 
-                                String newValue = toSignificantFiguresString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
+                                String newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
                                         .valueOf(newValue); // places final value in array
                             }
@@ -701,25 +691,8 @@ Splits report settings file name returning a displayable version without the ent
         return fractionArray;
     } // closes method
 
-    /*
-    Calculates number of sig figs for columns
-    For uncertainty columns, numberToCalculate is the entire number.
-    For parent columns, numberToCalulate is the portion after the decimal.
-     */
-
-    public static String toSignificantFiguresString(String numberToCalculate, int significantFigures) {
-        BigDecimal numberToRound = new BigDecimal(numberToCalculate); // Turns passed in number to bigdecimal
-        return String.format("%." + significantFigures + "G", numberToRound);
-    }
-
-    /*
-    Calculates number of sig figs for columns
-    For uncertainty columns, numberToCalculate is the entire number.
-    For parent columns, numberToCalulate is the portion after the decimal.
-     */
-
-    public static String toSignificantFiguresString(BigDecimal numberToCalculate, int significantFigures) {
-        return String.format("%." + significantFigures + "G", numberToCalculate);
+    public static String toSignificantFiguresUncertaintyString(BigDecimal originalNumber, int significantFigures) {
+        return String.format("%." + significantFigures + "G", originalNumber);
     }
 
     /*

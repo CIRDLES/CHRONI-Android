@@ -30,7 +30,7 @@ public class ReportSettingsParser {
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			DomParser parser = new DomParser();
 			Document doc = dBuilder.parse(fXmlFile);
-			
+
 			// hardcoded array of all the category names
 			String[] categoryNames = { "fractionCategory",
 					"compositionCategory", "isotopicRatiosCategory", "isotopicRatiosPbcCorrCategory",
