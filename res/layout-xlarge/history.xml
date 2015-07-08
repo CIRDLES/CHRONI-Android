@@ -52,7 +52,7 @@
         android:layout_centerHorizontal="true"
         android:minHeight="300dp"
         android:minWidth="300dp"
-        android:src="@drawable/cirdles_logo" />
+        android:src="@drawable/chroni_logo" />
 
     <TextView
         android:id="@+id/testText"

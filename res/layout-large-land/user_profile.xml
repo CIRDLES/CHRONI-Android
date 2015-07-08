@@ -139,7 +139,7 @@
         android:id="@+id/imageView"
         android:layout_width="66dp"
         android:layout_height="110dp"
-        android:src="@drawable/cirdles_logo"
+        android:src="@drawable/chroni_logo"
         android:layout_alignParentTop="true"
         android:layout_marginRight="50dp"
         android:layout_marginTop="10dp"

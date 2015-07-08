@@ -46,7 +46,7 @@
         android:layout_width="72dp"
         android:layout_height="120dp"
         android:id="@+id/logoImageView"
-        android:background="@drawable/cirdles_logo"
+        android:background="@drawable/chroni_logo"
         android:layout_alignWithParentIfMissing="false"
         android:clickable="false"
         android:layout_alignParentTop="true"

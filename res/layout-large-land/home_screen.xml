@@ -60,6 +60,6 @@
         android:layout_toLeftOf="@+id/TextView01"
         android:layout_centerVertical="true"
         android:layout_marginRight="40dp"
-        android:src="@drawable/cirdles_logo" />
+        android:src="@drawable/chroni_logo" />
 
 </RelativeLayout>

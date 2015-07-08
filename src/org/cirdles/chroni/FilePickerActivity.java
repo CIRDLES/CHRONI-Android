@@ -228,10 +228,10 @@ public class FilePickerActivity extends ListActivity {
 			textView.setText(object.getName());
 			if(object.isFile()) {
 				// Show the file icon
-				imageView.setImageResource(R.drawable.cirdles_logo);
+				imageView.setImageResource(R.drawable.chroni_logo);
 			} else {
 				// Show the folder icon
-				imageView.setImageResource(R.drawable.cirdles_logo);
+				imageView.setImageResource(R.drawable.chroni_logo);
 			}
 			
 			return row;

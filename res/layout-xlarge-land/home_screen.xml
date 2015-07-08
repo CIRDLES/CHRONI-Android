@@ -21,7 +21,7 @@
         android:id="@+id/imageView1"
         android:layout_width="225dp"
         android:layout_height="375dp"
-        android:src="@drawable/cirdles_logo"
+        android:src="@drawable/chroni_logo"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/TextView01"
         android:layout_marginRight="55dp" />
