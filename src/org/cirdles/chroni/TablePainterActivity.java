@@ -618,8 +618,8 @@ Splits report settings file name returning a displayable version without the ent
                                 roundedValue = valueToBeRounded.setScale(
                                         countOfSignificantDigits,
                                         valueToBeRounded.ROUND_HALF_UP); // performs rounding
-                                fractionArray[arrayRowCount][arrayColumnCount] = String
-                                        .valueOf(roundedValue); // places final value in array
+                                fractionArray[arrayRowCount][arrayColumnCount] = String.valueOf(roundedValue); // Places final value in array
+
                             }
                         }
 
@@ -648,6 +648,7 @@ Splits report settings file name returning a displayable version without the ent
                         if (valueModel != null) {
                             // Retrieves info necessary to do calculations and fill table
                             float oneSigma = valueModel.getOneSigma();
+                            float initialValue = valueModel.getValue();
                             String currentUnit = column.getValue().getUnits();
                             int uncertaintyCountOfSignificantDigits = column
                                     .getValue().getUncertaintyColumn()
@@ -666,16 +667,10 @@ Splits report settings file name returning a displayable version without the ent
                                 // Calculatees value if column is percent uncertainty
                                 if (column.getValue().getUncertaintyType()
                                         .equals("PCT")) {
-                                    valueToBeRounded = new BigDecimal(
-                                            (oneSigma / (Math.pow(10,
-                                                    dividingNumber))) * 200);
+                                    valueToBeRounded = new BigDecimal((oneSigma / initialValue) * 200);
                                 }
-                                /*
-                                roundedValue = valueToBeRounded.setScale(
-                                        uncertaintyCountOfSignificantDigits,
-                                        valueToBeRounded.ROUND_HALF_UP);
-                                        */
-                                String newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits);
+
+                                String newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
                                 fractionArray[arrayRowCount][arrayColumnCount] = String
                                         .valueOf(newValue); // places final value in array
                             }

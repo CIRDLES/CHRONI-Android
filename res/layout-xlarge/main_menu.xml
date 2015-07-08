@@ -80,7 +80,7 @@
         android:layout_height="300dp"
         android:minHeight="430dp"
         android:minWidth="430dp"
-        android:src="@drawable/cirdles_logo"
+        android:src="@drawable/chroni_logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp" />
 

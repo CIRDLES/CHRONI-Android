@@ -17,7 +17,7 @@
     		 	
     <application
         android:allowBackup="true"
-        android:icon="@drawable/cirdles_logo"
+        android:icon="@drawable/chroni_logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         

@@ -140,8 +140,6 @@ public class AliquotMenuActivity extends Activity {
 
     });
 
-        Toast.makeText(AliquotMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
-
     }
 
     /*
