@@ -4,6 +4,7 @@
     <string name="app_name">CHRONI</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="developed_by">Developed By</string>
 
     <string name="about_text">CHRONI is a mobile application developed by the <b>Cyber Infrastructure Research and Development Lab for the Earth Sciences</b>, CIRDLES, at the College of Charleston in Charleston, SC. CIRDLES is creating cyber infrastructure for geochronology in an interdisciplinary collaboration among our software engineers and geochemists from two NSF-supported initiatives, EARTHTIME and EarthChem. Using <b>ET Redux</b>, users can upload and retrieve their data and results to the GeoChron.org data repository. If you are interested in learning more about CIRDLES, please contact Dr. Bowring at <i>bowringj@cofc.edu.</i>\n
 Currently, Joye Nettles, a senior at the College of Charleston has been working with Dr. James Bowring to develop this application. Joye has been working on CHRONI since Fall 2012. If you are interested in contacting her for inquiries about the application, please email her at <i>nettlesjj@g.cofc.edu.</i> \n

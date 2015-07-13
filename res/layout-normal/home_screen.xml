@@ -25,7 +25,7 @@
         android:text="LOADING"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_above="@+id/versionNumber"
-        android:layout_marginBottom="75dp" />
+        android:layout_marginBottom="15dp" />
 
     <TextView
         android:id="@+id/TextView01"
@@ -35,10 +35,19 @@
         android:text="CHRONI"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="50dp"
-        android:layout_above="@+id/progressBar1"
-        android:layout_marginBottom="35dp"
-        android:textIsSelectable="true" />
+        android:textSize="56dp"
+        android:layout_above="@+id/textView6"
+        android:textIsSelectable="true"
+        android:layout_marginBottom="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/developed_by"
+        android:id="@+id/textView6"
+        android:layout_centerHorizontal="true"
+        android:textSize="26dp"
+        android:layout_above="@+id/imageView1" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
@@ -52,10 +61,11 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="72dp"
-        android:layout_height="120dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/chroni_logo"
-        android:layout_marginTop="20dp" />
+        android:src="@drawable/cirdles_logo_text_mdpi"
+        android:layout_alignParentEnd="false"
+        android:layout_above="@+id/progressBar1" />
 
 </RelativeLayout>
