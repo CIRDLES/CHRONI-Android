@@ -16,6 +16,7 @@ import android.content.pm.ActivityInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -71,7 +72,10 @@ public class AliquotMenuActivity extends Activity {
 	    }
 	});
 
-   aliquotSelectedFileText = (EditText) findViewById(R.id.aliquotFileSelectText); // Contains selected aliquot file name
+    aliquotSelectedFileText = (EditText) findViewById(R.id.aliquotFileSelectText); // Contains selected aliquot file name
+
+
+
     // Gets selected Aliquot file from FilePickerActivity and places the file name on the file select line
 	if (getIntent().hasExtra("AliquotXMLFileName")) {
 	    String selectedAliquotFileName = getIntent().getStringExtra("AliquotXMLFileName"); // Specified file name from file browser
@@ -119,6 +123,10 @@ public class AliquotMenuActivity extends Activity {
 	igsnDownloadButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
 	igsnDownloadButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
+            // Hides SoftKeyboard When Download Button is Pressed
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(igsnText.getWindowToken(),0);
+
             // Checks internet connection before downloading files
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
