@@ -44,7 +44,8 @@
         android:id="@+id/textView5"
         android:textSize="48dp"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/imageView1" />
+        android:layout_above="@+id/imageView1"
+        android:textColor="@color/black" />
 
     <ProgressBar
         android:id="@+id/progressBar1"

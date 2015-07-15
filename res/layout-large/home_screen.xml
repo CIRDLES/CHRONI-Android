@@ -65,6 +65,7 @@
         android:text="@string/developed_by"
         android:id="@+id/textView4"
         android:layout_above="@+id/imageView1"
-        android:textSize="32dp" />
+        android:textSize="32dp"
+        android:textColor="@color/black" />
 
 </RelativeLayout>

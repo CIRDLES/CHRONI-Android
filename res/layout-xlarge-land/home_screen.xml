@@ -19,12 +19,12 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="225dp"
-        android:layout_height="375dp"
-        android:src="@drawable/chroni_logo"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/TextView01"
-        android:layout_marginRight="55dp" />
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/cirdles_logo_text_xxhdpi"
+        android:layout_marginRight="55dp"
+        android:layout_above="@+id/versionNumber"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/testText"
@@ -34,8 +34,10 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="20sp"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/versionNumber"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="55dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="95dp" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
@@ -46,7 +48,9 @@
         android:minWidth="150dp"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/testText"
-        android:layout_marginBottom="10dp" />
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="65dp" />
 
     <TextView
         android:id="@+id/TextView01"
@@ -57,7 +61,18 @@
         android:textColor="@color/border_grey"
         android:textSize="120sp"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/progressBar1"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="20dp"
+        android:layout_above="@+id/textView7"
+        android:layout_alignParentEnd="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/developed_by"
+        android:id="@+id/textView7"
+        android:textSize="48dp"
+        android:textColor="@color/black"
+        android:layout_above="@+id/imageView1"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

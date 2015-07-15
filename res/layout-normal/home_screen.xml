@@ -47,7 +47,8 @@
         android:id="@+id/textView6"
         android:layout_centerHorizontal="true"
         android:textSize="26dp"
-        android:layout_above="@+id/imageView1" />
+        android:layout_above="@+id/imageView1"
+        android:textColor="@color/black" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
