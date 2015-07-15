@@ -26,7 +26,7 @@
         android:text="LOADING"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_above="@+id/versionNumber"
-        android:layout_marginBottom="75dp" />
+        android:layout_marginBottom="45dp" />
 
     <TextView
         android:id="@+id/TextView01"
@@ -37,8 +37,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
         android:textSize="100sp"
-        android:layout_above="@+id/progressBar1"
-        android:layout_marginBottom="35dp" />
+        android:layout_above="@+id/textView4"
+        android:layout_marginBottom="45dp" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
@@ -52,9 +52,20 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="250dp"
-        android:layout_height="400dp"
+        android:layout_width="275dp"
+        android:layout_height="275dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/chroni_logo" />
+        android:src="@drawable/cirdles_logo_text_xhdpi"
+        android:layout_above="@+id/progressBar1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/developed_by"
+        android:id="@+id/textView4"
+        android:layout_above="@+id/imageView1"
+        android:textSize="32dp"
+        android:textColor="@color/black" />
 
 </RelativeLayout>
