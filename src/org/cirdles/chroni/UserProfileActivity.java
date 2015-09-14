@@ -124,10 +124,6 @@ public class UserProfileActivity extends Activity {
 	profileMenuButton = (Button) findViewById(R.id.fileBrowserHomeButton);
 	profileMenuButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
-//		Intent openMainMenu = new Intent(
-//			"android.intent.action.MAINMENU");
-//		startActivity(openMainMenu);
-
             finish();   // Exits out of Profile/Credentials Page
 	    }
 	});
