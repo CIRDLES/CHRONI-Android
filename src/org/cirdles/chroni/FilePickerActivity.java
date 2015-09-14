@@ -122,32 +122,27 @@ public class FilePickerActivity extends ListActivity {
 	protected void refreshFilesList() {
 		// Clear the files ArrayList
 		mFiles.clear();
-		
+
 		// Set the extension file filter
 		ExtensionFilenameFilter filter = new ExtensionFilenameFilter(acceptedFileExtensions);
-		
+
 		// Get the files in the directory
 		File[] files = mainDirectory.listFiles(filter);
-		if(files != null && files.length > 0) {
-			for(File f : files) {
-				if(f.isHidden() && !mShowHiddenFiles) {
+		if (files != null && files.length > 0) {
+			for (File f : files) {
+				if (f.isHidden() && !mShowHiddenFiles) {
 					// Don't add the file
 					continue;
 				}
-				
+
 				// Add the file the ArrayAdapter
 				mFiles.add(f);
 			}
-			
+
 			Collections.sort(mFiles, new FileComparator());
 		}
 		mAdapter.notifyDataSetChanged();
 	}
-	
-//	@Override
-//	public void onBackPressed() {
-//		finish();	// Exits out of FilePicker
-//	}
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
