@@ -47,9 +47,11 @@ public class HistoryActivity extends Activity {
         homeButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
 
-                Intent openMainMenu = new Intent(
-                        "android.intent.action.MAINMENU");
-                startActivity(openMainMenu);
+//                Intent openMainMenu = new Intent(
+//                        "android.intent.action.MAINMENU");
+//                startActivity(openMainMenu);
+
+                finish();   // Exits out of History
             }
         });
 

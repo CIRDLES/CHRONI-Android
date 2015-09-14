@@ -146,17 +146,19 @@ public class FilePickerActivity extends ListActivity {
 	
 	@Override
 	public void onBackPressed() {
-		Intent openMainMenu = null;
-        if(getIntent().hasExtra("Default_Directory")){
-            if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory")){
-                openMainMenu = new Intent("android.intent.action.ALIQUOTMENU");
-            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory")){
-                openMainMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Root_Directory")){
-				openMainMenu = new Intent("android.intent.MAINMENU");
-			}
-        }
-        startActivity(openMainMenu);
+//		Intent openMainMenu = null;
+//        if(getIntent().hasExtra("Default_Directory")){
+//            if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory")){
+//                openMainMenu = new Intent("android.intent.action.ALIQUOTMENU");
+//            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory")){
+//                openMainMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+//            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Root_Directory")){
+//				openMainMenu = new Intent("android.intent.MAINMENU");
+//			}
+//        }
+//        startActivity(openMainMenu);
+
+		finish();	// Exits out of FilePicker
 	}
 	
 	@Override

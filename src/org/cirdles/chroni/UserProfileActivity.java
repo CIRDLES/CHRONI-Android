@@ -124,9 +124,11 @@ public class UserProfileActivity extends Activity {
 	profileMenuButton = (Button) findViewById(R.id.fileBrowserHomeButton);
 	profileMenuButton.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
-		Intent openMainMenu = new Intent(
-			"android.intent.action.MAINMENU");
-		startActivity(openMainMenu);
+//		Intent openMainMenu = new Intent(
+//			"android.intent.action.MAINMENU");
+//		startActivity(openMainMenu);
+
+            finish();   // Exits out of Profile/Credentials Page
 	    }
 	});
 	
@@ -212,10 +214,11 @@ public class UserProfileActivity extends Activity {
 							}
 							if (valid) {
 					    		validationText.setText("Your Geochron Portal credentials are valid!");
+                                Toast.makeText(UserProfileActivity.this, "Your Geochron Portal credentials are VALID", Toast.LENGTH_LONG).show();
 
 							} else {
 					    		validationText.setText("Your Geochron Portal credentials are not valid!");
-
+                                Toast.makeText(UserProfileActivity.this, "Your Geochron Portal credentials are INVALID", Toast.LENGTH_LONG).show();
 							}
 						} else {
 							Toast.makeText(
