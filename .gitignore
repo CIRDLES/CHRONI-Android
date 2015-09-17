@@ -35,3 +35,6 @@ proguard/
 
 # SVN files
 .svn
+
+# OS X
+.DS_Store
