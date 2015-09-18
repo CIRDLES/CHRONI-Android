@@ -586,13 +586,16 @@ Splits report settings file name returning a displayable version without the ent
                 String variableName = column.getValue().getVariableName();
                 String methodName = column.getValue().getMethodName();
 
-                // going to iterate through all fractions for every column
+                // Going to iterate through all the fractions and uncertainties (IF they exist) for every column
                 Iterator<Entry<String, Fraction>> fractionIterator = fractionMap
                         .entrySet().iterator();
                 int arrayRowCount = 0; // the current row number for the array;
 
                 while (fractionIterator.hasNext()) {
                     Entry<String, Fraction> currentFraction = fractionIterator.next();
+
+                    //  Fills in the FRACTION COLUMN (column on the left)
+
                     if (variableName.equals("")) {
                         // Value Models under Fraction don't have variable names so have to account for those specifically
                         if(methodName.equals("getFractionID")) {
@@ -600,7 +603,6 @@ Splits report settings file name returning a displayable version without the ent
                         } else if(methodName.equals("getNumberOfGrains")) {
                             fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getNumberOfGrains();
                         }
-                        arrayRowCount++;
                     } else {
                         // Retrieves the correct value model based off the variable name
                         ValueModel valueModel = DomParser.getValueModelByName(
@@ -619,36 +621,25 @@ Splits report settings file name returning a displayable version without the ent
                                         countOfSignificantDigits,
                                         valueToBeRounded.ROUND_HALF_UP); // performs rounding
                                 fractionArray[arrayRowCount][arrayColumnCount] = String.valueOf(roundedValue); // Places final value in array
-
                             }
-                        }
-
-                        else { // if value model is null puts a hyphen in place
+                        } else { // if value model is null puts a hyphen in place
                             fractionArray[arrayRowCount][arrayColumnCount] = "-";
                         }
-                        arrayRowCount++;
+                    }
 
-                    } // ends else
-                } // ends while
-                arrayColumnCount++;
+                    //  Fills in the UNCERTAINTY COLUMN (column on the right) if it exists
 
-                // Handles the mathematics of the uncertainty column
-                if (column.getValue().getUncertaintyColumn() != null) {
-                    Iterator<Entry<String, Fraction>> fractionIterator2 = fractionMap
-                            .entrySet().iterator();
-                    arrayRowCount = 0; // the current row number for the array;
-                    variableName = column.getValue().getUncertaintyColumn()
-                            .getVariableName();
-                    while (fractionIterator2.hasNext()) {
-                        Entry<String, Fraction> fraction = fractionIterator2
-                                .next();
-                        ValueModel valueModel = DomParser.getValueModelByName(
-                                fraction.getValue(), variableName);
+                    if (column.getValue().getUncertaintyColumn() != null) {
+                        arrayColumnCount++;     // If uncertainty exists, go to the next column
 
-                        if (valueModel != null) {
+                        String uncertaintyVariableName = column.getValue().getUncertaintyColumn().getVariableName();
+
+                        ValueModel uncertaintyValueModel = DomParser.getValueModelByName(
+                                currentFraction.getValue(), uncertaintyVariableName);
+                        if (uncertaintyValueModel != null) {
                             // Retrieves info necessary to do calculations and fill table
-                            float oneSigma = valueModel.getOneSigma();
-                            float initialValue = valueModel.getValue();
+                            float oneSigma = uncertaintyValueModel.getOneSigma();
+                            float initialValue = uncertaintyValueModel.getValue();
                             String currentUnit = column.getValue().getUnits();
                             int uncertaintyCountOfSignificantDigits = column
                                     .getValue().getUncertaintyColumn()
@@ -664,28 +655,35 @@ Splits report settings file name returning a displayable version without the ent
                                         (oneSigma / (Math.pow(10,
                                                 dividingNumber))) * 2);
 
-                                // Calculatees value if column is percent uncertainty
+                                // Calculates value if column is percent uncertainty
                                 if (column.getValue().getUncertaintyType()
                                         .equals("PCT")) {
                                     valueToBeRounded = new BigDecimal((oneSigma / initialValue) * 200);
                                 }
 
                                 String newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
-                                fractionArray[arrayRowCount][arrayColumnCount] = String
+                                fractionArray[arrayRowCount][arrayColumnCount] = String   // Plus one to say its the column to the right
                                         .valueOf(newValue); // places final value in array
                             }
                         } // closes if
                         else { // if value model is null
                             fractionArray[arrayRowCount][arrayColumnCount] = "-";
                         }
-                        arrayRowCount++;
-                    } // ends loop through fraction
-                    arrayColumnCount++;
+                        arrayColumnCount--; // Go back to the fraction column
+                    }
+                    arrayRowCount++;    // Next row down
+                } // ends the fraction-iterator while loop
 
-                } // closes filling uncertainty columns
+                //  Goes to the next column
+                if (column.getValue().getUncertaintyColumn() != null) {
+                    arrayColumnCount += 2;  // If uncertainty column exists, advance TWO columns to the right
+                }
+                else {
+                    arrayColumnCount++;     // If not, only advance ONE column to the right
+                }
 
-            } // closes column
-        } // closes category
+            } // closes column iterator
+        } // closes category iterator
 
         return fractionArray;
     } // closes method
