@@ -1,5 +1,8 @@
 language: android
 
+# enables container-based infrastructure
+sudo: false
+
 android:
   components:
     - build-tools-20.0.0
