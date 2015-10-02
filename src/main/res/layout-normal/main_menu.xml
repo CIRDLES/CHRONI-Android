@@ -75,10 +75,11 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="72dp"
+        android:layout_width="75dp"
         android:layout_height="120dp"
         android:src="@drawable/chroni_logo"
         android:layout_marginTop="15dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentEnd="false" />
 
 </RelativeLayout>
