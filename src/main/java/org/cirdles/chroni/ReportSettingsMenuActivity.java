@@ -59,17 +59,17 @@ public class ReportSettingsMenuActivity extends Activity {
                     public void onClick(View v) {
                         // Opens file picker activity to main menu
                         Intent openFilePicker = new Intent("android.intent.action.FILEPICKER");
-                        openFilePicker.putExtra("Default_Directory", "Report_Settings_Directory");
-                        startActivity(openFilePicker);
+                        openFilePicker.putExtra("Default_Directory", "From_Report_Directory");
+                        startActivityForResult(openFilePicker, 1);  // Open FilePicker to get back a new Report Settings file
                         saveCurrentReportSettings();
                     }
                 });
 
         // Displays the selected report settings on the report settings menu
         reportSettingsSelectedFileText = (EditText) findViewById(R.id.reportSettingsFileSelectText);
+
         if (getIntent().hasExtra("ReportSettingsXMLFileName")) {
-            selectedReportSettings = getIntent().getStringExtra(
-                    "ReportSettingsXMLFileName");
+            selectedReportSettings = getIntent().getStringExtra("ReportSettingsXMLFileName");
             String[] absoluteFileName = selectedReportSettings.split("/");
             String fileName = absoluteFileName[absoluteFileName.length - 1];
             reportSettingsSelectedFileText.setText(fileName);
@@ -147,6 +147,22 @@ Requests file name from user and  proceeds to download based on input
         });
 
         userFileNameAlert.show();
+    }
+
+    // Gets the result from a FilePicker Activity initiated from a Report Settings Menu (by pressing the + button)
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                if (data.hasExtra("NewReportSettingsXMLFileName")) {
+                    String result = data.getStringExtra("NewReportSettingsXMLFileName");
+                    getIntent().putExtra("ReportSettingsXMLFileName", result);
+                    selectedReportSettings = result;
+                    String[] absoluteFileName = selectedReportSettings.split("/");
+                    String fileName = absoluteFileName[absoluteFileName.length - 1];
+                    reportSettingsSelectedFileText.setText(fileName);
+                }
+            }
+        }
     }
 
     /*

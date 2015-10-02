@@ -59,11 +59,11 @@ public class URLFileReader{
             setFileType("Report Settings");
             setFileName(createFileName());	// Always downloading Default RS here
 
-			/*
+
             // Sets up the Download thread
             final DownloadTask downloadTask = new DownloadTask(classContext);
             downloadTask.execute(fileURL); // retrieves the file from the specified URL
-            */
+
 		}else{
 			if(className.contentEquals("AliquotMenu")){
 				// Sets the type of file and URL being accessed for saving purposes

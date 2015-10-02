@@ -28,14 +28,14 @@ public class AliquotMenuActivity extends Activity {
     // Layout variables
     private Button aliquotFileSelectButton; // button allows user to begin file browsing
     private Button aliquotFileSubmitButton; // button submits aliquot file for viewing
-	private Button igsnDownloadButton; // button submits current inputted IGSN for downloading
+    private Button igsnDownloadButton; // button submits current inputted IGSN for downloading
     private EditText aliquotSelectedFileText; // holds the currently selected file name
     private EditText igsnText; // holds user-inputted IGSN
 
     // Global functionality  variables
     private String finalAliquotFileName; // the user specififed filename
     private boolean invalidFile = false; // true if file attempted to be downloaded is invalid
-	private static String absoluteFilePathOfDownloadedAliquot; // the path of the Aliquot file
+    private static String absoluteFilePathOfDownloadedAliquot; // the path of the Aliquot file
     private static String geochronUsername, geochronPassword; // the GeoChron information on file for the user
     public static final String USER_PREFS = "My CIRDLES Settings"; // code to access stored preferences
 
@@ -52,9 +52,9 @@ public class AliquotMenuActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Sets up activity layout
-	    super.onCreate(savedInstanceState);
-	    setTheme(android.R.style.Theme_Holo);
-	    setContentView(R.layout.aliquot_select);
+        super.onCreate(savedInstanceState);
+        setTheme(android.R.style.Theme_Holo);
+        setContentView(R.layout.aliquot_select);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         RelativeLayout aliquotMenuLayout =(RelativeLayout)findViewById(R.id.aliquotSelectBackground);
@@ -62,93 +62,99 @@ public class AliquotMenuActivity extends Activity {
         //Places background image on layout after theme overriding
         aliquotMenuLayout.setBackground(getResources().getDrawable(R.drawable.background));
 
-	    aliquotFileSelectButton = (Button) findViewById(R.id.aliquotFileSelectButton);
-	    aliquotFileSelectButton.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
-            // Opens file picker activity to main menu
-            Intent openFilePicker = new Intent("android.intent.action.FILEPICKER");
-            openFilePicker.putExtra("Default_Directory", "Aliquot_Directory");
-            startActivity(openFilePicker);
-	    }
-	});
-
-    aliquotSelectedFileText = (EditText) findViewById(R.id.aliquotFileSelectText); // Contains selected aliquot file name
-
-
-
-    // Gets selected Aliquot file from FilePickerActivity and places the file name on the file select line
-	if (getIntent().hasExtra("AliquotXMLFileName")) {
-	    String selectedAliquotFileName = getIntent().getStringExtra("AliquotXMLFileName"); // Specified file name from file browser
-        String[] selectedAliquotFilePath = selectedAliquotFileName.split("/"); // Splits selected file name into relevant parts
-        String fileName = selectedAliquotFilePath[selectedAliquotFilePath.length - 1]; // Creates displayable file name from split file path
-	    aliquotSelectedFileText.setText(fileName); // Sets file name for displaying on aliquot file select line
-	}
-
-	aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
-    //Changes button color back to blue if it is not already
-    aliquotFileSubmitButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-    aliquotFileSubmitButton.setTextColor(Color.WHITE);
-	aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
-    // Submits aliquot file to display activity for parsing and displaying in table
-	    public void onClick(View v) {
-            if (aliquotSelectedFileText.getText().length() != 0) {
-                // Makes sure there is a file selected
-                Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
-                Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
-                openDisplayTable.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
-
-                // Changes button color to indicate it has been opened
-                aliquotFileSubmitButton.setBackgroundColor(Color.LTGRAY);
-                aliquotFileSubmitButton.setTextColor(Color.BLACK);
-                saveCurrentAliquot();
-
-                startActivity(openDisplayTable); // Starts display activity
-            }else{
-                // Tells user to select a file for viewing
-                Toast.makeText(AliquotMenuActivity.this, "Please select an aliquot file to view.", Toast.LENGTH_LONG).show(); // lets user know table is opening
+        aliquotFileSelectButton = (Button) findViewById(R.id.aliquotFileSelectButton);
+        aliquotFileSelectButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Opens file picker activity to main menu
+                Intent openFilePicker = new Intent("android.intent.action.FILEPICKER");
+                openFilePicker.putExtra("Default_Directory", "Aliquot_Directory");
+                startActivityForResult(openFilePicker, 1);  // Opens FilePicker and waits for it to return an Extra (SEE onActivityResult())
             }
-	    }
-	});
+        });
 
-    igsnText = (EditText) findViewById(R.id.aliquotIGSNText);
-    // Checks to see if user profile information has been authenticated for private file access
-    // Sets appropriate hint based on if credentials are stored or not
-    retrieveCredentials();
-    if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
-		igsnText.setHint("Profile information stored. Private files enabled!");
-	}else{
-		igsnText.setHint("No profile information stored. Private files disabled.");
-	}
 
-	igsnDownloadButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
-	igsnDownloadButton.setOnClickListener(new View.OnClickListener() {
-        public void onClick(View v) {
-            // Hides SoftKeyboard When Download Button is Pressed
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(igsnText.getWindowToken(),0);
 
-            // Checks internet connection before downloading files
-            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        aliquotSelectedFileText = (EditText) findViewById(R.id.aliquotFileSelectText); // Contains selected aliquot file name
 
-            if (mobileWifi.isConnected()) {
-                if (igsnText.getText().length() != 0) {
-                    Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show(); // Reports that aliquot is being downloaded
+        /*
+        // TOOK OUT. SEE onActivityResult()
+        // Gets selected Aliquot file from FilePickerActivity and places the file name on the file select line
+        if (getIntent().hasExtra("AliquotXMLFileName")) {
+            String selectedAliquotFileName = getIntent().getStringExtra("AliquotXMLFileName"); // Specified file name from file browser
+            String[] selectedAliquotFilePath = selectedAliquotFileName.split("/"); // Splits selected file name into relevant parts
+            String fileName = selectedAliquotFilePath[selectedAliquotFilePath.length - 1]; // Creates displayable file name from split file path
+            aliquotSelectedFileText.setText(fileName); // Sets file name for displaying on aliquot file select line
+        }
+        */
 
-                    String aliquotIGSN = igsnText.getText().toString().toUpperCase().trim(); // Captures igsn from user input
-                    URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn"); // Downloads Aliquot file
-                    igsnDownloadButton.setBackgroundColor(CIRDLES_ORANGE_RGB);
+        aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
+        //Changes button color back to blue if it is not already
+        aliquotFileSubmitButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+        aliquotFileSubmitButton.setTextColor(Color.WHITE);
+        aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
+            // Submits aliquot file to display activity for parsing and displaying in table
+            public void onClick(View v) {
+                if (aliquotSelectedFileText.getText().length() != 0) {
+                    // Makes sure there is a file selected
+                    Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
+                    Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
+                    openDisplayTable.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
 
-                    // Note: Setting above is useful for download-then-open functionality
+                    // Changes button color to indicate it has been opened
+                    aliquotFileSubmitButton.setBackgroundColor(Color.LTGRAY);
+                    aliquotFileSubmitButton.setTextColor(Color.BLACK);
+                    saveCurrentAliquot();
+
+                    startActivity(openDisplayTable); // Starts display activity
+
+                }else{
+                    // Tells user to select a file for viewing
+                    Toast.makeText(AliquotMenuActivity.this, "Please select an aliquot file to view.", Toast.LENGTH_LONG).show(); // lets user know table is opening
                 }
-            } else {//Handles lack of wifi connection
-                Toast.makeText(AliquotMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
             }
+        });
+
+        igsnText = (EditText) findViewById(R.id.aliquotIGSNText);
+        // Checks to see if user profile information has been authenticated for private file access
+        // Sets appropriate hint based on if credentials are stored or not
+        retrieveCredentials();
+        if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
+            igsnText.setHint("Profile information stored. Private files enabled!");
+        }else{
+            igsnText.setHint("No profile information stored. Private files disabled.");
         }
 
-    });
+        igsnDownloadButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
+        igsnDownloadButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Hides SoftKeyboard When Download Button is Pressed
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(igsnText.getWindowToken(),0);
+
+                // Checks internet connection before downloading files
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                if (mobileWifi.isConnected()) {
+                    if (igsnText.getText().length() != 0) {
+                        Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show(); // Reports that aliquot is being downloaded
+
+                        String aliquotIGSN = igsnText.getText().toString().toUpperCase().trim(); // Captures igsn from user input
+                        URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn"); // Downloads Aliquot file
+                        igsnDownloadButton.setBackgroundColor(CIRDLES_ORANGE_RGB);
+
+                        // Note: Setting above is useful for download-then-open functionality
+                    }
+                } else {//Handles lack of wifi connection
+                    Toast.makeText(AliquotMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
+                }
+            }
+
+        });
 
     }
+
+
 
     /*
 * Stores Current Aliquot
@@ -204,91 +210,86 @@ public class AliquotMenuActivity extends Activity {
     /*
 	 * Creates file name based on the file's type and URL
 	 */
-	protected String createFileName(String downloadMethod, String fileUrl) {
-		String name = null;
-			// If downloading based on IGSN URL, just use IGSN for name
-			if(downloadMethod.contains("igsn")){
-			String[] URL = fileUrl.split("igsn=");
-			name = URL[1];
-			if(name.contains("&username=")){
-				// Makes an additional split to remove the username and password query from the file name
-				String[] url2 = name.split("&username=");
-				name = url2[0];
-			}
+    protected String createFileName(String downloadMethod, String fileUrl) {
+        String name = null;
+        // If downloading based on IGSN URL, just use IGSN for name
+        if(downloadMethod.contains("igsn")){
+            String[] URL = fileUrl.split("igsn=");
+            name = URL[1];
+            if(name.contains("&username=")){
+                // Makes an additional split to remove the username and password query from the file name
+                String[] url2 = name.split("&username=");
+                name = url2[0];
+            }
 
-			}
-		return name;
-	}
+        }
+        return name;
+    }
 
     @Override
-    /*TODO Not sure what this function is doing right now. Figure out!  */
+    // TODO Not sure what this function is doing right now. Figure out!  - CHECK
+    // Gets the Extra that FilePicker returns and puts it in This Intent's Extra
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	if (resultCode == RESULT_OK) {
-	    switch (requestCode) {
-	    case REQUEST_PICK_FILE:
-		if (data.hasExtra(FilePickerActivity.EXTRA_FILE_PATH)) {
-		    // Get the file path
-		    File f = new File(data.getStringExtra(FilePickerActivity.EXTRA_FILE_PATH));
-
-		    String aliquotLocation = f.getPath();
-
-            boolean aliquotFound = true;
-
-		    String[] aliquotName = aliquotLocation.toString()
-			    .split("/");
-		    String aliquot = aliquotName[aliquotName.length - 1];
-
-		    // Set the file path text view
-		    aliquotSelectedFileText.setText(aliquot);
-		}
-	    }
-	}
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                if (data.hasExtra("AliquotXMLFileName")) {
+                    String result = data.getStringExtra("AliquotXMLFileName");  // Specified file name from file browser
+                    getIntent().putExtra("AliquotXMLFileName", result);     // put the DATA into THIS INTENT
+                    String[] selectedAliquotFilePath = result.split("/"); // Splits selected file name into relevant parts
+                    String fileName = selectedAliquotFilePath[selectedAliquotFilePath.length - 1]; // Creates displayable file name from split file path
+                    aliquotSelectedFileText.setText(fileName); // Sets file name for displaying on aliquot file select line
+                }
+            }
+            else if (resultCode == RESULT_CANCELED) {
+                return;
+            }
+        }
     }
-    
+
     /*
      * Retrieves the currently stored username and password
      * If none present, returns None
      */
     private void retrieveCredentials() {
-	SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
-	setGeochronUsername(settings.getString("Geochron Username", "None"));
-	setGeochronPassword(settings.getString("Geochron Password", "None"));
+        SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
+        setGeochronUsername(settings.getString("Geochron Username", "None"));
+        setGeochronPassword(settings.getString("Geochron Password", "None"));
     }
-    
+
     /*
      * Creates URL from the constant GeoChron URL and IGSN
      */
     public final static String makeURI(String baseURL, String IGSN) {
-	String URI = baseURL + IGSN;
-	if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
-		URI += "&username="+ getGeochronUsername()+"&password="+ getGeochronPassword(); 	// Create unique URL and password if credentials stored
-    }
-	return URI;
+        String URI = baseURL + IGSN;
+        if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
+            URI += "&username="+ getGeochronUsername()+"&password="+ getGeochronPassword(); 	// Create unique URL and password if credentials stored
+        }
+        return URI;
     }
 
     public static String getGeochronUsername() {
-		return geochronUsername;
-	}
+        return geochronUsername;
+    }
 
-	public void setGeochronUsername(String geochronUsername) {
-		this.geochronUsername = geochronUsername;
-	}
+    public void setGeochronUsername(String geochronUsername) {
+        this.geochronUsername = geochronUsername;
+    }
 
-	public static String getGeochronPassword() {
-		return geochronPassword;
-	}
+    public static String getGeochronPassword() {
+        return geochronPassword;
+    }
 
-	public void setGeochronPassword(String geochronPassword) {
-		this.geochronPassword = geochronPassword;
-	}
+    public void setGeochronPassword(String geochronPassword) {
+        this.geochronPassword = geochronPassword;
+    }
 
-	public String getAbsoluteFilePathOfDownloadedAliquot() {
-		return absoluteFilePathOfDownloadedAliquot;
-	}
+    public String getAbsoluteFilePathOfDownloadedAliquot() {
+        return absoluteFilePathOfDownloadedAliquot;
+    }
 
-	public void setAbsoluteFilePathOfDownloadedAliquot(String absoluteFileName) {
-		this.absoluteFilePathOfDownloadedAliquot = absoluteFileName;
-	}
+    public void setAbsoluteFilePathOfDownloadedAliquot(String absoluteFileName) {
+        this.absoluteFilePathOfDownloadedAliquot = absoluteFileName;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

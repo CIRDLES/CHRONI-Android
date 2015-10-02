@@ -41,12 +41,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class FilePickerActivity extends ListActivity {
-	
+
 	/**
 	 * The file path
 	 */
 	public final static String EXTRA_FILE_PATH = "file_path";
-	
+
 	/**
 	 * Sets whether hidden files should be visible in the list or not
 	 */
@@ -56,19 +56,21 @@ public class FilePickerActivity extends ListActivity {
 	 * The allowed file extensions in an ArrayList of Strings
 	 */
 	public final static String EXTRA_ACCEPTED_FILE_EXTENSIONS = "accepted_file_extensions";
-	
+
 	/**
-	 * The initial directory which will be used if no directory has been sent with the intent 
+	 * The initial directory which will be used if no directory has been sent with the intent
 	 */
 //	public final static String DEFAULT_INITIAL_DIRECTORY = Environment.getExternalStorageDirectory()+ "/CIRDLES/";
-	
+
 	protected File mainDirectory;
 	protected ArrayList<File> mFiles;
 	protected FilePickerListAdapter mAdapter;
 	protected boolean mShowHiddenFiles = false;
 	protected String[] acceptedFileExtensions;
-	
-	@Override
+    protected String intentContent;
+
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTheme(android.R.style.Theme_Holo);
@@ -79,27 +81,32 @@ public class FilePickerActivity extends ListActivity {
 		View emptyView = inflator.inflate(R.layout.file_picker_empty_view, null);
 		((ViewGroup)getListView().getParent()).addView(emptyView);
 		getListView().setEmptyView(emptyView);
-		
+
+		// Obtain content from the current intent for later use
+		intentContent = getIntent().getStringExtra("Default_Directory");
+
 		// Set initial directory
         mainDirectory = Environment.getExternalStorageDirectory(); // Takes user to root directory folder
 
 		// Sets the initial direcotry based on what file the user is looking for (Aliquot or Report Settings)
-		if (getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory")){
-			mainDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot"); // Takes user to the Aliquot folder
-		} else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory")) {
-			mainDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings");
-		}
-		
+		if (intentContent.contentEquals("Aliquot_Directory")){
+			mainDirectory = new File(mainDirectory + "/CHRONI/Aliquot"); // Takes user to the Aliquot folder
+		} else if(intentContent.contentEquals("Report_Settings_Directory")) {	// Report Settings Menu if coming from a Dropdown Menu
+            mainDirectory = new File(mainDirectory + "/CHRONI/Report Settings");
+        }else if(intentContent.contentEquals("From_Report_Directory")) {  // Report Settings Menu if coming from a Report Settings Menu
+            mainDirectory = new File(mainDirectory + "/CHRONI/Report Settings");
+        }
+
 		// Initialize the ArrayList
 		mFiles = new ArrayList<File>();
-		
+
 		// Set the ListAdapter
 		mAdapter = new FilePickerListAdapter(this, mFiles);
 		setListAdapter(mAdapter);
-		
+
 		// Initialize the extensions array to allow any file extensions
 		acceptedFileExtensions = new String[] {};
-		
+
 		// Get intent extras
 		if(getIntent().hasExtra(EXTRA_SHOW_HIDDEN_FILES)) {
 			mShowHiddenFiles = getIntent().getBooleanExtra(EXTRA_SHOW_HIDDEN_FILES, false);
@@ -109,13 +116,13 @@ public class FilePickerActivity extends ListActivity {
 			acceptedFileExtensions = (String[]) collection.toArray(new String[collection.size()]);
 		}
 	}
-	
+
 	@Override
 	protected void onResume() {
 		refreshFilesList();
 		super.onResume();
 	}
-	
+
 	/**
 	 * Updates the list view to the current directory
 	 */
@@ -143,34 +150,40 @@ public class FilePickerActivity extends ListActivity {
 		}
 		mAdapter.notifyDataSetChanged();
 	}
-	
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		File newFile = (File)l.getItemAtPosition(position);
 
         // If item selected is a file (and not a directory), allows user to select file
-		if(newFile.isFile()) {		
+		if(newFile.isFile()) {
 			// Sends back selected file name
-			if(getIntent().getStringExtra("Default_Directory").contentEquals("Aliquot_Directory")){
-		    	Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
-		    	openAliquotMenu.putExtra("AliquotXMLFileName", newFile.getAbsolutePath());
-		    	startActivity(openAliquotMenu);
-//                Toast.makeText(FilePickerActivity.this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
 
-            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Report_Settings_Directory")){
+			if (intentContent.contentEquals("Aliquot_Directory")) {
+				Intent returnAliquotIntent = new Intent("android.intent.action.ALIQUOTMENU");
+				returnAliquotIntent.putExtra("AliquotXMLFileName", newFile.getAbsolutePath());
+				setResult(RESULT_OK, returnAliquotIntent);	// Returns Extra to AliquotMenuActivity
+				Toast.makeText(FilePickerActivity.this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+                // If coming from any menu (by using the dropdown menu)
+			} else if (intentContent.contentEquals("Report_Settings_Directory")){
 				Intent openRSMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
 				openRSMenu.putExtra("ReportSettingsXMLFileName", newFile.getAbsolutePath());
-		    	startActivity(openRSMenu);
-//                Toast.makeText(FilePickerActivity.this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+				startActivity(openRSMenu);  // Start a new Report Settings Menu with the selected Report Settings
 
-            }else if(getIntent().getStringExtra("Default_Directory").contentEquals("Root_Directory")){
+                // If coming FROM a Report Settings Menu (by pressing the + button)
+			} else if (intentContent.contentEquals("From_Report_Directory")) {
+                Intent returnRSIntent = new Intent("android.intent.action.REPORTSETTINGSMENU");
+                returnRSIntent.putExtra("NewReportSettingsXMLFileName", newFile.getAbsolutePath());
+                setResult(RESULT_OK, returnRSIntent);   // Return to previous Report Settings Menu with the new Report Settings
+
+			} else if(intentContent.contentEquals("Root_Directory")){
 				Intent openRSMenu = new Intent("android.intent.action.MAINMENU");
 				openRSMenu.putExtra("XMLFileName", newFile.getAbsolutePath());
 				Toast.makeText(FilePickerActivity.this, "Please move your selected file to one of the CHRONI directories.", Toast.LENGTH_LONG).show();
 				startActivity(openRSMenu);
 			}
-//			setResult(RESULT_OK, extra);
-			
+
 			// Finish the activity
 			finish();
 		} else {
@@ -178,25 +191,25 @@ public class FilePickerActivity extends ListActivity {
 			// Update the files list
 			refreshFilesList();
 		}
-		
+
 		super.onListItemClick(l, v, position, id);
 	}
-	
+
 	private class FilePickerListAdapter extends ArrayAdapter<File> {
-		
+
 		private List<File> mObjects;
-		
+
 		public FilePickerListAdapter(Context context, List<File> objects) {
 			super(context, R.layout.file_picker_list_item, android.R.id.text1, objects);
 			mObjects = objects;
 		}
-		
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			
+
 			View row = null;
-			
-			if(convertView == null) { 
+
+			if(convertView == null) {
 				LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				row = inflater.inflate(R.layout.file_picker_list_item, parent, false);
 			} else {
@@ -209,7 +222,7 @@ public class FilePickerActivity extends ListActivity {
 			TextView textView = (TextView)row.findViewById(R.id.file_picker_text);
 			// Set single line
 			textView.setSingleLine(true);
-			
+
 			textView.setText(object.getName());
 			if(object.isFile()) {
 				// Show the file icon
@@ -218,12 +231,12 @@ public class FilePickerActivity extends ListActivity {
 				// Show the folder icon
 				imageView.setImageResource(R.drawable.chroni_logo);
 			}
-			
+
 			return row;
 		}
 
 	}
-	
+
 	private class FileComparator implements Comparator<File> {
 	    @Override
 	    public int compare(File f1, File f2) {
@@ -242,15 +255,15 @@ public class FilePickerActivity extends ListActivity {
 	        return f1.getName().compareToIgnoreCase(f2.getName());
 	    }
 	}
-	
+
 	private class ExtensionFilenameFilter implements FilenameFilter {
 		private String[] mExtensions;
-		
+
 		public ExtensionFilenameFilter(String[] extensions) {
 			super();
 			mExtensions = extensions;
 		}
-		
+
 		@Override
 		public boolean accept(File dir, String filename) {
 			if(new File(dir, filename).isDirectory()) {

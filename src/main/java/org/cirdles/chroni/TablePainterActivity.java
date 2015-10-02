@@ -471,7 +471,6 @@ Splits report settings file name returning a displayable version without the ent
 
         String[][] reportSettingsArray = new String[ROWS][COLUMNS];
         int totalColumnCount = 0; // the current column number for the array
-
         Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Entry<Integer, Category> category = iterator.next();
@@ -482,6 +481,7 @@ Splits report settings file name returning a displayable version without the ent
             while (columnIterator.hasNext()) {
                 Entry<Integer, Column> column = columnIterator.next();
                 int currentRowNum = 0; // the current row number for the array
+                Column uncertaintyColumn = column.getValue().getUncertaintyColumn();    // Get Uncertainty Column for later use
 
                 // If this is the first column, then puts the CATEGORY information there
                 // This populates the first row of the table, or skips it
@@ -514,27 +514,24 @@ Splits report settings file name returning a displayable version without the ent
                 currentCategoryColumnCount++;
 
                 // Fills in uncertainty column information
-                if (column.getValue().getUncertaintyColumn() != null) {
+                if (uncertaintyColumn != null) {
                     currentRowNum = 0;
                     reportSettingsArray[currentRowNum][totalColumnCount] = ""; // Initialized as blank because no uncertainty display name will ever be on the first row
                     currentRowNum++;
 
                     // puts the displayNames in the array
-                    reportSettingsArray[currentRowNum][totalColumnCount] = column.getValue()
-                            .getUncertaintyColumn().getDisplayName1();
+                    reportSettingsArray[currentRowNum][totalColumnCount] = uncertaintyColumn.getDisplayName1();
                     currentRowNum++;
 
                     // Puts display names in the header array and handles formating of special characters
-                    reportSettingsArray[currentRowNum][totalColumnCount] = column.getValue()
-                            .getUncertaintyColumn().getDisplayName2();
+                    reportSettingsArray[currentRowNum][totalColumnCount] = uncertaintyColumn.getDisplayName2();
                     if (reportSettingsArray[currentRowNum][totalColumnCount]
                             .equals("PLUSMINUS2SIGMA")) {
                         reportSettingsArray[currentRowNum][totalColumnCount] = "\u00B12\u03C3";
                     }
                     currentRowNum++;
 
-                    reportSettingsArray[currentRowNum][totalColumnCount] = column.getValue()
-                            .getUncertaintyColumn().getDisplayName3();
+                    reportSettingsArray[currentRowNum][totalColumnCount] = uncertaintyColumn.getDisplayName3();
                     if (reportSettingsArray[currentRowNum][totalColumnCount]
                             .equals("PLUSMINUS2SIGMA%")) {
                         reportSettingsArray[currentRowNum][totalColumnCount] = "\u00B12\u03C3%";
@@ -590,6 +587,9 @@ Splits report settings file name returning a displayable version without the ent
                 Iterator<Entry<String, Fraction>> fractionIterator = fractionMap
                         .entrySet().iterator();
                 int arrayRowCount = 0; // the current row number for the array;
+                Column uncertaintyColumn = column.getValue().getUncertaintyColumn();    // Get Uncertainty Column for later use
+
+                boolean uncertaintyColumnExists =  uncertaintyColumn != null; // See if there is an uncertainty column
 
                 while (fractionIterator.hasNext()) {
                     Entry<String, Fraction> currentFraction = fractionIterator.next();
@@ -629,10 +629,10 @@ Splits report settings file name returning a displayable version without the ent
 
                     //  Fills in the UNCERTAINTY COLUMN (column on the right) if it exists
 
-                    if (column.getValue().getUncertaintyColumn() != null) {
+                    if (uncertaintyColumnExists) {
                         arrayColumnCount++;     // If uncertainty exists, go to the next column
 
-                        String uncertaintyVariableName = column.getValue().getUncertaintyColumn().getVariableName();
+                        String uncertaintyVariableName = uncertaintyColumn.getVariableName();
 
                         ValueModel uncertaintyValueModel = DomParser.getValueModelByName(
                                 currentFraction.getValue(), uncertaintyVariableName);
@@ -641,8 +641,7 @@ Splits report settings file name returning a displayable version without the ent
                             float oneSigma = uncertaintyValueModel.getOneSigma();
                             float initialValue = uncertaintyValueModel.getValue();
                             String currentUnit = column.getValue().getUnits();
-                            int uncertaintyCountOfSignificantDigits = column
-                                    .getValue().getUncertaintyColumn()
+                            int uncertaintyCountOfSignificantDigits = uncertaintyColumn
                                     .getCountOfSignificantDigits();
 
                             // Performs the mathematical operations for the table
@@ -675,7 +674,7 @@ Splits report settings file name returning a displayable version without the ent
                 } // ends the fraction-iterator while loop
 
                 //  Goes to the next column
-                if (column.getValue().getUncertaintyColumn() != null) {
+                if (uncertaintyColumnExists) {
                     arrayColumnCount += 2;  // If uncertainty column exists, advance TWO columns to the right
                 }
                 else {
