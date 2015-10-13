@@ -594,40 +594,8 @@ Splits report settings file name returning a displayable version without the ent
                 while (fractionIterator.hasNext()) {
                     Entry<String, Fraction> currentFraction = fractionIterator.next();
 
-                    //  Fills in the FRACTION COLUMN (column on the left)
-
-                    if (variableName.equals("")) {
-                        // Value Models under Fraction don't have variable names so have to account for those specifically
-                        if(methodName.equals("getFractionID")) {
-                            fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getFractionID();
-                        } else if(methodName.equals("getNumberOfGrains")) {
-                            fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getNumberOfGrains();
-                        }
-                    } else {
-                        // Retrieves the correct value model based off the variable name
-                        ValueModel valueModel = DomParser.getValueModelByName(
-                                currentFraction.getValue(), variableName);
-
-                        if (valueModel != null) {
-                            float initialValue = valueModel.getValue();
-                            String currentUnit = column.getValue().getUnits();
-                            int countOfSignificantDigits = column.getValue().getCountOfSignificantDigits();
-
-                            // Performs the mathematical operations for the table
-                            if (Numbers.getUnitConversionsMap().containsKey(currentUnit)) {
-                                Integer dividingNumber = Numbers.getUnitConversionsMap().get(currentUnit); // gets the exponent for conversion
-                                valueToBeRounded = new BigDecimal(initialValue / (Math.pow(10, dividingNumber))); // does initial calculation
-                                roundedValue = valueToBeRounded.setScale(
-                                        countOfSignificantDigits,
-                                        valueToBeRounded.ROUND_HALF_UP); // performs rounding
-                                fractionArray[arrayRowCount][arrayColumnCount] = String.valueOf(roundedValue); // Places final value in array
-                            }
-                        } else { // if value model is null puts a hyphen in place
-                            fractionArray[arrayRowCount][arrayColumnCount] = "-";
-                        }
-                    }
-
                     //  Fills in the UNCERTAINTY COLUMN (column on the right) if it exists
+                    int shape = 0;
 
                     if (uncertaintyColumnExists) {
                         arrayColumnCount++;     // If uncertainty exists, go to the next column
@@ -661,6 +629,7 @@ Splits report settings file name returning a displayable version without the ent
                                 }
 
                                 String newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
+                                shape = getShape(newValue);
                                 fractionArray[arrayRowCount][arrayColumnCount] = String   // Plus one to say its the column to the right
                                         .valueOf(newValue); // places final value in array
                             }
@@ -670,6 +639,39 @@ Splits report settings file name returning a displayable version without the ent
                         }
                         arrayColumnCount--; // Go back to the fraction column
                     }
+
+                    //  Fills in the FRACTION COLUMN (column on the left)
+
+                    if (variableName.equals("")) {
+                        // Value Models under Fraction don't have variable names so have to account for those specifically
+                        if(methodName.equals("getFractionID")) {
+                            fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getFractionID();
+                        } else if(methodName.equals("getNumberOfGrains")) {
+                            fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getNumberOfGrains();
+                        }
+                    } else {
+                        // Retrieves the correct value model based off the variable name
+                        ValueModel valueModel = DomParser.getValueModelByName(
+                                currentFraction.getValue(), variableName);
+
+                        if (valueModel != null) {
+                            float initialValue = valueModel.getValue();
+                            String currentUnit = column.getValue().getUnits();
+                            int countOfSignificantDigits = column.getValue().getCountOfSignificantDigits();
+
+                            // Performs the mathematical operations for the table
+                            if (Numbers.getUnitConversionsMap().containsKey(currentUnit)) {
+                                Integer dividingNumber = Numbers.getUnitConversionsMap().get(currentUnit); // gets the exponent for conversion
+                                valueToBeRounded = new BigDecimal(initialValue / (Math.pow(10, dividingNumber))); // does initial calculation
+                                roundedValue = valueToBeRounded.setScale(
+                                        shape, valueToBeRounded.ROUND_HALF_UP); // performs rounding
+                                fractionArray[arrayRowCount][arrayColumnCount] = String.valueOf(roundedValue); // Places final value in array
+                            }
+                        } else { // if value model is null puts a hyphen in place
+                            fractionArray[arrayRowCount][arrayColumnCount] = "-";
+                        }
+                    }
+
                     arrayRowCount++;    // Next row down
                 } // ends the fraction-iterator while loop
 
@@ -687,8 +689,40 @@ Splits report settings file name returning a displayable version without the ent
         return fractionArray;
     } // closes method
 
+    public static int getShape(String roundedUncertaintyValue) {
+        int shape;
+
+        if (!roundedUncertaintyValue.contains(".")) {
+            shape = 0;
+
+        } else {    // if there is a decimal in the uncertainty value, then the shape is the length after that decimal
+            String decimalString = roundedUncertaintyValue.split("\\.")[1];
+            shape = decimalString.length();
+        }
+
+        return shape;
+    }
+
     public static String toSignificantFiguresUncertaintyString(BigDecimal originalNumber, int significantFigures) {
-        return String.format("%." + significantFigures + "G", originalNumber);
+        String formattedNumber = String.format("%." + significantFigures + "G", originalNumber);
+
+        // if the number is in Scientific Notation, converts to a decimal
+        if (formattedNumber.contains("+")) {
+            // splits the number into its parts
+            double leftNumber = Double.parseDouble(formattedNumber.split("E")[0]);
+            int digits = Integer.parseInt(formattedNumber.split("\\+")[1]);
+            int newFormattedNumber = (int) (leftNumber * (Math.pow(10, digits)));
+            formattedNumber = String.valueOf(newFormattedNumber);
+
+        } else if (formattedNumber.contains("-")) {
+            //splits the number into its parts
+            double leftNumber = Double.parseDouble(formattedNumber.split("E")[0]);
+            int digits = Integer.parseInt(formattedNumber.split("-")[1]);
+            int newFormattedNumber = (int) (leftNumber / (Math.pow(digits, 10)));
+            formattedNumber = String.valueOf(newFormattedNumber);
+        }
+
+        return formattedNumber;
     }
 
     /*
