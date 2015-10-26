@@ -49,6 +49,8 @@ public class TablePainterActivity extends Activity {
     private static String[][] finalArray; // the completely parsed array for displaying
     private static ArrayList<String> outputVariableName; // output variable names for column work
     private static int columnCount; // maintains a count of the number of columns in the final display table
+    private static ArrayList<Integer> columnMaxLengths; // holds the max lengths for each column (used for padding)
+    private static ArrayList<Boolean> columnDecimals;   // holds whether the current column contains a decimal or not
 
     private String aliquotFilePath, reportSettingsFilePath; // The complete path of the aliquot and report settings files to be parsed and display
 
@@ -70,6 +72,9 @@ public class TablePainterActivity extends Activity {
         // Parses the Report Settings XML file
         categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
         ArrayList<String> outputVariableNames = reportSettingsParser.getOutputVariableName();
+
+        columnMaxLengths = new ArrayList<Integer>();
+        columnDecimals = new ArrayList<Boolean>();
 
         // Instantiates the Aliquot Parser and gets the current Aliquot path
         AliquotParser aliquotParser = new AliquotParser();
@@ -330,8 +335,14 @@ public class TablePainterActivity extends Activity {
                     cell.setBackgroundResource(R.drawable.white_background);
                 }
 
+                // Format the text so that it has the proper padding
+                String text = finalArray[currentRow][currentColumn];
+                int length = columnMaxLengths.get(currentColumn);
+                boolean hasDecimal = columnDecimals.get(currentColumn);
+                String paddedText = setTextPadding(text, length, hasDecimal);
+
                 // Adds text to cells
-                cell.setText(finalArray[currentRow][currentColumn]);
+                cell.setText(paddedText);
                 cell.setVisibility(View.VISIBLE);
 
                 if (cell.getText().equals("-")) {
@@ -350,6 +361,32 @@ public class TablePainterActivity extends Activity {
             }
             rowCount++;
         }
+    }
+
+    /*
+    This method takes in a value string (text). It is also given the maximum length for a certain column along with
+    whether that column contains a decimal or not. It then pads the value accordingly to present in the table.
+    Is used when building the actual table in onCreate().
+     */
+    public String setTextPadding(String text, int maxLength, boolean hasDecimal) {
+        String paddedText = text;
+
+        if (hasDecimal) {   // if the column does not contain a decimal
+            String[] decimalSplit = text.split("\\.");
+            if (decimalSplit.length > 1) { // if the text has a decimal
+                for (int i=0; i<maxLength-1; i++) {
+                    if (decimalSplit[1].length() < maxLength) {   // if the value after the decimal is less than the max length
+                        paddedText += " ";
+                    }
+                }
+            } else {    // if the text does not have a decimal
+                for (int i=0; i<maxLength+1; i++) {     // account fo the decimal itself
+                    paddedText += " ";
+                }
+            }
+        }
+
+        return paddedText;
     }
 
     /*
@@ -569,7 +606,11 @@ Splits report settings file name returning a displayable version without the ent
         fractionArray[0][0] = aliquotName;
         for (int j = 1; j < COLUMNS; j++) {
             fractionArray[0][j] = " ";
+            columnMaxLengths.add(0);   // add a spot to columnLengths for each column in the table
+            columnDecimals.add(false);  // add a spot to columnDecimals for each column as well
         }
+        columnMaxLengths.add(0);    // add one more spot to get the correct number of columns (since j starts at 1 in the for loop)
+        columnDecimals.add(false);
 
         Iterator<Entry<Integer, Category>> categoryIterator = categoryMap
                 .entrySet().iterator();
@@ -593,6 +634,8 @@ Splits report settings file name returning a displayable version without the ent
 
                 while (fractionIterator.hasNext()) {
                     Entry<String, Fraction> currentFraction = fractionIterator.next();
+
+                    boolean firstDecimal = false;   // knows whether there has already been a decimal in the column
 
                     //  Fills in the UNCERTAINTY COLUMN (column on the right) if it exists
                     int shape = 0;
@@ -632,6 +675,30 @@ Splits report settings file name returning a displayable version without the ent
                                 shape = getShape(newValue);
                                 fractionArray[arrayRowCount][arrayColumnCount] = String   // Plus one to say its the column to the right
                                         .valueOf(newValue); // places final value in array
+
+                                // check if the value is larger than other previous values
+                                int valueLength;
+                                String[] splitList = String.valueOf(newValue).split("\\."); // split the value to check decimal place
+                                if (splitList.length > 1) { // if there is a decimal, length is the length after the decimal
+                                    valueLength = String.valueOf(splitList[1]).length();
+                                    if (!columnDecimals.get(arrayColumnCount)) {    // if there hasn't already been a decimal in column
+                                        firstDecimal =  true;   // this is the first decimal
+                                    }
+                                    columnDecimals.set(arrayColumnCount, true); // add a true to the column because it contains a decimal
+
+                                } else {    // if not, the length is the overall length
+                                    valueLength = String.valueOf(splitList[0]).length();
+                                }
+
+                                // put the length value for the column into columnMaxLengths
+                                if (valueLength > columnMaxLengths.get(arrayColumnCount)
+                                        || firstDecimal) {
+                                    // if the value is greater than current max length or it is the first decimal
+                                    if (columnDecimals.get(arrayColumnCount) && (splitList.length > 1)) {
+                                        // if the column is a decimal and the current value is a decimal
+                                        columnMaxLengths.set(arrayColumnCount, valueLength);
+                                    }
+                                }
                             }
                         } // closes if
                         else { // if value model is null
@@ -666,6 +733,31 @@ Splits report settings file name returning a displayable version without the ent
                                 roundedValue = valueToBeRounded.setScale(
                                         shape, valueToBeRounded.ROUND_HALF_UP); // performs rounding
                                 fractionArray[arrayRowCount][arrayColumnCount] = String.valueOf(roundedValue); // Places final value in array
+
+                                // check if the value is larger than other previous values
+                                int valueLength;
+                                String[] splitList = String.valueOf(roundedValue).split("\\."); // split the value to check decimal place
+
+                                if (splitList.length > 1) { // if there is a decimal, length is the length after the decimal
+                                    valueLength = String.valueOf(splitList[1]).length();
+                                    if (!columnDecimals.get(arrayColumnCount)) {    // if there hasn't already been a decimal in column
+                                        firstDecimal =  true;   // this is the first decimal
+                                    }
+                                    columnDecimals.set(arrayColumnCount, true); // add a true to the column because it contains a decimal
+
+                                } else {    // if not, the length is the overall length
+                                    valueLength = String.valueOf(splitList[0]).length();
+                                }
+
+                                // put the length value for the column into columnMaxLengths
+                                if (valueLength > columnMaxLengths.get(arrayColumnCount)
+                                        || firstDecimal) {
+                                    // if the value is greater than current max length or it is the first decimal
+                                    if (columnDecimals.get(arrayColumnCount) && (splitList.length > 1)) {
+                                        // if the column is a decimal and the current value is a decimal
+                                        columnMaxLengths.set(arrayColumnCount, valueLength);
+                                    }
+                                }
                             }
                         } else { // if value model is null puts a hyphen in place
                             fractionArray[arrayRowCount][arrayColumnCount] = "-";
