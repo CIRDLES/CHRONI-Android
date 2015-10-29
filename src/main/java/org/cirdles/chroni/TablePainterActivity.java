@@ -1,6 +1,7 @@
 package org.cirdles.chroni;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -371,18 +372,24 @@ public class TablePainterActivity extends Activity {
     public String setTextPadding(String text, int maxLength, boolean hasDecimal) {
         String paddedText = text;
 
-        if (hasDecimal) {   // if the column does not contain a decimal
+        if (hasDecimal) {   // if the column contains a decimal
             String[] decimalSplit = text.split("\\.");
             if (decimalSplit.length > 1) { // if the text has a decimal
-                for (int i=0; i<maxLength-1; i++) {
+                for (int i = 0; i < maxLength-decimalSplit[1].length(); i++) {
                     if (decimalSplit[1].length() < maxLength) {   // if the value after the decimal is less than the max length
                         paddedText += " ";
                     }
                 }
+
             } else {    // if the text does not have a decimal
-                for (int i=0; i<maxLength+1; i++) {     // account fo the decimal itself
+                for (int i = 0; i < maxLength + 1; i++) {     // add spaces for every digit after the decimal including the decimal itself
                     paddedText += " ";
                 }
+            }
+
+        } else {    // if the column does not have a decimal
+            for (int i = 0; i < (maxLength - text.length()) + 1; i++) {     // account fo the decimal itself
+                paddedText += " ";
             }
         }
 
@@ -410,8 +417,7 @@ Splits report settings file name returning a displayable version without the ent
 */
     private String splitFileName(String fileName){
         String[] fileNameParts = fileName.split("/");
-        String newFileName = fileNameParts[fileNameParts.length-1];
-        return newFileName;
+        return fileNameParts[fileNameParts.length-1];
     }
 
     /*
@@ -419,7 +425,7 @@ Splits report settings file name returning a displayable version without the ent
      */
 
     private boolean isFractionColumn(String[][] displayArray, int columnIndex) {
-        boolean isFractionColumn = false;
+        boolean isFractionColumn;
         String categoryName = displayArray[0][columnIndex];
 
         if (categoryName.contentEquals("Fraction")) {
@@ -477,16 +483,13 @@ Splits report settings file name returning a displayable version without the ent
             for (int currentRow = 0; currentRow < ROWS; currentRow++) {
                 if(currentRow != 0) { // Skips counting the header row
                     currentCellCharacterCount = finalArray[currentRow][currentColumn].length();
-//                Log.i("Column: " + currentColumn + " Cell: " + currentRow + " Width: " + currentCellCharacterCount, "Measuring");
+
                     if (currentCellCharacterCount > widestCellCharacterCount) {
                         widestCellCharacterCount = currentCellCharacterCount;
                     }
-//                Log.i("Widest Cell: " + widestCellCharacterCount, "Result");
                 }
             }
             columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount/2; // Divides by 2 for appropriate EMS measurement
-//            Log.i("Column: " + currentColumn +  " Widest Cell: " + widestCellCharacterCount, "Measuring");
-//            Log.i("----------------------------------------------------------------------------", "Measuring");
         }
         return columnMaxCharacterCounts;
     }
@@ -637,8 +640,11 @@ Splits report settings file name returning a displayable version without the ent
 
                     boolean firstDecimal = false;   // knows whether there has already been a decimal in the column
 
+                    String uncertaintyValue = ""; // will contain the uncertainty VALUE to be used in obtaining the fraction shape later
+                    String uncertaintyType = "";  // will contain the uncertainty TYPE to be used in obtaining the fraction shape later
+
                     //  Fills in the UNCERTAINTY COLUMN (column on the right) if it exists
-                    int shape = 0;
+                    int shape;
 
                     if (uncertaintyColumnExists) {
                         arrayColumnCount++;     // If uncertainty exists, go to the next column
@@ -666,31 +672,30 @@ Splits report settings file name returning a displayable version without the ent
                                                 dividingNumber))) * 2);
 
                                 // Calculates value if column is percent uncertainty
-                                if (column.getValue().getUncertaintyType()
-                                        .equals("PCT")) {
+                                uncertaintyType = column.getValue().getUncertaintyType();
+                                if (uncertaintyType.equals("PCT")) {
                                     valueToBeRounded = new BigDecimal((oneSigma / initialValue) * 200);
                                 }
 
                                 String newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
-                                shape = getShape(newValue);
-                                fractionArray[arrayRowCount][arrayColumnCount] = String   // Plus one to say its the column to the right
-                                        .valueOf(newValue); // places final value in array
+                                uncertaintyValue = newValue;
+                                fractionArray[arrayRowCount][arrayColumnCount] = newValue; // places final value in array
 
-                                // check if the value is larger than other previous values
+                                // checks if the value is larger than other previous values
                                 int valueLength;
-                                String[] splitList = String.valueOf(newValue).split("\\."); // split the value to check decimal place
+                                String[] splitList = newValue.split("\\."); // splits the value to check decimal place
                                 if (splitList.length > 1) { // if there is a decimal, length is the length after the decimal
-                                    valueLength = String.valueOf(splitList[1]).length();
+                                    valueLength = splitList[1].length();
                                     if (!columnDecimals.get(arrayColumnCount)) {    // if there hasn't already been a decimal in column
                                         firstDecimal =  true;   // this is the first decimal
                                     }
-                                    columnDecimals.set(arrayColumnCount, true); // add a true to the column because it contains a decimal
+                                    columnDecimals.set(arrayColumnCount, true); // adds a true to the column because it contains a decimal
 
                                 } else {    // if not, the length is the overall length
-                                    valueLength = String.valueOf(splitList[0]).length();
+                                    valueLength = splitList[0].length();
                                 }
 
-                                // put the length value for the column into columnMaxLengths
+                                // puts the length value for the column into columnMaxLengths
                                 if (valueLength > columnMaxLengths.get(arrayColumnCount)
                                         || firstDecimal) {
                                     // if the value is greater than current max length or it is the first decimal
@@ -704,7 +709,7 @@ Splits report settings file name returning a displayable version without the ent
                         else { // if value model is null
                             fractionArray[arrayRowCount][arrayColumnCount] = "-";
                         }
-                        arrayColumnCount--; // Go back to the fraction column
+                        arrayColumnCount--; // Goes back to the fraction column
                     }
 
                     //  Fills in the FRACTION COLUMN (column on the left)
@@ -724,29 +729,31 @@ Splits report settings file name returning a displayable version without the ent
                         if (valueModel != null) {
                             float initialValue = valueModel.getValue();
                             String currentUnit = column.getValue().getUnits();
-                            int countOfSignificantDigits = column.getValue().getCountOfSignificantDigits();
 
                             // Performs the mathematical operations for the table
                             if (Numbers.getUnitConversionsMap().containsKey(currentUnit)) {
                                 Integer dividingNumber = Numbers.getUnitConversionsMap().get(currentUnit); // gets the exponent for conversion
                                 valueToBeRounded = new BigDecimal(initialValue / (Math.pow(10, dividingNumber))); // does initial calculation
+
+                                shape = getShape(uncertaintyValue, uncertaintyType, valueToBeRounded);
                                 roundedValue = valueToBeRounded.setScale(
-                                        shape, valueToBeRounded.ROUND_HALF_UP); // performs rounding
-                                fractionArray[arrayRowCount][arrayColumnCount] = String.valueOf(roundedValue); // Places final value in array
+                                        shape, BigDecimal.ROUND_HALF_UP); // performs rounding
+
+                                fractionArray[arrayRowCount][arrayColumnCount] = roundedValue.toPlainString(); // Places final value in array
 
                                 // check if the value is larger than other previous values
                                 int valueLength;
-                                String[] splitList = String.valueOf(roundedValue).split("\\."); // split the value to check decimal place
+                                String[] splitList = roundedValue.toPlainString().split("\\."); // split the value to check decimal place
 
                                 if (splitList.length > 1) { // if there is a decimal, length is the length after the decimal
-                                    valueLength = String.valueOf(splitList[1]).length();
+                                    valueLength = splitList[1].length();
                                     if (!columnDecimals.get(arrayColumnCount)) {    // if there hasn't already been a decimal in column
                                         firstDecimal =  true;   // this is the first decimal
                                     }
                                     columnDecimals.set(arrayColumnCount, true); // add a true to the column because it contains a decimal
 
                                 } else {    // if not, the length is the overall length
-                                    valueLength = String.valueOf(splitList[0]).length();
+                                    valueLength = splitList[0].length();
                                 }
 
                                 // put the length value for the column into columnMaxLengths
@@ -781,16 +788,69 @@ Splits report settings file name returning a displayable version without the ent
         return fractionArray;
     } // closes method
 
-    public static int getShape(String roundedUncertaintyValue) {
+    public static int getShape(String roundedUncertaintyValue, String uncertaintyType, BigDecimal fractionValue) {
         int shape;
 
-        if (!roundedUncertaintyValue.contains(".")) {
-            shape = 0;
+        if (uncertaintyType.equals("PCT")) {
+            // get what the uncertainty looks like: fractionValue * (roundedUncertaintyValue / 100)
+            String modelUncertainty = fractionValue.multiply((BigDecimal.valueOf(Double.parseDouble(roundedUncertaintyValue)).
+                            divide(BigDecimal.valueOf(100.0), 20, RoundingMode.HALF_UP))).toPlainString();
+            int uncertaintySigFigs = 0;
 
-        } else {    // if there is a decimal in the uncertainty value, then the shape is the length after that decimal
-            String decimalString = roundedUncertaintyValue.split("\\.")[1];
-            shape = decimalString.length();
-        }
+            // splits so that the sig figs can be counted
+            String[] sigFigSplit = roundedUncertaintyValue.split("(^0+(\\.?)0*|(~\\.)0+$|\\.)");
+            for (String fig : sigFigSplit) {
+                uncertaintySigFigs += fig.length();     // adds to the total number of sig figs
+            }
+
+            String roundedModelUncertainty = "";    // will hold the new, rounded modelUncertainty
+            boolean finished = false;
+            boolean hasSeenNonZero = false; // knows whether the loop has gone over a non-zero number
+            int sigFigCount = 0;    // counts the number of sig figs entered
+            int i = 0;
+
+            while (!finished) {
+                String sub = modelUncertainty.substring(i, i+1);
+
+                if (hasSeenNonZero && !sub.equals(".")) {
+                    sigFigCount++;  // add to sigFigCount for the next loop through
+                }
+
+                if (!hasSeenNonZero && !sub.equals("0") && !sub.equals(".")) { // if the number is the first non-zero/non-decimal
+                    hasSeenNonZero = true;
+                    roundedModelUncertainty += sub;
+                    sigFigCount++;
+
+                } else if ((!hasSeenNonZero && (sub.equals("0")) || sub.equals("."))) {    // if it is a leading 0
+                    roundedModelUncertainty += sub;
+
+                } else if (hasSeenNonZero && sigFigCount == uncertaintySigFigs) {
+                    roundedModelUncertainty += sub; // no need to round perfectly since we only need the shape of the rounded value
+                    finished = true;
+
+                } else {
+                    roundedModelUncertainty += sub;
+                }
+                i++;
+            }
+
+            if (!roundedModelUncertainty.contains(".")) {
+                shape = 0;
+
+            } else {    // if there is a decimal in the new model uncertainty value, then the shape is the length after that decimal
+                String decimalString = roundedModelUncertainty.split("\\.")[1];
+                shape = decimalString.length();
+            }
+
+        } else {
+                if (!roundedUncertaintyValue.contains(".")) {
+                    shape = 0;
+
+                } else {    // if there is a decimal in the uncertainty value, then the shape is the length after that decimal
+                    String decimalString = roundedUncertaintyValue.split("\\.")[1];
+                    shape = decimalString.length();
+                }
+            }
 
         return shape;
     }
