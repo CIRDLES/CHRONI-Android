@@ -212,7 +212,7 @@ public class HistoryActivity extends Activity {
                 return true;
             case R.id.helpMenu: // Takes user to help blog
                 Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://chronihelpblog.wordpress.com"));
+                        Uri.parse(getString(R.string.chroni_help_address)));
                 startActivity(openHelpBlog);
                 return true;
             default:
