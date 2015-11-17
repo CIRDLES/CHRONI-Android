@@ -806,7 +806,7 @@ Splits report settings file name returning a displayable version without the ent
                 return true;
             case R.id.helpMenu: // Takes user to help blog
                 Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://chronihelpblog.wordpress.com"));
+                        Uri.parse(getString(R.string.chroni_help_address)));
                 startActivity(openHelpBlog);
                 return true;
             default:
