@@ -1,6 +1,7 @@
 package org.cirdles.chroni;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +50,8 @@ public class TablePainterActivity extends Activity {
     private static String[][] finalArray; // the completely parsed array for displaying
     private static ArrayList<String> outputVariableName; // output variable names for column work
     private static int columnCount; // maintains a count of the number of columns in the final display table
+    private static ArrayList<Integer> columnMaxLengths; // holds the max lengths for each column (used for padding)
+    private static ArrayList<Boolean> columnDecimals;   // holds whether the current column contains a decimal or not
 
     private String aliquotFilePath, reportSettingsFilePath; // The complete path of the aliquot and report settings files to be parsed and display
 
@@ -70,6 +73,9 @@ public class TablePainterActivity extends Activity {
         // Parses the Report Settings XML file
         categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
         ArrayList<String> outputVariableNames = reportSettingsParser.getOutputVariableName();
+
+        columnMaxLengths = new ArrayList<Integer>();
+        columnDecimals = new ArrayList<Boolean>();
 
         // Instantiates the Aliquot Parser and gets the current Aliquot path
         AliquotParser aliquotParser = new AliquotParser();
@@ -330,8 +336,14 @@ public class TablePainterActivity extends Activity {
                     cell.setBackgroundResource(R.drawable.white_background);
                 }
 
+                // Format the text so that it has the proper padding
+                String text = finalArray[currentRow][currentColumn];
+                int length = columnMaxLengths.get(currentColumn);
+                boolean hasDecimal = columnDecimals.get(currentColumn);
+                String paddedText = setTextPadding(text, length, hasDecimal);
+
                 // Adds text to cells
-                cell.setText(finalArray[currentRow][currentColumn]);
+                cell.setText(paddedText);
                 cell.setVisibility(View.VISIBLE);
 
                 if (cell.getText().equals("-")) {
@@ -350,6 +362,38 @@ public class TablePainterActivity extends Activity {
             }
             rowCount++;
         }
+    }
+
+    /*
+    This method takes in a value string (text). It is also given the maximum length for a certain column along with
+    whether that column contains a decimal or not. It then pads the value accordingly to present in the table.
+    Is used when building the actual table in onCreate().
+     */
+    public String setTextPadding(String text, int maxLength, boolean hasDecimal) {
+        String paddedText = text;
+
+        if (hasDecimal) {   // if the column contains a decimal
+            String[] decimalSplit = text.split("\\.");
+            if (decimalSplit.length > 1) { // if the text has a decimal
+                for (int i = 0; i < maxLength-decimalSplit[1].length(); i++) {
+                    if (decimalSplit[1].length() < maxLength) {   // if the value after the decimal is less than the max length
+                        paddedText += " ";
+                    }
+                }
+
+            } else {    // if the text does not have a decimal
+                for (int i = 0; i < maxLength + 1; i++) {     // add spaces for every digit after the decimal including the decimal itself
+                    paddedText += " ";
+                }
+            }
+
+        } else {    // if the column does not have a decimal
+            for (int i = 0; i < (maxLength - text.length()) + 1; i++) {     // account fo the decimal itself
+                paddedText += " ";
+            }
+        }
+
+        return paddedText;
     }
 
     /*
@@ -373,8 +417,7 @@ Splits report settings file name returning a displayable version without the ent
 */
     private String splitFileName(String fileName){
         String[] fileNameParts = fileName.split("/");
-        String newFileName = fileNameParts[fileNameParts.length-1];
-        return newFileName;
+        return fileNameParts[fileNameParts.length-1];
     }
 
     /*
@@ -382,7 +425,7 @@ Splits report settings file name returning a displayable version without the ent
      */
 
     private boolean isFractionColumn(String[][] displayArray, int columnIndex) {
-        boolean isFractionColumn = false;
+        boolean isFractionColumn;
         String categoryName = displayArray[0][columnIndex];
 
         if (categoryName.contentEquals("Fraction")) {
@@ -440,16 +483,13 @@ Splits report settings file name returning a displayable version without the ent
             for (int currentRow = 0; currentRow < ROWS; currentRow++) {
                 if(currentRow != 0) { // Skips counting the header row
                     currentCellCharacterCount = finalArray[currentRow][currentColumn].length();
-//                Log.i("Column: " + currentColumn + " Cell: " + currentRow + " Width: " + currentCellCharacterCount, "Measuring");
+
                     if (currentCellCharacterCount > widestCellCharacterCount) {
                         widestCellCharacterCount = currentCellCharacterCount;
                     }
-//                Log.i("Widest Cell: " + widestCellCharacterCount, "Result");
                 }
             }
             columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount/2; // Divides by 2 for appropriate EMS measurement
-//            Log.i("Column: " + currentColumn +  " Widest Cell: " + widestCellCharacterCount, "Measuring");
-//            Log.i("----------------------------------------------------------------------------", "Measuring");
         }
         return columnMaxCharacterCounts;
     }
@@ -569,7 +609,11 @@ Splits report settings file name returning a displayable version without the ent
         fractionArray[0][0] = aliquotName;
         for (int j = 1; j < COLUMNS; j++) {
             fractionArray[0][j] = " ";
+            columnMaxLengths.add(0);   // add a spot to columnLengths for each column in the table
+            columnDecimals.add(false);  // add a spot to columnDecimals for each column as well
         }
+        columnMaxLengths.add(0);    // add one more spot to get the correct number of columns (since j starts at 1 in the for loop)
+        columnDecimals.add(false);
 
         Iterator<Entry<Integer, Category>> categoryIterator = categoryMap
                 .entrySet().iterator();
@@ -594,40 +638,13 @@ Splits report settings file name returning a displayable version without the ent
                 while (fractionIterator.hasNext()) {
                     Entry<String, Fraction> currentFraction = fractionIterator.next();
 
-                    //  Fills in the FRACTION COLUMN (column on the left)
+                    boolean firstDecimal = false;   // knows whether there has already been a decimal in the column
 
-                    if (variableName.equals("")) {
-                        // Value Models under Fraction don't have variable names so have to account for those specifically
-                        if(methodName.equals("getFractionID")) {
-                            fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getFractionID();
-                        } else if(methodName.equals("getNumberOfGrains")) {
-                            fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getNumberOfGrains();
-                        }
-                    } else {
-                        // Retrieves the correct value model based off the variable name
-                        ValueModel valueModel = DomParser.getValueModelByName(
-                                currentFraction.getValue(), variableName);
-
-                        if (valueModel != null) {
-                            float initialValue = valueModel.getValue();
-                            String currentUnit = column.getValue().getUnits();
-                            int countOfSignificantDigits = column.getValue().getCountOfSignificantDigits();
-
-                            // Performs the mathematical operations for the table
-                            if (Numbers.getUnitConversionsMap().containsKey(currentUnit)) {
-                                Integer dividingNumber = Numbers.getUnitConversionsMap().get(currentUnit); // gets the exponent for conversion
-                                valueToBeRounded = new BigDecimal(initialValue / (Math.pow(10, dividingNumber))); // does initial calculation
-                                roundedValue = valueToBeRounded.setScale(
-                                        countOfSignificantDigits,
-                                        valueToBeRounded.ROUND_HALF_UP); // performs rounding
-                                fractionArray[arrayRowCount][arrayColumnCount] = String.valueOf(roundedValue); // Places final value in array
-                            }
-                        } else { // if value model is null puts a hyphen in place
-                            fractionArray[arrayRowCount][arrayColumnCount] = "-";
-                        }
-                    }
+                    String uncertaintyValue = ""; // will contain the uncertainty VALUE to be used in obtaining the fraction shape later
+                    String uncertaintyType = "";  // will contain the uncertainty TYPE to be used in obtaining the fraction shape later
 
                     //  Fills in the UNCERTAINTY COLUMN (column on the right) if it exists
+                    int shape;
 
                     if (uncertaintyColumnExists) {
                         arrayColumnCount++;     // If uncertainty exists, go to the next column
@@ -655,21 +672,105 @@ Splits report settings file name returning a displayable version without the ent
                                                 dividingNumber))) * 2);
 
                                 // Calculates value if column is percent uncertainty
-                                if (column.getValue().getUncertaintyType()
-                                        .equals("PCT")) {
+                                uncertaintyType = column.getValue().getUncertaintyType();
+                                if (uncertaintyType.equals("PCT")) {
                                     valueToBeRounded = new BigDecimal((oneSigma / initialValue) * 200);
                                 }
 
                                 String newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
-                                fractionArray[arrayRowCount][arrayColumnCount] = String   // Plus one to say its the column to the right
-                                        .valueOf(newValue); // places final value in array
+                                uncertaintyValue = newValue;
+                                fractionArray[arrayRowCount][arrayColumnCount] = newValue; // places final value in array
+
+                                // checks if the value is larger than other previous values
+                                int valueLength;
+                                String[] splitList = newValue.split("\\."); // splits the value to check decimal place
+                                if (splitList.length > 1) { // if there is a decimal, length is the length after the decimal
+                                    valueLength = splitList[1].length();
+                                    if (!columnDecimals.get(arrayColumnCount)) {    // if there hasn't already been a decimal in column
+                                        firstDecimal =  true;   // this is the first decimal
+                                    }
+                                    columnDecimals.set(arrayColumnCount, true); // adds a true to the column because it contains a decimal
+
+                                } else {    // if not, the length is the overall length
+                                    valueLength = splitList[0].length();
+                                }
+
+                                // puts the length value for the column into columnMaxLengths
+                                if (valueLength > columnMaxLengths.get(arrayColumnCount)
+                                        || firstDecimal) {
+                                    // if the value is greater than current max length or it is the first decimal
+                                    if (columnDecimals.get(arrayColumnCount) && (splitList.length > 1)) {
+                                        // if the column is a decimal and the current value is a decimal
+                                        columnMaxLengths.set(arrayColumnCount, valueLength);
+                                    }
+                                }
                             }
                         } // closes if
                         else { // if value model is null
                             fractionArray[arrayRowCount][arrayColumnCount] = "-";
                         }
-                        arrayColumnCount--; // Go back to the fraction column
+                        arrayColumnCount--; // Goes back to the fraction column
                     }
+
+                    //  Fills in the FRACTION COLUMN (column on the left)
+
+                    if (variableName.equals("")) {
+                        // Value Models under Fraction don't have variable names so have to account for those specifically
+                        if(methodName.equals("getFractionID")) {
+                            fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getFractionID();
+                        } else if(methodName.equals("getNumberOfGrains")) {
+                            fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getNumberOfGrains();
+                        }
+                    } else {
+                        // Retrieves the correct value model based off the variable name
+                        ValueModel valueModel = DomParser.getValueModelByName(
+                                currentFraction.getValue(), variableName);
+
+                        if (valueModel != null) {
+                            float initialValue = valueModel.getValue();
+                            String currentUnit = column.getValue().getUnits();
+
+                            // Performs the mathematical operations for the table
+                            if (Numbers.getUnitConversionsMap().containsKey(currentUnit)) {
+                                Integer dividingNumber = Numbers.getUnitConversionsMap().get(currentUnit); // gets the exponent for conversion
+                                valueToBeRounded = new BigDecimal(initialValue / (Math.pow(10, dividingNumber))); // does initial calculation
+
+                                shape = getShape(uncertaintyValue, uncertaintyType, valueToBeRounded);
+                                roundedValue = valueToBeRounded.setScale(
+                                        shape, BigDecimal.ROUND_HALF_UP); // performs rounding
+
+                                fractionArray[arrayRowCount][arrayColumnCount] = roundedValue.toPlainString(); // Places final value in array
+
+                                // check if the value is larger than other previous values
+                                int valueLength;
+                                String[] splitList = roundedValue.toPlainString().split("\\."); // split the value to check decimal place
+
+                                if (splitList.length > 1) { // if there is a decimal, length is the length after the decimal
+                                    valueLength = splitList[1].length();
+                                    if (!columnDecimals.get(arrayColumnCount)) {    // if there hasn't already been a decimal in column
+                                        firstDecimal =  true;   // this is the first decimal
+                                    }
+                                    columnDecimals.set(arrayColumnCount, true); // add a true to the column because it contains a decimal
+
+                                } else {    // if not, the length is the overall length
+                                    valueLength = splitList[0].length();
+                                }
+
+                                // put the length value for the column into columnMaxLengths
+                                if (valueLength > columnMaxLengths.get(arrayColumnCount)
+                                        || firstDecimal) {
+                                    // if the value is greater than current max length or it is the first decimal
+                                    if (columnDecimals.get(arrayColumnCount) && (splitList.length > 1)) {
+                                        // if the column is a decimal and the current value is a decimal
+                                        columnMaxLengths.set(arrayColumnCount, valueLength);
+                                    }
+                                }
+                            }
+                        } else { // if value model is null puts a hyphen in place
+                            fractionArray[arrayRowCount][arrayColumnCount] = "-";
+                        }
+                    }
+
                     arrayRowCount++;    // Next row down
                 } // ends the fraction-iterator while loop
 
@@ -687,8 +788,93 @@ Splits report settings file name returning a displayable version without the ent
         return fractionArray;
     } // closes method
 
+    public static int getShape(String roundedUncertaintyValue, String uncertaintyType, BigDecimal fractionValue) {
+        int shape;
+
+        if (uncertaintyType.equals("PCT")) {
+            // get what the uncertainty looks like: fractionValue * (roundedUncertaintyValue / 100)
+            String modelUncertainty = fractionValue.multiply((BigDecimal.valueOf(Double.parseDouble(roundedUncertaintyValue)).
+                            divide(BigDecimal.valueOf(100.0), 20, RoundingMode.HALF_UP))).toPlainString();
+            int uncertaintySigFigs = 0;
+
+            // splits so that the sig figs can be counted
+            String[] sigFigSplit = roundedUncertaintyValue.split("(^0+(\\.?)0*|(~\\.)0+$|\\.)");
+            for (String fig : sigFigSplit) {
+                uncertaintySigFigs += fig.length();     // adds to the total number of sig figs
+            }
+
+            String roundedModelUncertainty = "";    // will hold the new, rounded modelUncertainty
+            boolean finished = false;
+            boolean hasSeenNonZero = false; // knows whether the loop has gone over a non-zero number
+            int sigFigCount = 0;    // counts the number of sig figs entered
+            int i = 0;
+
+            while (!finished) {
+                String sub = modelUncertainty.substring(i, i+1);
+
+                if (hasSeenNonZero && !sub.equals(".")) {
+                    sigFigCount++;  // add to sigFigCount for the next loop through
+                }
+
+                if (!hasSeenNonZero && !sub.equals("0") && !sub.equals(".")) { // if the number is the first non-zero/non-decimal
+                    hasSeenNonZero = true;
+                    roundedModelUncertainty += sub;
+                    sigFigCount++;
+
+                } else if ((!hasSeenNonZero && (sub.equals("0")) || sub.equals("."))) {    // if it is a leading 0
+                    roundedModelUncertainty += sub;
+
+                } else if (hasSeenNonZero && sigFigCount == uncertaintySigFigs) {
+                    roundedModelUncertainty += sub; // no need to round perfectly since we only need the shape of the rounded value
+                    finished = true;
+
+                } else {
+                    roundedModelUncertainty += sub;
+                }
+                i++;
+            }
+
+            if (!roundedModelUncertainty.contains(".")) {
+                shape = 0;
+
+            } else {    // if there is a decimal in the new model uncertainty value, then the shape is the length after that decimal
+                String decimalString = roundedModelUncertainty.split("\\.")[1];
+                shape = decimalString.length();
+            }
+
+        } else {
+                if (!roundedUncertaintyValue.contains(".")) {
+                    shape = 0;
+
+                } else {    // if there is a decimal in the uncertainty value, then the shape is the length after that decimal
+                    String decimalString = roundedUncertaintyValue.split("\\.")[1];
+                    shape = decimalString.length();
+                }
+            }
+
+        return shape;
+    }
+
     public static String toSignificantFiguresUncertaintyString(BigDecimal originalNumber, int significantFigures) {
-        return String.format("%." + significantFigures + "G", originalNumber);
+        String formattedNumber = String.format("%." + significantFigures + "G", originalNumber);
+
+        // if the number is in Scientific Notation, converts to a decimal
+        if (formattedNumber.contains("+")) {
+            // splits the number into its parts
+            double leftNumber = Double.parseDouble(formattedNumber.split("E")[0]);
+            int digits = Integer.parseInt(formattedNumber.split("\\+")[1]);
+            int newFormattedNumber = (int) (leftNumber * (Math.pow(10, digits)));
+            formattedNumber = String.valueOf(newFormattedNumber);
+
+        } else if (formattedNumber.contains("-")) {
+            //splits the number into its parts
+            double leftNumber = Double.parseDouble(formattedNumber.split("E")[0]);
+            int digits = Integer.parseInt(formattedNumber.split("-")[1]);
+            int newFormattedNumber = (int) (leftNumber / (Math.pow(digits, 10)));
+            formattedNumber = String.valueOf(newFormattedNumber);
+        }
+
+        return formattedNumber;
     }
 
     /*
