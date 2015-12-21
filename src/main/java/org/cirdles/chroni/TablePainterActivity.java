@@ -23,6 +23,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.method.SingleLineTransformationMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -109,8 +110,6 @@ public class TablePainterActivity extends Activity {
         });
 
         String[][] finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray); // Creates the final table array for displaying
-
-        ArrayList<String> contents = new ArrayList<String>();
 
         // Creates database entry from current entry
         entryHelper = new CHRONIDatabaseHelper(this);
@@ -258,7 +257,7 @@ public class TablePainterActivity extends Activity {
         // Creates the row just reserved for header names
         TableRow categoryRow = new TableRow(this);
         categoryNameTable.addView(categoryRow);
-//        //TODO: Figure out more elegant way to calculate the width of a column
+        //TODO: Figure out more elegant way to calculate the width of a column
 
         int categoryCount = 0;
         // Adds just enough cells for every category name
@@ -269,24 +268,29 @@ public class TablePainterActivity extends Activity {
                 TextView categoryCell = new TextView(this);
                 categoryCell.setText(category.getValue().getDisplayName());
                 categoryCell.setTypeface(Typeface.MONOSPACE);
+                categoryCell.setHorizontallyScrolling(true);    // make sure that the text does not wrap
                 if(category.getValue().getDisplayName().contentEquals("Fraction") && categoryCount != 0){ // Easy fix to handle the issue of sizing with last fraction category TODO: Make better!
-                    categoryCell.setMinEms(columnSizes[columnSizes.length-1] + 2); // Simply sets same size as fraction because its always the same length with last column
+                    // Simply sets same size as fraction because its always the same length with last column
+                    categoryCell.setMinEms(columnSizes[columnSizes.length - 1] + 2);
+                    categoryCell.setMaxEms(columnSizes[columnSizes.length-1] + 2);
                 }else {
-                    categoryCell.setMinEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount())); // sets column spacing based on max character count and allows extra space for crowding
+                    // sets column spacing based on max character count and allows extra space for crowding
+                    categoryCell.setMinEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount()));
+                    categoryCell.setMaxEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount()));
                 }
                 categoryCell.setPadding(3, 4, 3, 4);
                 categoryCell.setTextSize((float) 14.5);
                 categoryCell.setTextColor(Color.BLACK);
                 categoryCell.setBackgroundResource(R.drawable.background_blue_background);
-                categoryCell.setGravity(Gravity.LEFT);
+                categoryCell.setGravity(Gravity.START);
                 categoryRow.addView(categoryCell); // Adds cell to row
                 categoryCount++;
             }
 
         }
 
-        int rowCount = 1; // starts counting under the category name row
 
+        // TODO: Fix the spacing of the title rows
         // Table Layout Printing
         for (int currentRow = 1; currentRow < ROWS; currentRow++) {
 
@@ -307,18 +311,14 @@ public class TablePainterActivity extends Activity {
             for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
                 TextView cell = new TextView(this);
                 cell.setTypeface(Typeface.MONOSPACE);
-                cell.setMinEms(columnSizes[currentColumn] + 2); // sets column spacing based on max character count and allows extra space for crowding
+
+                // sets column spacing based on max character count and allows extra space for crowding
+                cell.setMinEms(columnSizes[currentColumn] + 2);
+                cell.setMaxEms(columnSizes[currentColumn] + 2);
                 cell.setPadding(3, 4, 3, 4);
                 cell.setTextColor(Color.BLACK);
                 cell.setTextSize((float) 14.5);
-                cell.setGravity(Gravity.RIGHT);
-
-                if (currentRow < 5) {
-                    // Handles all header row and aliquot name row design
-                    cell.setTypeface(Typeface.DEFAULT_BOLD);
-                    cell.setTypeface(Typeface.MONOSPACE);
-                    cell.setGravity(Gravity.CENTER);
-                }
+                cell.setGravity(Gravity.END);
 
                 // sets appropriate background color for cells
                 if (currentRow < 4) {
@@ -336,31 +336,38 @@ public class TablePainterActivity extends Activity {
                     cell.setBackgroundResource(R.drawable.white_background);
                 }
 
-                // Format the text so that it has the proper padding
-                String text = finalArray[currentRow][currentColumn];
-                int length = columnMaxLengths.get(currentColumn);
-                boolean hasDecimal = columnDecimals.get(currentColumn);
-                String paddedText = setTextPadding(text, length, hasDecimal);
-
                 // Adds text to cells
-                cell.setText(paddedText);
+                if (currentRow > 4) {   // Handles all of the data cells
+                    // Format the text so that it has the proper padding
+                    String text = finalArray[currentRow][currentColumn];
+                    int length = columnMaxLengths.get(currentColumn);
+                    boolean hasDecimal = columnDecimals.get(currentColumn);
+                    String paddedText = setTextPadding(text, length, hasDecimal);
+                    cell.setText(paddedText);
+
+                } else { // Handles all of the header rows and aliquot name rows
+                    cell.setTypeface(Typeface.DEFAULT_BOLD);
+                    cell.setTypeface(Typeface.MONOSPACE);
+                    cell.setGravity(Gravity.CENTER);
+
+                    String text = finalArray[currentRow][currentColumn];
+                    cell.setText(text);
+                }
+
                 cell.setVisibility(View.VISIBLE);
 
                 if (cell.getText().equals("-")) {
                     cell.setGravity(Gravity.CENTER);
                 }
 
-                //left justify fraction column
-                boolean isFraction = isFractionColumn(finalArray, currentColumn);
-                if(isFraction) {
-                    cell.setGravity(Gravity.LEFT);
+                // left justify fraction column
+                if(isFractionColumn(finalArray, currentColumn)) {
+                    cell.setGravity(Gravity.START);
                 }
-
 
                 // append an individual cell to a content row
                 row.addView(cell);
             }
-            rowCount++;
         }
     }
 
@@ -479,7 +486,7 @@ Splits report settings file name returning a displayable version without the ent
         int[] columnMaxCharacterCounts = new int[COLS];
         for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
             int widestCellCharacterCount = 0;
-            int currentCellCharacterCount = 0;
+            int currentCellCharacterCount;
             for (int currentRow = 0; currentRow < ROWS; currentRow++) {
                 if(currentRow != 0) { // Skips counting the header row
                     currentCellCharacterCount = finalArray[currentRow][currentColumn].length();
@@ -506,8 +513,7 @@ Splits report settings file name returning a displayable version without the ent
             ArrayList<String> outputVariableName,
             TreeMap<Integer, Category> categoryMap) {
         final int COLUMNS = outputVariableName.size();
-        final int ROWS = 4; // 4 is the number of rows for specific information
-        // in the array
+        final int ROWS = 4; // 4 is the number of rows for specific information in the array
 
         String[][] reportSettingsArray = new String[ROWS][COLUMNS];
         int totalColumnCount = 0; // the current column number for the array
@@ -563,7 +569,7 @@ Splits report settings file name returning a displayable version without the ent
                     reportSettingsArray[currentRowNum][totalColumnCount] = uncertaintyColumn.getDisplayName1();
                     currentRowNum++;
 
-                    // Puts display names in the header array and handles formating of special characters
+                    // Puts display names in the header array and handles formatting of special characters
                     reportSettingsArray[currentRowNum][totalColumnCount] = uncertaintyColumn.getDisplayName2();
                     if (reportSettingsArray[currentRowNum][totalColumnCount]
                             .equals("PLUSMINUS2SIGMA")) {
@@ -786,7 +792,7 @@ Splits report settings file name returning a displayable version without the ent
         } // closes category iterator
 
         return fractionArray;
-    } // closes method
+    }
 
     public static int getShape(String roundedUncertaintyValue, String uncertaintyType, BigDecimal fractionValue) {
         int shape;
@@ -884,8 +890,7 @@ Splits report settings file name returning a displayable version without the ent
                                         String[][] reportSettingsArray, String[][] fractionArray) {
         final int COLUMNS = outputVariableName.size();
         final int ROWS = 5 + fractionMap.size(); // 8 is the number of rows for
-        // specific information in the
-        // array
+        // specific information in the array
         String[][] finalArray = new String[ROWS][COLUMNS];
 
         // Fills in the Report Settings Part of Array
