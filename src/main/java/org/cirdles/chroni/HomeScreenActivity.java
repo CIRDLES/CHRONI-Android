@@ -130,7 +130,7 @@ public class HomeScreenActivity extends Activity  {
                 URLFileReader downloader = new URLFileReader(
                         HomeScreenActivity.this,
                         "HomeScreen",
-                        "http://cirdles.org/sites/default/files/Downloads/CIRDLESDefaultReportSettings.xml",
+                        "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings.xml",
                         "url");
                 saveInitialLaunch();
                 saveCurrentReportSettings();         // Notes that files have been downloaded and application has been properly initialized
@@ -141,7 +141,7 @@ public class HomeScreenActivity extends Activity  {
                 URLFileReader downloader2 = new URLFileReader(
                         HomeScreenActivity.this,
                         "HomeScreen",
-                        "http://cirdles.org/sites/default/files/Downloads/Default%20Report%20Settings%202.xml",
+                        "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings%202.xml",
                         "url");
                 saveInitialLaunch();
                 saveCurrentReportSettings();         // Notes that files have been downloaded and application has been properly initialized

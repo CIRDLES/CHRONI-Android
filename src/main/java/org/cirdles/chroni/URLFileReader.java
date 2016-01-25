@@ -118,9 +118,9 @@ public class URLFileReader{
 		}
 
         if(getClassName().contentEquals("HomeScreen")) {
-            if(fileURL.contentEquals("http://cirdles.org/sites/default/files/Downloads/CIRDLESDefaultReportSettings.xml")){
+            if(fileURL.contentEquals("https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Defaultt%20Report%20Settings.xml")){
                 name = "Default Report Settings";
-            }else if(fileURL.contentEquals("http://cirdles.org/sites/default/files/Downloads/Default%20Report%20Settings%202.xml")){
+            }else if(fileURL.contentEquals("https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings%202.xml")){
                 name = "Default Report Settings 2";
             }
         }
