@@ -1,6 +1,7 @@
 package org.cirdles.chroni;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,17 +100,17 @@ public class TablePainterActivity extends Activity {
         Arrays.sort(fractionArray, new Comparator<String[]>() {
             @Override
             public int compare(final String[] entry1, final String[] entry2) {
-                int retVal = 0;
 
                 final String field1 = entry1[0].trim();
                 final String field2 = entry2[0].trim();
 
                 Comparator<String> forNoah = new IntuitiveStringComparator<String>();
-                return retVal = forNoah.compare(field1, field2);
+                return forNoah.compare(field1, field2);
             }
         });
 
-        String[][] finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray); // Creates the final table array for displaying
+        // Creates the final table array for displaying
+        String[][] finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
 
         // Creates database entry from current entry
         entryHelper = new CHRONIDatabaseHelper(this);
@@ -184,8 +185,6 @@ public class TablePainterActivity extends Activity {
                         // Displays concordia images
                         Toast.makeText(TablePainterActivity.this, "Opening Concordia Image...", Toast.LENGTH_LONG).show();
                         Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageMap.get("concordia").getImageURL()));
-//                    Intent viewConcordiaIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
-//                        viewConcordiaIntent.putExtra("ConcordiaImage", imageMap.get("concordia").getImageURL());
                         startActivity(viewConcordiaIntent);
                     } else {
                         //Handles lack of wifi connection
@@ -224,8 +223,6 @@ public class TablePainterActivity extends Activity {
                     if (mobileWifi.isConnected()) {
                         Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
                         Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse( imageMap.get("probability_density").getImageURL()));
-//                    Intent viewProbabilityDensityIntent = new Intent("android.intent.action.VIEWANALYSISIMAGE" );
-//                    viewProbabilityDensityIntent.putExtra("ProbabilityDensityImage",  imageMap.get("probability_density").getImageURL());
                         startActivity(viewProbabilityDensityIntent);
                     } else {
                         //Handles lack of wifi connection
@@ -236,7 +233,8 @@ public class TablePainterActivity extends Activity {
             });
         }
 
-        HorizontalScrollView screenScroll = (HorizontalScrollView) findViewById(R.id.horizontalScrollView); // controls the horizontal scrolling of the table
+        // controls the horizontal scrolling of the table
+        HorizontalScrollView screenScroll = (HorizontalScrollView) findViewById(R.id.horizontalScrollView);
 
         LinearLayout tableLayout = (LinearLayout) findViewById(R.id.displayTableLayout); // gives inner table layout for displaying
         TableLayout categoryNameTable = (TableLayout) findViewById(R.id.categoryNameTable); // Header table specifically for category names
@@ -371,10 +369,10 @@ public class TablePainterActivity extends Activity {
         }
     }
 
-    /*
-    This method takes in a value string (text). It is also given the maximum length for a certain column along with
-    whether that column contains a decimal or not. It then pads the value accordingly to present in the table.
-    Is used when building the actual table in onCreate().
+    /**
+     * This method takes in a value string (text). It is also given the maximum length for a certain column along with
+     * whether that column contains a decimal or not. It then pads the value accordingly to present in the table.
+     * Is used when building the actual table in onCreate().
      */
     public String setTextPadding(String text, int maxLength, boolean hasDecimal) {
         String paddedText = text;
@@ -403,49 +401,47 @@ public class TablePainterActivity extends Activity {
         return paddedText;
     }
 
-    /*
-* Accesses current report settings file
-*/
+    /**
+     * Accesses current report settings file
+     */
     private String retrieveReportSettingsFilePath() {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
         return settings.getString("Current Report Settings", Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings/Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
     }
 
-    /*
-* Accesses current report settings file
-*/
+    /**
+     * Accesses current report settings file
+     */
     private String retrieveAliquotFilePath() {
         SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
         return settings.getString("Current Aliquot", "Error"); // Gets current RS and if no file there, returns default as the current file
     }
 
-    /*
-Splits report settings file name returning a displayable version without the entire path
-*/
+    /**
+     * Splits report settings file name returning a displayable version without the entire path
+     */
     private String splitFileName(String fileName){
         String[] fileNameParts = fileName.split("/");
         return fileNameParts[fileNameParts.length-1];
     }
 
-    /*
-    Figures out if something is a part of the Fraction column.
+    /**
+     * Figures out if something is a part of the Fraction column.
      */
-
     private boolean isFractionColumn(String[][] displayArray, int columnIndex) {
-        boolean isFractionColumn;
+        boolean isFractionColumn = false;
         String categoryName = displayArray[0][columnIndex];
 
         if (categoryName.contentEquals("Fraction")) {
             isFractionColumn = true;
-        } else {
-            isFractionColumn = false;
         }
+
         return isFractionColumn;
     }
 
 
-    /*
-     Goes through and figures out header cell lengths given a table
+    /**
+     * Goes through and figures out header cell lengths given a table
      */
 
     protected int[] distributeHeaderCells(int[] columnWidths){
@@ -479,8 +475,8 @@ Splits report settings file name returning a displayable version without the ent
         return headerMaxCharacterCounts;
     }
 
-    /*
-    Goes through and figures out columns lengths given a table
+    /**
+     * Goes through and figures out columns lengths given a table
      */
     protected int[] distributeTableColumns(String[][] finalArray, int ROWS, int COLS){
         int[] columnMaxCharacterCounts = new int[COLS];
@@ -502,7 +498,7 @@ Splits report settings file name returning a displayable version without the ent
     }
 
 
-    /*
+    /**
      * Fills the Report Settings portion of the array
      * @param outputVariableName used to get size of the array
      * @param categoryMap used to populate the array
@@ -592,7 +588,7 @@ Splits report settings file name returning a displayable version without the ent
         return reportSettingsArray;
     }
 
-    /*
+    /**
      * Fills the Aliquot portion of the array
      * @param outputVariableName keeps track of the number of columns and to retrieve value models
      * @param categoryMap used to fill table
@@ -649,8 +645,7 @@ Splits report settings file name returning a displayable version without the ent
                     String uncertaintyValue = ""; // will contain the uncertainty VALUE to be used in obtaining the fraction shape later
                     String uncertaintyType = "";  // will contain the uncertainty TYPE to be used in obtaining the fraction shape later
 
-                    //  Fills in the UNCERTAINTY COLUMN (column on the right) if it exists
-                    int shape;
+                    // Fills in the UNCERTAINTY COLUMN (column on the right) if it exists
 
                     if (uncertaintyColumnExists) {
                         arrayColumnCount++;     // If uncertainty exists, go to the next column
@@ -683,8 +678,22 @@ Splits report settings file name returning a displayable version without the ent
                                     valueToBeRounded = new BigDecimal((oneSigma / initialValue) * 200);
                                 }
 
-                                String newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
-                                uncertaintyValue = newValue;
+                                // Rounds the uncertainty value based on the report settings
+                                String newValue;    // instantiate value to end up in uncertainty place
+                                if (uncertaintyColumn.isDisplayedWithArbitraryDigitCount()) {
+                                    // when the uncertainty is ARBITRARY
+                                    roundedValue = valueToBeRounded.setScale(
+                                            uncertaintyCountOfSignificantDigits,
+                                            BigDecimal.ROUND_HALF_UP); // performs rounding
+
+                                    newValue = roundedValue.toPlainString();
+
+                                } else {
+                                    // when the uncertainty is in SIG FIG format
+                                    newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
+                                }
+
+                                uncertaintyValue = newValue;    // save for later use
                                 fractionArray[arrayRowCount][arrayColumnCount] = newValue; // places final value in array
 
                                 // checks if the value is larger than other previous values
@@ -741,9 +750,52 @@ Splits report settings file name returning a displayable version without the ent
                                 Integer dividingNumber = Numbers.getUnitConversionsMap().get(currentUnit); // gets the exponent for conversion
                                 valueToBeRounded = new BigDecimal(initialValue / (Math.pow(10, dividingNumber))); // does initial calculation
 
-                                shape = getShape(uncertaintyValue, uncertaintyType, valueToBeRounded);
-                                roundedValue = valueToBeRounded.setScale(
-                                        shape, BigDecimal.ROUND_HALF_UP); // performs rounding
+                                /**
+                                 * Obtains the roundedValue for the current column, based on the
+                                 * following found in the report settings:
+                                 *
+                                 * 1. if it is in arbitrary format
+                                 * 2. if it is in sig fig format
+                                 *      a) if the uncertainty column is also in sig fig format
+                                 *      b) if the uncertainty column is in arbitrary format
+                                 */
+                                if (column.getValue().isDisplayedWithArbitraryDigitCount()) {
+                                    // when the report settings specifies an ARBITRARY digit
+                                    // count AFTER the decimal
+                                    roundedValue = valueToBeRounded.setScale(
+                                            column.getValue().getCountOfSignificantDigits(),
+                                            BigDecimal.ROUND_HALF_UP); // performs rounding
+
+                                } else {
+                                    // current column is in SIG FIG format
+
+                                    if (!uncertaintyType.equals("")) {  // UNCERTAINTY COLUMN EXISTS
+
+                                        // if BOTH current column AND it's uncertainty column are in
+                                        // SIG FIG format, use the getShape() method to find shape
+                                        if (!column.getValue().getUncertaintyColumn().isDisplayedWithArbitraryDigitCount()) {
+                                            roundedValue = valueToBeRounded.setScale(
+                                                    getShape(uncertaintyValue, uncertaintyType, valueToBeRounded),
+                                                    BigDecimal.ROUND_HALF_UP); // performs rounding
+
+                                        } else {
+                                            // if current column is in SIG FIG format but the
+                                            // uncertainty column is in ARBITRARY format, the shape
+                                            // is just the arbitrary number of digits
+                                            roundedValue = valueToBeRounded.round(
+                                                    new MathContext(column.getValue().getCountOfSignificantDigits(),
+                                                            RoundingMode.HALF_UP));
+                                        }
+
+                                    } else {
+                                        // there is no uncertainty column, so round up based on
+                                        // the number of significant figures
+                                        roundedValue = valueToBeRounded.round(
+                                                new MathContext(column.getValue().getCountOfSignificantDigits(),
+                                                        RoundingMode.HALF_UP));
+                                    }
+                                }
+
 
                                 fractionArray[arrayRowCount][arrayColumnCount] = roundedValue.toPlainString(); // Places final value in array
 
@@ -754,7 +806,7 @@ Splits report settings file name returning a displayable version without the ent
                                 if (splitList.length > 1) { // if there is a decimal, length is the length after the decimal
                                     valueLength = splitList[1].length();
                                     if (!columnDecimals.get(arrayColumnCount)) {    // if there hasn't already been a decimal in column
-                                        firstDecimal =  true;   // this is the first decimal
+                                        firstDecimal = true;   // this is the first decimal
                                     }
                                     columnDecimals.set(arrayColumnCount, true); // add a true to the column because it contains a decimal
 
@@ -771,7 +823,10 @@ Splits report settings file name returning a displayable version without the ent
                                         columnMaxLengths.set(arrayColumnCount, valueLength);
                                     }
                                 }
+
                             }
+
+
                         } else { // if value model is null puts a hyphen in place
                             fractionArray[arrayRowCount][arrayColumnCount] = "-";
                         }
@@ -794,6 +849,16 @@ Splits report settings file name returning a displayable version without the ent
         return fractionArray;
     }
 
+
+    /**
+     * Handles the rounding of values when there is an uncertainty type and value. (i.e. does not
+     * account for Corr. Coef., % disc, etc.)
+     *
+     * @param roundedUncertaintyValue the value of the uncertainty column
+     * @param uncertaintyType tells what type of uncertainty there is
+     * @param fractionValue the overall number value needed to be shaped
+     * @return the final shape as an integer
+     */
     public static int getShape(String roundedUncertaintyValue, String uncertaintyType, BigDecimal fractionValue) {
         int shape;
 
@@ -883,7 +948,7 @@ Splits report settings file name returning a displayable version without the ent
         return formattedNumber;
     }
 
-    /*
+    /**
      * Fills the entire application array.
      */
     private static String[][] fillArray(ArrayList<String> outputVariableName,
@@ -934,9 +999,9 @@ Splits report settings file name returning a displayable version without the ent
 
 
 
-    /*
- * This method gets the current time.
- */
+    /**
+     * This method gets the current time.
+     */
     public String getCurrentTime(){
         java.text.DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy KK:mm");
         Date date = new Date();
