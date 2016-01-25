@@ -26,7 +26,8 @@ public class Column {
     Instantiates a Column object given several attributes
      */
 	public Column(String displayName, String displayName1,
-			String displayName2, String displayName3, String units, String methodName, String variableName, int pIndex, boolean displayedWithArbitraryDigitCount, int sigFigs) {
+			String displayName2, String displayName3, String units, String methodName, String variableName,
+				  int pIndex, boolean displayedWithArbitraryDigitCount, int sigFigs) {
 			this.displayName = displayName;
         	this.displayName1 = displayName1;
     		this.displayName2 = displayName2;
@@ -160,6 +161,10 @@ public class Column {
 
 	public void setUncertaintyType(String uncertaintyType) {
 		this.uncertaintyType = uncertaintyType;
+	}
+
+	public boolean isDisplayedWithArbitraryDigitCount() {
+		return displayedWithArbitraryDigitCount;
 	}
 
     public boolean isUncertaintyColumn() {

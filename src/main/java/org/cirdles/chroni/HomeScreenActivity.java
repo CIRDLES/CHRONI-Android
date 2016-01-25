@@ -57,12 +57,6 @@ public class HomeScreenActivity extends Activity  {
             versionNumber.setText("Version " + versionCode + "." + versionName);
             versionNumber.setTextColor(getResources().getColor(R.color.button_blue));
 
-            // Puts demo items in the history database if first launch
-//            trialDatabaseHelper = new CHRONIDatabaseHelper(this);
-//            if (isInitialLaunch()) {
-//                trialDatabaseHelper.createEntry("01/11/1111", "Demo Aliquot");
-//            }
-
             // Creates the necessary CHRONI directories
             createDirectories();
 
@@ -92,18 +86,14 @@ public class HomeScreenActivity extends Activity  {
         timer.start();
     }
 
-    /*
- * Creates the necessary application directories: CIRDLES, Aliquot and Report Settings folders
- */
+    /**
+     * Creates the necessary application directories: CIRDLES, Aliquot and Report Settings folders
+     */
     protected void createDirectories() throws FileNotFoundException {
         // Establishes the CIRDLES directories
         File chroniDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/");
         File aliquotDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Aliquot");
         File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Report Settings");
-
-        // Gives default report settings a path
-        File defaultReportSettingsDirectory = new File(reportSettingsDirectory, "Default Report Settings");
-        File defaultReportSettings2Directory = new File(reportSettingsDirectory, "Default Report Settings 2");
 
         // Gives default aliquot a path
         File defaultAliquotDirectory = new File(reportSettingsDirectory, "Default Aliquot");
@@ -113,15 +103,9 @@ public class HomeScreenActivity extends Activity  {
         boolean defaultAliquotPresent = false; // determines whether the aliquot is present or not
 
         //Creates the directories if they are not there
-//        if(chroniDirectory.exists()){
-            chroniDirectory.mkdirs();
-//        }
-//        if(aliquotDirectory.exists()){
-            aliquotDirectory.mkdirs();
-//        }
-//        if(reportSettingsDirectory.exists()){
-            reportSettingsDirectory.mkdirs();
-//        }
+        chroniDirectory.mkdirs();
+        aliquotDirectory.mkdirs();
+        reportSettingsDirectory.mkdirs();
 
         // Checks internet connection before downloading files
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -142,7 +126,7 @@ public class HomeScreenActivity extends Activity  {
         if (mobileWifi.isConnected()) {
             // Downloads default report settings 1 if not present
             if (!defaultReportSettingsPresent) {
-                // Downloads the default report setting file if absent
+                // Downloads the default report settings file if absent
                 URLFileReader downloader = new URLFileReader(
                         HomeScreenActivity.this,
                         "HomeScreen",
@@ -153,7 +137,7 @@ public class HomeScreenActivity extends Activity  {
             }
 
             if (!defaultReportSettings2Present) {
-                // Downloads the default report setting file if absent
+                // Downloads the second default report settings file if absent
                 URLFileReader downloader2 = new URLFileReader(
                         HomeScreenActivity.this,
                         "HomeScreen",
@@ -162,16 +146,6 @@ public class HomeScreenActivity extends Activity  {
                 saveInitialLaunch();
                 saveCurrentReportSettings();         // Notes that files have been downloaded and application has been properly initialized
             }
-
-            /*
-            if(!defaultAliquotPresent) {
-                // Downloads the default report setting file if absent
-                URLFileReader downloader3 = new URLFileReader(HomeScreenActivity.this, "HomeScreen",
-                    "http://cirdles.org/sites/default/files/Downloads/TempAliquot.xml", "url");
-                saveInitialLaunch();
-                saveCurrentAliquot(); // Notes that files have been downloaded and application has been properly initialized
-            }
-             */
 
         }else {
             Toast.makeText(HomeScreenActivity.this, "Please connect to your local wifi network to download your Default Report Settings files.", Toast.LENGTH_LONG).show();
@@ -230,7 +204,7 @@ public class HomeScreenActivity extends Activity  {
                             "http://cirdles.org/sites/default/files/Downloads/CIRDLESDefaultReportSettings.xml",
                             "url");
                     saveInitialLaunch();
-                    saveCurrentReportSettings();         // Notes that files have been downloaded and application has been properly initialized
+                    saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
                 }
 
                 if (!defaultReportSettings2Present) {
@@ -241,7 +215,7 @@ public class HomeScreenActivity extends Activity  {
                             "http://cirdles.org/sites/default/files/Downloads/Default%20Report%20Settings%202.xml",
                             "url");
                     saveInitialLaunch();
-                    saveCurrentReportSettings();         // Notes that files have been downloaded and application has been properly initialized
+                    saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
                 }
 
             }else {
@@ -257,7 +231,7 @@ public class HomeScreenActivity extends Activity  {
         SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("Current Aliquot", getIntent().getStringExtra("AliquotXMLFileName")); // Gets chosen file from file browser and stores
-        editor.commit(); // Committing changes
+        editor.apply(); // Committing changes
     }
 
 
@@ -268,7 +242,7 @@ public class HomeScreenActivity extends Activity  {
         SharedPreferences settings = getSharedPreferences(PREF_FIRST_LAUNCH, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("Initial Launch", false);
-        editor.commit(); // Commiting changes
+        editor.apply(); // Committing changes
     }
 
     /*
@@ -284,7 +258,7 @@ public class HomeScreenActivity extends Activity  {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("Current Report Settings", defaultReportSettingsDirectory.getPath()); // makes the Default Report Settings the current report settings
-        editor.commit(); // Commiting changes
+        editor.apply(); // Committing changes
     }
 
     /*
