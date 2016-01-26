@@ -179,10 +179,7 @@ public class HistoryActivity extends Activity {
                         "android.intent.action.USERPROFILE");
                 startActivity(openUserProfile);
                 return true;
-            case R.id.historyMenu: //Takes user to credentials screen
-                Intent openHistoryTable = new Intent(
-                        "android.intent.action.HISTORY");
-                startActivity(openHistoryTable);
+            case R.id.historyMenu: // Already on the history menu, so just return true
                 return true;
             case R.id.viewAliquotsMenu: // Takes user to aliquot menu
                 Intent openAliquotFiles = new Intent(
