@@ -153,77 +153,6 @@ public class HomeScreenActivity extends Activity  {
 
     }
 
-
-    /*
-     * Creates the necessary application directories: CIRDLES, Aliquot and
-     * Report Settings folders
-     */
-    protected void oldCreateDirectories() throws FileNotFoundException {
-        boolean defaultReportSettingsPresent = false; // determines whether the report settings is present or not
-        boolean defaultReportSettings2Present = false; // determines whether the report settings is present or not
-
-        // Establishes the CHRONI folders
-        File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
-        File aliquotDirectory = new File(chroniDirectory, "Aliquot");
-        File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
-        File defaultReportSettingsDirectory = new File(reportSettingsDirectory, "Default Report Settings");
-        File defaultReportSettings2Directory = new File(reportSettingsDirectory, "Default Report Settings 2");
-
-        // Creates the directories if they are not there
-        if (!chroniDirectory.exists()) {
-            chroniDirectory.mkdirs();
-        }
-        if (!aliquotDirectory.exists()) {
-            aliquotDirectory.mkdirs();
-        }
-        if (!reportSettingsDirectory.exists()) {
-            reportSettingsDirectory.mkdirs();
-        }
-
-        // Checks internet connection before downloading files
-        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mobileWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        // Checks to see if the default report settings is present
-        File[] files = reportSettingsDirectory.listFiles(); // Lists files in CHRONI directory
-        for (File f : files) {
-            if (f.getName().contentEquals("Default Report Settings.xml")) {
-                defaultReportSettingsPresent = true;
-            }if (f.getName().contentEquals("Default Report Settings 2.xml")) {
-                defaultReportSettings2Present = true;
-            }
-        }
-
-            if (mobileWifi.isConnected()) {
-                // Downloads default report settings 1 if not present
-                if (!defaultReportSettingsPresent) {
-                    // Downloads the default report setting file if absent
-                    URLFileReader downloader = new URLFileReader(
-                            HomeScreenActivity.this,
-                            "HomeScreen",
-                            "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings.xml",
-                            "url");
-                    saveInitialLaunch();
-                    saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
-                }
-
-                if (!defaultReportSettings2Present) {
-                    // Downloads the default report setting file if absent
-                    URLFileReader downloader2 = new URLFileReader(
-                            HomeScreenActivity.this,
-                            "HomeScreen",
-                            "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings%202.xml",
-                            "url");
-                    saveInitialLaunch();
-                    saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
-                }
-
-            }else {
-                Toast.makeText(HomeScreenActivity.this, "Please connect to your local wifi network to download your Default Report Settings files.", Toast.LENGTH_LONG).show();
-            }
-
-    }
-
     /*
     Stores Current Aliquot
      */
@@ -251,13 +180,11 @@ public class HomeScreenActivity extends Activity  {
     */
     protected void saveCurrentReportSettings() {
         // Establishes the CHRONI folders
-        File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
-        File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
-        File defaultReportSettingsDirectory = new File(reportSettingsDirectory, "Default Report Settings");
+        File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings"); //Creating an internal directory for CHRONI files
 
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("Current Report Settings", defaultReportSettingsDirectory.getPath()); // makes the Default Report Settings the current report settings
+        editor.putString("Current Report Settings", reportSettingsDirectory.getPath() + "/Default Report Settings.xml"); // makes the Default Report Settings the current report settings
         editor.apply(); // Committing changes
     }
 

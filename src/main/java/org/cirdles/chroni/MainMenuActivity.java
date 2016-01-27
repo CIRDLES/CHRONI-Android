@@ -95,9 +95,7 @@ public class MainMenuActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu: // Takes user to main menu
-                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-                startActivity(openMainMenu);
+            case R.id.returnToMenu: // Already on the main menu, so just return true
                 return true;
             case R.id.editProfileMenu: //Takes user to credentials screen
                 Intent openUserProfile = new Intent(
