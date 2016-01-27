@@ -85,10 +85,7 @@ public class AboutActivity extends Activity  {
                 openRootDirectory.putExtra("Default_Directory",
                         "Root_Directory");
                 return true;
-            case R.id.aboutScreen: // Takes user to about screen
-                Intent openAboutScreen = new Intent(
-                        "android.intent.action.ABOUT");
-                startActivity(openAboutScreen);
+            case R.id.aboutScreen: // Already on the about screen, so just return true
                 return true;
             case R.id.helpMenu: // Takes user to help blog
                 Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,

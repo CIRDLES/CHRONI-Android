@@ -356,10 +356,7 @@ public class UserProfileActivity extends Activity {
                 Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
                 startActivity(openMainMenu);
                 return true;
-            case R.id.editProfileMenu: //Takes user to credentials screen
-                Intent openUserProfile = new Intent(
-                        "android.intent.action.USERPROFILE");
-                startActivity(openUserProfile);
+            case R.id.editProfileMenu: // Already on the profile menu, so just return true
                 return true;
             case R.id.historyMenu: //Takes user to credentials screen
                 Intent openHistoryTable = new Intent(

@@ -96,31 +96,35 @@ public class URLFileReader{
 		if(getFileType().contains("Aliquot")){
 			// If downloading based on IGSN URL, just use IGSN for name
 			if(downloadMethod.contains("igsn")){
-			String[] URL = getFileURL().split("igsn=");
-			name = URL[1];
-			if(name.contains("&username=")){
-				// Makes an additional split to remove the username and password query from the file name
-				String[] url2 = name.split("&username=");
-				name = url2[0]; 
-			}
+				String[] URL = getFileURL().split("igsn=");
+				name = URL[1];
+
+				if(name.contains("&username=")){
+					// Makes an additional split to remove the username and password query from the file name
+					String[] url2 = name.split("&username=");
+					name = url2[0];
+				}
 			}
 			
 			// if downloading based on URL, makes name from ending of URL
 			else if(downloadMethod.contains("url")){
+
 				String[] URL = getFileURL().split("/");
 				name = URL[URL.length-1];
+
 				if (name.contains(".xml")){
 					// Removes the file name ending from XML files
 					String [] newName = name.split(".xml");
 					name = newName[0];
 				}
 			}
+
 		}
 
         if(getClassName().contentEquals("HomeScreen")) {
-            if(fileURL.contentEquals("https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Defaultt%20Report%20Settings.xml")){
+            if (fileURL.contentEquals("https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings.xml")) {
                 name = "Default Report Settings";
-            }else if(fileURL.contentEquals("https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings%202.xml")){
+            } else if (fileURL.contentEquals("https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings%202.xml")) {
                 name = "Default Report Settings 2";
             }
         }
@@ -175,10 +179,6 @@ public class URLFileReader{
 
 		@Override
 		protected String doInBackground(String... sUrl) {
-//			// Directories needed to place files in accurate locations
-//			File chroniDirectory = classContext.getDir("CHRONI", Context.MODE_PRIVATE); //Creating an internal directory for CHRONI files
-//	    	File aliquotDirectory = new File(chroniDirectory, "Aliquot");
-//	    	File reportSettingsDirectory = new File(chroniDirectory, "Report Settings");
 
 			// take CPU lock to prevent CPU from going off if the user
 			// presses the power button during download
@@ -209,12 +209,13 @@ public class URLFileReader{
 						if(fileLength == 55){ // Cancels if invalid IGSN file (if file has a length of 0.05 KB)
 							AliquotMenuActivity.setInvalidFile(true);	// Sets file as invalid
 							cancel(true);
-						}else{
+
+						} else {
                             downloadedFilePath = Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + fileName + ".xml"; // Stores name of path
                             output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + fileName + ".xml");
-//							AliquotMenuActivity.setAbsoluteFilePathOfDownloadedAliquot(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + fileName + ".xml");
 						}
-					}else if(fileType.contains("Report Settings")){
+
+					} else if (fileType.contains("Report Settings")) {
                         downloadedFilePath = Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings/" + fileName + ".xml";
                         output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings/" + fileName + ".xml");
 					}
@@ -261,21 +262,16 @@ public class URLFileReader{
         @Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-//			mProgressDialog.show();
 		}
 
 		@Override
 		protected void onProgressUpdate(Integer... progress) {
 			super.onProgressUpdate(progress);
-			// if we get here, length is known, now set indeterminate to false
-//			mProgressDialog.setIndeterminate(false);
-//			mProgressDialog.setMax(100);
-//			mProgressDialog.setProgress(progress[0]);
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
-            boolean erroneousFile = false;
+            boolean erroneousFile;
             if(String.valueOf(classContext).contains("AliquotMenuActivity")){
                 // Figures out if aliquot file is erroneous
                 erroneousFile = parseAliquotFileForError(downloadedFilePath);
