@@ -23,14 +23,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +70,7 @@ public class FilePickerActivity extends ListActivity {
 	protected boolean mShowHiddenFiles = false;
 	protected String[] acceptedFileExtensions;
     protected String intentContent;
+	protected boolean inDeleteMode = false;
 
 
     @Override
@@ -88,7 +91,7 @@ public class FilePickerActivity extends ListActivity {
 		// Set initial directory
         mainDirectory = Environment.getExternalStorageDirectory(); // Takes user to root directory folder
 
-		// Sets the initial direcotry based on what file the user is looking for (Aliquot or Report Settings)
+		// Sets the initial directory based on what file the user is looking for (Aliquot or Report Settings)
 		if (intentContent.contentEquals("Aliquot_Directory")){
 			mainDirectory = new File(mainDirectory + "/CHRONI/Aliquot"); // Takes user to the Aliquot folder
 		} else if(intentContent.contentEquals("Report_Settings_Directory")) {	// Report Settings Menu if coming from a Dropdown Menu
@@ -113,7 +116,7 @@ public class FilePickerActivity extends ListActivity {
 		}
 		if(getIntent().hasExtra(EXTRA_ACCEPTED_FILE_EXTENSIONS)) {
 			ArrayList<String> collection = getIntent().getStringArrayListExtra(EXTRA_ACCEPTED_FILE_EXTENSIONS);
-			acceptedFileExtensions = (String[]) collection.toArray(new String[collection.size()]);
+			acceptedFileExtensions = collection.toArray(new String[collection.size()]);
 		}
 	}
 
@@ -152,47 +155,74 @@ public class FilePickerActivity extends ListActivity {
 	}
 
 	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		File newFile = (File)l.getItemAtPosition(position);
+	protected void onListItemClick(ListView l, View v, final int position, long id) {
+		final File newFile = (File) l.getItemAtPosition(position);
 
-        // If item selected is a file (and not a directory), allows user to select file
-		if(newFile.isFile()) {
-			// Sends back selected file name
+		if (inDeleteMode) {
+			if(newFile.isFile()) {
+				new AlertDialog.Builder(this).setMessage("Are you sure you wish to delete " +
+						newFile.getName() + "?")
 
-			if (intentContent.contentEquals("Aliquot_Directory")) {
-				Intent returnAliquotIntent = new Intent("android.intent.action.ALIQUOTMENU");
-				returnAliquotIntent.putExtra("AliquotXMLFileName", newFile.getAbsolutePath());
-				setResult(RESULT_OK, returnAliquotIntent);	// Returns Extra to AliquotMenuActivity
-				Toast.makeText(FilePickerActivity.this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+						.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialogInterface, int i) {
+								newFile.delete();
+								mAdapter.remove(newFile);
+								dialogInterface.dismiss();
+							}
+						})
 
-                // If coming from any menu (by using the dropdown menu)
-			} else if (intentContent.contentEquals("Report_Settings_Directory")){
-				Intent openRSMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-				openRSMenu.putExtra("ReportSettingsXMLFileName", newFile.getAbsolutePath());
-				startActivity(openRSMenu);  // Start a new Report Settings Menu with the selected Report Settings
-
-                // If coming FROM a Report Settings Menu (by pressing the + button)
-			} else if (intentContent.contentEquals("From_Report_Directory")) {
-                Intent returnRSIntent = new Intent("android.intent.action.REPORTSETTINGSMENU");
-                returnRSIntent.putExtra("NewReportSettingsXMLFileName", newFile.getAbsolutePath());
-                setResult(RESULT_OK, returnRSIntent);   // Return to previous Report Settings Menu with the new Report Settings
-
-			} else if(intentContent.contentEquals("Root_Directory")){
-				Intent openRSMenu = new Intent("android.intent.action.MAINMENU");
-				openRSMenu.putExtra("XMLFileName", newFile.getAbsolutePath());
-				Toast.makeText(FilePickerActivity.this, "Please move your selected file to one of the CHRONI directories.", Toast.LENGTH_LONG).show();
-				startActivity(openRSMenu);
+						.setNegativeButton("No", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialogInterface, int i) {
+								dialogInterface.dismiss();
+							}
+						})
+				.show();
 			}
-
-			// Finish the activity
-			finish();
-		} else {
-			mainDirectory = newFile;
-			// Update the files list
-			refreshFilesList();
 		}
 
-		super.onListItemClick(l, v, position, id);
+		else {
+
+			// If item selected is a file (and not a directory), allows user to select file
+			if (newFile.isFile()) {
+				// Sends back selected file name
+
+				if (intentContent.contentEquals("Aliquot_Directory")) {
+					Intent returnAliquotIntent = new Intent("android.intent.action.ALIQUOTMENU");
+					returnAliquotIntent.putExtra("AliquotXMLFileName", newFile.getAbsolutePath());
+					setResult(RESULT_OK, returnAliquotIntent);    // Returns Extra to AliquotMenuActivity
+					Toast.makeText(FilePickerActivity.this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+					// If coming from any menu (by using the dropdown menu)
+				} else if (intentContent.contentEquals("Report_Settings_Directory")) {
+					Intent openRSMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+					openRSMenu.putExtra("ReportSettingsXMLFileName", newFile.getAbsolutePath());
+					startActivity(openRSMenu);  // Start a new Report Settings Menu with the selected Report Settings
+
+					// If coming FROM a Report Settings Menu (by pressing the + button)
+				} else if (intentContent.contentEquals("From_Report_Directory")) {
+					Intent returnRSIntent = new Intent("android.intent.action.REPORTSETTINGSMENU");
+					returnRSIntent.putExtra("NewReportSettingsXMLFileName", newFile.getAbsolutePath());
+					setResult(RESULT_OK, returnRSIntent);   // Return to previous Report Settings Menu with the new Report Settings
+
+				} else if (intentContent.contentEquals("Root_Directory")) {
+					Intent openRSMenu = new Intent("android.intent.action.MAINMENU");
+					openRSMenu.putExtra("XMLFileName", newFile.getAbsolutePath());
+					Toast.makeText(FilePickerActivity.this, "Please move your selected file to one of the CHRONI directories.", Toast.LENGTH_LONG).show();
+					startActivity(openRSMenu);
+				}
+
+				// Finish the activity
+				finish();
+			} else {
+				mainDirectory = newFile;
+				// Update the files list
+				refreshFilesList();
+			}
+
+			super.onListItemClick(l, v, position, id);
+		}
 	}
 
 	private class FilePickerListAdapter extends ArrayAdapter<File> {
@@ -207,7 +237,7 @@ public class FilePickerActivity extends ListActivity {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			View row = null;
+			View row;
 
 			if(convertView == null) {
 				LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -285,55 +315,47 @@ public class FilePickerActivity extends ListActivity {
 		}
 	}
 
+	/**
+	 * This method either displays an X on the right hand side of each list item or
+	 * gets rid of it.
+	 */
+	public void toggleDelete() {
+
+		ViewGroup list = getListView();
+		int number = list.getChildCount();
+
+		if (inDeleteMode) {
+			for (int i=0; i<number; i++) {
+				View child = list.getChildAt(i);
+				View delete = child.findViewById(R.id.deleteButton);
+				delete.setVisibility(View.INVISIBLE);
+			}
+		}
+
+		else {
+			for (int i=0; i<number; i++) {
+				View child = list.getChildAt(i);
+				View delete = child.findViewById(R.id.deleteButton);
+				delete.setVisibility(View.VISIBLE);
+			}
+		}
+
+		inDeleteMode = !inDeleteMode;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.file_delete, menu);
+		return true;
+	}
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu: // Takes user to main menu
-                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-                startActivity(openMainMenu);
-                return true;
-            case R.id.editProfileMenu: //Takes user to credentials screen
-                Intent openUserProfile = new Intent(
-                        "android.intent.action.USERPROFILE");
-                startActivity(openUserProfile);
-                return true;
-            case R.id.historyMenu: //Takes user to credentials screen
-                Intent openHistoryTable = new Intent(
-                        "android.intent.action.HISTORY");
-                startActivity(openHistoryTable);
-                return true;
-            case R.id.viewAliquotsMenu: // Takes user to aliquot menu
-                Intent openAliquotFiles = new Intent(
-                        "android.intent.action.FILEPICKER");
-                openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot_Directory");
-                startActivity(openAliquotFiles);
-                return true;
-            case R.id.viewReportSettingsMenu: // Takes user to report settings menu
-                Intent openReportSettingsFiles = new Intent(
-                        "android.intent.action.FILEPICKER");
-                openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report_Settings_Directory");
-                startActivity(openReportSettingsFiles);
-                return true;
-			case R.id.viewRootMenu:
-				Intent openRootDirectory = new Intent(
-						"android.intent.action.FILEPICKER");
-				openRootDirectory.putExtra("Default_Directory",
-						"Root_Directory");
-				startActivity(openRootDirectory);
-				return true;
-
-			case R.id.aboutScreen: // Takes user to about screen
-                Intent openAboutScreen = new Intent(
-                        "android.intent.action.ABOUT");
-                startActivity(openAboutScreen);
-                return true;
-            case R.id.helpMenu: // Takes user to help blog
-                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(getString(R.string.chroni_help_address)));
-                startActivity(openHelpBlog);
+            case R.id.delete: // Takes user to main menu
+                toggleDelete();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

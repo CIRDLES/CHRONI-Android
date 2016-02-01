@@ -6,29 +6,25 @@
     android:background="@drawable/background"
     android:gravity="center" >
 
-    <LinearLayout
+    <ScrollView
         android:id="@+id/tableLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
         android:layout_above="@+id/historyFinishButton"
-        android:layout_marginBottom="65dp"
+        android:layout_marginBottom="45dp"
         android:layout_below="@+id/testText"
-        android:layout_marginTop="65dp">
+        android:layout_marginTop="45dp">
 
-        <ScrollView
-            android:id="@+id/tableScroll"
+        <TableLayout
+            android:id="@+id/historyDatabaseTable"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" >
+        </TableLayout>
 
-            <TableLayout
-                android:id="@+id/historyDatabaseTable"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-            </TableLayout>
-        </ScrollView>
-    </LinearLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/historyFinishButton"
@@ -40,7 +36,7 @@
         android:background="@color/button_blue"
         android:text="Home"
         android:textColor="@color/white"
-        android:textSize="26dp" />
+        android:textSize="26sp" />
 
     <ImageView
         android:id="@+id/imageView1"
