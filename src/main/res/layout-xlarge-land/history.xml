@@ -5,31 +5,25 @@
     android:layout_height="match_parent"
     android:background="@drawable/background">
 
-    <LinearLayout
+    <ScrollView
         android:id="@+id/tableLayout"
         android:layout_width="wrap_content"
-        android:layout_height="750dp"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
-        android:layout_marginLeft="320dp"
-        android:layout_marginRight="320dp"
         android:layout_below="@+id/testText"
         android:layout_above="@+id/historyFinishButton"
         android:layout_marginTop="75dp"
         android:layout_marginBottom="75dp">
 
-        <ScrollView
-            android:id="@+id/tableScroll"
+        <TableLayout
+            android:id="@+id/historyDatabaseTable"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" >
+        </TableLayout>
 
-            <TableLayout
-                android:id="@+id/historyDatabaseTable"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-            </TableLayout>
-        </ScrollView>
-    </LinearLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/historyFinishButton"
@@ -44,13 +38,13 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="66dp"
+        android:layout_width="70dp"
         android:layout_height="110dp"
         android:src="@drawable/chroni_logo"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginEnd="75dp"
+        android:layout_marginTop="20dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:id="@+id/testText"
