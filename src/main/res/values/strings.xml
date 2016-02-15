@@ -13,5 +13,8 @@ We would like to thank the College of Charleston Department of Computer Science,
     <string name="chroni_aliquot_help_address">http://cirdles.org/projects/chroni/#aliquotHelp</string>
     <string name="chroni_report_settings_help_address">http://cirdles.org/projects/chroni/#reportSettingsHelp</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>
