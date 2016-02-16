@@ -76,17 +76,6 @@ public class AliquotMenuActivity extends Activity {
 
         aliquotSelectedFileText = (EditText) findViewById(R.id.aliquotFileSelectText); // Contains selected aliquot file name
 
-        /*
-        // TOOK OUT. SEE onActivityResult()
-        // Gets selected Aliquot file from FilePickerActivity and places the file name on the file select line
-        if (getIntent().hasExtra("AliquotXMLFileName")) {
-            String selectedAliquotFileName = getIntent().getStringExtra("AliquotXMLFileName"); // Specified file name from file browser
-            String[] selectedAliquotFilePath = selectedAliquotFileName.split("/"); // Splits selected file name into relevant parts
-            String fileName = selectedAliquotFilePath[selectedAliquotFilePath.length - 1]; // Creates displayable file name from split file path
-            aliquotSelectedFileText.setText(fileName); // Sets file name for displaying on aliquot file select line
-        }
-        */
-
         aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
         //Changes button color back to blue if it is not already
         aliquotFileSubmitButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
@@ -94,20 +83,43 @@ public class AliquotMenuActivity extends Activity {
         aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
             // Submits aliquot file to display activity for parsing and displaying in table
             public void onClick(View v) {
+
                 if (aliquotSelectedFileText.getText().length() != 0) {
-                    // Makes sure there is a file selected
-                    Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
-                    Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
-                    openDisplayTable.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
 
-                    // Changes button color to indicate it has been opened
-                    aliquotFileSubmitButton.setBackgroundColor(Color.LTGRAY);
-                    aliquotFileSubmitButton.setTextColor(Color.BLACK);
-                    saveCurrentAliquot();
+                    // if coming from a previously created table, change the aliquot
+                    if (getIntent().hasExtra("From_Table")) {
+                        if (getIntent().getStringExtra("From_Table").equals("true")) {
 
-                    startActivity(openDisplayTable); // Starts display activity
+                            Toast.makeText(AliquotMenuActivity.this, "Changing Aliquot...", Toast.LENGTH_LONG).show(); // lets user know table is opening
+                            Intent returnAliquot = new Intent("android.intent.action.DISPLAY");
+                            returnAliquot.putExtra("newAliquot", "true");   // tells if a new aliquot has been chosen
 
-                }else{
+                            // Changes button color to indicate it has been opened
+                            aliquotFileSubmitButton.setBackgroundColor(Color.LTGRAY);
+                            aliquotFileSubmitButton.setTextColor(Color.BLACK);
+                            saveCurrentAliquot();
+
+                            setResult(RESULT_OK, returnAliquot);
+                            finish();
+                        }
+
+                    } else {
+
+                        // Makes sure there is a file selected
+                        Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
+                        Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
+                        openDisplayTable.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
+
+                        // Changes button color to indicate it has been opened
+                        aliquotFileSubmitButton.setBackgroundColor(Color.LTGRAY);
+                        aliquotFileSubmitButton.setTextColor(Color.BLACK);
+                        saveCurrentAliquot();
+
+                        startActivity(openDisplayTable); // Starts display activity
+                    }
+
+
+                } else {
                     // Tells user to select a file for viewing
                     Toast.makeText(AliquotMenuActivity.this, "Please select an aliquot file to view.", Toast.LENGTH_LONG).show(); // lets user know table is opening
                 }
@@ -156,19 +168,19 @@ public class AliquotMenuActivity extends Activity {
 
 
 
-    /*
-* Stores Current Aliquot
-*/
+    /**
+     * Stores Current Aliquot
+     */
     protected void saveCurrentAliquot() {
         SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("Current Aliquot", getIntent().getStringExtra("AliquotXMLFileName")); // gets chosen file from file browser and stores
-        editor.commit(); // Commiting changes
+        editor.apply(); // Committing changes
     }
 
 
-    /*
-    Requests file name from user and proceeds to download based on input
+    /**
+     * Requests file name from user and proceeds to download based on input
      */
 //        public void requestFileName(){
 //
@@ -207,7 +219,7 @@ public class AliquotMenuActivity extends Activity {
 //                userFileNameAlert.show();
 //            }
 
-    /*
+    /**
 	 * Creates file name based on the file's type and URL
 	 */
     protected String createFileName(String downloadMethod, String fileUrl) {
@@ -227,7 +239,6 @@ public class AliquotMenuActivity extends Activity {
     }
 
     @Override
-    // TODO Not sure what this function is doing right now. Figure out!  - CHECK
     // Gets the Extra that FilePicker returns and puts it in This Intent's Extra
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
@@ -240,13 +251,10 @@ public class AliquotMenuActivity extends Activity {
                     aliquotSelectedFileText.setText(fileName); // Sets file name for displaying on aliquot file select line
                 }
             }
-            else if (resultCode == RESULT_CANCELED) {
-                return;
-            }
         }
     }
 
-    /*
+    /**
      * Retrieves the currently stored username and password
      * If none present, returns None
      */
@@ -256,10 +264,10 @@ public class AliquotMenuActivity extends Activity {
         setGeochronPassword(settings.getString("Geochron Password", "None"));
     }
 
-    /*
+    /**
      * Creates URL from the constant GeoChron URL and IGSN
      */
-    public final static String makeURI(String baseURL, String IGSN) {
+    public static String makeURI(String baseURL, String IGSN) {
         String URI = baseURL + IGSN;
         if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
             URI += "&username="+ getGeochronUsername()+"&password="+ getGeochronPassword(); 	// Create unique URL and password if credentials stored
@@ -271,16 +279,16 @@ public class AliquotMenuActivity extends Activity {
         return geochronUsername;
     }
 
-    public void setGeochronUsername(String geochronUsername) {
-        this.geochronUsername = geochronUsername;
+    public void setGeochronUsername(String geochronUser) {
+        geochronUsername = geochronUser;
     }
 
     public static String getGeochronPassword() {
         return geochronPassword;
     }
 
-    public void setGeochronPassword(String geochronPassword) {
-        this.geochronPassword = geochronPassword;
+    public void setGeochronPassword(String geochronPass) {
+        geochronPassword = geochronPass;
     }
 
     public String getAbsoluteFilePathOfDownloadedAliquot() {
@@ -288,7 +296,7 @@ public class AliquotMenuActivity extends Activity {
     }
 
     public void setAbsoluteFilePathOfDownloadedAliquot(String absoluteFileName) {
-        this.absoluteFilePathOfDownloadedAliquot = absoluteFileName;
+        absoluteFilePathOfDownloadedAliquot = absoluteFileName;
     }
 
     @Override

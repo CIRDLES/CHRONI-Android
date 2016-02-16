@@ -24,20 +24,16 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.method.SingleLineTransformationMethod;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.TableRow.LayoutParams;
 import android.widget.Toast;
 
 
@@ -46,14 +42,21 @@ This class creates the display table after parsing the aliquot and report settin
  */
 public class TablePainterActivity extends Activity {
 
+    private static final int CHANGE_REPORT_SETTINGS = 1;
+    private static final int CHANGE_ALIQUOT = 2;
+
     private static TreeMap<Integer, Category> categoryMap; // map returned from parsing Report Settings
     private static TreeMap<String, Fraction> fractionMap; // map returned from parsing Aliquot
     private static TreeMap<String, Image> imageMap; // map of image data returned from parsing Aliquot
-    private static String[][] finalArray; // the completely parsed array for displaying
-    private static ArrayList<String> outputVariableName; // output variable names for column work
-    private static int columnCount; // maintains a count of the number of columns in the final display table
+    private static String[][] finalArray = {}; // the completely parsed array for displaying
+    private static ArrayList<String> outputVariableNames; // output variable names for column work
     private static ArrayList<Integer> columnMaxLengths; // holds the max lengths for each column (used for padding)
     private static ArrayList<Boolean> columnDecimals;   // holds whether the current column contains a decimal or not
+
+    // stores the table views so that they can be quickly updated if the screen is turned
+    private static TableLayout categoryNameTable;
+    private static TableLayout headerInformationTable;
+    private static TableLayout aliquotDataTable;
 
     private String aliquotFilePath, reportSettingsFilePath; // The complete path of the aliquot and report settings files to be parsed and display
 
@@ -68,27 +71,43 @@ public class TablePainterActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setContentView(R.layout.display);
 
+        if (finalArray.length == 0) {
+            createData();
+            createView();
+        }
+
+        else
+            createView();
+
+    }
+
+    /**
+     * Fills in all necessary maps, lists, etc. needed for creating the table view.
+     *
+     * This method has no input or output, but uses data already known in the application.
+     */
+    private void createData() {
+
         // Instantiates the Report Settings Parser and gets the current Report Settings path
         ReportSettingsParser reportSettingsParser = new ReportSettingsParser();
         setReportSettingsFilePath(retrieveReportSettingsFilePath());
 
         // Parses the Report Settings XML file
         categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
-        ArrayList<String> outputVariableNames = reportSettingsParser.getOutputVariableName();
+        outputVariableNames = reportSettingsParser.getOutputVariableName();
 
         columnMaxLengths = new ArrayList<Integer>();
         columnDecimals = new ArrayList<Boolean>();
 
-        // Instantiates the Aliquot Parser and gets the current Aliquot path
-        AliquotParser aliquotParser = new AliquotParser();
+        // gets the current Aliquot path
         setAliquotFilePath(retrieveAliquotFilePath());
 
         // Parses aliquot file and retrieves maps
-        MapTuple maps = aliquotParser.runAliquotParser(getAliquotFilePath());
+        MapTuple maps = AliquotParser.runAliquotParser(getAliquotFilePath());
         fractionMap = (TreeMap<String, Fraction>) maps.getFractionMap();
         imageMap = (TreeMap<String, Image>) maps.getImageMap();
 
-        final String aliquot = aliquotParser.getAliquotName();
+        final String aliquot = AliquotParser.getAliquotName();
 
         // Fills the Report Setting and Aliquot arrays
         String[][] reportSettingsArray = fillReportSettingsArray(
@@ -110,71 +129,57 @@ public class TablePainterActivity extends Activity {
         });
 
         // Creates the final table array for displaying
-        String[][] finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
+        finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
 
         // Creates database entry from current entry
         entryHelper = new CHRONIDatabaseHelper(this);
         entryHelper.createEntry(getCurrentTime(), getAliquotFilePath(), getReportSettingsFilePath());
         Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
 
-        // Creates the row for the buttons
-        TableRow labelRow = (TableRow) findViewById(R.id.labelRow);
-        labelRow.setGravity(Gravity.CENTER);
+    }
+
+    /**
+     * Creates the actual view itself, by using the maps, lists, etc. that have either been
+     * created or previously stored.
+     *
+     * This method has no input or output, only draws the table to the screen.
+     */
+    private void createView() {
 
         // Adds a button with the current report settings files
-        Button reportSettingsCell = new Button(this);
+        Button reportSettingsCell = (Button) findViewById(R.id.reportSettingsTableButton);
         String reportSettingsText = "Report Settings: " + splitFileName(retrieveReportSettingsFilePath());
-        reportSettingsCell.setTextSize((float) 15);
         reportSettingsCell.setText(reportSettingsText);
-        reportSettingsCell.setTextColor(Color.BLACK);
-        reportSettingsCell.setTypeface(Typeface.DEFAULT_BOLD);
         reportSettingsCell.setBackgroundColor(getResources().getColor(R.color.button_blue));
-        reportSettingsCell.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        reportSettingsCell.setPadding(25, 25, 25, 25);
-        labelRow.addView(reportSettingsCell);
         reportSettingsCell.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
-                startActivity(openReportSettingsMenu);
+                openReportSettingsMenu.putExtra("From_Table", "true");
+                startActivityForResult(openReportSettingsMenu, CHANGE_REPORT_SETTINGS);
             }
         });
 
         // Adds a label button with the current aliquot files
-        Button aliquotCell = new Button(this);
+        Button aliquotCell = (Button) findViewById(R.id.aliquotTableButton);
         String aliquotCellText = "Aliquot: " + splitFileName(retrieveAliquotFilePath());
-        aliquotCell.setTextSize((float) 15);
         aliquotCell.setText(aliquotCellText);
-        aliquotCell.setTextColor(Color.BLACK);
-        aliquotCell.setTypeface(Typeface.DEFAULT_BOLD);
         aliquotCell.setBackgroundResource(R.drawable.background_blue_background);
-        aliquotCell.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        aliquotCell.setPadding(25, 25, 25, 25);
-        labelRow.addView(aliquotCell);
         aliquotCell.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
-                startActivity(openAliquotMenu);
+                openAliquotMenu.putExtra("From_Table", "true");
+                // starts the activity and waits for result to be returned
+                startActivityForResult(openAliquotMenu, CHANGE_ALIQUOT);
             }
         });
-
-        // Setup to add image buttons
-        TableRow buttonRow = (TableRow) findViewById(R.id.buttonRow);
-        buttonRow.setGravity(Gravity.CENTER);
-        buttonRow.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
 
         // Adds button to view a concordia image
         if ((imageMap.containsKey("concordia"))) {
-            Button viewConcordiaButton = new Button(this);
-            viewConcordiaButton.setTextColor(Color.BLACK);
-            viewConcordiaButton.setTextSize((float) 13);
-            viewConcordiaButton.setText("Concordia");
-            viewConcordiaButton.setTypeface(Typeface.DEFAULT_BOLD);
-            viewConcordiaButton.setPadding(15, 15, 15, 15);
-            viewConcordiaButton.setGravity(Gravity.CENTER);
+            Button viewConcordiaButton = (Button) findViewById(R.id.concordiaTableButton);
             viewConcordiaButton.setBackgroundColor(getResources().getColor(R.color.light_grey));
-            viewConcordiaButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            buttonRow.addView(viewConcordiaButton);
+
+            viewConcordiaButton.setVisibility(View.VISIBLE);
             viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     // Checks internet connection before getting images
@@ -194,14 +199,9 @@ public class TablePainterActivity extends Activity {
             });
         }
 
-        //Adds button to view a probability density image
+        // Adds button to view a probability density image
         if ((imageMap.containsKey("probability_density"))) {
-            Button viewProbabilityDensityButton = new Button(this);
-            viewProbabilityDensityButton.setTextSize((float) 13);
-            viewProbabilityDensityButton.setText("Probability Density");
-            viewProbabilityDensityButton.setTypeface(Typeface.DEFAULT_BOLD);
-            viewProbabilityDensityButton.setPadding(15, 15, 15, 15);
-            viewProbabilityDensityButton.setGravity(Gravity.CENTER);
+            Button viewProbabilityDensityButton = (Button) findViewById(R.id.probabilityDensityTableButton);
             // Decides what color button should be based on if there is a concordia button
             if ((imageMap.containsKey("concordia"))) {
                 viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
@@ -210,9 +210,8 @@ public class TablePainterActivity extends Activity {
                 viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.light_grey));
                 viewProbabilityDensityButton.setTextColor(Color.BLACK);
             }
-            viewProbabilityDensityButton.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            buttonRow.addView(viewProbabilityDensityButton);
 
+            viewProbabilityDensityButton.setVisibility(View.VISIBLE);
             //Adds on click functionality
             viewProbabilityDensityButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -233,140 +232,173 @@ public class TablePainterActivity extends Activity {
             });
         }
 
-        // controls the horizontal scrolling of the table
-        HorizontalScrollView screenScroll = (HorizontalScrollView) findViewById(R.id.horizontalScrollView);
 
-        LinearLayout tableLayout = (LinearLayout) findViewById(R.id.displayTableLayout); // gives inner table layout for displaying
-        TableLayout categoryNameTable = (TableLayout) findViewById(R.id.categoryNameTable); // Header table specifically for category names
-        TableLayout headerInformationTable = (TableLayout) findViewById(R.id.tableForHeader); // Report Settings header table for display names 1-3
+        // creates all three tables if first time displaying
+        if (categoryNameTable == null || headerInformationTable == null || aliquotDataTable == null) {
 
-        ScrollView scrollPane = (ScrollView) findViewById(R.id.scrollPane); // Vertical scrolling for the aliquot portion of the table
-        TableLayout aliquotDataTable = (TableLayout) findViewById(R.id.finalTable); // the aliquot specific info contained here
+            // Header table specifically for category names
+            categoryNameTable = (TableLayout) findViewById(R.id.categoryNameTable);
 
-        // calculates number of rows based on the size of the fraction, five is separately
-        // added for the Report Settings category rows
-        final int ROWS = 5 + fractionMap.size();
-        final int COLS = outputVariableNames.size();
+            // Report Settings header table for display names 1-3
+            headerInformationTable = (TableLayout) findViewById(R.id.tableForHeader);
 
-        // Gets column sizes from string array
-        int[] columnSizes = distributeTableColumns(finalArray, ROWS, COLS);
-        int[] headerCellSizes = distributeHeaderCells(columnSizes);
+            // the aliquot specific info contained here
+            aliquotDataTable = (TableLayout) findViewById(R.id.finalTable);
 
-        // Creates the row just reserved for header names
-        TableRow categoryRow = new TableRow(this);
-        categoryNameTable.addView(categoryRow);
-        //TODO: Figure out more elegant way to calculate the width of a column
+            // calculates number of rows based on the size of the fraction, five is separately
+            // added for the Report Settings category rows
+            final int ROWS = 5 + fractionMap.size();
+            final int COLS = outputVariableNames.size();
 
-        int categoryCount = 0;
-        // Adds just enough cells for every category name
-        Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Entry<Integer, Category> category = iterator.next();
-            if(category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
-                TextView categoryCell = new TextView(this);
-                categoryCell.setText(category.getValue().getDisplayName());
-                categoryCell.setTypeface(Typeface.MONOSPACE);
-                categoryCell.setHorizontallyScrolling(true);    // make sure that the text does not wrap
-                if(category.getValue().getDisplayName().contentEquals("Fraction") && categoryCount != 0){ // Easy fix to handle the issue of sizing with last fraction category TODO: Make better!
-                    // Simply sets same size as fraction because its always the same length with last column
-                    categoryCell.setMinEms(columnSizes[columnSizes.length - 1] + 2);
-                    categoryCell.setMaxEms(columnSizes[columnSizes.length-1] + 2);
-                }else {
-                    // sets column spacing based on max character count and allows extra space for crowding
-                    categoryCell.setMinEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount()));
-                    categoryCell.setMaxEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount()));
+            // Gets column sizes from string array
+            int[] columnSizes = distributeTableColumns(finalArray, ROWS, COLS);
+            int[] headerCellSizes = distributeHeaderCells(columnSizes);
+
+            // Creates the row just reserved for header names
+            TableRow categoryRow = new TableRow(this);
+            categoryNameTable.addView(categoryRow);
+            //TODO: Figure out more elegant way to calculate the width of a column
+
+            int categoryCount = 0;
+            // Adds just enough cells for every category name
+            for (Entry<Integer, Category> category : categoryMap.entrySet()) {
+                if (category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
+                    TextView categoryCell = new TextView(this);
+                    categoryCell.setText(category.getValue().getDisplayName());
+                    categoryCell.setTypeface(Typeface.MONOSPACE);
+                    categoryCell.setHorizontallyScrolling(true);    // make sure that the text does not wrap
+                    if (category.getValue().getDisplayName().contentEquals("Fraction") && categoryCount != 0) { // Easy fix to handle the issue of sizing with last fraction category TODO: Make better!
+                        // Simply sets same size as fraction because its always the same length with last column
+                        categoryCell.setMinEms(columnSizes[columnSizes.length - 1] + 2);
+                        categoryCell.setMaxEms(columnSizes[columnSizes.length - 1] + 2);
+                    } else {
+                        // sets column spacing based on max character count and allows extra space for crowding
+                        categoryCell.setMinEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount()));
+                        categoryCell.setMaxEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount()));
+
+                    }
+                    categoryCell.setPadding(3, 4, 3, 4);
+                    categoryCell.setTextSize((float) 14.5);
+                    categoryCell.setTextColor(Color.BLACK);
+                    categoryCell.setBackgroundResource(R.drawable.background_blue_background);
+                    categoryCell.setGravity(Gravity.START);
+                    categoryRow.addView(categoryCell); // Adds cell to row
                 }
-                categoryCell.setPadding(3, 4, 3, 4);
-                categoryCell.setTextSize((float) 14.5);
-                categoryCell.setTextColor(Color.BLACK);
-                categoryCell.setBackgroundResource(R.drawable.background_blue_background);
-                categoryCell.setGravity(Gravity.START);
-                categoryRow.addView(categoryCell); // Adds cell to row
                 categoryCount++;
+
             }
 
-        }
 
+            // TODO: Fix the spacing of the title rows
+            // Table Layout Printing
+            for (int currentRow = 1; currentRow < ROWS; currentRow++) {
 
-        // TODO: Fix the spacing of the title rows
-        // Table Layout Printing
-        for (int currentRow = 1; currentRow < ROWS; currentRow++) {
+                TableRow row = new TableRow(this);
 
-            TableRow row = new TableRow(this);
-
-            // puts rows in appropriate place on layout
-            if (currentRow < 4) {
-                // Report Settings and aliquot name rows
-                headerInformationTable.addView(row);
-
-            } else {
-                // Adds aliquot rows to the aliquot scroll table
-                aliquotDataTable.addView(row);
-            }
-
-            // loops through number of columns and adds text views to each row.
-            // this creates cells!
-            for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
-                TextView cell = new TextView(this);
-                cell.setTypeface(Typeface.MONOSPACE);
-
-                // sets column spacing based on max character count and allows extra space for crowding
-                cell.setMinEms(columnSizes[currentColumn] + 2);
-                cell.setMaxEms(columnSizes[currentColumn] + 2);
-                cell.setPadding(3, 4, 3, 4);
-                cell.setTextColor(Color.BLACK);
-                cell.setTextSize((float) 14.5);
-                cell.setGravity(Gravity.END);
-
-                // sets appropriate background color for cells
+                // puts rows in appropriate place on layout
                 if (currentRow < 4) {
-                    // Colors all header cells same color
-                    cell.setBackgroundResource(R.drawable.background_blue_background);
-                } else if (currentRow == 4) {
-                    // Handles aliquot name cell
-                    cell.setTextColor(Color.WHITE);
-                    cell.setBackgroundResource(R.drawable.light_blue_background);
-                }  else if (currentRow > 4 && currentRow % 2 == 1) {
-                    // colors odd body rows
-                    cell.setBackgroundResource(R.drawable.light_grey_background);
-                }else {
-                    // colors all even body rows
-                    cell.setBackgroundResource(R.drawable.white_background);
+                    // Report Settings and aliquot name rows
+                    headerInformationTable.addView(row);
+
+                } else {
+                    // Adds aliquot rows to the aliquot scroll table
+                    aliquotDataTable.addView(row);
                 }
 
-                // Adds text to cells
-                if (currentRow > 4) {   // Handles all of the data cells
-                    // Format the text so that it has the proper padding
-                    String text = finalArray[currentRow][currentColumn];
-                    int length = columnMaxLengths.get(currentColumn);
-                    boolean hasDecimal = columnDecimals.get(currentColumn);
-                    String paddedText = setTextPadding(text, length, hasDecimal);
-                    cell.setText(paddedText);
-
-                } else { // Handles all of the header rows and aliquot name rows
-                    cell.setTypeface(Typeface.DEFAULT_BOLD);
+                // loops through number of columns and adds text views to each row.
+                // this creates cells!
+                for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
+                    TextView cell = new TextView(this);
                     cell.setTypeface(Typeface.MONOSPACE);
-                    cell.setGravity(Gravity.CENTER);
 
-                    String text = finalArray[currentRow][currentColumn];
-                    cell.setText(text);
+                    // sets column spacing based on max character count and allows extra space for crowding
+                    cell.setMinEms(columnSizes[currentColumn] + 2);
+                    cell.setMaxEms(columnSizes[currentColumn] + 2);
+                    cell.setPadding(3, 4, 3, 4);
+                    cell.setTextColor(Color.BLACK);
+                    cell.setTextSize((float) 14.5);
+                    cell.setGravity(Gravity.END);
+
+                    // sets appropriate background color for cells
+                    if (currentRow < 4) {
+                        // Colors all header cells same color
+                        cell.setBackgroundResource(R.drawable.background_blue_background);
+                    } else if (currentRow == 4) {
+                        // Handles aliquot name cell
+                        cell.setTextColor(Color.WHITE);
+                        cell.setBackgroundResource(R.drawable.light_blue_background);
+                    } else if (currentRow > 4 && currentRow % 2 == 1) {
+                        // colors odd body rows
+                        cell.setBackgroundResource(R.drawable.light_grey_background);
+                    } else {
+                        // colors all even body rows
+                        cell.setBackgroundResource(R.drawable.white_background);
+                    }
+
+                    // Adds text to cells
+                    if (currentRow > 4) {   // Handles all of the data cells
+                        // Format the text so that it has the proper padding
+                        String text = finalArray[currentRow][currentColumn];
+                        int length = columnMaxLengths.get(currentColumn);
+                        boolean hasDecimal = columnDecimals.get(currentColumn);
+                        String paddedText = setTextPadding(text, length, hasDecimal);
+                        cell.setText(paddedText);
+
+                    } else { // Handles all of the header rows and aliquot name rows
+                        cell.setTypeface(Typeface.DEFAULT_BOLD);
+                        cell.setTypeface(Typeface.MONOSPACE);
+                        cell.setGravity(Gravity.CENTER);
+
+                        String text = finalArray[currentRow][currentColumn];
+                        cell.setText(text);
+                    }
+
+                    cell.setVisibility(View.VISIBLE);
+
+                    if (cell.getText().equals("-")) {
+                        cell.setGravity(Gravity.CENTER);
+                    }
+
+                    // left justify fraction column
+                    if (isFractionColumn(finalArray, currentColumn)) {
+                        cell.setGravity(Gravity.START);
+                    }
+
+                    // append an individual cell to a content row
+                    row.addView(cell);
                 }
-
-                cell.setVisibility(View.VISIBLE);
-
-                if (cell.getText().equals("-")) {
-                    cell.setGravity(Gravity.CENTER);
-                }
-
-                // left justify fraction column
-                if(isFractionColumn(finalArray, currentColumn)) {
-                    cell.setGravity(Gravity.START);
-                }
-
-                // append an individual cell to a content row
-                row.addView(cell);
             }
         }
+
+        // otherwise it removes the views from the previous parents (landscape or portrait)
+        // and re-paints them onto the new view
+        else {
+
+            // removes tables from previous parents
+            ScrollView aliquotParent = (ScrollView) aliquotDataTable.getParent();
+            aliquotParent.removeView(aliquotDataTable);
+            LinearLayout overallParent = (LinearLayout) categoryNameTable.getParent();
+            overallParent.removeView(categoryNameTable);
+            overallParent.removeView(headerInformationTable);
+
+            // this is the scrollView where the actual data is displayed
+            ScrollView finalTableLayout = (ScrollView) findViewById(R.id.scrollPane);
+            finalTableLayout.removeView(findViewById(R.id.finalTable));
+            finalTableLayout.addView(aliquotDataTable);
+
+            // removes the standard xml versions of the tables
+            LinearLayout overallLayout = (LinearLayout) findViewById(R.id.displayTableLayout);
+            overallLayout.removeView(findViewById(R.id.scrollPane));
+            overallLayout.removeView(findViewById(R.id.categoryNameTable));
+            overallLayout.removeView(findViewById(R.id.tableForHeader));
+
+            //adds the saved versions of the tables
+            overallLayout.addView(categoryNameTable);
+            overallLayout.addView(headerInformationTable);
+            overallLayout.addView(finalTableLayout);
+
+        }
+
     }
 
     /**
@@ -439,27 +471,19 @@ public class TablePainterActivity extends Activity {
         return isFractionColumn;
     }
 
-
     /**
      * Goes through and figures out header cell lengths given a table
      */
-
     protected int[] distributeHeaderCells(int[] columnWidths){
         int[] headerMaxCharacterCounts = new int[categoryMap.size()];
         int currentCategoryCount = 0;
         int currentColumnCount = 0;
 
-        Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Entry<Integer, Category> category = iterator.next();
+        for (Entry<Integer, Category> category : categoryMap.entrySet()) {
             int categoryCellWidth = 0;
             if(category.getValue().getColumnCount() != 0) { // removes any invisible columns that may be in map
 
-                Iterator<Entry<Integer, Column>> columnIterator = category
-                        .getValue().getCategoryColumnMap().entrySet().iterator();
-                while (columnIterator.hasNext()) {
-                    Entry<Integer, Column> column = columnIterator.next();
-
+                for (Entry<Integer, Column> column : category.getValue().getCategoryColumnMap().entrySet()) {
                     categoryCellWidth += columnWidths[currentColumnCount];
                     currentColumnCount++;
 
@@ -590,6 +614,7 @@ public class TablePainterActivity extends Activity {
 
     /**
      * Fills the Aliquot portion of the array
+     *
      * @param outputVariableName keeps track of the number of columns and to retrieve value models
      * @param categoryMap used to fill table
      * @param fractionMap used to fill the faction array with the information
@@ -980,23 +1005,6 @@ public class TablePainterActivity extends Activity {
         return finalArray;
     }
 
-    public String[][] getFinalArray() {
-        return finalArray;
-    }
-
-    public static void setFinalArray(String[][] newFinalArray) {
-        TablePainterActivity.finalArray = newFinalArray;
-    }
-
-    public static ArrayList<String> getOutputVariableName() {
-        return outputVariableName;
-    }
-
-    public static void setOutputVariableName(
-            ArrayList<String> outputVariableName) {
-        TablePainterActivity.outputVariableName = outputVariableName;
-    }
-
 
 
     /**
@@ -1007,6 +1015,49 @@ public class TablePainterActivity extends Activity {
         Date date = new Date();
         String time = dateFormat.format(date);
         return time;
+    }
+
+    /**
+     * Used when either new report settings or aliquot files are chosen via a new Intent.
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CHANGE_ALIQUOT &&
+                resultCode == RESULT_OK && data.hasExtra("newAliquot")) {
+
+            if (data.getStringExtra("newAliquot").equals("true")) {
+                setContentView(R.layout.display);
+                categoryNameTable = null;
+                headerInformationTable = null;
+                aliquotDataTable = null;
+                setAliquotFilePath(retrieveAliquotFilePath());
+
+                // remakes data and displays it
+                createData();
+                createView();
+            }
+        }
+
+        else if (requestCode == CHANGE_REPORT_SETTINGS &&
+                resultCode == RESULT_OK && data.hasExtra("newReportSettings")) {
+
+            if (data.getStringExtra("newReportSettings").equals("true")) {
+                setContentView(R.layout.display);
+                categoryNameTable = null;
+                headerInformationTable = null;
+                aliquotDataTable = null;
+                setReportSettingsFilePath(retrieveReportSettingsFilePath());
+
+                // remakes data and displays it
+                createData();
+                createView();
+            }
+
+        }
     }
 
     @Override

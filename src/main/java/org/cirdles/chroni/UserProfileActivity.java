@@ -13,7 +13,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.http.Header;
-import org.apache.http.client.HttpResponseException;
 import org.xml.sax.SAXException;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -29,7 +28,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -106,7 +104,7 @@ public class UserProfileActivity extends Activity {
                         try {
                             // validates credentials if not empty
                             validateGeochronCredentials(getGeochronUsername(), getGeochronPassword());
-                        } catch (HttpResponseException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                             Toast.makeText(UserProfileActivity.this, "Connection error", Toast.LENGTH_LONG).show();
                         }
@@ -181,7 +179,7 @@ public class UserProfileActivity extends Activity {
     * @param password
     * @return
     */
-	public void validateGeochronCredentials(String username, String password) throws HttpResponseException {
+	public void validateGeochronCredentials(String username, String password) {
 	    boolean isValid = false; // Geochron Credential boolean
 		String geochronCredentialsService = "http://www.geochronportal.org/credentials_service.php";
 

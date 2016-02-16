@@ -83,15 +83,34 @@ public class ReportSettingsMenuActivity extends Activity {
         reportSettingsApplyButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (reportSettingsSelectedFileText.getText().length() != 0) {
-                    Intent openDisplayTable = new Intent(
-                            "android.intent.action.DISPLAY");
-                    openDisplayTable.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
 
-                    // Changes button color to indicate it has been opened
-                    reportSettingsApplyButton.setBackgroundColor(Color.LTGRAY);
-                    reportSettingsApplyButton.setTextColor(Color.BLACK);
-                    saveCurrentReportSettings();
-                    startActivity(openDisplayTable);
+                    if (getIntent().hasExtra("From_Table")) {
+                        if (getIntent().getStringExtra("From_Table").equals("true")) {
+
+                            Toast.makeText(ReportSettingsMenuActivity.this, "Changing Report Settings...", Toast.LENGTH_LONG).show();
+                            Intent returnReportSettings = new Intent("android.intent.action.DISPLAY");
+                            returnReportSettings.putExtra("newReportSettings", "true"); // tells if new report settings have been chosen
+
+                            // Changes button color to indicate it has been opened
+                            reportSettingsApplyButton.setBackgroundColor(Color.LTGRAY);
+                            reportSettingsApplyButton.setTextColor(Color.BLACK);
+                            saveCurrentReportSettings();
+
+                            setResult(RESULT_OK, returnReportSettings);
+                            finish();
+                        }
+
+                    } else {
+
+                        Intent openDisplayTable = new Intent("android.intent.action.DISPLAY");
+                        openDisplayTable.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
+
+                        // Changes button color to indicate it has been opened
+                        reportSettingsApplyButton.setBackgroundColor(Color.LTGRAY);
+                        reportSettingsApplyButton.setTextColor(Color.BLACK);
+                        saveCurrentReportSettings();
+                        startActivity(openDisplayTable);
+                    }
                 }
             }
         });
@@ -100,18 +119,14 @@ public class ReportSettingsMenuActivity extends Activity {
         Button reportSettingsCancelButton = (Button) findViewById(R.id.reportSettingsMenuCancelButton);
         reportSettingsCancelButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                    Intent openDisplayTable = new Intent(
-                            "android.intent.action.DISPLAY");
-                    openDisplayTable.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
-                    saveCurrentReportSettings();
-                    startActivity(openDisplayTable);
+                    finish();
             }
         });
     }
 
-    /*
-Requests file name from user and  proceeds to download based on input
- */
+    /**
+     * Requests file name from user and  proceeds to download based on input
+     */
     public void requestFileName(){
         AlertDialog.Builder userFileNameAlert = new AlertDialog.Builder(ReportSettingsMenuActivity.this);
 
@@ -165,11 +180,11 @@ Requests file name from user and  proceeds to download based on input
         }
     }
 
-    /*
+    /**
 	 * Creates file name based on the file's type and URL
 	 */
     protected String createFileName(String downloadMethod, String fileUrl) {
-        String name = null;
+        String name;
         //makes name from ending of URL
         String[] URL = fileUrl.split("/");
         name = URL[URL.length-1];
@@ -189,26 +204,25 @@ Requests file name from user and  proceeds to download based on input
         this.absoluteFilePath = absoluteFilePath;
     }
 
-    /*
-Splits report settings file name returning a displayable version without the entire path
- */
+    /**
+     * Splits report settings file name returning a displayable version without the entire path
+     */
     private String splitReportSettingsName(String fileName){
         String[] fileNameParts = fileName.split("/");
-        String reportSettingsName = fileNameParts[fileNameParts.length-1];
-        return reportSettingsName;
+        return fileNameParts[fileNameParts.length-1];
     }
 
-    /*
-    * Accesses current report settings file
-    */
+    /**
+     * Accesses current report settings file
+     */
     private String retrieveReportSettingsFileName() {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
         return settings.getString("Current Report Settings", "Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
     }
 
-    /*
-    * Stores Current Report Settings
-    */
+    /**
+     * Stores Current Report Settings
+     */
     protected void saveCurrentReportSettings() {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
         SharedPreferences.Editor editor = settings.edit();
