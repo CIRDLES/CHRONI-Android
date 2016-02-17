@@ -26,26 +26,10 @@ public class ValueModel {
 		return value;
 	}
 
-	public void setValue(Float value) {
-		this.value = value;
-	}
-
-	public String getUncertaintyType() {
-		return uncertaintyType;
-	}
-
-	public void setUncertaintyType(String uncertaintyType) {
-		this.uncertaintyType = uncertaintyType;
-	}
-
 	public Float getOneSigma() {
 		return oneSigma;
 	}
 
-	public void setOneSigma(Float oneSigma) {
-		this.oneSigma = oneSigma;
-	}
-	
 	@Override
 	public String toString() {
 		return " Value Model has name: " + name + ", value: " + value

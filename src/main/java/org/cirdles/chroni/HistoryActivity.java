@@ -20,12 +20,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/*
+/**
  * Sets up the History database table.
  */
 public class HistoryActivity extends Activity {
-
-    CHRONIDatabaseHelper preloadedAliquots; // Database helper
 
     @SuppressLint("NewApi")
     @Override

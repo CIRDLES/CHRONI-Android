@@ -13,74 +13,70 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import java.math.BigDecimal;
-import android.widget.Toast;
 
-/*
-This activity is used for structuring the main menu layout of the application.
+/**
+ * This activity is used for structuring the main menu layout of the application.
  */
 public class MainMenuActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-	// Sets up layout
-	super.onCreate(savedInstanceState);
-	setTheme(android.R.style.Theme_Holo);
-	setContentView(R.layout.main_menu);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        // Sets up layout
+        super.onCreate(savedInstanceState);
+        setTheme(android.R.style.Theme_Holo);
+        setContentView(R.layout.main_menu);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
-     //Places background image on layout due to theme overriding
-     RelativeLayout layout =(RelativeLayout)findViewById(R.id.mainMenuBackground);
-     layout.setBackground(getResources().getDrawable(R.drawable.background));
+         // Places background image on layout due to theme overriding
+         RelativeLayout layout =(RelativeLayout)findViewById(R.id.mainMenuBackground);
+         layout.setBackground(getResources().getDrawable(R.drawable.background));
 
-	try {
-	    // Puts the versioning information on the App
-	    Context context = this;
-	    int versionCode = context.getPackageManager().getPackageInfo(
-		    context.getPackageName(), 0).versionCode;
-	    String versionName = context.getPackageManager().getPackageInfo(
-		    context.getPackageName(), 0).versionName;
+        try {
+            // Puts the versioning information on the App
+            Context context = this;
+            int versionCode = context.getPackageManager().getPackageInfo(
+                context.getPackageName(), 0).versionCode;
+            String versionName = context.getPackageManager().getPackageInfo(
+                context.getPackageName(), 0).versionName;
 
-	    TextView versionNumber = (TextView) findViewById(R.id.versionNumberMainMenu);
-	    versionNumber.setText("Version " + versionCode + "." + versionName);
-	    versionNumber.setTextColor(getResources().getColor(
-		    R.color.button_blue));
+            TextView versionNumber = (TextView) findViewById(R.id.versionNumberMainMenu);
+            versionNumber.setText("Version " + versionCode + "." + versionName);
+            versionNumber.setTextColor(getResources().getColor(
+                R.color.button_blue));
 
-	} catch (NameNotFoundException e) {
-	    e.printStackTrace();
-	}
-
-    // Allows user to select an aliquot file for viewing in the display table
-    Button openButton = (Button) findViewById(R.id.menuOpenButton);
-	openButton.setOnClickListener(new View.OnClickListener() {
-        public void onClick(View v) {
-            Intent openDisplay = new Intent(
-                    "android.intent.action.ALIQUOTMENU");
-            startActivity(openDisplay);
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
         }
-    });
 
-    // Allows user to open the history activity
-    Button historyButton = (Button) findViewById(R.id.menuHistoryButton);
-	historyButton.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
-		Intent openHistoryTable = new Intent(
-			"android.intent.action.HISTORY");
-		startActivity(openHistoryTable);
+        // Allows user to select an aliquot file for viewing in the display table
+        Button openButton = (Button) findViewById(R.id.menuOpenButton);
+        openButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent openDisplay = new Intent(
+                        "android.intent.action.ALIQUOTMENU");
+                startActivity(openDisplay);
+            }
+        });
 
-//            Toast.makeText(MainMenuActivity.this, "This feature is currently unavailable.", Toast.LENGTH_LONG).show();
-        }
-	});
+        // Allows user to open the history activity
+        Button historyButton = (Button) findViewById(R.id.menuHistoryButton);
+        historyButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            Intent openHistoryTable = new Intent(
+                "android.intent.action.HISTORY");
+            startActivity(openHistoryTable);
+            }
+        });
 
-    // Allows user to access the profile management feature
-	Button credentialsButton = (Button) findViewById(R.id.menuProfileButton);
-	credentialsButton.setOnClickListener(new View.OnClickListener() {
-        public void onClick(View v) {
-            Intent openUserProfile = new Intent(
-                    "android.intent.action.USERPROFILE");
-            startActivity(openUserProfile);
-        }
-    });
+        // Allows user to access the profile management feature
+        Button credentialsButton = (Button) findViewById(R.id.menuProfileButton);
+        credentialsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent openUserProfile = new Intent(
+                        "android.intent.action.USERPROFILE");
+                startActivity(openUserProfile);
+            }
+        });
 
     }
 

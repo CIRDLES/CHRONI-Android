@@ -1,17 +1,10 @@
-/* This activity provides the user with the Report Settings file selection menu actions and setup */
-
 package org.cirdles.chroni;
 
-import java.io.File;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.view.Menu;
@@ -23,9 +16,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * This activity provides the user with the Report Settings file selection menu actions and setup
+ */
 public class ReportSettingsMenuActivity extends Activity {
     //layout variables
-    private Button reportSettingsSelectedFileButton; // file browser button for report settings
     private Button reportSettingsApplyButton;// open button to the display table
     private EditText reportSettingsSelectedFileText; // contains name of the report settings file for viewing
 
@@ -54,7 +49,7 @@ public class ReportSettingsMenuActivity extends Activity {
         TextView currentReportSettingsFile = (TextView) findViewById(R.id.currentReportSettingsLabel);
         currentReportSettingsFile.setText("Current Report Settings: " + splitReportSettingsName(retrieveReportSettingsFileName()));
 
-        reportSettingsSelectedFileButton = (Button) findViewById(R.id.reportSettingsFileSelectButton);
+        Button reportSettingsSelectedFileButton = (Button) findViewById(R.id.reportSettingsFileSelectButton);
         reportSettingsSelectedFileButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         // Opens file picker activity to main menu
@@ -124,46 +119,6 @@ public class ReportSettingsMenuActivity extends Activity {
         });
     }
 
-    /**
-     * Requests file name from user and  proceeds to download based on input
-     */
-    public void requestFileName(){
-        AlertDialog.Builder userFileNameAlert = new AlertDialog.Builder(ReportSettingsMenuActivity.this);
-
-        userFileNameAlert.setTitle("Choose a file name");
-        userFileNameAlert.setMessage("Enter the desired name of your Report Settings URL file:");
-
-        // Set an EditText view to get user input
-        final EditText input = new EditText(ReportSettingsMenuActivity.this);
-        userFileNameAlert.setView(input);
-
-        userFileNameAlert.setPositiveButton("Start Download!", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                if (input.getText().toString().length() != 0) {
-                    if(input.getText().toString().contains(".xml")) { // Removes user added .xml
-                        String[] inputText = input.getText().toString().split(".xml");
-                        String userFileName = inputText[0];
-                        setFinalReportSettingsFileName(userFileName); // sets the user file name in the class
-                    }else {
-                        setFinalReportSettingsFileName(input.getText().toString()); // sets the user file name in the class
-                    }
-                    URLFileReader downloader = new URLFileReader(
-                            ReportSettingsMenuActivity.this, "ReportSettingsMenu",
-                            reportSettingsUrl, "url", getFinalReportSettingsFileName()); // Downloads the file and sets user name
-                    Toast.makeText(ReportSettingsMenuActivity.this, "Downloading Report Settings...", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        userFileNameAlert.setNegativeButton("Cancel Download", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
-            }
-        });
-
-        userFileNameAlert.show();
-    }
-
     // Gets the result from a FilePicker Activity initiated from a Report Settings Menu (by pressing the + button)
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
@@ -180,29 +135,6 @@ public class ReportSettingsMenuActivity extends Activity {
         }
     }
 
-    /**
-	 * Creates file name based on the file's type and URL
-	 */
-    protected String createFileName(String downloadMethod, String fileUrl) {
-        String name;
-        //makes name from ending of URL
-        String[] URL = fileUrl.split("/");
-        name = URL[URL.length-1];
-        if (name.contains(".xml")){
-            // Removes the file name ending from XML files
-            String [] newName = name.split(".xml");
-            name = newName[0];
-        }
-        return name;
-    }
-
-    public String getAbsoluteFilePath() {
-        return absoluteFilePath;
-    }
-
-    public void setAbsoluteFilePath(String absoluteFilePath) {
-        this.absoluteFilePath = absoluteFilePath;
-    }
 
     /**
      * Splits report settings file name returning a displayable version without the entire path
@@ -227,7 +159,7 @@ public class ReportSettingsMenuActivity extends Activity {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("Current Report Settings", getIntent().getStringExtra("ReportSettingsXMLFileName")); // gets chosen file from file browser and stores
-        editor.commit(); // Commiting changes
+        editor.apply(); // Committing changes
     }
 
     @Override
@@ -235,14 +167,6 @@ public class ReportSettingsMenuActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
-    }
-
-    public String getFinalReportSettingsFileName() {
-        return finalReportSettingsFileName;
-    }
-
-    public void setFinalReportSettingsFileName(String finalReportSettingsFileName) {
-        this.finalReportSettingsFileName = finalReportSettingsFileName;
     }
 
     @Override

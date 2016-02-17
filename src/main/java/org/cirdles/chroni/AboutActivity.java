@@ -1,4 +1,6 @@
-/* This activity displays the about screen of the application which can be reached through the menu.*/
+/**
+ * This activity displays the about screen of the application which can be reached through the menu.
+ */
 
 package org.cirdles.chroni;
 
@@ -15,8 +17,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class AboutActivity extends Activity  {
-
-    private TextView versionNumber; // displays the application's version number
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
