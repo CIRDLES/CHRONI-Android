@@ -34,8 +34,7 @@ public class AboutActivity extends Activity  {
         Button aboutHomeButton = (Button) findViewById(R.id.fileBrowserHomeButton);
         aboutHomeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-                startActivity(openMainMenu);
+                finish();
             }
         });
     }

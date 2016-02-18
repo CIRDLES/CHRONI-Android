@@ -15,7 +15,7 @@
         android:textSize="18sp"
         android:layout_marginBottom="90dp"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/aliquotIGSNSubmitButton"
+        android:layout_toStartOf="@+id/aliquotIGSNSubmitButton"
         android:layout_alignParentEnd="false" />
     <Button
         android:id="@+id/aliquotFileSelectButton"
@@ -28,7 +28,7 @@
         android:text="+"
         android:textSize="25sp"
         android:layout_alignBottom="@+id/aliquotFileSelectText"
-        android:layout_toRightOf="@+id/aliquotFileSelectText" />
+        android:layout_toEndOf="@+id/aliquotFileSelectText" />
 
     <Button
         android:id="@+id/aliquotIGSNSubmitButton"
@@ -39,16 +39,15 @@
         android:text="Download"
         android:layout_alignBottom="@+id/aliquotIGSNText"
         android:textColor="@color/white"
-        android:layout_marginLeft="30dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="300dp"
-        android:textSize="20dp" />
+        android:layout_marginStart="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="300dp"
+        android:textSize="20sp" />
 
     <EditText
         android:id="@+id/aliquotFileSelectText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:editable="false"
         android:ems="10"
         android:hint="Select a file from this device"
         android:minWidth="275dp"
@@ -56,7 +55,7 @@
         android:textSize="18sp"
         android:layout_marginBottom="60dp"
         android:layout_above="@+id/aliquotIGSNText"
-        android:layout_alignLeft="@+id/aliquotIGSNText" />
+        android:layout_alignStart="@+id/aliquotIGSNText" />
 
     <TextView
         android:id="@+id/textView2"
@@ -67,7 +66,7 @@
         android:textColor="@color/black"
         android:textSize="30sp"
         android:layout_alignBottom="@+id/aliquotFileSelectText"
-        android:layout_alignRight="@+id/TextView01" />
+        android:layout_alignEnd="@+id/TextView01" />
 
     <TextView
         android:id="@+id/testText"
@@ -76,7 +75,7 @@
         android:text="Aliquot"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="120dp"
+        android:textSize="120sp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="140dp" />
 
@@ -88,9 +87,9 @@
         android:minWidth="400dp"
         android:src="@drawable/chroni_logo"
         android:layout_marginTop="15dp"
-        android:layout_marginRight="70dp"
+        android:layout_marginEnd="70dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:id="@+id/TextView01"
@@ -101,8 +100,8 @@
         android:textColor="@color/black"
         android:textSize="30sp"
         android:layout_alignBottom="@+id/aliquotIGSNText"
-        android:layout_toLeftOf="@+id/aliquotIGSNText"
-        android:layout_marginRight="30dp" />
+        android:layout_toStartOf="@+id/aliquotIGSNText"
+        android:layout_marginEnd="30dp" />
 
     <Button
         android:id="@+id/aliquotFileSubmitButton"
@@ -112,8 +111,8 @@
         android:minWidth="75dip"
         android:text="Open"
         android:textColor="@color/white"
-        android:layout_alignLeft="@+id/aliquotIGSNSubmitButton"
+        android:layout_alignStart="@+id/aliquotIGSNSubmitButton"
         android:layout_alignBottom="@+id/aliquotFileSelectButton"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
 </RelativeLayout>

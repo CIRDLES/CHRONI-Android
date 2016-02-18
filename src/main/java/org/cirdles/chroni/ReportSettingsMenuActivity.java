@@ -25,13 +25,7 @@ public class ReportSettingsMenuActivity extends Activity {
     private EditText reportSettingsSelectedFileText; // contains name of the report settings file for viewing
 
     private String selectedReportSettings; // name of Report Settings file that has been chosen for viewing
-    private String reportSettingsUrl; // name of Report Settings URL
-    private String absoluteFilePath; // path of selected Report Settings file
-    private String finalReportSettingsFileName; //name of the final report settings
     private static final String PREF_REPORT_SETTINGS = "Current Report Settings";// Path of the current report settings file
-    private static final String PREF_ALIQUOT = "Current Aliquot";// Path of the current aliquot file
-
-    String aliquotPath; // the path containing the Aliquot file
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
