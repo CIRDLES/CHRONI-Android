@@ -1,7 +1,7 @@
 package org.cirdles.chroni;
 
-/*
-Defines the structure of a column object for Report Settings files
+/**
+ * Defines the structure of a column object for Report Settings files
  */
 public class Column {
 
@@ -22,8 +22,8 @@ public class Column {
 	private String uncertaintyType = null;
     private boolean isUncertaintyColumn = false; // true if the column is an uncertainty column
 
-    /*
-    Instantiates a Column object given several attributes
+    /**
+     * Instantiates a Column object given several attributes
      */
 	public Column(String displayName, String displayName1,
 			String displayName2, String displayName3, String units, String methodName, String variableName,
@@ -42,63 +42,53 @@ public class Column {
 
 
 	@Override
-    /*
-    Creates a string of the given column using the attributes found in that column
+    /**
+     * Creates a string of the given column using the attributes found in that column
      */
 	public String toString() {
-		String columnInformation = "This Column object belongs to the " + displayName + " category. It has displayName1: " + displayName1 + ", displayName2: " + displayName2 + ", displayName3: " + displayName3 + ", methodName: " + methodName + " , variableName: " + variableName + " and positionIndex: " + positionIndex + ".";
-		return columnInformation;
+		return "This Column object belongs to the " + displayName + " category. It has displayName1: " +
+				displayName1 + ", displayName2: " + displayName2 + ", displayName3: " + displayName3 +
+				", methodName: " + methodName + " , variableName: " + variableName + " and positionIndex: " +
+				positionIndex + ".";
 	}
 
 	public String getDisplayName() {
 		return displayName;
 	}
 
-	public void setDisplayName(String categoryName) {
-		this.displayName = categoryName;
-	}
-	
 	public String getDisplayName1() {
 		return displayName1;
 	}
 
-	public void setDisplayName1(String displayName1) {
-		this.displayName1 = displayName1;
+	public void setDisplayName1(String name) {
+		this.displayName1 = name;
 	}
+
 
 	public String getDisplayName2() {
 		return displayName2;
 	}
 
-	public void setDisplayName2(String displayName2) {
-		this.displayName2 = displayName2;
+	public void setDisplayName2(String name) {
+		this.displayName2 = name;
 	}
+
 
 	public String getDisplayName3() {
 		return displayName3;
 	}
 
-	public void setDisplayName3(String displayName3) {
-		this.displayName3 = displayName3;
+	public void setDisplayName3(String name) {
+		this.displayName3 = name;
 	}
 
-
-	public int getPositionIndex() {
-		return positionIndex;
-	}
-
-
-	public void setPositionIndex(int positionIndex) {
-		this.positionIndex = positionIndex;
-	}
 
 	public Column getUncertaintyColumn() {
 		return uncertaintyColumn;
 	}
 
-
-	public void setUncertaintyColumn(Column uncertaintyColumn) {
-		this.uncertaintyColumn = uncertaintyColumn;
+	public void setUncertaintyColumn(Column column) {
+		this.uncertaintyColumn = column;
 	}
 
 
@@ -106,9 +96,8 @@ public class Column {
 		return methodName;
 	}
 
-
-	public void setMethodName(String methodName) {
-		this.methodName = methodName;
+	public void setMethodName(String name) {
+		this.methodName = name;
 	}
 
 
@@ -116,41 +105,17 @@ public class Column {
 		return variableName;
 	}
 
-
-	public void setVariableName(String variableName) {
-		this.variableName = variableName;
+	public void setVariableName(String name) {
+		this.variableName = name;
 	}
 
 
-	/**
-	 * @return the units
-	 */
 	public String getUnits() {
 		return units;
 	}
 
-
-	/**
-	 * @param units the units to set
-	 */
-	public void setUnits(String units) {
-		this.units = units;
-	}
-
-
-	/**
-	 * @return the countOfSignificantDigits
-	 */
 	public int getCountOfSignificantDigits() {
 		return countOfSignificantDigits;
-	}
-
-
-	/**
-	 * @param countOfSignificantDigits the countOfSignificantDigits to set
-	 */
-	public void setCountOfSignificantDigits(int countOfSignificantDigits) {
-		this.countOfSignificantDigits = countOfSignificantDigits;
 	}
 
 
@@ -166,10 +131,6 @@ public class Column {
 	public boolean isDisplayedWithArbitraryDigitCount() {
 		return displayedWithArbitraryDigitCount;
 	}
-
-    public boolean isUncertaintyColumn() {
-        return isUncertaintyColumn;
-    }
 
     public void setUncertaintyColumn(boolean isUncertaintyColumn) {
         this.isUncertaintyColumn = isUncertaintyColumn;

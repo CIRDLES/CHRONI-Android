@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2011 Anders Kalr
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,25 +44,11 @@ import android.widget.Toast;
 
 public class FilePickerActivity extends ListActivity {
 
-	/**
-	 * The file path
-	 */
-	public final static String EXTRA_FILE_PATH = "file_path";
-
-	/**
-	 * Sets whether hidden files should be visible in the list or not
-	 */
+	// Sets whether hidden files should be visible in the list or not
 	public final static String EXTRA_SHOW_HIDDEN_FILES = "show_hidden_files";
 
-	/**
-	 * The allowed file extensions in an ArrayList of Strings
-	 */
+	// The allowed file extensions in an ArrayList of Strings
 	public final static String EXTRA_ACCEPTED_FILE_EXTENSIONS = "accepted_file_extensions";
-
-	/**
-	 * The initial directory which will be used if no directory has been sent with the intent
-	 */
-//	public final static String DEFAULT_INITIAL_DIRECTORY = Environment.getExternalStorageDirectory()+ "/CIRDLES/";
 
 	protected File mainDirectory;
 	protected ArrayList<File> mFiles;
@@ -158,6 +144,7 @@ public class FilePickerActivity extends ListActivity {
 	protected void onListItemClick(ListView l, View v, final int position, long id) {
 		final File newFile = (File) l.getItemAtPosition(position);
 
+		// give a prompt asking if the user wishes to delete the selected file
 		if (inDeleteMode) {
 			if(newFile.isFile()) {
 				new AlertDialog.Builder(this).setMessage("Are you sure you wish to delete " +
@@ -301,8 +288,8 @@ public class FilePickerActivity extends ListActivity {
 				return true;
 			}
 			if(mExtensions != null && mExtensions.length > 0) {
-				for(int i = 0; i < mExtensions.length; i++) {
-					if(filename.endsWith(mExtensions[i])) {
+				for(String extension : mExtensions) {
+					if(filename.endsWith(extension)) {
 						// The filename ends with the extension
 						return true;
 					}

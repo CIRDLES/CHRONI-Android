@@ -3,6 +3,7 @@ package org.cirdles.chroni;
 import com.loopj.android.http.*;
 
 public class UserVerificationClient {
+
   private static final String BASE_URL = "http://www.geochronportal.org/credentials_service.php";
 
   private static AsyncHttpClient client = new AsyncHttpClient();

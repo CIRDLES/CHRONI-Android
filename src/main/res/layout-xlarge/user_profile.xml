@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    android:id="@+id/userProfileBackground">>
+    android:id="@+id/userProfileBackground">
 
     <EditText
         android:id="@+id/geochronPassword"
@@ -14,7 +14,7 @@
         android:minWidth="400dip"
         android:textColor="@color/black"
         android:textSize="25sp"
-        android:layout_toRightOf="@+id/TextView03"
+        android:layout_toEndOf="@+id/TextView03"
         android:layout_alignBottom="@+id/TextView03" />
 
     <EditText
@@ -28,7 +28,7 @@
         android:textColor="@color/black"
         android:textSize="25sp"
         android:layout_alignBottom="@+id/TextView02"
-        android:layout_toRightOf="@+id/TextView02" />
+        android:layout_toEndOf="@+id/TextView02" />
 
     <TextView
         android:id="@+id/TextView03"
@@ -40,7 +40,7 @@
         android:textSize="35sp"
         android:layout_above="@+id/profileValidateButton"
         android:layout_marginBottom="100dp"
-        android:layout_marginLeft="120dp" />
+        android:layout_marginStart="120dp" />
 
     <Button
         android:id="@+id/profileValidateButton"
@@ -53,8 +53,8 @@
         android:textColor="@color/white"
         android:textSize="30sp"
         android:layout_alignBottom="@+id/profileEraseButton"
-        android:layout_toLeftOf="@+id/profileEraseButton"
-        android:layout_marginRight="50dp" />
+        android:layout_toStartOf="@+id/profileEraseButton"
+        android:layout_marginEnd="50dp" />
 
     <Button
         android:id="@+id/fileBrowserHomeButton"
@@ -66,9 +66,9 @@
         android:text="Home"
         android:textColor="@color/white"
         android:textSize="35sp"
-        android:layout_toRightOf="@+id/profileEraseButton"
+        android:layout_toEndOf="@+id/profileEraseButton"
         android:layout_alignBottom="@+id/profileEraseButton"
-        android:layout_marginLeft="50dp" />
+        android:layout_marginStart="50dp" />
 
     <TextView
         android:id="@+id/testText"
@@ -101,7 +101,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
         android:textSize="35sp"
-        android:layout_alignRight="@+id/TextView03"
+        android:layout_alignEnd="@+id/TextView03"
         android:layout_above="@+id/TextView03"
         android:layout_marginBottom="30dp" />
 

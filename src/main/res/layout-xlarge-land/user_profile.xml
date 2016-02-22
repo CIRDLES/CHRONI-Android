@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    android:id="@+id/userProfileBackground">>
+    android:id="@+id/userProfileBackground">
 
     <EditText
         android:id="@+id/geochronPassword"
@@ -15,7 +15,7 @@
         android:textSize="25sp"
         android:layout_above="@+id/profileValidateButton"
         android:layout_alignStart="@id/fileBrowserHomeButton"
-        android:layout_marginLeft="32.5dp"
+        android:layout_marginStart="32.5dp"
         android:layout_marginBottom="65dp"
         android:inputType="textPassword" />
 
@@ -30,7 +30,7 @@
         android:textColor="@color/black"
         android:textSize="25sp"
         android:layout_above="@+id/geochronPassword"
-        android:layout_alignLeft="@+id/geochronPassword"
+        android:layout_alignStart="@+id/geochronPassword"
         android:layout_marginBottom="20dp" />
 
     <TextView
@@ -44,7 +44,7 @@
         android:layout_above="@+id/fileBrowserHomeButton"
         android:layout_marginBottom="65dp"
         android:layout_toStartOf="@id/geochronPassword"
-        android:layout_marginRight="45dp" />
+        android:layout_marginEnd="45dp" />
 
     <Button
         android:id="@+id/profileValidateButton"
@@ -62,7 +62,7 @@
         android:layout_alignParentStart="false"
         android:layout_alignParentEnd="false"
         android:layout_toStartOf="@id/fileBrowserHomeButton"
-        android:layout_marginRight="45dp" />
+        android:layout_marginEnd="45dp" />
 
 
     <Button
@@ -89,7 +89,7 @@
         android:text="Profile"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="90dp"
+        android:textSize="90sp"
         android:layout_marginTop="100dp" />
 
     <TextView
@@ -101,7 +101,7 @@
         android:text="Geochron Portal"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="70dp" />
+        android:textSize="70sp" />
 
     <TextView
         android:id="@+id/TextView02"
@@ -111,7 +111,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
         android:textSize="35sp"
-        android:layout_alignRight="@+id/TextView03"
+        android:layout_alignEnd="@+id/TextView03"
         android:layout_above="@+id/TextView03"
         android:layout_marginBottom="20dp" />
 
@@ -121,7 +121,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/geochronPassword"
         android:layout_marginTop="48dp"
-        android:layout_toRightOf="@+id/profileValidateButton"
+        android:layout_toEndOf="@+id/profileValidateButton"
         android:textColor="@color/black"
         android:textColorHint="@color/black" />
 
@@ -138,7 +138,7 @@
         android:textColor="@color/white"
         android:textSize="35sp"
         android:layout_toEndOf="@id/fileBrowserHomeButton"
-        android:layout_marginLeft="45dp"
+        android:layout_marginStart="45sp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="50dp" />
 
@@ -149,8 +149,8 @@
         android:layout_height="115dp"
         android:src="@drawable/chroni_logo"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="70dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="70dp"
         android:layout_marginTop="15dp" />
 
 </RelativeLayout>

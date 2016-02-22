@@ -14,8 +14,8 @@
         android:inputType="textEmailAddress"
         android:minWidth="300dip"
         android:textColor="@color/black"
-        android:textSize="20dp"
-        android:layout_toRightOf="@+id/TextView02"
+        android:textSize="20sp"
+        android:layout_toEndOf="@+id/TextView02"
         android:layout_alignBottom="@+id/TextView02" />
 
     <TextView
@@ -25,8 +25,8 @@
         android:text="Password"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="26dp"
-        android:layout_marginLeft="105dp"
+        android:textSize="26sp"
+        android:layout_marginStart="105dp"
         android:layout_above="@+id/profileEraseButton"
         android:layout_marginBottom="60dp" />
 
@@ -38,10 +38,10 @@
         android:inputType="textPassword"
         android:minWidth="300dip"
         android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:layout_alignBottom="@+id/TextView03"
-        android:layout_marginRight="15dp"
-        android:layout_toRightOf="@+id/TextView03" />
+        android:layout_marginEnd="15dp"
+        android:layout_toEndOf="@+id/TextView03" />
 
     <TextView
         android:id="@+id/TextView01"
@@ -73,9 +73,9 @@
         android:text="Username"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="26dp"
+        android:textSize="26sp"
         android:layout_above="@+id/TextView03"
-        android:layout_alignRight="@+id/TextView03"
+        android:layout_alignEnd="@+id/TextView03"
         android:layout_marginBottom="25dp" />
 
     <Button
@@ -89,8 +89,8 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:layout_alignBottom="@+id/profileEraseButton"
-        android:layout_toRightOf="@+id/profileEraseButton"
-        android:layout_marginLeft="25dp" />
+        android:layout_toEndOf="@+id/profileEraseButton"
+        android:layout_marginStart="25dp" />
 
     <TextView
         android:id="@+id/validationText"
@@ -125,9 +125,9 @@
         android:text="Validate"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:layout_toLeftOf="@+id/profileEraseButton"
+        android:layout_toStartOf="@+id/profileEraseButton"
         android:layout_alignBottom="@+id/profileEraseButton"
-        android:layout_marginRight="25dp" />
+        android:layout_marginEnd="25dp" />
 
     <ImageView
         android:id="@+id/imageView"

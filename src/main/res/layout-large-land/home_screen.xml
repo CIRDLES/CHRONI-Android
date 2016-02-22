@@ -25,8 +25,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_marginBottom="35dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="72dp" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="72dp" />
 
     <TextView
         android:id="@+id/TextView01"
@@ -35,7 +35,7 @@
         android:text="CHRONI"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="58dp"
+        android:textSize="58sp"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="25dp"
         android:layout_above="@+id/developedBy" />
@@ -49,15 +49,15 @@
         android:minWidth="100dp"
         android:layout_above="@+id/testText"
         android:layout_marginBottom="10dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="60dp" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="60dp" />
 
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_alignParentTop="false"
-        android:layout_alignParentRight="false"
+        android:layout_alignParentEnd="false"
         android:layout_alignParentBottom="false"
         android:src="@drawable/cirdles_logo_text_xhdpi"
         android:layout_above="@+id/versionNumber"
@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:text="@string/developed_by"
         android:id="@+id/developedBy"
-        android:textSize="28dp"
+        android:textSize="28sp"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/imageView1"
         android:textColor="@color/black" />
