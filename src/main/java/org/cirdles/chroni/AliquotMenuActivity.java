@@ -2,7 +2,6 @@
 
 package org.cirdles.chroni;
 
-import java.io.File;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -21,21 +20,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-import java.math.BigDecimal;
 
 public class AliquotMenuActivity extends Activity {
 
     // Layout variables
-    private Button aliquotFileSelectButton; // button allows user to begin file browsing
     private Button aliquotFileSubmitButton; // button submits aliquot file for viewing
     private Button igsnDownloadButton; // button submits current inputted IGSN for downloading
     private EditText aliquotSelectedFileText; // holds the currently selected file name
     private EditText igsnText; // holds user-inputted IGSN
 
     // Global functionality  variables
-    private String finalAliquotFileName; // the user specififed filename
-    private boolean invalidFile = false; // true if file attempted to be downloaded is invalid
-    private static String absoluteFilePathOfDownloadedAliquot; // the path of the Aliquot file
     private static String geochronUsername, geochronPassword; // the GeoChron information on file for the user
     public static final String USER_PREFS = "My CIRDLES Settings"; // code to access stored preferences
 
@@ -43,10 +37,8 @@ public class AliquotMenuActivity extends Activity {
 
     // Base URLs for IGSN downloads
     public static String BASE_ALIQUOT_URI = "http://www.geochronportal.org/getxml.php?igsn=";
-    // public static String BASE_ALIQUOT_URI = "http://picasso.kgs.ku.edu/geochron/getxml.php?igsn=";
     public static String BASE_SAMPLE_URI = "http://www.geosamples.org/display.php?igsn=";
 
-    private static final int REQUEST_PICK_FILE = 1;
     public int CIRDLES_ORANGE_RGB = Color.rgb(242, 136, 58);
 
     @Override
@@ -62,7 +54,7 @@ public class AliquotMenuActivity extends Activity {
         //Places background image on layout after theme overriding
         aliquotMenuLayout.setBackground(getResources().getDrawable(R.drawable.background));
 
-        aliquotFileSelectButton = (Button) findViewById(R.id.aliquotFileSelectButton);
+        Button aliquotFileSelectButton = (Button) findViewById(R.id.aliquotFileSelectButton);
         aliquotFileSelectButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Opens file picker activity to main menu
@@ -167,7 +159,6 @@ public class AliquotMenuActivity extends Activity {
     }
 
 
-
     /**
      * Stores Current Aliquot
      */
@@ -179,67 +170,8 @@ public class AliquotMenuActivity extends Activity {
     }
 
 
-    /**
-     * Requests file name from user and proceeds to download based on input
-     */
-//        public void requestFileName(){
-//
-//            // Directories needed for file locations
-//            final File chroniDirectory = getDir("CHRONI", Context.MODE_PRIVATE);
-//            final File aliquotDirectory = new File(chroniDirectory, "Aliquot");
-//
-//            AlertDialog.Builder userFileNameAlert = new AlertDialog.Builder(AliquotMenuActivity.this);
-//
-//                userFileNameAlert.setTitle("Choose a file name");
-//                userFileNameAlert.setMessage("Enter the desired name of your Aliquot URL file:");
-//
-//                // Set an EditText view to get user input
-//                final EditText input = new EditText(AliquotMenuActivity.this);
-//                userFileNameAlert.setView(input);
-//
-//                userFileNameAlert.setPositiveButton("Start Download!", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        if (input.getText().toString().length() != 0) {
-//                            setFinalAliquotFileName(input.getText().toString()); // sets the user file name in the class
-//                            URLFileReader downloader = new URLFileReader(
-//                                    AliquotMenuActivity.this, "AliquotMenu",
-//                                    aliquotURL, "url", getFinalAliquotFileName()); // Downloads the file and sets user name
-//                            setAbsoluteFilePathOfDownloadedAliquot(aliquotDirectory + "/" + getFinalAliquotFileName() + ".xml");
-//                            Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show();
-//                        }
-//                    }
-//                });
-//
-//                userFileNameAlert.setNegativeButton("Cancel Download", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        // Canceled.
-//                    }
-//                });
-//
-//                userFileNameAlert.show();
-//            }
-
-    /**
-	 * Creates file name based on the file's type and URL
-	 */
-    protected String createFileName(String downloadMethod, String fileUrl) {
-        String name = null;
-        // If downloading based on IGSN URL, just use IGSN for name
-        if(downloadMethod.contains("igsn")){
-            String[] URL = fileUrl.split("igsn=");
-            name = URL[1];
-            if(name.contains("&username=")){
-                // Makes an additional split to remove the username and password query from the file name
-                String[] url2 = name.split("&username=");
-                name = url2[0];
-            }
-
-        }
-        return name;
-    }
-
     @Override
-    // Gets the Extra that FilePicker returns and puts it in This Intent's Extra
+    // Gets the filename that the FilePicker returns and puts it into this Intent's Extra
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
@@ -270,7 +202,8 @@ public class AliquotMenuActivity extends Activity {
     public static String makeURI(String baseURL, String IGSN) {
         String URI = baseURL + IGSN;
         if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
-            URI += "&username="+ getGeochronUsername()+"&password="+ getGeochronPassword(); 	// Create unique URL and password if credentials stored
+            // Create unique URL and password if credentials stored
+            URI += "&username="+getGeochronUsername()+"&password="+getGeochronPassword();
         }
         return URI;
     }
@@ -291,35 +224,11 @@ public class AliquotMenuActivity extends Activity {
         geochronPassword = geochronPass;
     }
 
-    public String getAbsoluteFilePathOfDownloadedAliquot() {
-        return absoluteFilePathOfDownloadedAliquot;
-    }
-
-    public void setAbsoluteFilePathOfDownloadedAliquot(String absoluteFileName) {
-        absoluteFilePathOfDownloadedAliquot = absoluteFileName;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
-    }
-
-    public String getFinalAliquotFileName() {
-        return finalAliquotFileName;
-    }
-
-    public void setFinalAliquotFileName(String finalAliquotFileName) {
-        this.finalAliquotFileName = finalAliquotFileName;
-    }
-
-    public boolean isInvalidFile() {
-        return invalidFile;
-    }
-
-    public static void setInvalidFile(boolean invalidFile) {
-        invalidFile = invalidFile;
     }
 
     @Override

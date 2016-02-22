@@ -23,7 +23,6 @@ public class AliquotParser {
 
 	private static SortedMap<String, Fraction> fractionMap; // Collects the fractions in the Aliquot XML file
 	private static SortedMap<String,Image> imageMap; // The given images in an aliquot
-	private static MapTuple aliquotMaps; // Contains the completed Aliquot Maps
 
 	public static MapTuple runAliquotParser(String fileName){
 
@@ -78,7 +77,7 @@ public class AliquotParser {
 				Fraction newFraction = new Fraction(fractionID, numberOfGrains);
 				fractionMap.put(fractionID, newFraction);	
 								
-//				Gets all the value models in the specific fraction
+				// Gets all the value models in the specific fraction
 				NodeList fractionValueModels = specificAnalysisFraction.getElementsByTagName("ValueModel");
 
 				for(int m = 0; m < fractionValueModels.getLength(); m++){
@@ -102,41 +101,13 @@ public class AliquotParser {
 			e.printStackTrace();
 		}
 		
-		// Creates the MapTuple object containing both maps
-        aliquotMaps = new MapTuple(fractionMap, imageMap);
-		return aliquotMaps;
+		// Returns the MapTuple object containing both maps
+		return new MapTuple(fractionMap, imageMap);
+
 	} // Closes the parsing aliquot method
 		
 	public static String getAliquotName() {
 		return aliquotName;
-	}
-
-	public static SortedMap<String, Fraction> getFractionMap() {
-		return fractionMap;
-	}
-
-	public static void setFractionMap(SortedMap<String, Fraction> fractionMap) {
-		AliquotParser.fractionMap = fractionMap;
-	}
-	
-	public static SortedMap<String,Image> getImageMap() {
-		return imageMap;
-	}
-
-	public static void setImageMap(SortedMap<String,Image> imageMap) {
-		AliquotParser.imageMap = imageMap;
-	}
-
-	public static void setAliquotName(String aliquotName) {
-		AliquotParser.aliquotName = aliquotName;
-	}
-
-	public static void setAliquotFile(String fileName) {
-		AliquotParser.fileName = fileName;
-	}
-
-	public static String getAliquotFile(String aliquotLocation) {
-		return fileName;
 	}
 	
 }// Closes the class

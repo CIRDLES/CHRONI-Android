@@ -1,27 +1,29 @@
-/*
-Able to get ths code from http://www.learn2crack.com/2014/06/android-load-image-from-internet.html
+/**
+ * Able to get ths code from http://www.learn2crack.com/2014/06/android-load-image-from-internet.html
  */
 
 package org.cirdles.chroni;
-        import java.io.InputStream;
-        import java.net.URL;
 
-        import android.content.Intent;
-        import android.content.pm.ActivityInfo;
-        import android.net.Uri;
-        import android.os.AsyncTask;
-        import android.os.Bundle;
-        import android.app.Activity;
-        import android.app.ProgressDialog;
-        import android.graphics.Bitmap;
-        import android.graphics.BitmapFactory;
-        import android.view.Menu;
-        import android.view.MenuItem;
-        import android.view.View;
-        import android.widget.Button;
-        import android.widget.ImageView;
-        import android.widget.TextView;
-        import android.widget.Toast;
+import java.io.InputStream;
+import java.net.URL;
+
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 
 public class ViewAnalysisImageActivity extends Activity {
     Button saveAnalysisImage;
@@ -42,15 +44,11 @@ public class ViewAnalysisImageActivity extends Activity {
         new LoadImage().execute("http://www.geochronportal.org/uploadimages/16747-concordia-tempConcordia.svg");
 
 
-        if(getIntent().getStringExtra("ProbabilityDensityImage") != null){
+        if(getIntent().getStringExtra("ProbabilityDensityImage") != null)
             analysisImageText.setText("Probability Density");
-        }
 
-        if(getIntent().getStringExtra("ConcordiaImage") != null){
+        if(getIntent().getStringExtra("ConcordiaImage") != null)
             analysisImageText.setText("Concordia");
-//            new LoadImage().execute(getIntent().getStringExtra("ConcordiaImage"));
-
-        }
 
         saveAnalysisImage = (Button)findViewById(R.id.saveAnalysisImageButton);
         saveAnalysisImage.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +58,7 @@ public class ViewAnalysisImageActivity extends Activity {
             }
         });
     }
+
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
         @Override
         protected void onPreExecute() {
@@ -82,7 +81,8 @@ public class ViewAnalysisImageActivity extends Activity {
                 progressDialog.dismiss();
             }else{
                 progressDialog.dismiss();
-                Toast.makeText(ViewAnalysisImageActivity.this, "Image Does Not exist or Network Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewAnalysisImageActivity.this, "Image Does Not exist or Network Error",
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -147,4 +147,5 @@ public class ViewAnalysisImageActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

@@ -13,15 +13,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/*
+/**
  * This class parses Report Settings XML files.
  */
 public class ReportSettingsParser {
 
 	private static SortedMap<Integer, Category> categoryMap; // Collects the visible categories of a report settings
 	private ArrayList<String> outputVariableNames = new ArrayList<String>();
-    public static int columnCount = 0;
-	public SortedMap<Integer, Category> runReportSettingsParser(String fileName){
+
+	public SortedMap<Integer, Category> runReportSettingsParser(String fileName) {
 
 		try {
 			// Begins the parsing of the file
@@ -96,7 +96,6 @@ public class ReportSettingsParser {
 							
 							visibleCategory.getCategoryColumnMap().put(Integer.parseInt(positionIndex),visibleColumn);
 							outputVariableNames.add(variableName);
-//							occupyAbsentInfo(visibleColumn, displayName1,displayName2, displayName3, methodName, variableName);
 
 							// UNCERTAINTY COLUMNS
 							if (categoryName.contains("datesCategory")
@@ -128,73 +127,29 @@ public class ReportSettingsParser {
                                         visibleColumn.setUncertaintyColumn(visibleUncertaintyColumn);
                                         visibleColumn.setUncertaintyColumn(true); // indicates that the column is an uncertainty column
 										outputVariableNames.add(uncertaintyVariableName);
-//										occupyAbsentInfo(visibleUncertaintyColumn,uncertaintyName1,uncertaintyName2,uncertaintyName3, uncertaintyMethodName, uncertaintyVariableName);
-									} // Closes visible uncertainty column
-								} // Closes loop through uncertainty columns
-							} // Closes navigation through dates and isotopic ratios categories
-                        } // Closes iterations through all visible columns
+									}
+								}
+
+							}
+                        }
+
                     } // Closes going into visible category for columns
+
                     visibleCategory.setColumnCount(columnCount);
-                } // Closes going into visible category
+
+                }
 			} // Closes loop through file for category nodes
-		} // Closes try statement
+		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-	return categoryMap;
-	} // Closes the main method
-	
-	/*
-	 * Puts a hyphen where information is absent for display name
-	 * @param displayName1-3 the various display names from the XML file to be
-	 * checked
-	 * @param visibleColumn the column the display names will be placed into
-	 */
-	public static void occupyAbsentInfo(Column visibleColumn, String displayName1, String displayName2, String displayName3, String methodName, String variableName){
-	    if (displayName1.equals("")){
-	    	displayName1 = "---";
-	    	visibleColumn.setDisplayName1(displayName1);
-	    }
-	   if (displayName2.equals("")){
-	    	displayName2 = "---";
-	    	visibleColumn.setDisplayName2(displayName2);
-	    }
-	    if (displayName3.equals("")){
-	    	displayName3 = "---";
-	    	visibleColumn.setDisplayName3(displayName3);
-	    }
-	    if (methodName.equals("")){
-	    	methodName = "---";
-	    	visibleColumn.setMethodName(methodName);
-	    }
-	    if (variableName.equals("")){
-	    	variableName = "---";
-	    	visibleColumn.setVariableName(variableName);
-	    }
-	 }
+
+		return categoryMap;
+	}
 	
 	public ArrayList<String> getOutputVariableName() {
 		return outputVariableNames;
 	}
 
-	public void setOutputVariableName(ArrayList<String> outputVariableName) {
-		this.outputVariableNames = outputVariableName;
-	}
-
-	public static SortedMap<Integer, Category> getCategoryMap() {
-		return categoryMap;
-	}
-
-	public static void setCategoryMap(SortedMap<Integer, Category> categoryMap) {
-		ReportSettingsParser.categoryMap = categoryMap;
-	}
-
-    public int getColumnCount() {
-        return columnCount;
-    }
-
-    public void setColumnCount(int columnCount) {
-        this.columnCount = columnCount;
-    }
-}// Closes the class
+}
 

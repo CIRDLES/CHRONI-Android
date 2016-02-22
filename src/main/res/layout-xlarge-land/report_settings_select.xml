@@ -12,7 +12,7 @@
         android:text="Report Settings"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="80dp"
+        android:textSize="80sp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="135dp" />
 
@@ -26,8 +26,8 @@
         android:text="+"
         android:textSize="15sp"
         android:layout_alignBottom="@+id/reportSettingsFileOpenButton"
-        android:layout_toLeftOf="@+id/reportSettingsFileOpenButton"
-        android:layout_marginRight="30dp" />
+        android:layout_toStartOf="@+id/reportSettingsFileOpenButton"
+        android:layout_marginEnd="30dp" />
 
     <EditText
         android:id="@+id/reportSettingsFileSelectText"
@@ -38,7 +38,7 @@
         android:textColor="@color/black"
         android:textSize="25sp"
         android:layout_alignBottom="@+id/reportSettingsFileSelectButton"
-        android:layout_toLeftOf="@+id/reportSettingsFileSelectButton" />
+        android:layout_toStartOf="@+id/reportSettingsFileSelectButton" />
 
     <ImageView
         android:id="@+id/imageView1"
@@ -48,8 +48,8 @@
         android:minWidth="200dp"
         android:src="@drawable/chroni_logo"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="75dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="75dp"
         android:layout_marginTop="15dp" />
 
     <Button
@@ -63,8 +63,8 @@
         android:textSize="20sp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="110dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="280dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="280dp"
         android:textColor="@color/white" />
 
     <TextView
@@ -76,19 +76,33 @@
         android:textColor="@color/black"
         android:textSize="30sp"
         android:layout_alignBottom="@+id/reportSettingsFileSelectText"
-        android:layout_toLeftOf="@+id/reportSettingsFileSelectText"
-        android:layout_marginRight="30dp" />
+        android:layout_toStartOf="@+id/reportSettingsFileSelectText"
+        android:layout_marginEnd="30dp" />
 
     <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
+        android:id="@+id/currentReportSettingsLabel"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Current Report Settings: "
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/black"
-        android:textSize="28dp"
+        android:textSize="28sp"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/reportSettingsFileSelectText"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:gravity="center"
         android:layout_marginBottom="75dp" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/reportSettingsMenuCancelButton"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="60dp"
+        android:textSize="22sp"
+        android:background="@color/button_blue"
+        android:textColor="@color/white" />
 
 </RelativeLayout>

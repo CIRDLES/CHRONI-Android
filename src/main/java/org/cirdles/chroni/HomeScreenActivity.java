@@ -18,8 +18,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
-/*
-Defines the home screen activity of the application
+/**
+ * Defines the home screen activity of the application
  */
 public class HomeScreenActivity extends Activity  {
 
@@ -27,9 +27,6 @@ public class HomeScreenActivity extends Activity  {
     private static final String PREF_FIRST_LAUNCH = "First Launch";
     private static final String PREF_REPORT_SETTINGS = "Current Report Settings";     // Path of the current report settings file
     private static final String PREF_ALIQUOT = "Current Aliquot"; // Path of the current aliquot file
-
-    private TextView versionNumber; // version number
-    private CHRONIDatabaseHelper trialDatabaseHelper; // Database
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +50,7 @@ public class HomeScreenActivity extends Activity  {
                     context.getPackageName(), 0).versionName;
 
 
-            versionNumber = (TextView) findViewById(R.id.versionNumber);
+            TextView versionNumber = (TextView) findViewById(R.id.versionNumber);
             versionNumber.setText("Version " + versionCode + "." + versionName);
             versionNumber.setTextColor(getResources().getColor(R.color.button_blue));
 
@@ -61,10 +58,8 @@ public class HomeScreenActivity extends Activity  {
             createDirectories();
 
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -153,20 +148,7 @@ public class HomeScreenActivity extends Activity  {
 
     }
 
-    /*
-    Stores Current Aliquot
-     */
-    protected void saveCurrentAliquot() {
-        SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("Current Aliquot", getIntent().getStringExtra("AliquotXMLFileName")); // Gets chosen file from file browser and stores
-        editor.apply(); // Committing changes
-    }
-
-
-    /*
-     * Stores initial launch in Shared Preferences
-     */
+    //Stores initial launch in Shared Preferences
     protected void saveInitialLaunch() {
         SharedPreferences settings = getSharedPreferences(PREF_FIRST_LAUNCH, 0);
         SharedPreferences.Editor editor = settings.edit();
@@ -174,10 +156,10 @@ public class HomeScreenActivity extends Activity  {
         editor.apply(); // Committing changes
     }
 
-    /*
-    * Stores Current Report Settings
-    * TODO clean up this process
-    */
+    /**
+     * Stores Current Report Settings
+     * TODO clean up this process
+     */
     protected void saveCurrentReportSettings() {
         // Establishes the CHRONI folders
         File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings"); //Creating an internal directory for CHRONI files
@@ -186,15 +168,6 @@ public class HomeScreenActivity extends Activity  {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("Current Report Settings", reportSettingsDirectory.getPath() + "/Default Report Settings.xml"); // makes the Default Report Settings the current report settings
         editor.apply(); // Committing changes
-    }
-
-    /*
-     * Checking Shared Preferences if the user had pressed the remember me
-     * button last time he logged in
-     */
-    private boolean isInitialLaunch() {
-        SharedPreferences settings = getSharedPreferences(PREF_FIRST_LAUNCH, 0);
-        return settings.getBoolean("Initial Launch", true);
     }
 
     @Override

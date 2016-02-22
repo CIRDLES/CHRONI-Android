@@ -1,4 +1,5 @@
-/* Copyright 2006-2012 James F. Bowring and www.Earth-Time.org
+/**
+ *  Copyright 2006-2012 James F. Bowring and www.Earth-Time.org
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,12 +19,12 @@ package org.cirdles.chroni;
 import java.util.*;
 
 /**
-4.  * <p>A comparator that emulates the "intuitive" sorting used by Windows
-5.  * Explorer.  The rules are as follows:</p>
-6.  *
-7.  * <ul><li>Any sequence of one or more digits is treated as an atomic unit, a
-8.  * number.  When these number units are matched up, they're compared according
-9.  * to their respective numeric values.  If they're numerically equal, but one
+4.   * <p>A comparator that emulates the "intuitive" sorting used by Windows
+5.   * Explorer.  The rules are as follows:</p>
+6.   *
+7.   * <ul><li>Any sequence of one or more digits is treated as an atomic unit, a
+8.   * number.  When these number units are matched up, they're compared according
+9.   * to their respective numeric values.  If they're numerically equal, but one
 10.  * has more leading zeroes than the other, the longer sequence is considered
 11.  * larger.</li>
 12.  * <li>Numbers always sort before any other kind of character.</li>
@@ -39,8 +40,8 @@ import java.util.*;
 22.  *
 23.  * @author Alan Moore
 23a. * repaired by James F. Bowring 2010
- * 24.
- * @param <T> 
+ *
+ * @param <T>
  */
 public class IntuitiveStringComparator<T extends CharSequence>
         implements Comparator<T> {

@@ -6,10 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLConnection;
 
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -18,7 +15,6 @@ import android.content.Context;
 import android.widget.Toast;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -26,35 +22,25 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class URLFileReader{
 
-//	private ProgressDialog mProgressDialog;
 	private String fileName = "";	// generated name of the file
 	private String fileType;	// Report Settings or Aliquot File
-	private String fileURL;	// the URL of the file
-    private String className; // the name of the class
-	private String downloadMethod; // the type of download used to get file (igsn or url)
-	private Context classContext; // an instance of the activity's context for memory access
+	private String fileURL;		// the URL of the file
+    private String className;	// the name of the class
+	private String downloadMethod;	// the type of download used to get file (igsn or url)
+	private Context classContext;	// an instance of the activity's context for memory access
 
-	public URLFileReader(Context classContext, String className, String URL, String downloadMethod){
+	public URLFileReader(Context classContext, String className, String URL, String downloadMethod) {
 		setFileURL(URL); // Sets the URL for download
 		setDownloadMethod(downloadMethod); // sets download type
 		setClassContext(classContext);
         setClassName(className);
+
 		// Sets the type of file being accessed for saving purposes
 		startFileDownload(classContext, className);
-		}
+	}
 
-    public URLFileReader(Context classContext, String className, String URL, String downloadMethod, String fileName){
-        setFileURL(URL); // Sets the URL for download
-        setDownloadMethod(downloadMethod); // sets download type
-        setClassContext(classContext);
-        setClassName(className);
-        setFileName(fileName);
-        // Sets the type of file being accessed for saving purposes
-        startFileDownload(classContext, className);
-    }
-
-	public void startFileDownload(Context classContext, String className){
-		if(className.contentEquals("HomeScreen")){
+	public void startFileDownload(Context classContext, String className) {
+		if(className.contentEquals("HomeScreen")) {
             // Sets the type of file and URL being accessed for saving purposes of the default Report Settings
             setFileType("Report Settings");
             setFileName(createFileName());	// Always downloading Default RS here
@@ -64,15 +50,16 @@ public class URLFileReader{
             final DownloadTask downloadTask = new DownloadTask(classContext);
             downloadTask.execute(fileURL); // retrieves the file from the specified URL
 
-		}else{
+		} else {
+
 			if(className.contentEquals("AliquotMenu")){
 				// Sets the type of file and URL being accessed for saving purposes
 				setFileType("Aliquot");
                 if(getFileName().isEmpty()){
     				setFileName(createFileName());
                 }	// generates file name based on URL
-			}
-			else if(className.contentEquals("ReportSettingsMenu")){
+
+			} else if(className.contentEquals("ReportSettingsMenu")){
 				// Sets the type of file and URL being accessed for saving purposes
 				setFileType("Report Settings");
                 if(getFileName().isEmpty()) {
@@ -81,13 +68,13 @@ public class URLFileReader{
 			}
 		
 			// Sets up the Download thread 
-			final DownloadTask downloadTask = new DownloadTask(classContext);		
+			final DownloadTask downloadTask = new DownloadTask(classContext);
 			downloadTask.execute(fileURL); // retrieves the file from the specified URL		
 		}
 
 	}
 
-	/*
+	/**
 	 * Creates file name based on the file's type and URL
 	 */
 	protected String createFileName() {
@@ -130,34 +117,6 @@ public class URLFileReader{
         }
 
 		return name;
-	}
-
-	
-	public final static InputStream getInputStreamFromURI(String URI){
-        InputStream in = null;
-        int response = -1;
-
-        	try {
-				URL url = new URL(URI); 
-				URLConnection conn = url.openConnection();
-				HttpURLConnection httpConn = (HttpURLConnection) conn;
-				httpConn.setAllowUserInteraction(false);
-				httpConn.setInstanceFollowRedirects(true);
-				httpConn.setRequestMethod("GET");
-				httpConn.connect(); 
-
-				response = httpConn.getResponseCode();                 
-				if (response == HttpURLConnection.HTTP_OK) {
-				    in = httpConn.getInputStream();                                 
-				}
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (ProtocolException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-        return in; 
 	}
 
     public String getClassName() {
@@ -207,17 +166,22 @@ public class URLFileReader{
 					input = connection.getInputStream();
 					if(fileType.contains("Aliquot")){
 						if(fileLength == 55){ // Cancels if invalid IGSN file (if file has a length of 0.05 KB)
-							AliquotMenuActivity.setInvalidFile(true);	// Sets file as invalid
 							cancel(true);
 
 						} else {
-                            downloadedFilePath = Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + fileName + ".xml"; // Stores name of path
-                            output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot/" + fileName + ".xml");
+                            downloadedFilePath = Environment.getExternalStorageDirectory()
+									+ "/CHRONI/Aliquot/" + fileName + ".xml"; // Stores name of path
+
+                            output = new FileOutputStream(Environment.getExternalStorageDirectory()
+									+ "/CHRONI/Aliquot/" + fileName + ".xml");
 						}
 
 					} else if (fileType.contains("Report Settings")) {
-                        downloadedFilePath = Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings/" + fileName + ".xml";
-                        output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings/" + fileName + ".xml");
+                        downloadedFilePath = Environment.getExternalStorageDirectory()
+								+ "/CHRONI/Report Settings/" + fileName + ".xml";
+
+                        output = new FileOutputStream(Environment.getExternalStorageDirectory()
+								+ "/CHRONI/Report Settings/" + fileName + ".xml");
 					}
 					
 					byte data[] = new byte[4096];
@@ -226,7 +190,6 @@ public class URLFileReader{
 					while ((count = input.read(data)) != -1) {
 						// allow canceling with back button
 						if (isCancelled()){
-							AliquotMenuActivity.setInvalidFile(true);	// Sets file as invalid
 							return null;
 							}
 						total += count;
@@ -253,20 +216,12 @@ public class URLFileReader{
 					if (connection != null)
 						connection.disconnect();
 				}
+
 			} finally {
 				wl.release();
 			}
+
 			return null;
-		}
-
-        @Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-		}
-
-		@Override
-		protected void onProgressUpdate(Integer... progress) {
-			super.onProgressUpdate(progress);
 		}
 
 		@Override
@@ -298,27 +253,21 @@ public class URLFileReader{
 		
 		@Override
 		protected void onCancelled(String result) {
-			if(downloadMethod.contentEquals("igsn")){
+			if (downloadMethod.contentEquals("igsn")) {
 				Toast.makeText(context, "Download error: You have specified an invalid IGSN",
-					Toast.LENGTH_LONG).show();
-			}else{
+						Toast.LENGTH_LONG).show();
+			} else {
 				Toast.makeText(context, "Download error: You have specified an invalid URL",
 						Toast.LENGTH_LONG).show();
 			}
 		}
 
-        /*
-        Splits report settings file name
-        */
-        private String splitFileName(String fileName){
-            String[] fileNameParts = fileName.split("/");
-            String newFileName = fileNameParts[fileNameParts.length-1];
-            return newFileName;
-        }
-
-        /*
-        Parses file for error
-         */
+		/**
+		 * Parses file for error
+		 *
+		 * @param downloadedFilePath
+		 * @return
+		 */
         protected boolean parseAliquotFileForError(String downloadedFilePath){
             boolean erroneousFile = false;
             try {
@@ -331,23 +280,23 @@ public class URLFileReader{
 
                 // Get the document's root XML nodes to see if file contains an error
                 NodeList root = doc.getChildNodes();
-                if(parser.getNode("results", root) != null) {
-                    Node rootNode = parser.getNode("results", root);
-                    NodeList rootNodes = rootNode.getChildNodes();
-                    String errorMessage = parser.getNodeValue("error", rootNodes);
+                if(parser.getNode("results", root) != null)
                     erroneousFile = true;
-                }
-            }catch (Exception e) {
+
+            } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                return erroneousFile;
+			return erroneousFile;
         }
 	}
 
-    /*
-        Parses file for error
-         */
+	/**
+	 * Parses file for error
+	 *
+	 * @param downloadedFilePath
+	 * @return
+	 */
     protected boolean parseReportSettingsFileForError(String downloadedFilePath){
         boolean erroneousFile = false;
         try {
@@ -360,9 +309,9 @@ public class URLFileReader{
 
             // Get the document's root XML nodes to see if file contains an error
             NodeList root = doc.getChildNodes();
-            if(parser.getNode("ReportSettings", root) == null) {
+            if(parser.getNode("ReportSettings", root) == null)
                 erroneousFile = true;
-            }
+
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -370,9 +319,6 @@ public class URLFileReader{
         return erroneousFile;
     }
 
-
-	// The accessors and mutators of the outer class
-	
 	public String getFileType() {
 		return fileType;
 	}
@@ -396,20 +342,13 @@ public class URLFileReader{
 	public void setFileURL(String fileURL) {
 		this.fileURL = fileURL;
 	}
-	
-	public String getDownloadMethod() {
-		return downloadMethod;
-	}
 
 	public void setDownloadMethod(String downloadMethod) {
 		this.downloadMethod = downloadMethod;
 	}
 
-	public Context getClassContext() {
-		return classContext;
-	}
-
 	public void setClassContext(Context classContext) {
 		this.classContext = classContext;
 	}
+
 }

@@ -37,8 +37,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-/*
-This class creates the display table after parsing the aliquot and report settings files
+/**
+ * This class creates the display table after parsing the aliquot and report settings files
  */
 public class TablePainterActivity extends Activity {
 
@@ -60,7 +60,6 @@ public class TablePainterActivity extends Activity {
 
     private String aliquotFilePath, reportSettingsFilePath; // The complete path of the aliquot and report settings files to be parsed and display
 
-    private CHRONIDatabaseHelper entryHelper; // used to help with history database
     private static final String PREF_REPORT_SETTINGS = "Current Report Settings";// Path of the current report settings file
     private static final String PREF_ALIQUOT = "Current Aliquot";// Path of the current report settings file
 
@@ -132,7 +131,7 @@ public class TablePainterActivity extends Activity {
         finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
 
         // Creates database entry from current entry
-        entryHelper = new CHRONIDatabaseHelper(this);
+        CHRONIDatabaseHelper entryHelper = new CHRONIDatabaseHelper(this);
         entryHelper.createEntry(getCurrentTime(), getAliquotFilePath(), getReportSettingsFilePath());
         Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
 
@@ -438,7 +437,10 @@ public class TablePainterActivity extends Activity {
      */
     private String retrieveReportSettingsFilePath() {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
-        return settings.getString("Current Report Settings", Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings/Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
+
+        // Gets current RS and if no file there, returns default as the current file
+        return settings.getString("Current Report Settings", Environment.getExternalStorageDirectory()
+                + "/CHRONI/Report Settings/Default Report Settings.xml");
     }
 
     /**
@@ -516,7 +518,8 @@ public class TablePainterActivity extends Activity {
                     }
                 }
             }
-            columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount/2; // Divides by 2 for appropriate EMS measurement
+            // Divides by 2 for appropriate EMS measurement
+            columnMaxCharacterCounts[currentColumn] = widestCellCharacterCount/2;
         }
         return columnMaxCharacterCounts;
     }
@@ -537,15 +540,14 @@ public class TablePainterActivity extends Activity {
 
         String[][] reportSettingsArray = new String[ROWS][COLUMNS];
         int totalColumnCount = 0; // the current column number for the array
-        Iterator<Entry<Integer, Category>> iterator = categoryMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Entry<Integer, Category> category = iterator.next();
+
+        // steps through each category in the map
+        for (Entry<Integer, Category> category : categoryMap.entrySet()) {
             int currentCategoryColumnCount = 1; // the number of columns under each category
 
-            Iterator<Entry<Integer, Column>> columnIterator = category
-                    .getValue().getCategoryColumnMap().entrySet().iterator();
-            while (columnIterator.hasNext()) {
-                Entry<Integer, Column> column = columnIterator.next();
+            // steps through each column in the category
+            for (Entry<Integer, Column> column : category.getValue().getCategoryColumnMap().entrySet()) {
+
                 int currentRowNum = 0; // the current row number for the array
                 Column uncertaintyColumn = column.getValue().getUncertaintyColumn();    // Get Uncertainty Column for later use
 
@@ -571,10 +573,6 @@ public class TablePainterActivity extends Activity {
 
                 reportSettingsArray[currentRowNum][totalColumnCount] = column.getValue()
                         .getDisplayName3();
-                currentRowNum++;
-
-                // String methodName = column.getValue().getMethodName();
-                // String variableName = column.getValue().getVariableName();
 
                 totalColumnCount++;
                 currentCategoryColumnCount++;
@@ -603,12 +601,12 @@ public class TablePainterActivity extends Activity {
                         reportSettingsArray[currentRowNum][totalColumnCount] = "\u00B12\u03C3%";
                     }
 
-                    currentRowNum++;
                     totalColumnCount++;
                     currentCategoryColumnCount++;
                 }
             }
         }
+
         return reportSettingsArray;
     }
 
@@ -642,15 +640,12 @@ public class TablePainterActivity extends Activity {
         columnMaxLengths.add(0);    // add one more spot to get the correct number of columns (since j starts at 1 in the for loop)
         columnDecimals.add(false);
 
-        Iterator<Entry<Integer, Category>> categoryIterator = categoryMap
-                .entrySet().iterator();
-        while (categoryIterator.hasNext()) {
-            Entry<Integer, Category> category = categoryIterator.next();
-            Iterator<Entry<Integer, Column>> columnIterator = category
-                    .getValue().getCategoryColumnMap().entrySet().iterator();
+        // steps through each category in the map
+        for (Entry<Integer, Category> category : categoryMap.entrySet()) {
 
-            while (columnIterator.hasNext()) {
-                Entry<Integer, Column> column = columnIterator.next();
+            // steps through each column in the category
+            for (Entry<Integer, Column> column : category.getValue().getCategoryColumnMap().entrySet()) {
+
                 String variableName = column.getValue().getVariableName();
                 String methodName = column.getValue().getMethodName();
 
@@ -671,7 +666,6 @@ public class TablePainterActivity extends Activity {
                     String uncertaintyType = "";  // will contain the uncertainty TYPE to be used in obtaining the fraction shape later
 
                     // Fills in the UNCERTAINTY COLUMN (column on the right) if it exists
-
                     if (uncertaintyColumnExists) {
                         arrayColumnCount++;     // If uncertainty exists, go to the next column
 
@@ -745,15 +739,16 @@ public class TablePainterActivity extends Activity {
                                     }
                                 }
                             }
-                        } // closes if
-                        else { // if value model is null
-                            fractionArray[arrayRowCount][arrayColumnCount] = "-";
                         }
+
+                        else    // value model is null
+                            fractionArray[arrayRowCount][arrayColumnCount] = "-";
+
+
                         arrayColumnCount--; // Goes back to the fraction column
                     }
 
                     //  Fills in the FRACTION COLUMN (column on the left)
-
                     if (variableName.equals("")) {
                         // Value Models under Fraction don't have variable names so have to account for those specifically
                         if(methodName.equals("getFractionID")) {
@@ -761,6 +756,7 @@ public class TablePainterActivity extends Activity {
                         } else if(methodName.equals("getNumberOfGrains")) {
                             fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getNumberOfGrains();
                         }
+
                     } else {
                         // Retrieves the correct value model based off the variable name
                         ValueModel valueModel = DomParser.getValueModelByName(
@@ -821,7 +817,6 @@ public class TablePainterActivity extends Activity {
                                     }
                                 }
 
-
                                 fractionArray[arrayRowCount][arrayColumnCount] = roundedValue.toPlainString(); // Places final value in array
 
                                 // check if the value is larger than other previous values
@@ -852,13 +847,16 @@ public class TablePainterActivity extends Activity {
                             }
 
 
-                        } else { // if value model is null puts a hyphen in place
-                            fractionArray[arrayRowCount][arrayColumnCount] = "-";
                         }
+
+                        else    // value model is null
+                            fractionArray[arrayRowCount][arrayColumnCount] = "-";
+
                     }
 
                     arrayRowCount++;    // Next row down
-                } // ends the fraction-iterator while loop
+
+                } // done looping through fraction
 
                 //  Goes to the next column
                 if (uncertaintyColumnExists) {
@@ -868,8 +866,9 @@ public class TablePainterActivity extends Activity {
                     arrayColumnCount++;     // If not, only advance ONE column to the right
                 }
 
-            } // closes column iterator
-        } // closes category iterator
+            }
+
+        }
 
         return fractionArray;
     }
@@ -975,9 +974,15 @@ public class TablePainterActivity extends Activity {
 
     /**
      * Fills the entire application array.
+     *
+     * @param outputVariableName
+     * @param reportSettingsArray
+     * @param fractionArray
+     * @return
      */
     private static String[][] fillArray(ArrayList<String> outputVariableName,
                                         String[][] reportSettingsArray, String[][] fractionArray) {
+
         final int COLUMNS = outputVariableName.size();
         final int ROWS = 5 + fractionMap.size(); // 8 is the number of rows for
         // specific information in the array
@@ -1005,16 +1010,13 @@ public class TablePainterActivity extends Activity {
         return finalArray;
     }
 
-
-
     /**
      * This method gets the current time.
      */
     public String getCurrentTime(){
         java.text.DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy KK:mm");
         Date date = new Date();
-        String time = dateFormat.format(date);
-        return time;
+        return dateFormat.format(date);
     }
 
     /**
@@ -1136,5 +1138,6 @@ public class TablePainterActivity extends Activity {
     public void setReportSettingsFilePath(String reportSettingsFilePath) {
         this.reportSettingsFilePath = reportSettingsFilePath;
     }
+
 }
 

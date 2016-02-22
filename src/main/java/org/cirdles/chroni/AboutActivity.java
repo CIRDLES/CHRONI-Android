@@ -1,4 +1,6 @@
-/* This activity displays the about screen of the application which can be reached through the menu.*/
+/**
+ * This activity displays the about screen of the application which can be reached through the menu.
+ */
 
 package org.cirdles.chroni;
 
@@ -16,8 +18,6 @@ import android.widget.TextView;
 
 public class AboutActivity extends Activity  {
 
-    private TextView versionNumber; // displays the application's version number
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Sets up activity screen
@@ -34,8 +34,7 @@ public class AboutActivity extends Activity  {
         Button aboutHomeButton = (Button) findViewById(R.id.fileBrowserHomeButton);
         aboutHomeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-                startActivity(openMainMenu);
+                finish();
             }
         });
     }
