@@ -145,7 +145,8 @@ public class AliquotMenuActivity extends Activity {
 
                         String aliquotIGSN = igsnText.getText().toString().toUpperCase().trim(); // Captures igsn from user input
                         URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn"); // Downloads Aliquot file
-                        igsnDownloadButton.setBackgroundColor(CIRDLES_ORANGE_RGB);
+                        igsnDownloadButton.setBackgroundColor(Color.LTGRAY);
+                        igsnDownloadButton.setTextColor(Color.BLACK);
 
                         // Note: Setting above is useful for download-then-open functionality
                     }
