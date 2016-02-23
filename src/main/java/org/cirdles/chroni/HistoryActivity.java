@@ -52,8 +52,8 @@ public class HistoryActivity extends Activity {
         if (!myAliquots.isEmpty()) {
             // Collects information from the database if it isn't empty
             final String[][] database = myAliquots.fillTableData(); // completes 2D array of aliquot table for history
-            int ROWS = 6; // rows for last five MRV entries plus an extra row reserved for header
-            if (myAliquots.getTotalEntryCount() < 5){
+            int ROWS = 11; // rows for last five MRV entries plus an extra row reserved for header
+            if (myAliquots.getTotalEntryCount() < 10){
                 ROWS = (int)myAliquots.getTotalEntryCount() + 1; // Sizes the array based on how many entries are in database
             }
             final long COLUMNS = 3;

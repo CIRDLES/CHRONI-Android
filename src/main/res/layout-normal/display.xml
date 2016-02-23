@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/displayLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <TableRow
+        android:id="@+id/labelRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <Button android:id="@+id/reportSettingsTableButton"
+            android:textSize="15sp" android:textColor="#000000"
+            android:typeface="normal" android:padding="15dp"
+            android:textStyle="bold"/>
+
+        <Button android:id="@+id/aliquotTableButton"
+            android:textSize="15sp" android:textColor="#000000"
+            android:typeface="normal" android:padding="15dp"
+            android:textStyle="bold"/>
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/buttonRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <Button android:id="@+id/concordiaTableButton"
+            android:visibility="gone"
+            android:textColor="#000000" android:textSize="13sp"
+            android:text="Concordia" android:typeface="normal"
+            android:padding="5dp" android:gravity="center"
+            android:textStyle="bold"/>
+
+        <Button android:id="@+id/probabilityDensityTableButton"
+            android:visibility="gone"
+            android:textColor="#000000" android:textSize="13sp"
+            android:text="Probability Density" android:typeface="normal"
+            android:padding="5dp" android:gravity="center"
+            android:textStyle="bold"/>
+
+    </TableRow>
+    
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/displayTableLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <TableLayout
+                android:id="@+id/categoryNameTable"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+
+            <TableLayout
+                android:id="@+id/tableForHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+            </TableLayout>
+
+            <ScrollView
+                android:id="@+id/scrollPane"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <TableLayout
+                    android:id="@+id/finalTable"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" >
+                </TableLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+</LinearLayout>

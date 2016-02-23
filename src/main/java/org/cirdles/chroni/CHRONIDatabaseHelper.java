@@ -19,8 +19,6 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_TABLE = "viewedAliquotTable";	// name of table used
     private static final int DATABASE_VERSION = 1;
 
-    private int rowNumber = 1;
-
     public CHRONIDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -31,6 +29,7 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
 	 * @see android.database.sqlite.SQLiteOpenHelper#onCreate(android.database.sqlite.SQLiteDatabase)
 	 */
     public void onCreate(SQLiteDatabase db) {
+        System.out.println("!!!!!!!!!!!!!!!!!");
         // Creates table and adds appropriate rows
         db.execSQL("CREATE TABLE " + DATABASE_TABLE + " (" +
                         KEY_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -52,7 +51,7 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Method that will create an entry in the database.
-     * @params the column values that will be added in the database
+     * @params the column values that will be added to the database
      */
     public void createEntry(String date, String aliquotName, String reportSettingsName) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -62,8 +61,30 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
         cv.put(ALIQUOT_NAME, aliquotName);
         cv.put(REPORT_SETTINGS_NAME, reportSettingsName);
 
-        db.insert(DATABASE_TABLE, null, cv);
+        if (!aliquotAlreadyExists(aliquotName))   // only insert the entire entry it if it does not exist
+            db.insert(DATABASE_TABLE, null, cv);
+
+        else  // if it already exists, just update the time
+            db.update(DATABASE_TABLE, cv, ALIQUOT_NAME + "='" + aliquotName + "'", null);
+
         db.close();
+    }
+
+    /**
+     * Checks to see whether the aliquot given is already in the database.
+     *
+     * @return a boolean that tells if this is true.
+     */
+    public boolean aliquotAlreadyExists(String aliquotName) {
+        boolean result;
+
+        String query = "SELECT * FROM " + DATABASE_TABLE + " WHERE " + ALIQUOT_NAME + "='" + aliquotName + "';";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        result = (cursor.getCount() > 0);   // returns true if there were items found
+        cursor.close();
+
+        return result;
     }
 
     /**
@@ -74,7 +95,7 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
     public String[][] fillTableData() {
         SQLiteDatabase ourDatabase = this.getReadableDatabase();
 
-        String[] columns = new String[]{KEY_ROWID, KEY_DATE, ALIQUOT_NAME, REPORT_SETTINGS_NAME}; //column names
+        String[] columns = new String[] {KEY_ROWID, KEY_DATE, ALIQUOT_NAME, REPORT_SETTINGS_NAME}; //column names
         Cursor c = ourDatabase.query(DATABASE_TABLE, columns, null, null, null, null, null);
 
         // Setting up indices for each column
@@ -92,7 +113,7 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
         databaseTable[0][2] = "View";	// empty header for buttons
 
         // inserts the data into the 2D array
-        rowNumber = 1; // Starts on row 1 to avoid the header row
+        int rowNumber = 1; // Starts on row 1 to avoid the header row
         for(c.moveToLast(); !c.isBeforeFirst(); c.moveToPrevious()){
             int columnNumber = 0;
             databaseTable[rowNumber][columnNumber] = c.getString(iDate); // populates cell with date
@@ -114,7 +135,9 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
         String countQuery = "SELECT * FROM " + DATABASE_TABLE;
         SQLiteDatabase ourDatabase = this.getReadableDatabase();
         Cursor cursor = ourDatabase.rawQuery(countQuery, null);
-        return cursor.getCount();
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 
     /**

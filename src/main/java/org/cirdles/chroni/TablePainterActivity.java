@@ -3,6 +3,7 @@ package org.cirdles.chroni;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -974,11 +975,6 @@ public class TablePainterActivity extends Activity {
 
     /**
      * Fills the entire application array.
-     *
-     * @param outputVariableName
-     * @param reportSettingsArray
-     * @param fractionArray
-     * @return
      */
     private static String[][] fillArray(ArrayList<String> outputVariableName,
                                         String[][] reportSettingsArray, String[][] fractionArray) {
@@ -1014,17 +1010,14 @@ public class TablePainterActivity extends Activity {
      * This method gets the current time.
      */
     public String getCurrentTime(){
-        java.text.DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy KK:mm");
+        // Formats like so:
+        java.text.DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
         Date date = new Date();
         return dateFormat.format(date);
     }
 
     /**
      * Used when either new report settings or aliquot files are chosen via a new Intent.
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param data
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
