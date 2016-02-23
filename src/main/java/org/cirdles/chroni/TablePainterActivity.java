@@ -1010,7 +1010,7 @@ public class TablePainterActivity extends Activity {
      * This method gets the current time.
      */
     public String getCurrentTime(){
-        // Formats like so:
+        // Formats like so: Mon dd, yyyy hh:mm PM/AM
         java.text.DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
         Date date = new Date();
         return dateFormat.format(date);
