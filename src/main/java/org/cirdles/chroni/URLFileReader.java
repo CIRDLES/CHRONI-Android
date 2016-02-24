@@ -35,11 +35,9 @@ public class URLFileReader{
 		setClassContext(classContext);
         setClassName(className);
 
-		// Sets the type of file being accessed for saving purposes
-		startFileDownload(classContext, className);
 	}
 
-	public void startFileDownload(Context classContext, String className) {
+	public void startFileDownload() {
 		if(className.contentEquals("HomeScreen")) {
             // Sets the type of file and URL being accessed for saving purposes of the default Report Settings
             setFileType("Report Settings");
@@ -83,8 +81,8 @@ public class URLFileReader{
 		if(getFileType().contains("Aliquot")){
 			// If downloading based on IGSN URL, just use IGSN for name
 			if(downloadMethod.contains("igsn")){
-				String[] URL = getFileURL().split("igsn=");
-				name = URL[1];
+				String[] url = getFileURL().split("igsn=");
+				name = url[1];
 
 				if(name.contains("&username=")){
 					// Makes an additional split to remove the username and password query from the file name

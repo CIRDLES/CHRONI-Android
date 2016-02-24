@@ -127,8 +127,9 @@ public class HomeScreenActivity extends Activity  {
                         "HomeScreen",
                         "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings.xml",
                         "url");
+                downloader.startFileDownload();     // begins download
                 saveInitialLaunch();
-                saveCurrentReportSettings();         // Notes that files have been downloaded and application has been properly initialized
+                saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
             }
 
             if (!defaultReportSettings2Present) {
@@ -138,8 +139,9 @@ public class HomeScreenActivity extends Activity  {
                         "HomeScreen",
                         "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings%202.xml",
                         "url");
+                downloader2.startFileDownload();    // begins download
                 saveInitialLaunch();
-                saveCurrentReportSettings();         // Notes that files have been downloaded and application has been properly initialized
+                saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
             }
 
         }else {

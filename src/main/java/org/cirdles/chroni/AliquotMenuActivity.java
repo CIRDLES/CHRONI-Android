@@ -143,8 +143,15 @@ public class AliquotMenuActivity extends Activity {
                     if (igsnText.getText().length() != 0) {
                         Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show(); // Reports that aliquot is being downloaded
 
-                        String aliquotIGSN = igsnText.getText().toString().toUpperCase().trim(); // Captures igsn from user input
-                        URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu", makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn"); // Downloads Aliquot file
+                        // Captures igsn from user input
+                        String aliquotIGSN = igsnText.getText().toString().toUpperCase().trim();
+
+                        // creates URLFileReader class to download the file
+                        URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu",
+                                makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
+
+                        downloader.startFileDownload(); // begins actual download
+
                         igsnDownloadButton.setBackgroundColor(Color.LTGRAY);
                         igsnDownloadButton.setTextColor(Color.BLACK);
 

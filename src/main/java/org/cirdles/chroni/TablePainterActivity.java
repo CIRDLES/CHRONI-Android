@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -59,6 +58,8 @@ public class TablePainterActivity extends Activity {
     private static TableLayout headerInformationTable;
     private static TableLayout aliquotDataTable;
 
+    private static String previousAliquotFilePath = ""; // stores name of previous aliquot opened
+
     private String aliquotFilePath, reportSettingsFilePath; // The complete path of the aliquot and report settings files to be parsed and display
 
     private static final String PREF_REPORT_SETTINGS = "Current Report Settings";// Path of the current report settings file
@@ -71,11 +72,17 @@ public class TablePainterActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setContentView(R.layout.display);
 
-        if (finalArray.length == 0) {
+        // if a new aliquot is trying to be opened, parse for data
+        if (!retrieveAliquotFilePath().equals(previousAliquotFilePath)) {
+            // resets tables to null
+            categoryNameTable = null;
+            headerInformationTable = null;
+            aliquotDataTable = null;
+
             createData();
             createView();
         }
-
+        // otherwise, just fill in previously parsed data
         else
             createView();
 
@@ -99,8 +106,11 @@ public class TablePainterActivity extends Activity {
         columnMaxLengths = new ArrayList<Integer>();
         columnDecimals = new ArrayList<Boolean>();
 
-        // gets the current Aliquot path
-        setAliquotFilePath(retrieveAliquotFilePath());
+        // gets and sets the current Aliquot path
+        String aliquotPath = retrieveAliquotFilePath();
+        System.out.println("@@@@ PATH: " + aliquotPath);
+        setAliquotFilePath(aliquotPath);
+        previousAliquotFilePath = aliquotPath;  // saves path for later
 
         // Parses aliquot file and retrieves maps
         MapTuple maps = AliquotParser.runAliquotParser(getAliquotFilePath());
