@@ -13,7 +13,9 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -108,7 +110,6 @@ public class TablePainterActivity extends Activity {
 
         // gets and sets the current Aliquot path
         String aliquotPath = retrieveAliquotFilePath();
-        System.out.println("@@@@ PATH: " + aliquotPath);
         setAliquotFilePath(aliquotPath);
         previousAliquotFilePath = aliquotPath;  // saves path for later
 
@@ -197,13 +198,23 @@ public class TablePainterActivity extends Activity {
                     NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
                     if (mobileWifi.isConnected()) {
-                        // Displays concordia images
-                        Toast.makeText(TablePainterActivity.this, "Opening Concordia Image...", Toast.LENGTH_LONG).show();
-                        Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageMap.get("concordia").getImageURL()));
-                        startActivity(viewConcordiaIntent);
+                        openConcordiaImage();
                     } else {
-                        //Handles lack of wifi connection
-                        Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
+                        new AlertDialog.Builder(TablePainterActivity.this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
+                                "Do you wish to continue?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        openConcordiaImage();
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .show();
                     }
                 }
             });
@@ -230,12 +241,23 @@ public class TablePainterActivity extends Activity {
                     NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
                     if (mobileWifi.isConnected()) {
-                        Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
-                        Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse( imageMap.get("probability_density").getImageURL()));
-                        startActivity(viewProbabilityDensityIntent);
+                        openProbabilityDensity();
                     } else {
-                        //Handles lack of wifi connection
-                        Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
+                        new AlertDialog.Builder(TablePainterActivity.this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
+                                "Do you wish to continue?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        openProbabilityDensity();
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .show();
                     }
 
                 }
@@ -411,6 +433,19 @@ public class TablePainterActivity extends Activity {
 
     }
 
+    public void openConcordiaImage() {
+        // Displays concordia images
+        Toast.makeText(TablePainterActivity.this, "Opening Concordia Image...", Toast.LENGTH_LONG).show();
+        Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageMap.get("concordia").getImageURL()));
+        startActivity(viewConcordiaIntent);
+    }
+
+    public void openProbabilityDensity() {
+        Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
+        Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse( imageMap.get("probability_density").getImageURL()));
+        startActivity(viewProbabilityDensityIntent);
+    }
+
     /**
      * This method takes in a value string (text). It is also given the maximum length for a certain column along with
      * whether that column contains a decimal or not. It then pads the value accordingly to present in the table.
@@ -467,7 +502,12 @@ public class TablePainterActivity extends Activity {
      */
     private String splitFileName(String fileName){
         String[] fileNameParts = fileName.split("/");
-        return fileNameParts[fileNameParts.length-1];
+        String name = fileNameParts[fileNameParts.length - 1];
+        if (name.contains(".xml")) {    // removes '.xml' from end of name
+            String[] newParts = name.split(".xml");
+            name = newParts[0];
+        }
+        return name;
     }
 
     /**
@@ -1117,9 +1157,34 @@ public class TablePainterActivity extends Activity {
                 startActivity(openAboutScreen);
                 return true;
             case R.id.helpMenu: // Takes user to help blog
-                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(getString(R.string.chroni_help_address)));
-                startActivity(openHelpBlog);
+                // Checks internet connection before downloading files
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                if (mobileWifi.isConnected()) {
+                    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(getString(R.string.chroni_help_address)));
+                    startActivity(openHelpBlog);
+
+                } else {
+                    new AlertDialog.Builder(this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
+                            "Do you wish to continue?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                                            Uri.parse(getString(R.string.chroni_help_address)));
+                                    startActivity(openHelpBlog);
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .show();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

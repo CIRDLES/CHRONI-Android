@@ -1,5 +1,10 @@
 package org.cirdles.chroni;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -7,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,10 +20,18 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
+
 /**
  * This activity is used for structuring the main menu layout of the application.
  */
 public class MainMenuActivity extends Activity {
+
+    // Path of the current report settings file
+    private static final String PREF_REPORT_SETTINGS = "Current Report Settings";
+
+    private boolean hasDefaultReportSettings1 = true;
+    private boolean hasDefaultReportSettings2 = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +92,70 @@ public class MainMenuActivity extends Activity {
             }
         });
 
+        hasDefaultReportSettings1 = getIntent().getBooleanExtra("hasDefault1", true);
+        hasDefaultReportSettings2 = getIntent().getBooleanExtra("hasDefault2", true);
+
+        if (!(hasDefaultReportSettings1 && hasDefaultReportSettings2)) {
+            new AlertDialog.Builder(this).setMessage("You do not have the Default Report Settings and are not connected to WiFi, mobile data rates may apply. " +
+                    "Do you wish to download the Default Report Settings?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            downloadDefaultReportSettings();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .show();
+        }
+
+    }
+
+    public void downloadDefaultReportSettings() {
+
+        if (!hasDefaultReportSettings1) {
+            // Downloads the default report settings file if absent
+            URLFileReader downloader = new URLFileReader(
+                    MainMenuActivity.this,
+                    "HomeScreen",
+                    "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings.xml",
+                    "url");
+            downloader.startFileDownload();     // begins download
+            saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
+            hasDefaultReportSettings1 = true;
+            getIntent().putExtra("hasDefault1", true);
+        }
+
+        if (!hasDefaultReportSettings2) {
+            // Downloads the second default report settings file if absent
+            URLFileReader downloader2 = new URLFileReader(
+                    MainMenuActivity.this,
+                    "HomeScreen",
+                    "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings%202.xml",
+                    "url");
+            downloader2.startFileDownload();    // begins download
+            saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
+            hasDefaultReportSettings2 = true;
+            getIntent().putExtra("hasDefault2", true);
+        }
+    }
+
+
+    /**
+     * Stores Current Report Settings
+     */
+    protected void saveCurrentReportSettings() {
+        // Establishes the CHRONI folders
+        File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings"); //Creating an internal directory for CHRONI files
+
+        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("Current Report Settings", reportSettingsDirectory.getPath() + "/Default Report Settings.xml"); // makes the Default Report Settings the current report settings
+        editor.apply(); // Committing changes
     }
 
     @Override
@@ -130,9 +208,34 @@ public class MainMenuActivity extends Activity {
                 startActivity(openAboutScreen);
                 return true;
             case R.id.helpMenu: // Takes user to help blog
-                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(getString(R.string.chroni_help_address)));
-                startActivity(openHelpBlog);
+                // Checks internet connection before downloading files
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                if (mobileWifi.isConnected()) {
+                    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(getString(R.string.chroni_help_address)));
+                    startActivity(openHelpBlog);
+
+                } else {
+                    new AlertDialog.Builder(this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
+                            "Do you wish to continue?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                                            Uri.parse(getString(R.string.chroni_help_address)));
+                                    startActivity(openHelpBlog);
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .show();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

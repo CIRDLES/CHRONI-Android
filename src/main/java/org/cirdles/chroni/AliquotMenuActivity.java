@@ -2,6 +2,8 @@
 
 package org.cirdles.chroni;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -141,29 +143,49 @@ public class AliquotMenuActivity extends Activity {
 
                 if (mobileWifi.isConnected()) {
                     if (igsnText.getText().length() != 0) {
-                        Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show(); // Reports that aliquot is being downloaded
-
-                        // Captures igsn from user input
-                        String aliquotIGSN = igsnText.getText().toString().toUpperCase().trim();
-
-                        // creates URLFileReader class to download the file
-                        URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu",
-                                makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
-
-                        downloader.startFileDownload(); // begins actual download
-
-                        igsnDownloadButton.setBackgroundColor(Color.LTGRAY);
-                        igsnDownloadButton.setTextColor(Color.BLACK);
-
-                        // Note: Setting above is useful for download-then-open functionality
+                        downloadAliquot();
                     }
                 } else {//Handles lack of wifi connection
-                    Toast.makeText(AliquotMenuActivity.this, "Please check your internet connection before performing this action.", Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(AliquotMenuActivity.this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
+                            "Do you wish to continue?")
+                            // if user selects yes, continue with validation
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    downloadAliquot();
+                                }
+                            })
+                                    // if user selects no, just go back
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .show();
                 }
             }
 
         });
 
+    }
+
+    public void downloadAliquot() {
+        Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show(); // Reports that aliquot is being downloaded
+
+        // Captures igsn from user input
+        String aliquotIGSN = igsnText.getText().toString().toUpperCase().trim();
+
+        // creates URLFileReader class to download the file
+        URLFileReader downloader = new URLFileReader(AliquotMenuActivity.this, "AliquotMenu",
+                makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
+
+        downloader.startFileDownload(); // begins actual download
+
+        igsnDownloadButton.setBackgroundColor(Color.LTGRAY);
+        igsnDownloadButton.setTextColor(Color.BLACK);
+
+        // Note: Setting above is useful for download-then-open functionality
     }
 
 
@@ -284,9 +306,34 @@ public class AliquotMenuActivity extends Activity {
                 startActivity(openAboutScreen);
                 return true;
             case R.id.helpMenu: // Takes user to help blog
-                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(getString(R.string.chroni_aliquot_help_address)));
-                startActivity(openHelpBlog);
+                // Checks internet connection before downloading files
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                if (mobileWifi.isConnected()) {
+                    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(getString(R.string.chroni_help_address)));
+                    startActivity(openHelpBlog);
+
+                } else {
+                    new AlertDialog.Builder(this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
+                            "Do you wish to continue?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                                            Uri.parse(getString(R.string.chroni_help_address)));
+                                    startActivity(openHelpBlog);
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .show();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

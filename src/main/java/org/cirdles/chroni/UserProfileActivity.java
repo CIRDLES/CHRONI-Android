@@ -14,6 +14,8 @@ import org.xml.sax.SAXException;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -67,15 +69,12 @@ public class UserProfileActivity extends Activity {
                     Toast.makeText(UserProfileActivity.this, "Please enter your Geochron username.", Toast.LENGTH_LONG).show();
                 }
                 // Displays error message if password is missing
-                if (geochronPasswordInput.getText().length() == 0) {
+                else if (geochronPasswordInput.getText().length() == 0) {
                     Toast.makeText(UserProfileActivity.this, "Please enter your Geochron password.", Toast.LENGTH_LONG).show();
                 }
-                // Displays error message if all input is missing
-                if (geochronUsernameInput.getText().length() == 0 && geochronPasswordInput.getText().length() == 0) {
-                    Toast.makeText(UserProfileActivity.this, "Please enter your Geochron credentials.", Toast.LENGTH_LONG).show();
-                }
 
-                if (geochronUsernameInput.getText().length() != 0 && geochronPasswordInput.getText().length() != 0) {
+                else {  // fields have been entered
+
                     // Stores the login information in shared preferences for a new user if both fields contain input
                     SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
                     SharedPreferences.Editor editor = settings.edit();
@@ -108,11 +107,44 @@ public class UserProfileActivity extends Activity {
                         } else {
                             Toast.makeText(UserProfileActivity.this, "Credentials not stored", Toast.LENGTH_LONG).show();
                         }
-                    } else {
-                        //Handles lack of wifi connection
-                        Toast.makeText(UserProfileActivity.this, "Please check your internet connection before attempting to validate.", Toast.LENGTH_LONG).show();
+
+                    } else {  // if not on WiFi, alert user and ask to continue
+
+                        new AlertDialog.Builder(UserProfileActivity.this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
+                                "Do you wish to continue?")
+                                // if user selects yes, continue with validation
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        // Attempts to validate GeoChron credentials if input is stored
+                                        Toast.makeText(UserProfileActivity.this, "Validating Credentials...", Toast.LENGTH_SHORT).show();
+                                        retrieveCredentials(); // Fetches the credentials
+
+                                        if (!getGeochronUsername().contentEquals("None") && !getGeochronPassword().contentEquals("None")) {
+                                            try {
+                                                // validates credentials if not empty
+                                                validateGeochronCredentials(getGeochronUsername(), getGeochronPassword());
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                                Toast.makeText(UserProfileActivity.this, "Connection error", Toast.LENGTH_LONG).show();
+                                            }
+                                        } else {
+                                            Toast.makeText(UserProfileActivity.this, "Credentials not stored", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                })
+                                // if user selects no, just go back
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .show();
+
                     }
                 }
+
             }
         });
 
@@ -347,9 +379,34 @@ public class UserProfileActivity extends Activity {
                 startActivity(openAboutScreen);
                 return true;
             case R.id.helpMenu: // Takes user to help blog
-                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(getString(R.string.chroni_help_address)));
-                startActivity(openHelpBlog);
+                // Checks internet connection before downloading files
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                if (mobileWifi.isConnected()) {
+                    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(getString(R.string.chroni_help_address)));
+                    startActivity(openHelpBlog);
+
+                } else {
+                    new AlertDialog.Builder(this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
+                            "Do you wish to continue?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                                            Uri.parse(getString(R.string.chroni_help_address)));
+                                    startActivity(openHelpBlog);
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .show();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -149,7 +149,6 @@ public class FilePickerActivity extends ListActivity {
 			if(newFile.isFile()) {
 				new AlertDialog.Builder(this).setMessage("Are you sure you wish to delete " +
 						newFile.getName() + "?")
-
 						.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialogInterface, int i) {
@@ -158,14 +157,13 @@ public class FilePickerActivity extends ListActivity {
 								dialogInterface.dismiss();
 							}
 						})
-
 						.setNegativeButton("No", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialogInterface, int i) {
 								dialogInterface.dismiss();
 							}
 						})
-				.show();
+						.show();
 			}
 		}
 

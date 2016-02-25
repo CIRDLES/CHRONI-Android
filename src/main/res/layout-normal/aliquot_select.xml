@@ -5,21 +5,17 @@
     android:background="@drawable/background"
     android:id="@+id/aliquotSelectBackground">
 
-    <Button
-        android:id="@+id/aliquotFileSubmitButton"
+    <TextView
+        android:id="@+id/TextView01"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:background="@color/button_blue"
-        android:minWidth="50dp"
-        android:text="Open"
-        android:textSize="14sp"
-        android:layout_marginStart="5dp"
-        android:textColor="@color/white"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentEnd="false"
-        android:layout_alignEnd="@+id/aliquotFileSelectText"
-        android:layout_above="@+id/aliquotIGSNText"
-        android:layout_marginBottom="25dp" />
+        android:layout_height="wrap_content"
+        android:text="GeoChron IGSN"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:layout_above="@+id/aliquotIGSNText"/>
 
     <Button
         android:id="@+id/aliquotIGSNSubmitButton"
@@ -31,20 +27,23 @@
         android:textSize="14sp"
         android:layout_alignParentStart="false"
         android:textColor="@color/white"
-        android:layout_below="@+id/aliquotIGSNText"
-        android:layout_alignEnd="@+id/aliquotIGSNText" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="60dp"/>
 
-    <TextView
-        android:id="@+id/TextView01"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/aliquotIGSNText"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="GeoChron IGSN"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:ems="10"
+        android:minWidth="270dp"
         android:textColor="@color/black"
         android:textSize="14sp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="100dp"
-        android:layout_marginStart="30dp" />
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="60dp" />
 
     <EditText
         android:id="@+id/aliquotFileSelectText"
@@ -56,21 +55,35 @@
         android:minWidth="250dp"
         android:textColor="@color/black"
         android:textSize="14sp"
-        android:layout_alignStart="@+id/aliquotIGSNText"
-        android:layout_above="@+id/aliquotFileSubmitButton" />
+        android:layout_above="@+id/TextView01"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="40dp"/>
 
     <Button
         android:id="@+id/aliquotFileSelectButton"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:background="@color/dark_grey"
-        android:minHeight="48dp"
-        android:minWidth="48dp"
         android:text="+"
-        android:textSize="12sp"
-        android:layout_alignBottom="@+id/aliquotFileSubmitButton"
-        android:layout_toStartOf="@+id/aliquotFileSubmitButton" />
+        android:textSize="18sp"
+        android:layout_alignBottom="@+id/aliquotFileSelectText"
+        android:layout_toEndOf="@+id/aliquotFileSelectText"
+        android:layout_marginStart="5dp"/>
+
+    <Button
+        android:id="@+id/aliquotFileSubmitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:background="@color/button_blue"
+        android:minWidth="50dp"
+        android:text="Open"
+        android:textSize="14sp"
+        android:layout_marginEnd="40dp"
+        android:textColor="@color/white"
+        android:layout_alignBottom="@+id/aliquotFileSelectButton"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:id="@+id/textView2"
@@ -79,9 +92,10 @@
         android:text="Saved Aliquot"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/black"
-        android:textSize="14sp"
-        android:layout_toStartOf="@+id/aliquotFileSelectText"
-        android:layout_alignBottom="@+id/aliquotFileSelectText" />
+        android:textSize="16sp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/aliquotFileSelectText"
+        android:layout_marginBottom="20dp"/>
 
     <ImageView
         android:id="@+id/imageView1"
@@ -102,18 +116,6 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
         android:textSize="50sp"
-        android:layout_above="@+id/aliquotFileSelectText"
-        android:layout_marginBottom="80dp" />
-
-    <EditText
-        android:id="@+id/aliquotIGSNText"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:minWidth="270dp"
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        android:layout_alignBottom="@+id/TextView01"
-        android:layout_toEndOf="@+id/TextView01" />
+        android:layout_below="@+id/imageView1" />
 
 </RelativeLayout>

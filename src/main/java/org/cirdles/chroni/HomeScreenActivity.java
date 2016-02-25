@@ -28,6 +28,9 @@ public class HomeScreenActivity extends Activity  {
     private static final String PREF_REPORT_SETTINGS = "Current Report Settings";     // Path of the current report settings file
     private static final String PREF_ALIQUOT = "Current Aliquot"; // Path of the current aliquot file
 
+    private boolean defaultReportSettingsPresent = true;
+    private boolean defaultReportSettings2Present = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // sets up layout screen
@@ -74,6 +77,8 @@ public class HomeScreenActivity extends Activity  {
                     Intent openMainMenu = new Intent(
                             "android.intent.action.MAINMENU");
                     openMainMenu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    openMainMenu.putExtra("hasDefault1", defaultReportSettingsPresent);
+                    openMainMenu.putExtra("hasDefault2", defaultReportSettings2Present);
                     startActivity(openMainMenu);
                 }
             }
@@ -93,8 +98,8 @@ public class HomeScreenActivity extends Activity  {
         // Gives default aliquot a path
         File defaultAliquotDirectory = new File(reportSettingsDirectory, "Default Aliquot");
 
-        boolean defaultReportSettingsPresent = false; // determines whether the default report settings is present or not
-        boolean defaultReportSettings2Present = false; // determines whether the default report settings 2 is present or not
+        defaultReportSettingsPresent = false; // determines whether the default report settings is present or not
+        defaultReportSettings2Present = false; // determines whether the default report settings 2 is present or not
         boolean defaultAliquotPresent = false; // determines whether the aliquot is present or not
 
         //Creates the directories if they are not there
@@ -144,8 +149,6 @@ public class HomeScreenActivity extends Activity  {
                 saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
             }
 
-        }else {
-            Toast.makeText(HomeScreenActivity.this, "Please connect to your local wifi network to download your Default Report Settings files.", Toast.LENGTH_LONG).show();
         }
 
     }
