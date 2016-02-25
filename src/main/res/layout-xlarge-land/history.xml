@@ -38,8 +38,8 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="70dp"
-        android:layout_height="110dp"
+        android:layout_width="80dp"
+        android:layout_height="130dp"
         android:src="@drawable/chroni_logo"
         android:layout_marginEnd="75dp"
         android:layout_marginTop="20dp"
@@ -55,6 +55,6 @@
         android:textColor="@color/border_grey"
         android:textSize="70sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp" />
+        android:layout_marginTop="40dp" />
 
 </RelativeLayout>

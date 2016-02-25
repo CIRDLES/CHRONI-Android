@@ -35,7 +35,7 @@ public class AliquotMenuActivity extends Activity {
     private static String geochronUsername, geochronPassword; // the GeoChron information on file for the user
     public static final String USER_PREFS = "My CIRDLES Settings"; // code to access stored preferences
 
-    private static final String PREF_ALIQUOT = "Current Aliquot";// Path of the current aliquot file
+    private static final String PREF_ALIQUOT = "Current Aliquot";   // Path of the current aliquot file
 
     // Base URLs for IGSN downloads
     public static String BASE_ALIQUOT_URI = "http://www.geochronportal.org/getxml.php?igsn=";
@@ -133,6 +133,10 @@ public class AliquotMenuActivity extends Activity {
         igsnDownloadButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
         igsnDownloadButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                // temporarily changes button colors
+                igsnDownloadButton.setBackgroundColor(Color.LTGRAY);
+                igsnDownloadButton.setTextColor(Color.BLACK);
+
                 // Hides SoftKeyboard When Download Button is Pressed
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(igsnText.getWindowToken(),0);
@@ -170,6 +174,9 @@ public class AliquotMenuActivity extends Activity {
 
     }
 
+    /**
+     * Downloads an aliquot based on the text entered into the aliquot field
+     */
     public void downloadAliquot() {
         Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show(); // Reports that aliquot is being downloaded
 
@@ -182,8 +189,8 @@ public class AliquotMenuActivity extends Activity {
 
         downloader.startFileDownload(); // begins actual download
 
-        igsnDownloadButton.setBackgroundColor(Color.LTGRAY);
-        igsnDownloadButton.setTextColor(Color.BLACK);
+        igsnDownloadButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+        igsnDownloadButton.setTextColor(Color.WHITE);
 
         // Note: Setting above is useful for download-then-open functionality
     }

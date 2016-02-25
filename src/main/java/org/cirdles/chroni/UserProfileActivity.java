@@ -75,19 +75,6 @@ public class UserProfileActivity extends Activity {
 
                 else {  // fields have been entered
 
-                    // Stores the login information in shared preferences for a new user if both fields contain input
-                    SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.clear(); // Clears previously stored prefs
-                    editor.putString("Geochron Username", geochronUsernameInput
-                            .getText().toString());
-                    editor.putString("Geochron Password", geochronPasswordInput
-                            .getText().toString());
-                    editor.apply();
-
-                    // Provides feedback that credentials have been saved
-                    Toast.makeText(UserProfileActivity.this, "Your Geochron Profile information is saved!", Toast.LENGTH_SHORT).show();
-
                     // Checks internet connection before getting credential input
                     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);

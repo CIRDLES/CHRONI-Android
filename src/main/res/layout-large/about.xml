@@ -14,7 +14,7 @@
         android:textColor="@color/border_grey"
         android:textSize="65sp"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/aboutText" />
+        android:layout_below="@+id/logoImageView" />
 
 
     <Button
@@ -35,7 +35,7 @@
     <TextView
         android:id="@+id/aboutText"
         android:layout_width="wrap_content"
-        android:layout_height="425dp"
+        android:layout_height="575dp"
         android:ems="10"
         android:layout_gravity="center"
         android:gravity="center"
@@ -57,8 +57,8 @@
         android:layout_alignWithParentIfMissing="false" />
 
     <ImageView
-        android:layout_width="150dp"
-        android:layout_height="250dp"
+        android:layout_width="80dp"
+        android:layout_height="130dp"
         android:id="@+id/logoImageView"
         android:background="@drawable/chroni_logo"
         android:layout_alignWithParentIfMissing="false"

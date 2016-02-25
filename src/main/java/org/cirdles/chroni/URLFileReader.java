@@ -132,7 +132,7 @@ public class URLFileReader{
 		public DownloadTask(Context context) {
 			this.context = context;
 		}
-        String downloadedFilePath; // path where downloaded file is to be written
+        String downloadedFilePath = "";	// path where downloaded file is to be written
 
 		@Override
 		protected String doInBackground(String... sUrl) {
@@ -162,8 +162,8 @@ public class URLFileReader{
 
 					// download the file to the appropriate location
 					input = connection.getInputStream();
-					if(fileType.contains("Aliquot")){
-						if(fileLength == 55){ // Cancels if invalid IGSN file (if file has a length of 0.05 KB)
+					if(fileType.contains("Aliquot")) {
+						if(fileLength >= 55){ // Cancels if invalid IGSN file (if file has a length of 0.05 KB)
 							cancel(true);
 
 						} else {
@@ -236,7 +236,8 @@ public class URLFileReader{
                 } else {
                     Toast.makeText(context, "File downloaded!", Toast.LENGTH_SHORT).show();
                 }
-            }else if(String.valueOf(classContext).contains("ReportSettingsMenuActivity")){
+
+            } else if(String.valueOf(classContext).contains("ReportSettingsMenuActivity")){
                 erroneousFile = parseReportSettingsFileForError(downloadedFilePath);
                 if (result != null || erroneousFile) {
                     Toast.makeText(context, "Download error: " + "You have specified an invalid Report Settings file", Toast.LENGTH_LONG).show();
@@ -268,22 +269,28 @@ public class URLFileReader{
 		 */
         protected boolean parseAliquotFileForError(String downloadedFilePath){
             boolean erroneousFile = false;
-            try {
-                // Begins the parsing of the file
-                File fXmlFile = new File(downloadedFilePath);
-                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                DomParser parser = new DomParser();
-                Document doc = dBuilder.parse(fXmlFile);
 
-                // Get the document's root XML nodes to see if file contains an error
-                NodeList root = doc.getChildNodes();
-                if(parser.getNode("results", root) != null)
-                    erroneousFile = true;
+			if (downloadedFilePath.isEmpty())
+				erroneousFile = true;
 
-            } catch (Exception e) {
-                    e.printStackTrace();
-                }
+			else {
+				try {
+					// Begins the parsing of the file
+					File fXmlFile = new File(downloadedFilePath);
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+					DomParser parser = new DomParser();
+					Document doc = dBuilder.parse(fXmlFile);
+
+					// Get the document's root XML nodes to see if file contains an error
+					NodeList root = doc.getChildNodes();
+					if (parser.getNode("results", root) != null)
+						erroneousFile = true;
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 
 			return erroneousFile;
         }

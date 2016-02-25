@@ -1,23 +1,28 @@
 package org.cirdles.chroni;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -29,6 +34,8 @@ import android.widget.Toast;
  * Sets up the History database table.
  */
 public class HistoryActivity extends Activity {
+
+    private static final String PREF_ALIQUOT = "Current Aliquot";   // Path of the current aliquot file
 
     @SuppressLint("NewApi")
     @Override
@@ -66,6 +73,20 @@ public class HistoryActivity extends Activity {
             // sets up the table to display the database
             TableLayout table = (TableLayout) findViewById(R.id.historyDatabaseTable);
 
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int displayWidth = size.x;
+            int displayHeight = size.y;
+
+            // sets the maximum height and width values for the history table so it looks goo on every screen size
+            int maxHeight = 120;
+            int maxWidth = 500;
+            if (maxHeight > (displayHeight / 10) + 5)
+                maxHeight = (displayHeight / 10) + 5;
+            if (maxWidth > (displayWidth / 4) + 10)
+                maxWidth = (displayWidth / 4) + 10;
+
             // Table Layout Printing
             for (int currentRow = 0; currentRow < ROWS; currentRow++) {
                 // Adds current row to the table
@@ -96,8 +117,8 @@ public class HistoryActivity extends Activity {
                         textCell.setPadding(2,2,2,2);
                         textCell.setTextSize((float) 15);
                         textCell.setGravity(Gravity.CENTER);
-                        textCell.setWidth(240);
-                        textCell.setHeight(70);
+                        textCell.setWidth(maxWidth);
+                        textCell.setHeight(maxHeight);
                         textCell.setTypeface(Typeface.DEFAULT_BOLD);
 
                         if (currentRow == 0) {
@@ -122,9 +143,11 @@ public class HistoryActivity extends Activity {
                     else {
                         final Button openButton = new Button(this);
                         openButton.setText("OPEN");
-                        openButton.setTextSize((float) 15);
+                        openButton.setTextSize((float) 14);
+                        openButton.setPadding(5, 5, 5, 5);
                         openButton.setTypeface(Typeface.DEFAULT_BOLD);
                         openButton.setGravity(Gravity.CENTER);
+                        openButton.setLayoutParams(new TableRow.LayoutParams(maxWidth, maxHeight));
                         row.addView(openButton);
 
                         // Gets the current aliquot info for sending to the display table
@@ -132,8 +155,9 @@ public class HistoryActivity extends Activity {
                         final int currentAliquotColumn = currentColumn-1;
 
                         //Changes button color back to blue if it is not already
-                        openButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-                        openButton.setTextColor(Color.WHITE);
+                        openButton.setBackgroundResource(R.drawable.light_grey_background);
+                        openButton.setTextColor(Color.BLACK);
+
 
                         // adds open button functionality
                         openButton.setOnClickListener(new View.OnClickListener() {
@@ -145,7 +169,13 @@ public class HistoryActivity extends Activity {
 
                                 Toast.makeText(HistoryActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
                                 Intent openTableScreen = new Intent("android.intent.action.DISPLAY");
-                                openTableScreen.putExtra("AliquotXML", database[currentAliquotRow][currentAliquotColumn]); // Opens table to specified aliquot file
+
+                                // saves aliquot and opnes it
+                                SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putString("Current Aliquot", database[currentAliquotRow][currentAliquotColumn]); // gets chosen file from file browser and stores
+                                editor.apply(); // Committing changes
+
                                 startActivity(openTableScreen);
                             }
                         });
