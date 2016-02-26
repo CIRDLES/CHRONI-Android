@@ -29,7 +29,6 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
 	 * @see android.database.sqlite.SQLiteOpenHelper#onCreate(android.database.sqlite.SQLiteDatabase)
 	 */
     public void onCreate(SQLiteDatabase db) {
-        System.out.println("!!!!!!!!!!!!!!!!!");
         // Creates table and adds appropriate rows
         db.execSQL("CREATE TABLE " + DATABASE_TABLE + " (" +
                         KEY_ROWID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +

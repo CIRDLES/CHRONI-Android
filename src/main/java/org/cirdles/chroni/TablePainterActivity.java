@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -14,7 +13,9 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -59,6 +60,8 @@ public class TablePainterActivity extends Activity {
     private static TableLayout headerInformationTable;
     private static TableLayout aliquotDataTable;
 
+    private static String previousAliquotFilePath = ""; // stores name of previous aliquot opened
+
     private String aliquotFilePath, reportSettingsFilePath; // The complete path of the aliquot and report settings files to be parsed and display
 
     private static final String PREF_REPORT_SETTINGS = "Current Report Settings";// Path of the current report settings file
@@ -71,11 +74,17 @@ public class TablePainterActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setContentView(R.layout.display);
 
-        if (finalArray.length == 0) {
+        // if a new aliquot is trying to be opened, parse for data
+        if (!retrieveAliquotFilePath().equals(previousAliquotFilePath)) {
+            // resets tables to null
+            categoryNameTable = null;
+            headerInformationTable = null;
+            aliquotDataTable = null;
+
             createData();
             createView();
         }
-
+        // otherwise, just fill in previously parsed data
         else
             createView();
 
@@ -99,8 +108,10 @@ public class TablePainterActivity extends Activity {
         columnMaxLengths = new ArrayList<Integer>();
         columnDecimals = new ArrayList<Boolean>();
 
-        // gets the current Aliquot path
-        setAliquotFilePath(retrieveAliquotFilePath());
+        // gets and sets the current Aliquot path
+        String aliquotPath = retrieveAliquotFilePath();
+        setAliquotFilePath(aliquotPath);
+        previousAliquotFilePath = aliquotPath;  // saves path for later
 
         // Parses aliquot file and retrieves maps
         MapTuple maps = AliquotParser.runAliquotParser(getAliquotFilePath());
@@ -187,13 +198,23 @@ public class TablePainterActivity extends Activity {
                     NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
                     if (mobileWifi.isConnected()) {
-                        // Displays concordia images
-                        Toast.makeText(TablePainterActivity.this, "Opening Concordia Image...", Toast.LENGTH_LONG).show();
-                        Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageMap.get("concordia").getImageURL()));
-                        startActivity(viewConcordiaIntent);
+                        openConcordiaImage();
                     } else {
-                        //Handles lack of wifi connection
-                        Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
+                        new AlertDialog.Builder(TablePainterActivity.this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
+                                "Do you wish to continue?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        openConcordiaImage();
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .show();
                     }
                 }
             });
@@ -220,12 +241,23 @@ public class TablePainterActivity extends Activity {
                     NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
                     if (mobileWifi.isConnected()) {
-                        Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
-                        Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse( imageMap.get("probability_density").getImageURL()));
-                        startActivity(viewProbabilityDensityIntent);
+                        openProbabilityDensity();
                     } else {
-                        //Handles lack of wifi connection
-                        Toast.makeText(TablePainterActivity.this, "Please check your internet connection to view this image.", Toast.LENGTH_LONG).show();
+                        new AlertDialog.Builder(TablePainterActivity.this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
+                                "Do you wish to continue?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        openProbabilityDensity();
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .show();
                     }
 
                 }
@@ -401,6 +433,19 @@ public class TablePainterActivity extends Activity {
 
     }
 
+    public void openConcordiaImage() {
+        // Displays concordia images
+        Toast.makeText(TablePainterActivity.this, "Opening Concordia Image...", Toast.LENGTH_LONG).show();
+        Intent viewConcordiaIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageMap.get("concordia").getImageURL()));
+        startActivity(viewConcordiaIntent);
+    }
+
+    public void openProbabilityDensity() {
+        Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
+        Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse( imageMap.get("probability_density").getImageURL()));
+        startActivity(viewProbabilityDensityIntent);
+    }
+
     /**
      * This method takes in a value string (text). It is also given the maximum length for a certain column along with
      * whether that column contains a decimal or not. It then pads the value accordingly to present in the table.
@@ -457,7 +502,12 @@ public class TablePainterActivity extends Activity {
      */
     private String splitFileName(String fileName){
         String[] fileNameParts = fileName.split("/");
-        return fileNameParts[fileNameParts.length-1];
+        String name = fileNameParts[fileNameParts.length - 1];
+        if (name.contains(".xml")) {    // removes '.xml' from end of name
+            String[] newParts = name.split(".xml");
+            name = newParts[0];
+        }
+        return name;
     }
 
     /**
@@ -1107,9 +1157,34 @@ public class TablePainterActivity extends Activity {
                 startActivity(openAboutScreen);
                 return true;
             case R.id.helpMenu: // Takes user to help blog
-                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(getString(R.string.chroni_help_address)));
-                startActivity(openHelpBlog);
+                // Checks internet connection before downloading files
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                if (mobileWifi.isConnected()) {
+                    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(getString(R.string.chroni_help_address)));
+                    startActivity(openHelpBlog);
+
+                } else {
+                    new AlertDialog.Builder(this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
+                            "Do you wish to continue?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                                            Uri.parse(getString(R.string.chroni_help_address)));
+                                    startActivity(openHelpBlog);
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .show();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

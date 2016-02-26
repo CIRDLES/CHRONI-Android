@@ -15,7 +15,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="45dp" />
+        android:textSize="16sp"
+        android:layout_marginBottom="15dp" />
 
     <TextView
         android:id="@+id/testText"
@@ -23,7 +24,7 @@
         android:layout_height="wrap_content"
         android:text="LOADING"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="72dp" />
@@ -35,9 +36,9 @@
         android:text="CHRONI"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="58sp"
+        android:textSize="35sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="5dp"
         android:layout_above="@+id/developedBy" />
 
     <ProgressBar
@@ -48,14 +49,14 @@
         android:minHeight="100dp"
         android:minWidth="100dp"
         android:layout_above="@+id/testText"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="60dp" />
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_alignParentTop="false"
         android:layout_alignParentEnd="false"
         android:layout_alignParentBottom="false"
@@ -68,7 +69,7 @@
         android:layout_height="wrap_content"
         android:text="@string/developed_by"
         android:id="@+id/developedBy"
-        android:textSize="28sp"
+        android:textSize="25sp"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/imageView1"
         android:textColor="@color/black" />

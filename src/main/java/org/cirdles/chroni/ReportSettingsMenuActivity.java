@@ -1,7 +1,12 @@
 package org.cirdles.chroni;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -208,9 +213,34 @@ public class ReportSettingsMenuActivity extends Activity {
                 startActivity(openAboutScreen);
                 return true;
             case R.id.helpMenu: // Takes user to help blog
-                Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(getString(R.string.chroni_report_settings_help_address)));
-                startActivity(openHelpBlog);
+                // Checks internet connection before downloading files
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                if (mobileWifi.isConnected()) {
+                    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(getString(R.string.chroni_help_address)));
+                    startActivity(openHelpBlog);
+
+                } else {
+                    new AlertDialog.Builder(this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
+                            "Do you wish to continue?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
+                                            Uri.parse(getString(R.string.chroni_help_address)));
+                                    startActivity(openHelpBlog);
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .show();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
