@@ -237,6 +237,7 @@ public class FilePickerActivity extends ListActivity {
 			TextView textView = (TextView)row.findViewById(R.id.file_picker_text);
 			// Set single line
 			textView.setSingleLine(true);
+			textView.setTextSize(24);
 
 			textView.setText(object.getName());
 			if(object.isFile()) {

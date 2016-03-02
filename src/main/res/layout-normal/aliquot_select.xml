@@ -21,7 +21,7 @@
         android:id="@+id/aliquotIGSNSubmitButton"
         android:layout_width="75dp"
         android:layout_height="35dp"
-        android:background="@color/button_blue"
+        android:background="@drawable/dark_blue_button"
         android:minWidth="50dp"
         android:text="Download"
         android:textSize="14sp"
@@ -63,26 +63,26 @@
     <Button
         android:id="@+id/aliquotFileSelectButton"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:background="@color/dark_grey"
-        android:text="+"
-        android:textSize="18sp"
-        android:layout_alignBottom="@+id/aliquotFileSelectText"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="@drawable/light_gray_button"
+        android:textColor="#000000"
+        android:layout_marginStart="3dp"
+        android:text="+" android:textSize="14sp"
         android:layout_toEndOf="@+id/aliquotFileSelectText"
-        android:layout_marginStart="5dp"/>
+        android:layout_alignTop="@+id/aliquotFileSelectText"/>
 
     <Button
         android:id="@+id/aliquotFileSubmitButton"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
-        android:background="@color/button_blue"
+        android:background="@drawable/dark_blue_button"
         android:minWidth="50dp"
         android:text="Open"
         android:textSize="14sp"
         android:layout_marginEnd="40dp"
         android:textColor="@color/white"
-        android:layout_alignBottom="@+id/aliquotFileSelectButton"
+        android:layout_alignBottom="@+id/aliquotFileSelectText"
         android:layout_alignParentEnd="true" />
 
     <TextView

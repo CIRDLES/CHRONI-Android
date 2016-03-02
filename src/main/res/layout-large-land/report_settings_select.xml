@@ -20,14 +20,15 @@
         android:id="@+id/reportSettingsFileSelectButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/dark_grey"
-        android:minHeight="48dp"
-        android:minWidth="48dp"
+        android:background="@drawable/light_gray_button"
+        android:minHeight="30dp"
+        android:minWidth="30dp"
+        android:textColor="#000000"
+        android:layout_toEndOf="@+id/reportSettingsFileSelectText"
+        android:layout_alignBaseline="@+id/reportSettingsFileSelectText"
+        android:layout_marginStart="5dp"
         android:text="+"
-        android:textSize="15sp"
-        android:layout_alignBottom="@+id/reportSettingsFileOpenButton"
-        android:layout_toStartOf="@+id/reportSettingsFileOpenButton"
-        android:layout_marginEnd="20dp" />
+        android:textSize="15sp" />
 
     <EditText
         android:id="@+id/reportSettingsFileSelectText"
@@ -35,10 +36,11 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Select a file from this device"
+        android:layout_toEndOf="@+id/textView2"
+        android:layout_marginStart="20dp"
+        android:layout_alignBottom="@id/textView2"
         android:textColor="@color/black"
-        android:textSize="25sp"
-        android:layout_alignBottom="@+id/reportSettingsFileSelectButton"
-        android:layout_toStartOf="@+id/reportSettingsFileSelectButton" />
+        android:textSize="20sp" />
 
     <ImageView
         android:id="@+id/imageView1"
@@ -54,17 +56,14 @@
 
     <Button
         android:id="@+id/reportSettingsFileOpenButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/button_blue"
-        android:minHeight="48dp"
-        android:minWidth="135dp"
+        android:layout_width="135dp"
+        android:layout_height="48dp"
+        android:background="@drawable/dark_blue_button"
         android:text="Open"
+        android:layout_alignBottom="@+id/reportSettingsFileSelectText"
+        android:layout_toEndOf="@+id/reportSettingsFileSelectButton"
+        android:layout_marginStart="25dp"
         android:textSize="20sp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="65dp"
-        android:layout_marginEnd="135dp"
         android:textColor="@color/white" />
 
     <TextView
@@ -75,24 +74,23 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/black"
         android:textSize="30sp"
-        android:layout_marginEnd="20dp"
-        android:layout_alignBottom="@+id/reportSettingsFileSelectText"
-        android:layout_toStartOf="@+id/reportSettingsFileSelectText" />
+        android:layout_marginStart="175dp"
+        android:layout_marginBottom="100dp"
+        android:layout_alignParentBottom="true"/>
 
     <TextView
         android:id="@+id/currentReportSettingsLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Current Report Settings: "
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/black"
         android:textSize="22sp"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/reportSettingsFileSelectText"
+        android:layout_below="@+id/testText"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
         android:gravity="center"
-        android:layout_marginBottom="65dp" />
+        android:layout_marginTop="35dp" />
 
     <Button
         android:layout_width="100dp"
@@ -102,7 +100,7 @@
         android:layout_marginStart="75dp"
         android:layout_marginTop="45dp"
         android:textSize="22sp"
-        android:background="@color/button_blue"
+        android:background="@drawable/dark_blue_button"
         android:textColor="@color/white" />
 
 </RelativeLayout>

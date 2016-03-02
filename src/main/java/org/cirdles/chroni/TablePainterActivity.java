@@ -161,7 +161,7 @@ public class TablePainterActivity extends Activity {
         Button reportSettingsCell = (Button) findViewById(R.id.reportSettingsTableButton);
         String reportSettingsText = "Report Settings: " + splitFileName(retrieveReportSettingsFilePath());
         reportSettingsCell.setText(reportSettingsText);
-        reportSettingsCell.setBackgroundColor(getResources().getColor(R.color.button_blue));
+        reportSettingsCell.setBackgroundResource(R.drawable.dark_blue_button);
         reportSettingsCell.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
@@ -174,7 +174,7 @@ public class TablePainterActivity extends Activity {
         Button aliquotCell = (Button) findViewById(R.id.aliquotTableButton);
         String aliquotCellText = "Aliquot: " + splitFileName(retrieveAliquotFilePath());
         aliquotCell.setText(aliquotCellText);
-        aliquotCell.setBackgroundResource(R.drawable.background_blue_background);
+        aliquotCell.setBackgroundResource(R.drawable.medium_blue_button);
         aliquotCell.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
@@ -188,7 +188,7 @@ public class TablePainterActivity extends Activity {
         // Adds button to view a concordia image
         if ((imageMap.containsKey("concordia"))) {
             Button viewConcordiaButton = (Button) findViewById(R.id.concordiaTableButton);
-            viewConcordiaButton.setBackgroundColor(getResources().getColor(R.color.light_grey));
+            viewConcordiaButton.setBackgroundResource(R.drawable.light_gray_button);
 
             viewConcordiaButton.setVisibility(View.VISIBLE);
             viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
@@ -223,14 +223,14 @@ public class TablePainterActivity extends Activity {
         // Adds button to view a probability density image
         if ((imageMap.containsKey("probability_density"))) {
             Button viewProbabilityDensityButton = (Button) findViewById(R.id.probabilityDensityTableButton);
+
             // Decides what color button should be based on if there is a concordia button
-            if ((imageMap.containsKey("concordia"))) {
-                viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-                viewProbabilityDensityButton.setTextColor(Color.WHITE);
-            }else{
-                viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.light_grey));
-                viewProbabilityDensityButton.setTextColor(Color.BLACK);
-            }
+            if ((imageMap.containsKey("concordia")))
+                viewProbabilityDensityButton.setBackgroundResource(R.drawable.dark_blue_button);
+            else
+                viewProbabilityDensityButton.setBackgroundResource(R.drawable.light_gray_button);
+
+            viewProbabilityDensityButton.setTextColor(Color.BLACK);
 
             viewProbabilityDensityButton.setVisibility(View.VISIBLE);
             //Adds on click functionality

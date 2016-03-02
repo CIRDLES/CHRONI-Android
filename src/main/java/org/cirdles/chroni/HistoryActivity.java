@@ -147,7 +147,7 @@ public class HistoryActivity extends Activity {
                         openButton.setPadding(5, 5, 5, 5);
                         openButton.setTypeface(Typeface.DEFAULT_BOLD);
                         openButton.setGravity(Gravity.CENTER);
-                        openButton.setLayoutParams(new TableRow.LayoutParams(maxWidth, maxHeight));
+                        openButton.setLayoutParams(new TableRow.LayoutParams(maxWidth-15, maxHeight-15));
                         row.addView(openButton);
 
                         // Gets the current aliquot info for sending to the display table
@@ -155,7 +155,7 @@ public class HistoryActivity extends Activity {
                         final int currentAliquotColumn = currentColumn-1;
 
                         //Changes button color back to blue if it is not already
-                        openButton.setBackgroundResource(R.drawable.light_grey_background);
+                        openButton.setBackgroundResource(R.drawable.light_gray_button);
                         openButton.setTextColor(Color.BLACK);
 
 
@@ -163,14 +163,11 @@ public class HistoryActivity extends Activity {
                         openButton.setOnClickListener(new View.OnClickListener() {
                             // When view/edit is clicked, the review screen is opened
                             public void onClick(View v) {
-                                // Changes button color to indicate it has been opened
-                                openButton.setBackgroundColor(Color.LTGRAY);
-                                openButton.setTextColor(Color.BLACK);
 
                                 Toast.makeText(HistoryActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
                                 Intent openTableScreen = new Intent("android.intent.action.DISPLAY");
 
-                                // saves aliquot and opnes it
+                                // saves aliquot and opens it
                                 SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
                                 SharedPreferences.Editor editor = settings.edit();
                                 editor.putString("Current Aliquot", database[currentAliquotRow][currentAliquotColumn]); // gets chosen file from file browser and stores

@@ -39,9 +39,6 @@ public class AliquotMenuActivity extends Activity {
 
     // Base URLs for IGSN downloads
     public static String BASE_ALIQUOT_URI = "http://www.geochronportal.org/getxml.php?igsn=";
-    public static String BASE_SAMPLE_URI = "http://www.geosamples.org/display.php?igsn=";
-
-    public int CIRDLES_ORANGE_RGB = Color.rgb(242, 136, 58);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +64,9 @@ public class AliquotMenuActivity extends Activity {
         });
 
 
-
         aliquotSelectedFileText = (EditText) findViewById(R.id.aliquotFileSelectText); // Contains selected aliquot file name
 
         aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
-        //Changes button color back to blue if it is not already
-        aliquotFileSubmitButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-        aliquotFileSubmitButton.setTextColor(Color.WHITE);
         aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
             // Submits aliquot file to display activity for parsing and displaying in table
             public void onClick(View v) {
@@ -88,9 +81,6 @@ public class AliquotMenuActivity extends Activity {
                             Intent returnAliquot = new Intent("android.intent.action.DISPLAY");
                             returnAliquot.putExtra("newAliquot", "true");   // tells if a new aliquot has been chosen
 
-                            // Changes button color to indicate it has been opened
-                            aliquotFileSubmitButton.setBackgroundColor(Color.LTGRAY);
-                            aliquotFileSubmitButton.setTextColor(Color.BLACK);
                             saveCurrentAliquot();
 
                             setResult(RESULT_OK, returnAliquot);
@@ -104,9 +94,6 @@ public class AliquotMenuActivity extends Activity {
                         Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
                         openDisplayTable.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
 
-                        // Changes button color to indicate it has been opened
-                        aliquotFileSubmitButton.setBackgroundColor(Color.LTGRAY);
-                        aliquotFileSubmitButton.setTextColor(Color.BLACK);
                         saveCurrentAliquot();
 
                         startActivity(openDisplayTable); // Starts display activity
@@ -133,9 +120,6 @@ public class AliquotMenuActivity extends Activity {
         igsnDownloadButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
         igsnDownloadButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // temporarily changes button colors
-                igsnDownloadButton.setBackgroundColor(Color.LTGRAY);
-                igsnDownloadButton.setTextColor(Color.BLACK);
 
                 // Hides SoftKeyboard When Download Button is Pressed
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -188,9 +172,6 @@ public class AliquotMenuActivity extends Activity {
                 makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
 
         downloader.startFileDownload(); // begins actual download
-
-        igsnDownloadButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-        igsnDownloadButton.setTextColor(Color.WHITE);
 
         // Note: Setting above is useful for download-then-open functionality
     }
