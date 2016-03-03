@@ -74,11 +74,11 @@
         android:id="@+id/testText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Profile"
+        android:text="Credentials"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
         android:textSize="100sp"
-        android:layout_above="@+id/TextView01"
+        android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -90,8 +90,8 @@
         android:textColor="@color/border_grey"
         android:textSize="50sp"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/geochronUsername"
-        android:layout_marginBottom="160dp" />
+        android:layout_below="@+id/testText"
+        android:layout_marginTop="15dp" />
 
     <TextView
         android:id="@+id/TextView02"
@@ -110,6 +110,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
+        android:textSize="25sp"
+        android:maxWidth="300dp"
+        android:gravity="center"
+        android:layout_below="@+id/TextView01"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
         android:textColorHint="@color/black" />
 
     <Button

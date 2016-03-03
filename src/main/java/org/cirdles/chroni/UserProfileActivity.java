@@ -16,6 +16,7 @@ import com.loopj.android.http.RequestParams;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -64,16 +65,20 @@ public class UserProfileActivity extends Activity {
         Button profileValidateButton = (Button) findViewById(R.id.profileValidateButton);
         profileValidateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                // gets the text that has been entered
+                final String usernameEntered = geochronUsernameInput.getText().toString();
+                final String passwordEntered = geochronPasswordInput.getText().toString();
+
                 // Displays error message if username is missing
-                if (geochronUsernameInput.getText().length() == 0) {
+                if (usernameEntered.length() == 0) {
                     Toast.makeText(UserProfileActivity.this, "Please enter your Geochron username.", Toast.LENGTH_LONG).show();
                 }
                 // Displays error message if password is missing
-                else if (geochronPasswordInput.getText().length() == 0) {
+                else if (passwordEntered.length() == 0) {
                     Toast.makeText(UserProfileActivity.this, "Please enter your Geochron password.", Toast.LENGTH_LONG).show();
                 }
 
-                else {  // fields have been entered
+                else {  // both fields have been entered, are NOT empty
 
                     // Checks internet connection before getting credential input
                     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -81,18 +86,14 @@ public class UserProfileActivity extends Activity {
                     if (mobileWifi.isConnected()) {
                         // Attempts to validate GeoChron credentials if input is stored
                         Toast.makeText(UserProfileActivity.this, "Validating Credentials...", Toast.LENGTH_SHORT).show();
-                        retrieveCredentials(); // Fetches the credentials
+                //        retrieveCredentials(); // Fetches the credentials
 
-                        if (!getGeochronUsername().contentEquals("None") && !getGeochronPassword().contentEquals("None")) {
-                            try {
-                                // validates credentials if not empty
-                                validateGeochronCredentials(getGeochronUsername(), getGeochronPassword());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Toast.makeText(UserProfileActivity.this, "Connection error", Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            Toast.makeText(UserProfileActivity.this, "Credentials not stored", Toast.LENGTH_LONG).show();
+                        // attempts to validate credentials
+                        try {
+                            validateGeochronCredentials(usernameEntered, passwordEntered);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(UserProfileActivity.this, "Connection error", Toast.LENGTH_LONG).show();
                         }
 
                     } else {  // if not on WiFi, alert user and ask to continue
@@ -105,18 +106,14 @@ public class UserProfileActivity extends Activity {
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         // Attempts to validate GeoChron credentials if input is stored
                                         Toast.makeText(UserProfileActivity.this, "Validating Credentials...", Toast.LENGTH_SHORT).show();
-                                        retrieveCredentials(); // Fetches the credentials
+                        //                retrieveCredentials(); // Fetches the credentials
 
-                                        if (!getGeochronUsername().contentEquals("None") && !getGeochronPassword().contentEquals("None")) {
-                                            try {
-                                                // validates credentials if not empty
-                                                validateGeochronCredentials(getGeochronUsername(), getGeochronPassword());
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                                Toast.makeText(UserProfileActivity.this, "Connection error", Toast.LENGTH_LONG).show();
-                                            }
-                                        } else {
-                                            Toast.makeText(UserProfileActivity.this, "Credentials not stored", Toast.LENGTH_LONG).show();
+                                        try {
+                                            // validates credentials if not empty
+                                            validateGeochronCredentials(usernameEntered, passwordEntered);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                            Toast.makeText(UserProfileActivity.this, "Connection error", Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 })
@@ -188,12 +185,8 @@ public class UserProfileActivity extends Activity {
     * Validates currently stored geochron credentials 
     * From U-Pb Redux's ReduxPersistantState.class
     * http://www.geochronportal.org/post_to_credentials_service.html
-    * 
-    * @param username
-    * @param password
-    * @return
     */
-	public void validateGeochronCredentials(String username, String password) {
+	public void validateGeochronCredentials(final String username, final String password) {
 
 		String geochronCredentialsService = "http://www.geochronportal.org/credentials_service.php";
 
@@ -220,12 +213,24 @@ public class UserProfileActivity extends Activity {
                         }
                     }
                     if (valid) {
-                        validationText.setText("Your Geochron Portal credentials are valid!");
+                        validationText.setText("Your Geochron Portal credentials are VALID!");
+                        validationText.setTextColor(Color.parseColor("#00D000"));
+
                         Toast.makeText(UserProfileActivity.this, "Your Geochron Portal credentials are VALID",
                                 Toast.LENGTH_LONG).show();
 
+                        // stores the credentials in settings
+                        SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("Geochron Username", username);
+                        editor.putString("Geochron Password", password);
+                        editor.apply();
+                        geochronUsername = username;
+                        geochronPassword = password;
+
                     } else {
-                        validationText.setText("Your Geochron Portal credentials are not valid!");
+                        validationText.setText("Your Geochron Portal credentials are INVALID!");
+                        validationText.setTextColor(Color.RED);
                         Toast.makeText(UserProfileActivity.this, "Your Geochron Portal credentials are INVALID",
                                 Toast.LENGTH_LONG).show();
                     }
