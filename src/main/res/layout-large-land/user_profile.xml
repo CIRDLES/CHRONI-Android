@@ -52,12 +52,9 @@
         android:text="Validate"
         android:textColor="@color/white"
         android:textSize="22sp"
-
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="35dp"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentEnd="false"
-        android:layout_toStartOf="@id/fileBrowserHomeButton"
+        android:layout_toStartOf="@id/profileEraseButton"
         android:layout_marginEnd="25dp" />
 
     <Button
@@ -70,10 +67,10 @@
         android:text="Home"
         android:textColor="@color/white"
         android:textSize="25sp"
-        android:layout_alignWithParentIfMissing="false"
+        android:layout_marginStart="25dp"
+        android:layout_toEndOf="@id/profileEraseButton"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="35dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginBottom="35dp" />
 
     <TextView
         android:id="@+id/testText"
@@ -131,11 +128,10 @@
         android:background="@drawable/dark_blue_button"
         android:minHeight="80dip"
         android:minWidth="130dip"
-        android:text="Erase"
+        android:text="Reset"
         android:textColor="@color/white"
         android:textSize="25sp"
-        android:layout_toEndOf="@id/fileBrowserHomeButton"
-        android:layout_marginStart="25dp"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="35dp" />
 

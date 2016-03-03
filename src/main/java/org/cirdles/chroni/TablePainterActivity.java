@@ -1108,7 +1108,7 @@ public class TablePainterActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.table_menu, menu);
         return true;
     }
 
@@ -1116,46 +1116,10 @@ public class TablePainterActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu: // Takes user to main menu
-                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-                startActivity(openMainMenu);
+            case R.id.exitTable:
+                finish();
                 return true;
-            case R.id.editProfileMenu: //Takes user to credentials screen
-                Intent openUserProfile = new Intent(
-                        "android.intent.action.USERPROFILE");
-                startActivity(openUserProfile);
-                return true;
-            case R.id.historyMenu: //Takes user to credentials screen
-                Intent openHistoryTable = new Intent(
-                        "android.intent.action.HISTORY");
-                startActivity(openHistoryTable);
-                return true;
-            case R.id.viewAliquotsMenu: // Takes user to aliquot menu
-                Intent openAliquotFiles = new Intent(
-                        "android.intent.action.FILEPICKER");
-                openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot_Directory");
-                startActivity(openAliquotFiles);
-                return true;
-            case R.id.viewReportSettingsMenu: // Takes user to report settings menu
-                Intent openReportSettingsFiles = new Intent(
-                        "android.intent.action.FILEPICKER");
-                openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report_Settings_Directory");
-                startActivity(openReportSettingsFiles);
-                return true;
-            case R.id.viewRootMenu:
-                Intent openRootDirectory = new Intent(
-                        "android.intent.action.FILEPICKER");
-                openRootDirectory.putExtra("Default_Directory",
-                        "Root_Directory");
-                startActivity(openRootDirectory);
-                return true;
-            case R.id.aboutScreen: // Takes user to about screen
-                Intent openAboutScreen = new Intent(
-                        "android.intent.action.ABOUT");
-                startActivity(openAboutScreen);
-                return true;
+
             case R.id.helpMenu: // Takes user to help blog
                 // Checks internet connection before downloading files
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1186,6 +1150,7 @@ public class TablePainterActivity extends Activity {
                             .show();
                 }
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -125,7 +125,7 @@
         android:background="@drawable/dark_blue_button"
         android:minHeight="80dip"
         android:minWidth="130dip"
-        android:text="Erase"
+        android:text="Reset"
         android:textColor="@color/white"
         android:textSize="35sp"
         android:layout_centerHorizontal="true"

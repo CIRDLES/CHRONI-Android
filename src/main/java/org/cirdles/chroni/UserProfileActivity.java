@@ -84,11 +84,8 @@ public class UserProfileActivity extends Activity {
                     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo mobileWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
                     if (mobileWifi.isConnected()) {
-                        // Attempts to validate GeoChron credentials if input is stored
-                        Toast.makeText(UserProfileActivity.this, "Validating Credentials...", Toast.LENGTH_SHORT).show();
-                //        retrieveCredentials(); // Fetches the credentials
 
-                        // attempts to validate credentials
+                        // Attempts to validate GeoChron credentials if input is stored
                         try {
                             validateGeochronCredentials(usernameEntered, passwordEntered);
                         } catch (Exception e) {
@@ -104,10 +101,8 @@ public class UserProfileActivity extends Activity {
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        // Attempts to validate GeoChron credentials if input is stored
-                                        Toast.makeText(UserProfileActivity.this, "Validating Credentials...", Toast.LENGTH_SHORT).show();
-                        //                retrieveCredentials(); // Fetches the credentials
 
+                                        // Attempts to validate GeoChron credentials if input is stored
                                         try {
                                             // validates credentials if not empty
                                             validateGeochronCredentials(usernameEntered, passwordEntered);
@@ -152,6 +147,7 @@ public class UserProfileActivity extends Activity {
 
                     geochronUsernameInput.setText("");
                     geochronPasswordInput.setText("");
+                    validationText.setText("");
 
                     Toast.makeText(UserProfileActivity.this, "Credentials erased!", Toast.LENGTH_LONG).show();
                 }
@@ -188,6 +184,7 @@ public class UserProfileActivity extends Activity {
     */
 	public void validateGeochronCredentials(final String username, final String password) {
 
+        validationText.setText("");
 		String geochronCredentialsService = "http://www.geochronportal.org/credentials_service.php";
 
 		// Specify the information to be sent with the AsyncHttpClient
@@ -216,9 +213,6 @@ public class UserProfileActivity extends Activity {
                         validationText.setText("Your Geochron Portal credentials are VALID!");
                         validationText.setTextColor(Color.parseColor("#00D000"));
 
-                        Toast.makeText(UserProfileActivity.this, "Your Geochron Portal credentials are VALID",
-                                Toast.LENGTH_LONG).show();
-
                         // stores the credentials in settings
                         SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
                         SharedPreferences.Editor editor = settings.edit();
@@ -231,8 +225,6 @@ public class UserProfileActivity extends Activity {
                     } else {
                         validationText.setText("Your Geochron Portal credentials are INVALID!");
                         validationText.setTextColor(Color.RED);
-                        Toast.makeText(UserProfileActivity.this, "Your Geochron Portal credentials are INVALID",
-                                Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Toast.makeText(
