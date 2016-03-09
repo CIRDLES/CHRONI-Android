@@ -14,13 +14,54 @@
         android:orientation="vertical"
         android:layout_above="@+id/historyFinishButton"
         android:layout_below="@+id/testText"
-        android:layout_marginTop="25dp">
+        android:layout_marginTop="15dp">
 
         <TableLayout
             android:id="@+id/historyDatabaseTable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal" >
+
+            <TableRow
+                android:gravity="center">
+
+                <TextView
+                    android:visibility="invisible"
+                    android:id="@+id/historyHeaderOne"
+                    android:width="100dp"
+                    android:height="45dp"
+                    android:text="Last Opened"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:textSize="14sp"
+                    android:textColor="#000000"
+                    android:background="@drawable/dark_grey_background"/>
+
+                <TextView
+                    android:visibility="invisible"
+                    android:id="@+id/historyHeaderTwo"
+                    android:width="100dp"
+                    android:height="45dp"
+                    android:text="Aliquot"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:textSize="14sp"
+                    android:textColor="#000000"
+                    android:background="@drawable/dark_grey_background"/>
+
+                <TextView
+                    android:visibility="invisible"
+                    android:id="@+id/historyHeaderThree"
+                    android:width="100dp"
+                    android:height="45dp"
+                    android:text="View"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:textSize="14sp"
+                    android:textColor="#000000"
+                    android:background="@drawable/dark_grey_background"/>
+
+            </TableRow>
 
         </TableLayout>
 

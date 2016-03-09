@@ -150,6 +150,7 @@ public class AliquotMenuActivity extends Activity {
                 if (mobileWifi.isConnected()) {
                     if (igsnText.getText().length() != 0) {
                         downloadAliquot();
+                        igsnText.setText("");
                     }
                 } else {//Handles lack of wifi connection
                     new AlertDialog.Builder(AliquotMenuActivity.this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
@@ -159,6 +160,7 @@ public class AliquotMenuActivity extends Activity {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     downloadAliquot();
+                                    igsnText.setText("");
                                 }
                             })
                                     // if user selects no, just go back
@@ -180,7 +182,7 @@ public class AliquotMenuActivity extends Activity {
      * Downloads an aliquot based on the text entered into the aliquot field
      */
     public void downloadAliquot() {
-        Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show(); // Reports that aliquot is being downloaded
+        Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_SHORT).show(); // Reports that aliquot is being downloaded
 
         // Captures igsn from user input
         String aliquotIGSN = igsnText.getText().toString().toUpperCase().trim();
