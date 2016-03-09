@@ -81,10 +81,15 @@ public class TablePainterActivity extends Activity {
             headerInformationTable = null;
             aliquotDataTable = null;
 
-            createData();
-            createView();
+            boolean valid = createData();
+
+            // if the XML files are valid, create the view
+            if (valid)
+                createView();
+            else    // otherwise, just finish the activity
+                finish();
         }
-        // otherwise, just fill in previously parsed data
+        // if the same aliquot that was just opened is being displayed again, simply fill in previously parsed data
         else
             createView();
 
@@ -93,60 +98,85 @@ public class TablePainterActivity extends Activity {
     /**
      * Fills in all necessary maps, lists, etc. needed for creating the table view.
      *
-     * This method has no input or output, but uses data already known in the application.
+     * This method has no input or output, but simply uses data already known in the application
+     * and returns a boolean that tells if the parsed XML files are valid.
      */
-    private void createData() {
+    private boolean createData() {
+        boolean result = true; // tells whether XML files are valid or not
 
         // Instantiates the Report Settings Parser and gets the current Report Settings path
         ReportSettingsParser reportSettingsParser = new ReportSettingsParser();
         setReportSettingsFilePath(retrieveReportSettingsFilePath());
 
+        System.out.println(getReportSettingsFilePath());
+
         // Parses the Report Settings XML file
         categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
-        outputVariableNames = reportSettingsParser.getOutputVariableName();
+        outputVariableNames = reportSettingsParser.getOutputVariableNames();
 
-        columnMaxLengths = new ArrayList<Integer>();
-        columnDecimals = new ArrayList<Boolean>();
+        // if the report settings file is invalid, show error message
+        if (categoryMap == null) {
+            Toast.makeText(TablePainterActivity.this, "ERROR: Invalid Report Settings XML file.", Toast.LENGTH_LONG).show();
+            result = false;
 
-        // gets and sets the current Aliquot path
-        String aliquotPath = retrieveAliquotFilePath();
-        setAliquotFilePath(aliquotPath);
-        previousAliquotFilePath = aliquotPath;  // saves path for later
+        } else {    // otherwise, moves on and parses the aliquot file
 
-        // Parses aliquot file and retrieves maps
-        MapTuple maps = AliquotParser.runAliquotParser(getAliquotFilePath());
-        fractionMap = (TreeMap<String, Fraction>) maps.getFractionMap();
-        imageMap = (TreeMap<String, Image>) maps.getImageMap();
+            columnMaxLengths = new ArrayList<Integer>();
+            columnDecimals = new ArrayList<Boolean>();
 
-        final String aliquot = AliquotParser.getAliquotName();
+            // gets and sets the current Aliquot path
+            String aliquotPath = retrieveAliquotFilePath();
+            setAliquotFilePath(aliquotPath);
+            previousAliquotFilePath = aliquotPath;  // saves path for later
 
-        // Fills the Report Setting and Aliquot arrays
-        String[][] reportSettingsArray = fillReportSettingsArray(
-                outputVariableNames, categoryMap);
-        String[][] fractionArray = fillFractionArray(outputVariableNames,
-                categoryMap, fractionMap, aliquot);
+            // Parses aliquot file and retrieves maps
+            MapTuple maps = AliquotParser.runAliquotParser(getAliquotFilePath());
 
-        //Sorts the table array
-        Arrays.sort(fractionArray, new Comparator<String[]>() {
-            @Override
-            public int compare(final String[] entry1, final String[] entry2) {
+            // if the aliquot file is not valid, show error message
+            if (maps == null) {
+                Toast.makeText(TablePainterActivity.this, "ERROR: Invalid Aliquot XML file.", Toast.LENGTH_LONG).show();
+                result = false;
 
-                final String field1 = entry1[0].trim();
-                final String field2 = entry2[0].trim();
+            } else {    // otherwise, continues parsing
 
-                Comparator<String> forNoah = new IntuitiveStringComparator<String>();
-                return forNoah.compare(field1, field2);
+                // saves Report Settings path in the SharedPreferences if table successfully opened
+                saveCurrentReportSettings();
+
+                fractionMap = (TreeMap<String, Fraction>) maps.getFractionMap();
+                imageMap = (TreeMap<String, Image>) maps.getImageMap();
+
+                final String aliquot = AliquotParser.getAliquotName();
+
+                // Fills the Report Setting and Aliquot arrays
+                String[][] reportSettingsArray = fillReportSettingsArray(
+                        outputVariableNames, categoryMap);
+                String[][] fractionArray = fillFractionArray(outputVariableNames,
+                        categoryMap, fractionMap, aliquot);
+
+                //Sorts the table array
+                Arrays.sort(fractionArray, new Comparator<String[]>() {
+                    @Override
+                    public int compare(final String[] entry1, final String[] entry2) {
+
+                        final String field1 = entry1[0].trim();
+                        final String field2 = entry2[0].trim();
+
+                        Comparator<String> forNoah = new IntuitiveStringComparator<String>();
+                        return forNoah.compare(field1, field2);
+                    }
+                });
+
+                // Creates the final table array for displaying
+                finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
+
+                // Creates database entry from current entry
+                CHRONIDatabaseHelper entryHelper = new CHRONIDatabaseHelper(this);
+                entryHelper.createEntry(getCurrentTime(), getAliquotFilePath(), getReportSettingsFilePath());
+                Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
             }
-        });
+        }
 
-        // Creates the final table array for displaying
-        finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
-
-        // Creates database entry from current entry
-        CHRONIDatabaseHelper entryHelper = new CHRONIDatabaseHelper(this);
-        entryHelper.createEntry(getCurrentTime(), getAliquotFilePath(), getReportSettingsFilePath());
-        Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
-
+        return result;
     }
 
     /**
@@ -1110,6 +1140,16 @@ public class TablePainterActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.table_menu, menu);
         return true;
+    }
+
+    /**
+     * Stores Current Report Settings
+     */
+    protected void saveCurrentReportSettings() {
+        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("Current Report Settings", getReportSettingsFilePath());
+        editor.apply(); // Committing changes
     }
 
     @Override

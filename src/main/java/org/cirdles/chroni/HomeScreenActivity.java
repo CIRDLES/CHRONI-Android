@@ -133,6 +133,7 @@ public class HomeScreenActivity extends Activity  {
                         "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings.xml",
                         "url");
                 downloader.startFileDownload();     // begins download
+                defaultReportSettingsPresent = true;
                 saveInitialLaunch();
                 saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
             }
@@ -145,6 +146,7 @@ public class HomeScreenActivity extends Activity  {
                         "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings%202.xml",
                         "url");
                 downloader2.startFileDownload();    // begins download
+                defaultReportSettings2Present = true;
                 saveInitialLaunch();
                 saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
             }
@@ -167,11 +169,12 @@ public class HomeScreenActivity extends Activity  {
      */
     protected void saveCurrentReportSettings() {
         // Establishes the CHRONI folders
-        File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings"); //Creating an internal directory for CHRONI files
-
+        File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Report Settings");
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("Current Report Settings", reportSettingsDirectory.getPath() + "/Default Report Settings.xml"); // makes the Default Report Settings the current report settings
+
+        // makes the Default Report Settings the current report settings
+        editor.putString("Current Report Settings", reportSettingsDirectory.getPath() + "/Default Report Settings.xml");
         editor.apply(); // Committing changes
     }
 

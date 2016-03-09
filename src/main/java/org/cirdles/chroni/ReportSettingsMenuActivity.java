@@ -21,6 +21,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.IOException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 /**
  * This activity provides the user with the Report Settings file selection menu actions and setup
  */
@@ -55,7 +65,6 @@ public class ReportSettingsMenuActivity extends Activity {
                         Intent openFilePicker = new Intent("android.intent.action.FILEPICKER");
                         openFilePicker.putExtra("Default_Directory", "From_Report_Directory");
                         startActivityForResult(openFilePicker, 1);  // Open FilePicker to get back a new Report Settings file
-                        saveCurrentReportSettings();
                     }
                 });
 
@@ -75,26 +84,34 @@ public class ReportSettingsMenuActivity extends Activity {
             public void onClick(View v) {
                 if (reportSettingsSelectedFileText.getText().length() != 0) {
 
-                    if (getIntent().hasExtra("From_Table")) {
+                    if (getIntent().hasExtra("From_Table")) {   // when coming from an Aliquot Display Table
                         if (getIntent().getStringExtra("From_Table").equals("true")) {
 
-                            Toast.makeText(ReportSettingsMenuActivity.this, "Changing Report Settings...", Toast.LENGTH_LONG).show();
-                            Intent returnReportSettings = new Intent("android.intent.action.DISPLAY");
-                            returnReportSettings.putExtra("newReportSettings", "true"); // tells if new report settings have been chosen
+                            // if the Report Settings file selected is valid, return to the new table
+                            if (validateFile(selectedReportSettings)) {
+                                Toast.makeText(ReportSettingsMenuActivity.this, "Changing Report Settings...", Toast.LENGTH_LONG).show();
+                                Intent returnReportSettings = new Intent("android.intent.action.DISPLAY");
+                                returnReportSettings.putExtra("newReportSettings", "true"); // tells if new report settings have been chosen
 
-                            saveCurrentReportSettings();
+                                setResult(RESULT_OK, returnReportSettings);
+                                finish();
 
-                            setResult(RESULT_OK, returnReportSettings);
-                            finish();
+                            } else  // if it is no valid, display a message
+                                Toast.makeText(ReportSettingsMenuActivity.this, "ERROR: Invalid Report Settings XML file.", Toast.LENGTH_LONG).show();
+
                         }
 
                     } else {
 
-                        Intent openDisplayTable = new Intent("android.intent.action.DISPLAY");
-                        openDisplayTable.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
+                        // if the Report Settings file selected is valid, return to the new table
+                        if (validateFile(selectedReportSettings)) {
+                            Intent openDisplayTable = new Intent("android.intent.action.DISPLAY");
+                            openDisplayTable.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
 
-                        saveCurrentReportSettings();
-                        startActivity(openDisplayTable);
+                            startActivity(openDisplayTable);
+                        } else  // if it is no valid, display a message
+                            Toast.makeText(ReportSettingsMenuActivity.this, "ERROR: Invalid Report Settings XML file.", Toast.LENGTH_LONG).show();
+
                     }
                 }
             }
@@ -140,21 +157,39 @@ public class ReportSettingsMenuActivity extends Activity {
     }
 
     /**
+     * Checks an XML file at the specified file path to see if it is a ReportSettings file
+     *
+     * @param filePath the path to the XML file
+     * @return a boolean stating whether it is valid or not
+     */
+    private boolean validateFile(String filePath) {
+        // initializes the end result
+        boolean result = false;
+
+        try {
+            // builds the XML file to parse and check for validity
+            File xmlFile = new File(filePath);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(xmlFile);
+
+            // returns true if the first node is ReportSettings
+            result = doc.getDocumentElement().getNodeName().equals("ReportSettings");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // returns false if there was a different error
+        return result;
+    }
+
+    /**
      * Accesses current report settings file
      */
     private String retrieveReportSettingsFileName() {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
         return settings.getString("Current Report Settings", "Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
-    }
-
-    /**
-     * Stores Current Report Settings
-     */
-    protected void saveCurrentReportSettings() {
-        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("Current Report Settings", getIntent().getStringExtra("ReportSettingsXMLFileName")); // gets chosen file from file browser and stores
-        editor.apply(); // Committing changes
     }
 
     @Override

@@ -23,6 +23,13 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import org.w3c.dom.Document;
+
+import java.io.File;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 public class AliquotMenuActivity extends Activity {
 
     // Layout variables
@@ -77,28 +84,39 @@ public class AliquotMenuActivity extends Activity {
                     if (getIntent().hasExtra("From_Table")) {
                         if (getIntent().getStringExtra("From_Table").equals("true")) {
 
-                            Toast.makeText(AliquotMenuActivity.this, "Changing Aliquot...", Toast.LENGTH_LONG).show(); // lets user know table is opening
-                            Intent returnAliquot = new Intent("android.intent.action.DISPLAY");
-                            returnAliquot.putExtra("newAliquot", "true");   // tells if a new aliquot has been chosen
+                            // if the Aliquot selected is valid, return to the new table
+                            if (validateFile(getIntent().getStringExtra("AliquotXMLFileName"))) {
+                                Toast.makeText(AliquotMenuActivity.this, "Changing Aliquot...", Toast.LENGTH_LONG).show(); // lets user know table is opening
+                                Intent returnAliquot = new Intent("android.intent.action.DISPLAY");
+                                returnAliquot.putExtra("newAliquot", "true");   // tells if a new aliquot has been chosen
 
-                            saveCurrentAliquot();
+                                saveCurrentAliquot();
 
-                            setResult(RESULT_OK, returnAliquot);
-                            finish();
+                                setResult(RESULT_OK, returnAliquot);
+                                finish();
+
+                            } else  // if it is not valid, display a message
+                                Toast.makeText(AliquotMenuActivity.this, "ERROR: Invalid Aliquot XML file.", Toast.LENGTH_LONG).show();
+
                         }
 
                     } else {
 
-                        // Makes sure there is a file selected
-                        Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
-                        Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
-                        openDisplayTable.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
+                        // if the Aliquot selected is valid, return to the new table
+                        if (validateFile(getIntent().getStringExtra("AliquotXMLFileName"))) {
+                            // Makes sure there is a file selected
+                            Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
+                            Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
+                            openDisplayTable.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
 
-                        saveCurrentAliquot();
+                            saveCurrentAliquot();
 
-                        startActivity(openDisplayTable); // Starts display activity
+                            startActivity(openDisplayTable); // Starts display activity
+
+                        } else  // if it is not valid, display a message
+                            Toast.makeText(AliquotMenuActivity.this, "ERROR: Invalid Aliquot XML file.", Toast.LENGTH_LONG).show();
+
                     }
-
 
                 } else {
                     // Tells user to select a file for viewing
@@ -202,6 +220,34 @@ public class AliquotMenuActivity extends Activity {
                 }
             }
         }
+    }
+
+    /**
+     * Checks an XML file at the specified file path to see if it is a Aliquot file
+     *
+     * @param filePath the path to the XML file
+     * @return a boolean stating whether it is valid or not
+     */
+    private boolean validateFile(String filePath) {
+        // initializes the end result
+        boolean result = false;
+
+        try {
+            // builds the XML file to parse and check for validity
+            File xmlFile = new File(filePath);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(xmlFile);
+
+            // returns true if the first node is Aliquot
+            result = doc.getDocumentElement().getNodeName().equals("Aliquot");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // returns false if there was a different error
+        return result;
     }
 
     /**

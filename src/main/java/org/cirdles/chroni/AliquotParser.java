@@ -1,6 +1,7 @@
 package org.cirdles.chroni;
 
 import java.io.File;
+import java.lang.ref.SoftReference;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -12,13 +13,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/*
+/**
  * This class parses Aliquot XML files.
  */
 
 public class AliquotParser {
 
-	private static String fileName; // Aliquot file to be parsed
 	private static String aliquotName; // the Aliquot name
 
 	private static SortedMap<String, Fraction> fractionMap; // Collects the fractions in the Aliquot XML file
@@ -33,70 +33,76 @@ public class AliquotParser {
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			DomParser parser = new DomParser();
 			Document doc = dBuilder.parse(fXmlFile);
-		
-			// Get the document's root XML nodes to get aliquot name for file
-			NodeList root = doc.getChildNodes();
-			Node rootNode = parser.getNode("Aliquot", root);
-			NodeList rootNodes = rootNode.getChildNodes();
-			aliquotName = parser.getNodeValue("aliquotName", rootNodes);
-								
-			// Gets the document's image data
-			imageMap = new TreeMap<String, Image>();
-			NodeList analysisImages = doc.getElementsByTagName("AnalysisImage"); // Creates a list of all different images
-			for(int n = 0; n < analysisImages.getLength(); n++){
-				// Creates a NodeList of the data found under the specific Image column
-				Node analysisImage = analysisImages.item(n);
-				NodeList analysisImageNodes = analysisImage.getChildNodes();
-				String imageType = parser.getNodeValue("imageType",analysisImageNodes);
-				String imageUrl = parser.getNodeValue("imageURL",analysisImageNodes);
-				Image image = new Image(imageType, imageUrl);
-				imageMap.put(imageType, image);
-			}
-			
-			// Creates a NodeList of all the Analysis Fraction columns within the "analysisFractions" node 
-			NodeList analysisFractionColumns = doc.getElementsByTagName("AnalysisFraction");			
-			
-			// Instantiates the map needed to store the visible categories
-			fractionMap = new TreeMap<String, Fraction>();
-			
-			// Loops through each Analysis Fraction Column to gather information
-			for(int i = 0; i < analysisFractionColumns.getLength(); i++){
-				//Creates a NodeList of the data found under the specific Analysis Fraction column 
-				Node analysisFraction = analysisFractionColumns.item(i);
-				Element specificAnalysisFraction = (Element) analysisFraction;
-				
-				NodeList analysisFractionNodes = analysisFraction.getChildNodes(); 
 
-				// Collects the overall info about the fraction necessary for parsing
-				String fractionID = parser.getNodeValue("fractionID",analysisFractionNodes);
+			// gets the type of the XML based on the first node and continues only if it is Aliquot
+			if (doc.getDocumentElement().getNodeName().equals("Aliquot")) {
 
-				String numberOfGrains = parser.getNodeValue("numberOfGrains", analysisFractionNodes);
+				// Get the document's root XML nodes to get aliquot name for file
+				NodeList root = doc.getChildNodes();
+				Node rootNode = parser.getNode("Aliquot", root);
+				NodeList rootNodes = rootNode.getChildNodes();
+				aliquotName = parser.getNodeValue("aliquotName", rootNodes);
+
+				// Gets the document's image data
+				imageMap = new TreeMap<String, Image>();
+				NodeList analysisImages = doc.getElementsByTagName("AnalysisImage"); // Creates a list of all different images
+				for (int n = 0; n < analysisImages.getLength(); n++) {
+					// Creates a NodeList of the data found under the specific Image column
+					Node analysisImage = analysisImages.item(n);
+					NodeList analysisImageNodes = analysisImage.getChildNodes();
+					String imageType = parser.getNodeValue("imageType", analysisImageNodes);
+					String imageUrl = parser.getNodeValue("imageURL", analysisImageNodes);
+					Image image = new Image(imageType, imageUrl);
+					imageMap.put(imageType, image);
+				}
+
+				// Creates a NodeList of all the Analysis Fraction columns within the "analysisFractions" node
+				NodeList analysisFractionColumns = doc.getElementsByTagName("AnalysisFraction");
+
+				// Instantiates the map needed to store the visible categories
+				fractionMap = new TreeMap<String, Fraction>();
+
+				// Loops through each Analysis Fraction Column to gather information
+				for (int i = 0; i < analysisFractionColumns.getLength(); i++) {
+					//Creates a NodeList of the data found under the specific Analysis Fraction column
+					Node analysisFraction = analysisFractionColumns.item(i);
+					Element specificAnalysisFraction = (Element) analysisFraction;
+
+					NodeList analysisFractionNodes = analysisFraction.getChildNodes();
+
+					// Collects the overall info about the fraction necessary for parsing
+					String fractionID = parser.getNodeValue("fractionID", analysisFractionNodes);
+
+					String numberOfGrains = parser.getNodeValue("numberOfGrains", analysisFractionNodes);
 
 
-				// Creates a new Fraction with the information parsed from the XML file and puts it in the map
-				Fraction newFraction = new Fraction(fractionID, numberOfGrains);
-				fractionMap.put(fractionID, newFraction);	
-								
-				// Gets all the value models in the specific fraction
-				NodeList fractionValueModels = specificAnalysisFraction.getElementsByTagName("ValueModel");
+					// Creates a new Fraction with the information parsed from the XML file and puts it in the map
+					Fraction newFraction = new Fraction(fractionID, numberOfGrains);
+					fractionMap.put(fractionID, newFraction);
 
-				for(int m = 0; m < fractionValueModels.getLength(); m++){
-					Node valueModelNode = fractionValueModels.item(m); // makes a node of the current Value Model
-					Element specificValueModel = (Element) valueModelNode;
-					NodeList valueModelNodes = specificValueModel.getChildNodes(); // list of nodes that contain the information in the current Value Model
-								
-					String name = parser.getNodeValue("name",valueModelNodes); // Used to link to a column's variable name
-					String value = parser.getNodeValue("value", valueModelNodes); // Used to display numerical value of normal columns
-					String uncertaintyType = parser.getNodeValue("uncertaintyType",valueModelNodes); // Used to determine how to calculate uncertainty value
-					String oneSigma = parser.getNodeValue("oneSigma", valueModelNodes); // Used to display numerical value of uncertainty column
+					// Gets all the value models in the specific fraction
+					NodeList fractionValueModels = specificAnalysisFraction.getElementsByTagName("ValueModel");
 
-					// Creates a new value model for the fraction
-					// Every fraction has several value models used to build the table
-					ValueModel valueModel = new ValueModel(name, Float.parseFloat(value), uncertaintyType, Float.parseFloat(oneSigma));
-					newFraction.getValueModelMap().put(valueModel.getName(), valueModel);
-					}			
-			}			
-		} 
+					for (int m = 0; m < fractionValueModels.getLength(); m++) {
+						Node valueModelNode = fractionValueModels.item(m); // makes a node of the current Value Model
+						Element specificValueModel = (Element) valueModelNode;
+						NodeList valueModelNodes = specificValueModel.getChildNodes(); // list of nodes that contain the information in the current Value Model
+
+						String name = parser.getNodeValue("name", valueModelNodes); // Used to link to a column's variable name
+						String value = parser.getNodeValue("value", valueModelNodes); // Used to display numerical value of normal columns
+						String uncertaintyType = parser.getNodeValue("uncertaintyType", valueModelNodes); // Used to determine how to calculate uncertainty value
+						String oneSigma = parser.getNodeValue("oneSigma", valueModelNodes); // Used to display numerical value of uncertainty column
+
+						// Creates a new value model for the fraction
+						// Every fraction has several value models used to build the table
+						ValueModel valueModel = new ValueModel(name, Float.parseFloat(value), uncertaintyType, Float.parseFloat(oneSigma));
+						newFraction.getValueModelMap().put(valueModel.getName(), valueModel);
+					}
+				}
+
+			} else	// if the XML file is invalid, return null
+				return null;
+		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -104,10 +110,10 @@ public class AliquotParser {
 		// Returns the MapTuple object containing both maps
 		return new MapTuple(fractionMap, imageMap);
 
-	} // Closes the parsing aliquot method
+	}
 		
 	public static String getAliquotName() {
 		return aliquotName;
 	}
 	
-}// Closes the class
+}
