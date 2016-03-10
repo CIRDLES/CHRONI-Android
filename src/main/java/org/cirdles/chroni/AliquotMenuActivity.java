@@ -107,7 +107,6 @@ public class AliquotMenuActivity extends Activity {
                             // Makes sure there is a file selected
                             Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
                             Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
-                            openDisplayTable.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
 
                             saveCurrentAliquot();
 
@@ -233,19 +232,25 @@ public class AliquotMenuActivity extends Activity {
     private boolean validateFile(String filePath) {
         // initializes the end result
         boolean result = false;
+        String[] splitPathAtPeriod = filePath.split("\\.");
 
-        try {
-            // builds the XML file to parse and check for validity
-            File xmlFile = new File(filePath);
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(xmlFile);
+        if (splitPathAtPeriod.length > 0) { // makes sure there is something to index
+            // then makes sure that the file is an XML file
+            if (splitPathAtPeriod[splitPathAtPeriod.length - 1].equals("xml")) {
+                try {
+                    // builds the XML file to parse and checks for validity
+                    File xmlFile = new File(filePath);
+                    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                    Document doc = dBuilder.parse(xmlFile);
 
-            // returns true if the first node is Aliquot
-            result = doc.getDocumentElement().getNodeName().equals("Aliquot");
+                    // returns true if the first node is Aliquot
+                    result = doc.getDocumentElement().getNodeName().equals("Aliquot");
 
-        } catch (Exception e) {
-            e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         // returns false if there was a different error

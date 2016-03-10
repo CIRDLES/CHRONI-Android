@@ -108,72 +108,77 @@ public class TablePainterActivity extends Activity {
         ReportSettingsParser reportSettingsParser = new ReportSettingsParser();
         setReportSettingsFilePath(retrieveReportSettingsFilePath());
 
-        System.out.println(getReportSettingsFilePath());
-
         // Parses the Report Settings XML file
         categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
         outputVariableNames = reportSettingsParser.getOutputVariableNames();
 
-        // if the report settings file is invalid, show error message
+        // if the report settings file is invalid, show error message and switch Report Settings path
         if (categoryMap == null) {
-            Toast.makeText(TablePainterActivity.this, "ERROR: Invalid Report Settings XML file.", Toast.LENGTH_LONG).show();
+            Toast.makeText(TablePainterActivity.this, "ERROR: Invalid Report Settings XML file, switched to Default Report Settings.",
+                    Toast.LENGTH_LONG).show();
+
+            // if the Report Settings file is invalid at this stage, switch to Default Report Settings
+            setReportSettingsFilePath(Environment.getExternalStorageDirectory()
+                    + "/CHRONI/Report Settings/Default Report Settings.xml");
+
+            // Re-parses the Report Settings XML file
+            categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
+            outputVariableNames = reportSettingsParser.getOutputVariableNames();
+
+        }
+
+        columnMaxLengths = new ArrayList<Integer>();
+        columnDecimals = new ArrayList<Boolean>();
+
+        // gets and sets the current Aliquot path
+        String aliquotPath = retrieveAliquotFilePath();
+        setAliquotFilePath(aliquotPath);
+        previousAliquotFilePath = aliquotPath;  // saves path for later
+
+        // Parses aliquot file and retrieves maps
+        MapTuple maps = AliquotParser.runAliquotParser(getAliquotFilePath());
+
+        // if the aliquot file is not valid, show error message
+        if (maps == null) {
+            Toast.makeText(TablePainterActivity.this, "ERROR: Invalid Aliquot XML file.", Toast.LENGTH_LONG).show();
             result = false;
 
-        } else {    // otherwise, moves on and parses the aliquot file
+        } else {    // otherwise, continues parsing
 
-            columnMaxLengths = new ArrayList<Integer>();
-            columnDecimals = new ArrayList<Boolean>();
+            // saves Report Settings path in the SharedPreferences if table successfully opened
+            saveCurrentReportSettings();
 
-            // gets and sets the current Aliquot path
-            String aliquotPath = retrieveAliquotFilePath();
-            setAliquotFilePath(aliquotPath);
-            previousAliquotFilePath = aliquotPath;  // saves path for later
+            fractionMap = (TreeMap<String, Fraction>) maps.getFractionMap();
+            imageMap = (TreeMap<String, Image>) maps.getImageMap();
 
-            // Parses aliquot file and retrieves maps
-            MapTuple maps = AliquotParser.runAliquotParser(getAliquotFilePath());
+            final String aliquot = AliquotParser.getAliquotName();
 
-            // if the aliquot file is not valid, show error message
-            if (maps == null) {
-                Toast.makeText(TablePainterActivity.this, "ERROR: Invalid Aliquot XML file.", Toast.LENGTH_LONG).show();
-                result = false;
+            // Fills the Report Setting and Aliquot arrays
+            String[][] reportSettingsArray = fillReportSettingsArray(
+                    outputVariableNames, categoryMap);
+            String[][] fractionArray = fillFractionArray(outputVariableNames,
+                    categoryMap, fractionMap, aliquot);
 
-            } else {    // otherwise, continues parsing
+            //Sorts the table array
+            Arrays.sort(fractionArray, new Comparator<String[]>() {
+                @Override
+                public int compare(final String[] entry1, final String[] entry2) {
 
-                // saves Report Settings path in the SharedPreferences if table successfully opened
-                saveCurrentReportSettings();
+                    final String field1 = entry1[0].trim();
+                    final String field2 = entry2[0].trim();
 
-                fractionMap = (TreeMap<String, Fraction>) maps.getFractionMap();
-                imageMap = (TreeMap<String, Image>) maps.getImageMap();
+                    Comparator<String> forNoah = new IntuitiveStringComparator<String>();
+                    return forNoah.compare(field1, field2);
+                }
+            });
 
-                final String aliquot = AliquotParser.getAliquotName();
+            // Creates the final table array for displaying
+            finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
 
-                // Fills the Report Setting and Aliquot arrays
-                String[][] reportSettingsArray = fillReportSettingsArray(
-                        outputVariableNames, categoryMap);
-                String[][] fractionArray = fillFractionArray(outputVariableNames,
-                        categoryMap, fractionMap, aliquot);
-
-                //Sorts the table array
-                Arrays.sort(fractionArray, new Comparator<String[]>() {
-                    @Override
-                    public int compare(final String[] entry1, final String[] entry2) {
-
-                        final String field1 = entry1[0].trim();
-                        final String field2 = entry2[0].trim();
-
-                        Comparator<String> forNoah = new IntuitiveStringComparator<String>();
-                        return forNoah.compare(field1, field2);
-                    }
-                });
-
-                // Creates the final table array for displaying
-                finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
-
-                // Creates database entry from current entry
-                CHRONIDatabaseHelper entryHelper = new CHRONIDatabaseHelper(this);
-                entryHelper.createEntry(getCurrentTime(), getAliquotFilePath(), getReportSettingsFilePath());
-                Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
-            }
+            // Creates database entry from current entry
+            CHRONIDatabaseHelper entryHelper = new CHRONIDatabaseHelper(this);
+            entryHelper.createEntry(getCurrentTime(), getAliquotFilePath(), getReportSettingsFilePath());
+            Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
         }
 
         return result;
@@ -331,14 +336,19 @@ public class TablePainterActivity extends Activity {
                     categoryCell.setHorizontallyScrolling(true);    // make sure that the text does not wrap
                     if (category.getValue().getDisplayName().contentEquals("Fraction") && categoryCount != 0) { // Easy fix to handle the issue of sizing with last fraction category TODO: Make better!
                         // Simply sets same size as fraction because its always the same length with last column
-                        categoryCell.setMinEms(columnSizes[columnSizes.length - 1] + 2);
-                        categoryCell.setMaxEms(columnSizes[columnSizes.length - 1] + 2);
+                        int desiredLength = columnSizes[columnSizes.length - 1] + 2;
+
+                        categoryCell.setMinEms(desiredLength);
+                        categoryCell.setMaxEms(desiredLength);
+
                     } else {
                         // sets column spacing based on max character count and allows extra space for crowding
-                        categoryCell.setMinEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount()));
-                        categoryCell.setMaxEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount()));
+                        int desiredLength = headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount());
 
+                        categoryCell.setMinEms(desiredLength);
+                        categoryCell.setMaxEms(desiredLength);
                     }
+
                     categoryCell.setPadding(3, 4, 3, 4);
                     categoryCell.setTextSize((float) 14.5);
                     categoryCell.setTextColor(Color.BLACK);
@@ -346,8 +356,8 @@ public class TablePainterActivity extends Activity {
                     categoryCell.setGravity(Gravity.START);
                     categoryRow.addView(categoryCell); // Adds cell to row
                 }
-                categoryCount++;
 
+                categoryCount++;
             }
 
 
@@ -358,17 +368,15 @@ public class TablePainterActivity extends Activity {
                 TableRow row = new TableRow(this);
 
                 // puts rows in appropriate place on layout
-                if (currentRow < 4) {
+                if (currentRow < 4)
                     // Report Settings and aliquot name rows
                     headerInformationTable.addView(row);
 
-                } else {
+                else
                     // Adds aliquot rows to the aliquot scroll table
                     aliquotDataTable.addView(row);
-                }
 
-                // loops through number of columns and adds text views to each row.
-                // this creates cells!
+                // loops through number of columns and adds text views to each row. This creates cells!
                 for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
                     TextView cell = new TextView(this);
                     cell.setTypeface(Typeface.MONOSPACE);
@@ -381,21 +389,20 @@ public class TablePainterActivity extends Activity {
                     cell.setTextSize((float) 14.5);
                     cell.setGravity(Gravity.END);
 
-                    // sets appropriate background color for cells
-                    if (currentRow < 4) {
-                        // Colors all header cells same color
+                    // sets appropriate background colors for cells
+                    if (currentRow < 4) // colors all header cells same color
                         cell.setBackgroundResource(R.drawable.background_blue_background);
-                    } else if (currentRow == 4) {
-                        // Handles aliquot name cell
+
+                    else if (currentRow == 4) { // handles aliquot name cell
                         cell.setTextColor(Color.WHITE);
                         cell.setBackgroundResource(R.drawable.light_blue_background);
-                    } else if (currentRow > 4 && currentRow % 2 == 1) {
-                        // colors odd body rows
-                        cell.setBackgroundResource(R.drawable.light_grey_background);
-                    } else {
-                        // colors all even body rows
-                        cell.setBackgroundResource(R.drawable.white_background);
                     }
+                    else if (currentRow > 4 && currentRow % 2 == 1) // colors odd body rows
+                        cell.setBackgroundResource(R.drawable.light_grey_background);
+
+                    else    // colors all even body rows
+                        cell.setBackgroundResource(R.drawable.white_background);
+
 
                     // Adds text to cells
                     if (currentRow > 4) {   // Handles all of the data cells
@@ -406,7 +413,7 @@ public class TablePainterActivity extends Activity {
                         String paddedText = setTextPadding(text, length, hasDecimal);
                         cell.setText(paddedText);
 
-                    } else { // Handles all of the header rows and aliquot name rows
+                    } else {    // Handles all of the header rows and aliquot name rows
                         cell.setTypeface(Typeface.DEFAULT_BOLD);
                         cell.setTypeface(Typeface.MONOSPACE);
                         cell.setGravity(Gravity.CENTER);
@@ -417,14 +424,12 @@ public class TablePainterActivity extends Activity {
 
                     cell.setVisibility(View.VISIBLE);
 
-                    if (cell.getText().equals("-")) {
+                    if (cell.getText().equals("-"))
                         cell.setGravity(Gravity.CENTER);
-                    }
 
                     // left justify fraction column
-                    if (isFractionColumn(finalArray, currentColumn)) {
+                    if (isFractionColumn(finalArray, currentColumn))
                         cell.setGravity(Gravity.START);
-                    }
 
                     // append an individual cell to a content row
                     row.addView(cell);

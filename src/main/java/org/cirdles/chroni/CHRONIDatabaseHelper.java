@@ -63,8 +63,10 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
         if (!aliquotAlreadyExists(aliquotName))   // only insert the entire entry it if it does not exist
             db.insert(DATABASE_TABLE, null, cv);
 
-        else  // if it already exists, just update the time
-            db.update(DATABASE_TABLE, cv, ALIQUOT_NAME + "='" + aliquotName + "'", null);
+        else {  // if it already exists, just update the time
+            db.delete(DATABASE_TABLE, ALIQUOT_NAME + "='" + aliquotName + "'", null);
+            db.insert(DATABASE_TABLE, null, cv);
+        }
 
         db.close();
     }

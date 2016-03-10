@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -22,21 +21,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * This activity provides the user with the Report Settings file selection menu actions and setup
  */
 public class ReportSettingsMenuActivity extends Activity {
     //layout variables
-    private Button reportSettingsApplyButton;// open button to the display table
     private EditText reportSettingsSelectedFileText; // contains name of the report settings file for viewing
 
     private String selectedReportSettings; // name of Report Settings file that has been chosen for viewing
@@ -79,7 +74,7 @@ public class ReportSettingsMenuActivity extends Activity {
         }
 
         // Opens the display screen with the selected report settings file
-        reportSettingsApplyButton = (Button) findViewById(R.id.reportSettingsFileOpenButton);
+        Button reportSettingsApplyButton = (Button) findViewById(R.id.reportSettingsFileOpenButton);
         reportSettingsApplyButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (reportSettingsSelectedFileText.getText().length() != 0) {
@@ -93,6 +88,7 @@ public class ReportSettingsMenuActivity extends Activity {
                                 Intent returnReportSettings = new Intent("android.intent.action.DISPLAY");
                                 returnReportSettings.putExtra("newReportSettings", "true"); // tells if new report settings have been chosen
 
+                                saveCurrentReportSettings(selectedReportSettings);
                                 setResult(RESULT_OK, returnReportSettings);
                                 finish();
 
@@ -106,8 +102,8 @@ public class ReportSettingsMenuActivity extends Activity {
                         // if the Report Settings file selected is valid, return to the new table
                         if (validateFile(selectedReportSettings)) {
                             Intent openDisplayTable = new Intent("android.intent.action.DISPLAY");
-                            openDisplayTable.putExtra("ReportSettingsXML", getIntent().getStringExtra("ReportSettingsXMLFileName")); // Sends selected report settings file to display activity
 
+                            saveCurrentReportSettings(selectedReportSettings);
                             startActivity(openDisplayTable);
                         } else  // if it is no valid, display a message
                             Toast.makeText(ReportSettingsMenuActivity.this, "ERROR: Invalid Report Settings XML file.", Toast.LENGTH_LONG).show();
@@ -124,6 +120,18 @@ public class ReportSettingsMenuActivity extends Activity {
                     finish();
             }
         });
+    }
+
+    /**
+     * Stores Current Report Settings
+     *
+     * @param filePath the path to the Report Settings file
+     */
+    protected void saveCurrentReportSettings(String filePath) {
+        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("Current Report Settings", filePath);
+        editor.apply(); // Committing changes
     }
 
     // Gets the result from a FilePicker Activity initiated from a Report Settings Menu (by pressing the + button)
@@ -165,19 +173,25 @@ public class ReportSettingsMenuActivity extends Activity {
     private boolean validateFile(String filePath) {
         // initializes the end result
         boolean result = false;
+        String[] splitPathAtPeriod = filePath.split("\\.");
 
-        try {
-            // builds the XML file to parse and check for validity
-            File xmlFile = new File(filePath);
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(xmlFile);
+        if (splitPathAtPeriod.length > 0) { // makes sure there is something to index
+            // then makes sure that the file is an XML file
+            if (splitPathAtPeriod[splitPathAtPeriod.length - 1].equals("xml")) {
+                try {
+                    // builds the XML file to parse and checks for validity
+                    File xmlFile = new File(filePath);
+                    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                    Document doc = dBuilder.parse(xmlFile);
 
-            // returns true if the first node is ReportSettings
-            result = doc.getDocumentElement().getNodeName().equals("ReportSettings");
+                    // returns true if the first node is ReportSettings
+                    result = doc.getDocumentElement().getNodeName().equals("ReportSettings");
 
-        } catch (Exception e) {
-            e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         // returns false if there was a different error
