@@ -88,9 +88,19 @@ public class AliquotMenuActivity extends Activity {
                             if (validateFile(getIntent().getStringExtra("AliquotXMLFileName"))) {
                                 Toast.makeText(AliquotMenuActivity.this, "Changing Aliquot...", Toast.LENGTH_LONG).show(); // lets user know table is opening
                                 Intent returnAliquot = new Intent("android.intent.action.DISPLAY");
-                                returnAliquot.putExtra("newAliquot", "true");   // tells if a new aliquot has been chosen
+                                returnAliquot.putExtra("newAliquot", "true");   // tells if a new Aliquot has been chosen
 
-                                saveCurrentAliquot();
+                                // tells Intent that it is from a previous table that was opened via the History table
+                                if (getIntent().hasExtra("fromHistory")) {
+                                    returnAliquot.putExtra("fromHistory", getIntent().getStringExtra("fromHistory"));
+                                    returnAliquot.putExtra("historyAliquot", getIntent().getStringExtra("AliquotXMLFileName"));
+
+                                    if (!getIntent().getStringExtra("fromHistory").equals("true"))
+                                        saveCurrentAliquot();   // saves Aliquot if Intent was NOT originally from the History table
+                                }
+
+                                else    // saves Aliquot if Intent was NOT originally from the History table (and doesn't have extra)
+                                    saveCurrentAliquot();
 
                                 setResult(RESULT_OK, returnAliquot);
                                 finish();
@@ -107,6 +117,7 @@ public class AliquotMenuActivity extends Activity {
                             // Makes sure there is a file selected
                             Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
                             Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
+                            openDisplayTable.putExtra("fromHistory", "false");  // tells Intent that it is not from History table
 
                             saveCurrentAliquot();
 

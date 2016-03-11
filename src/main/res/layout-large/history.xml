@@ -27,9 +27,8 @@
                 android:gravity="center">
 
                 <TextView
-                    android:visibility="invisible"
                     android:id="@+id/historyHeaderOne"
-                    android:width="150dp"
+                    android:width="130dp"
                     android:height="50dp"
                     android:text="Last Opened"
                     android:gravity="center"
@@ -39,9 +38,8 @@
                     android:background="@drawable/dark_grey_background"/>
 
                 <TextView
-                    android:visibility="invisible"
                     android:id="@+id/historyHeaderTwo"
-                    android:width="175dp"
+                    android:width="130dp"
                     android:height="50dp"
                     android:text="Aliquot"
                     android:gravity="center"
@@ -51,9 +49,19 @@
                     android:background="@drawable/dark_grey_background"/>
 
                 <TextView
-                    android:visibility="invisible"
                     android:id="@+id/historyHeaderThree"
-                    android:width="150dp"
+                    android:width="130dp"
+                    android:height="50dp"
+                    android:text="Report Settings"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:textSize="16sp"
+                    android:textColor="#000000"
+                    android:background="@drawable/dark_grey_background"/>
+
+                <TextView
+                    android:id="@+id/historyHeaderFour"
+                    android:width="130dp"
                     android:height="50dp"
                     android:text="View"
                     android:gravity="center"

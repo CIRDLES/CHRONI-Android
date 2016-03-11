@@ -88,7 +88,19 @@ public class ReportSettingsMenuActivity extends Activity {
                                 Intent returnReportSettings = new Intent("android.intent.action.DISPLAY");
                                 returnReportSettings.putExtra("newReportSettings", "true"); // tells if new report settings have been chosen
 
-                                saveCurrentReportSettings(selectedReportSettings);
+                                // tells Intent that it is from a previous table that was opened via the History table
+                                if (getIntent().hasExtra("fromHistory")) {
+                                    returnReportSettings.putExtra("fromHistory", getIntent().getStringExtra("fromHistory"));
+                                    returnReportSettings.putExtra("historyReportSettings", selectedReportSettings);
+
+                                    if (!getIntent().getStringExtra("fromHistory").equals("true"))
+                                        // saves RS if Intent was NOT originally from the History table
+                                        saveCurrentReportSettings(selectedReportSettings);
+                                }
+
+                                else    // saves RS if Intent was NOT originally from the History table (and doesn't have extra)
+                                    saveCurrentReportSettings(selectedReportSettings);
+
                                 setResult(RESULT_OK, returnReportSettings);
                                 finish();
 
@@ -102,6 +114,7 @@ public class ReportSettingsMenuActivity extends Activity {
                         // if the Report Settings file selected is valid, return to the new table
                         if (validateFile(selectedReportSettings)) {
                             Intent openDisplayTable = new Intent("android.intent.action.DISPLAY");
+                            openDisplayTable.putExtra("fromHistory", "false");  // tells Intent that it is not from History table
 
                             saveCurrentReportSettings(selectedReportSettings);
                             startActivity(openDisplayTable);

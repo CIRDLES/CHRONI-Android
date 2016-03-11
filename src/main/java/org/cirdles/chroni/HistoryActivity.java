@@ -35,8 +35,6 @@ import android.widget.Toast;
  */
 public class HistoryActivity extends Activity {
 
-    private static final String PREF_ALIQUOT = "Current Aliquot";   // Path of the current aliquot file
-
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,16 +66,17 @@ public class HistoryActivity extends Activity {
             if (myAliquots.getTotalEntryCount() < 10){
                 ROWS = (int) myAliquots.getTotalEntryCount() + 1; // Sizes the array based on how many entries are in database
             }
-            final long COLUMNS = 3;
+            final long COLUMNS = 4;
 
             // sets up the table to display the database
             TableLayout table = (TableLayout) findViewById(R.id.historyDatabaseTable);
 
             // stores the header TextViews for later
-            TextView[] headerCells = new TextView[3];
+            TextView[] headerCells = new TextView[4];
             headerCells[0] = (TextView) findViewById(R.id.historyHeaderOne);
             headerCells[1] = (TextView) findViewById(R.id.historyHeaderTwo);
             headerCells[2] = (TextView) findViewById(R.id.historyHeaderThree);
+            headerCells[3] = (TextView) findViewById(R.id.historyHeaderFour);
 
             // obtains the desired height and width to be used for each View
             TextView tempText = headerCells[0];
@@ -97,7 +96,7 @@ public class HistoryActivity extends Activity {
                 for (int currentColumn = 0; currentColumn < COLUMNS; currentColumn++) {
 
                     // Adds text to the history cells if not a button column or is header row
-                    if (currentColumn != 2 || currentRow == 0) {
+                    if (currentColumn != 3 || currentRow == 0) {
                         // if it is a header view, simply make it visible
                         if (currentRow == 0) {
                             TextView cell = headerCells[currentColumn];
@@ -120,7 +119,7 @@ public class HistoryActivity extends Activity {
                             }
 
                             // Properly formats all text cells
-                            textCell.setPadding(2, 2, 2, 2);
+                            textCell.setPadding(4, 4, 4, 4);
                             textCell.setTextSize(textSize - 2);
                             textCell.setGravity(Gravity.CENTER);
                             textCell.setWidth(width);
@@ -155,7 +154,7 @@ public class HistoryActivity extends Activity {
 
                         // Gets the current aliquot info for sending to the display table
                         final int currentAliquotRow = currentRow;
-                        final int currentAliquotColumn = currentColumn-1;
+                        final int currentAliquotColumn = currentColumn - 2;
 
                         //Changes button color back to blue if it is not already
                         openButton.setBackgroundResource(R.drawable.light_gray_button);
@@ -169,11 +168,12 @@ public class HistoryActivity extends Activity {
                                 Toast.makeText(HistoryActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
                                 Intent openTableScreen = new Intent("android.intent.action.DISPLAY");
 
-                                // saves aliquot and opens it
-                                SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
-                                SharedPreferences.Editor editor = settings.edit();
-                                editor.putString("Current Aliquot", database[currentAliquotRow][currentAliquotColumn]); // gets chosen file from file browser and stores
-                                editor.apply(); // Committing changes
+                                // put the aliquot file path into the Table Intent
+                                openTableScreen.putExtra("fromHistory", "true");
+                                openTableScreen.putExtra("historyAliquot",
+                                        database[currentAliquotRow][currentAliquotColumn]); // gives Aliquot file path
+                                openTableScreen.putExtra("historyReportSettings",
+                                        database[currentAliquotRow][currentAliquotColumn + 1]); // gives Report Settings file path
 
                                 startActivity(openTableScreen);
                             }

@@ -60,7 +60,8 @@ public class TablePainterActivity extends Activity {
     private static TableLayout headerInformationTable;
     private static TableLayout aliquotDataTable;
 
-    private static String previousAliquotFilePath = ""; // stores name of previous aliquot opened
+    private static String previousAliquotFilePath = ""; // stores name of previous Aliquot opened
+    private static String previousReportSettingsFilePath = "";  // stores name of previous Report Settings opened
 
     private String aliquotFilePath, reportSettingsFilePath; // The complete path of the aliquot and report settings files to be parsed and display
 
@@ -74,8 +75,9 @@ public class TablePainterActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setContentView(R.layout.display);
 
-        // if a new aliquot is trying to be opened, parse for data
-        if (!retrieveAliquotFilePath().equals(previousAliquotFilePath)) {
+        // if a new Aliquot or Report Settings file is trying to be opened, parse for data
+        if (!retrieveAliquotFilePath().equals(previousAliquotFilePath)
+                || !(retrieveReportSettingsFilePath().equals(previousReportSettingsFilePath))) {
             // resets tables to null
             categoryNameTable = null;
             headerInformationTable = null;
@@ -106,9 +108,11 @@ public class TablePainterActivity extends Activity {
 
         // Instantiates the Report Settings Parser and gets the current Report Settings path
         ReportSettingsParser reportSettingsParser = new ReportSettingsParser();
-        setReportSettingsFilePath(retrieveReportSettingsFilePath());
+        String reportSettingsPath = retrieveReportSettingsFilePath();
+        setReportSettingsFilePath(reportSettingsPath);
+        previousReportSettingsFilePath = reportSettingsPath;    // saves the Report Settings path for later
 
-        // Parses the Report Settings XML file
+        // parses the Report Settings XML file
         categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
         outputVariableNames = reportSettingsParser.getOutputVariableNames();
 
@@ -121,7 +125,7 @@ public class TablePainterActivity extends Activity {
             setReportSettingsFilePath(Environment.getExternalStorageDirectory()
                     + "/CHRONI/Report Settings/Default Report Settings.xml");
 
-            // Re-parses the Report Settings XML file
+            // re-parses the Report Settings XML file
             categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
             outputVariableNames = reportSettingsParser.getOutputVariableNames();
 
@@ -133,9 +137,9 @@ public class TablePainterActivity extends Activity {
         // gets and sets the current Aliquot path
         String aliquotPath = retrieveAliquotFilePath();
         setAliquotFilePath(aliquotPath);
-        previousAliquotFilePath = aliquotPath;  // saves path for later
+        previousAliquotFilePath = aliquotPath;  // saves Aliquot file path for later
 
-        // Parses aliquot file and retrieves maps
+        // parses aliquot file and retrieves maps
         MapTuple maps = AliquotParser.runAliquotParser(getAliquotFilePath());
 
         // if the aliquot file is not valid, show error message
@@ -153,13 +157,13 @@ public class TablePainterActivity extends Activity {
 
             final String aliquot = AliquotParser.getAliquotName();
 
-            // Fills the Report Setting and Aliquot arrays
+            // fills the Report Setting and Aliquot arrays
             String[][] reportSettingsArray = fillReportSettingsArray(
                     outputVariableNames, categoryMap);
             String[][] fractionArray = fillFractionArray(outputVariableNames,
                     categoryMap, fractionMap, aliquot);
 
-            //Sorts the table array
+            // sorts the table array
             Arrays.sort(fractionArray, new Comparator<String[]>() {
                 @Override
                 public int compare(final String[] entry1, final String[] entry2) {
@@ -172,13 +176,11 @@ public class TablePainterActivity extends Activity {
                 }
             });
 
-            // Creates the final table array for displaying
+            // creates the final table array for displaying
             finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
 
-            // Creates database entry from current entry
-            CHRONIDatabaseHelper entryHelper = new CHRONIDatabaseHelper(this);
-            entryHelper.createEntry(getCurrentTime(), getAliquotFilePath(), getReportSettingsFilePath());
-            Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
+            // creates database entry from current entry only if NOT coming from the History table
+            saveTableInformation();
         }
 
         return result;
@@ -201,6 +203,11 @@ public class TablePainterActivity extends Activity {
             public void onClick(View v) {
                 Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
                 openReportSettingsMenu.putExtra("From_Table", "true");
+
+                if (getIntent().hasExtra("fromHistory"))    // tells new intent whether it is from a History table or not
+                    openReportSettingsMenu.putExtra("fromHistory", getIntent().getStringExtra("fromHistory"));
+
+                // starts the activity and waits for result to be returned
                 startActivityForResult(openReportSettingsMenu, CHANGE_REPORT_SETTINGS);
             }
         });
@@ -214,6 +221,10 @@ public class TablePainterActivity extends Activity {
             public void onClick(View v) {
                 Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
                 openAliquotMenu.putExtra("From_Table", "true");
+
+                if (getIntent().hasExtra("fromHistory"))    // tells new intent whether it is from a History table or not
+                    openAliquotMenu.putExtra("fromHistory", getIntent().getStringExtra("fromHistory"));
+
                 // starts the activity and waits for result to be returned
                 startActivityForResult(openAliquotMenu, CHANGE_ALIQUOT);
             }
@@ -468,6 +479,21 @@ public class TablePainterActivity extends Activity {
 
     }
 
+    /**
+     * Saves the Report Settings and Aliquot information to the preferences and displays a message
+     * that this has been done.
+     */
+    public void saveTableInformation() {
+        // only saves the information if not coming from History table
+        if (getIntent().hasExtra("fromHistory")
+                && !getIntent().getStringExtra("fromHistory").equals("true")) {
+
+            CHRONIDatabaseHelper entryHelper = new CHRONIDatabaseHelper(this);
+            entryHelper.createEntry(getCurrentTime(), getAliquotFilePath(), getReportSettingsFilePath());
+            Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
+        }
+    }
+
     public void openConcordiaImage() {
         // Displays concordia images
         Toast.makeText(TablePainterActivity.this, "Opening Concordia Image...", Toast.LENGTH_LONG).show();
@@ -517,19 +543,38 @@ public class TablePainterActivity extends Activity {
      * Accesses current report settings file
      */
     private String retrieveReportSettingsFilePath() {
-        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
-
-        // Gets current RS and if no file there, returns default as the current file
-        return settings.getString("Current Report Settings", Environment.getExternalStorageDirectory()
+        // gets current RS and if no file there, returns the default as the current file
+        String result = getSharedPreferences(PREF_REPORT_SETTINGS, 0)
+                .getString("Current Report Settings", Environment.getExternalStorageDirectory()
                 + "/CHRONI/Report Settings/Default Report Settings.xml");
+
+        // IF coming from a historyTable, obtain the RS path from the Intent's extras
+        if (getIntent().hasExtra("fromHistory")) {
+            if (getIntent().getStringExtra("fromHistory").equals("true"))
+
+                if (getIntent().hasExtra("historyReportSettings"))  // obtain aliquot only if it exists
+                    result = getIntent().getStringExtra("historyReportSettings");
+        }
+
+        return result;
     }
 
     /**
      * Accesses current report settings file
      */
     private String retrieveAliquotFilePath() {
-        SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
-        return settings.getString("Current Aliquot", "Error"); // Gets current RS and if no file there, returns default as the current file
+        // default value to return is the value in the preferences
+        String result = getSharedPreferences(PREF_ALIQUOT, 0).getString("Current Aliquot", "Error");
+
+        // IF coming from a historyTable, obtain the aliquot path from the Intent's extras
+        if (getIntent().hasExtra("fromHistory")) {
+            if (getIntent().getStringExtra("fromHistory").equals("true"))
+
+                if (getIntent().hasExtra("historyAliquot")) // obtain aliquot only if it exists
+                    result = getIntent().getStringExtra("historyAliquot");
+        }
+
+        return result;
     }
 
     /**
@@ -1114,6 +1159,10 @@ public class TablePainterActivity extends Activity {
                 categoryNameTable = null;
                 headerInformationTable = null;
                 aliquotDataTable = null;
+
+                // swaps the old Aliquot with the new Aliquot, and sets the path
+                if (data.hasExtra("historyAliquot"))
+                    getIntent().putExtra("historyAliquot", data.getStringExtra("historyAliquot"));
                 setAliquotFilePath(retrieveAliquotFilePath());
 
                 // remakes data and displays it
@@ -1130,6 +1179,10 @@ public class TablePainterActivity extends Activity {
                 categoryNameTable = null;
                 headerInformationTable = null;
                 aliquotDataTable = null;
+
+                // swaps the old Report Settings with the new Report Settings, and sets the path
+                if (data.hasExtra("historyReportSettings"))
+                    getIntent().putExtra("historyReportSettings", data.getStringExtra("historyReportSettings"));
                 setReportSettingsFilePath(retrieveReportSettingsFilePath());
 
                 // remakes data and displays it
@@ -1151,10 +1204,16 @@ public class TablePainterActivity extends Activity {
      * Stores Current Report Settings
      */
     protected void saveCurrentReportSettings() {
-        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("Current Report Settings", getReportSettingsFilePath());
-        editor.apply(); // Committing changes
+        // only save the Report Settings if not coming from History table
+        if (getIntent().hasExtra("fromHistory")
+                && !getIntent().getStringExtra("fromHistory").equals("true")) {
+
+            SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("Current Report Settings", getReportSettingsFilePath());
+            editor.apply(); // Committing changes
+
+        }
     }
 
     @Override
