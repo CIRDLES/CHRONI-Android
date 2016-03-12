@@ -82,6 +82,16 @@ public class MainMenuActivity extends Activity {
             }
         });
 
+        // Allows user to open the report settings activity
+        Button reportSettingsButton = (Button) findViewById(R.id.reportSettingsButton);
+        reportSettingsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // TODO Change this
+                Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
+                startActivity(openReportSettingsMenu);
+            }
+        });
+
         // Allows user to access the profile management feature
         Button credentialsButton = (Button) findViewById(R.id.menuProfileButton);
         credentialsButton.setOnClickListener(new View.OnClickListener() {

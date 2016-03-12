@@ -26,7 +26,7 @@
         android:textColor="@color/border_grey"
         android:textSize="78sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp" />
+        android:layout_marginTop="60dp" />
 
     <Button
         android:id="@+id/menuHistoryButton"
