@@ -24,62 +24,76 @@
         android:text="Home"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="80sp"
+        android:textSize="70dp"
         android:layout_above="@+id/menuOpenButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dp" />
+        android:layout_marginBottom="30dp" />
 
     <Button
         android:id="@+id/menuHistoryButton"
-        android:layout_width="300dp"
-        android:layout_height="75dp"
+        android:layout_width="270dp"
+        android:layout_height="60dp"
         android:background="@drawable/dark_blue_button"
         android:minHeight="100dp"
         android:minWidth="400dp"
         android:text="History"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="40sp"
+        android:textSize="36sp"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/menuProfileButton"
+        android:layout_above="@+id/reportSettingsButton"
         android:layout_marginBottom="20dp" />
 
     <Button
         android:id="@+id/menuOpenButton"
-        android:layout_width="300dp"
-        android:layout_height="75dp"
+        android:layout_width="270dp"
+        android:layout_height="60dp"
         android:background="@drawable/dark_blue_button"
         android:minHeight="100dp"
         android:minWidth="400dp"
         android:text="Open"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="40sp"
+        android:textSize="36sp"
         android:layout_above="@+id/menuHistoryButton"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp" />
 
     <Button
+        android:id="@+id/reportSettingsButton"
+        android:layout_width="270dp"
+        android:layout_height="60dp"
+        android:background="@drawable/dark_blue_button"
+        android:text="Report Settings"
+        android:textColor="@color/white"
+        android:textColorHint="@color/black"
+        android:textSize="36sp"
+        android:layout_marginBottom="20dp"
+        android:layout_above="@+id/menuProfileButton"
+        android:layout_centerHorizontal="true" />
+
+    <Button
         android:id="@+id/menuProfileButton"
-        android:layout_width="300dp"
-        android:layout_height="75dp"
+        android:layout_width="270dp"
+        android:layout_height="60dp"
         android:background="@drawable/dark_blue_button"
         android:minHeight="100dip"
         android:minWidth="400dip"
         android:text="Credentials"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="40sp"
+        android:textSize="36sp"
         android:layout_above="@+id/versionNumberMainMenu"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp" />
+        android:layout_marginBottom="25dp" />
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="150dp"
-        android:layout_height="250dp"
+        android:layout_width="120dp"
+        android:layout_height="200dp"
         android:src="@drawable/chroni_logo"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>
