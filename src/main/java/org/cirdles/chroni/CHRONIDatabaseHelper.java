@@ -63,8 +63,10 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
         if (!aliquotAlreadyExists(aliquotName))   // only insert the entire entry it if it does not exist
             db.insert(DATABASE_TABLE, null, cv);
 
-        else  // if it already exists, just update the time
-            db.update(DATABASE_TABLE, cv, ALIQUOT_NAME + "='" + aliquotName + "'", null);
+        else {  // if it already exists, just update the time
+            db.delete(DATABASE_TABLE, ALIQUOT_NAME + "='" + aliquotName + "'", null);
+            db.insert(DATABASE_TABLE, null, cv);
+        }
 
         db.close();
     }
@@ -100,6 +102,7 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
         // Setting up indices for each column
         int iDate = c.getColumnIndex(KEY_DATE);
         int iAliquot = c.getColumnIndex(ALIQUOT_NAME);
+        int iReportSettings = c.getColumnIndex(REPORT_SETTINGS_NAME);
 
         // Sets us the 2d array
         final int ROWS = (int) getTotalEntryCount() + 1; //extra row reserved for header
@@ -109,17 +112,17 @@ public class CHRONIDatabaseHelper extends SQLiteOpenHelper {
         // Fills in the header row
         databaseTable[0][0] = "Last Opened";
         databaseTable[0][1] = "Aliquot";
-        databaseTable[0][2] = "View";	// empty header for buttons
+        databaseTable[0][2] = "View";	//  header for buttons, also stores Report Settings
 
         // inserts the data into the 2D array
         int rowNumber = 1; // Starts on row 1 to avoid the header row
         for(c.moveToLast(); !c.isBeforeFirst(); c.moveToPrevious()){
             int columnNumber = 0;
-            databaseTable[rowNumber][columnNumber] = c.getString(iDate); // populates cell with date
+            databaseTable[rowNumber][columnNumber] = c.getString(iDate);    // populates cell with date
             columnNumber++;
             databaseTable[rowNumber][columnNumber] = c.getString(iAliquot); // Populates cell with Aliquot name
             columnNumber++;
-            databaseTable[rowNumber][columnNumber] = " "; // Leaves space for button
+            databaseTable[rowNumber][columnNumber] = c.getString(iReportSettings);  // Leaves space for button
             rowNumber++;
         }
         c.close();

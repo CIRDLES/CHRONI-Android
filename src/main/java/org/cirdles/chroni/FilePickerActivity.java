@@ -177,7 +177,7 @@ public class FilePickerActivity extends ListActivity {
 					Intent returnAliquotIntent = new Intent("android.intent.action.ALIQUOTMENU");
 					returnAliquotIntent.putExtra("AliquotXMLFileName", newFile.getAbsolutePath());
 					setResult(RESULT_OK, returnAliquotIntent);    // Returns Extra to AliquotMenuActivity
-					Toast.makeText(FilePickerActivity.this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+					Toast.makeText(FilePickerActivity.this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
 
 					// If coming from any menu (by using the dropdown menu)
 				} else if (intentContent.contentEquals("Report_Settings_Directory")) {
@@ -194,7 +194,7 @@ public class FilePickerActivity extends ListActivity {
 				} else if (intentContent.contentEquals("Root_Directory")) {
 					Intent openRSMenu = new Intent("android.intent.action.MAINMENU");
 					openRSMenu.putExtra("XMLFileName", newFile.getAbsolutePath());
-					Toast.makeText(FilePickerActivity.this, "Please move your selected file to one of the CHRONI directories.", Toast.LENGTH_LONG).show();
+					Toast.makeText(FilePickerActivity.this, "Please move your selected file to one of the CHRONI directories.", Toast.LENGTH_SHORT).show();
 					startActivity(openRSMenu);
 				}
 
@@ -237,6 +237,7 @@ public class FilePickerActivity extends ListActivity {
 			TextView textView = (TextView)row.findViewById(R.id.file_picker_text);
 			// Set single line
 			textView.setSingleLine(true);
+			textView.setTextSize(24);
 
 			textView.setText(object.getName());
 			if(object.isFile()) {

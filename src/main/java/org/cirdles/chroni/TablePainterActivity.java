@@ -60,7 +60,8 @@ public class TablePainterActivity extends Activity {
     private static TableLayout headerInformationTable;
     private static TableLayout aliquotDataTable;
 
-    private static String previousAliquotFilePath = ""; // stores name of previous aliquot opened
+    private static String previousAliquotFilePath = ""; // stores name of previous Aliquot opened
+    private static String previousReportSettingsFilePath = "";  // stores name of previous Report Settings opened
 
     private String aliquotFilePath, reportSettingsFilePath; // The complete path of the aliquot and report settings files to be parsed and display
 
@@ -74,17 +75,23 @@ public class TablePainterActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setContentView(R.layout.display);
 
-        // if a new aliquot is trying to be opened, parse for data
-        if (!retrieveAliquotFilePath().equals(previousAliquotFilePath)) {
+        // if a new Aliquot or Report Settings file is trying to be opened, parse for data
+        if (!retrieveAliquotFilePath().equals(previousAliquotFilePath)
+                || !(retrieveReportSettingsFilePath().equals(previousReportSettingsFilePath))) {
             // resets tables to null
             categoryNameTable = null;
             headerInformationTable = null;
             aliquotDataTable = null;
 
-            createData();
-            createView();
+            boolean valid = createData();
+
+            // if the XML files are valid, create the view
+            if (valid)
+                createView();
+            else    // otherwise, just finish the activity
+                finish();
         }
-        // otherwise, just fill in previously parsed data
+        // if the same aliquot that was just opened is being displayed again, simply fill in previously parsed data
         else
             createView();
 
@@ -93,17 +100,36 @@ public class TablePainterActivity extends Activity {
     /**
      * Fills in all necessary maps, lists, etc. needed for creating the table view.
      *
-     * This method has no input or output, but uses data already known in the application.
+     * This method has no input or output, but simply uses data already known in the application
+     * and returns a boolean that tells if the parsed XML files are valid.
      */
-    private void createData() {
+    private boolean createData() {
+        boolean result = true; // tells whether XML files are valid or not
 
         // Instantiates the Report Settings Parser and gets the current Report Settings path
         ReportSettingsParser reportSettingsParser = new ReportSettingsParser();
-        setReportSettingsFilePath(retrieveReportSettingsFilePath());
+        String reportSettingsPath = retrieveReportSettingsFilePath();
+        setReportSettingsFilePath(reportSettingsPath);
+        previousReportSettingsFilePath = reportSettingsPath;    // saves the Report Settings path for later
 
-        // Parses the Report Settings XML file
+        // parses the Report Settings XML file
         categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
-        outputVariableNames = reportSettingsParser.getOutputVariableName();
+        outputVariableNames = reportSettingsParser.getOutputVariableNames();
+
+        // if the report settings file is invalid, show error message and switch Report Settings path
+        if (categoryMap == null) {
+            Toast.makeText(TablePainterActivity.this, "ERROR: Invalid Report Settings XML file, switched to Default Report Settings.",
+                    Toast.LENGTH_LONG).show();
+
+            // if the Report Settings file is invalid at this stage, switch to Default Report Settings
+            setReportSettingsFilePath(Environment.getExternalStorageDirectory()
+                    + "/CHRONI/Report Settings/Default Report Settings.xml");
+
+            // re-parses the Report Settings XML file
+            categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
+            outputVariableNames = reportSettingsParser.getOutputVariableNames();
+
+        }
 
         columnMaxLengths = new ArrayList<Integer>();
         columnDecimals = new ArrayList<Boolean>();
@@ -111,42 +137,53 @@ public class TablePainterActivity extends Activity {
         // gets and sets the current Aliquot path
         String aliquotPath = retrieveAliquotFilePath();
         setAliquotFilePath(aliquotPath);
-        previousAliquotFilePath = aliquotPath;  // saves path for later
+        previousAliquotFilePath = aliquotPath;  // saves Aliquot file path for later
 
-        // Parses aliquot file and retrieves maps
+        // parses aliquot file and retrieves maps
         MapTuple maps = AliquotParser.runAliquotParser(getAliquotFilePath());
-        fractionMap = (TreeMap<String, Fraction>) maps.getFractionMap();
-        imageMap = (TreeMap<String, Image>) maps.getImageMap();
 
-        final String aliquot = AliquotParser.getAliquotName();
+        // if the aliquot file is not valid, show error message
+        if (maps == null) {
+            Toast.makeText(TablePainterActivity.this, "ERROR: Invalid Aliquot XML file.", Toast.LENGTH_LONG).show();
+            result = false;
 
-        // Fills the Report Setting and Aliquot arrays
-        String[][] reportSettingsArray = fillReportSettingsArray(
-                outputVariableNames, categoryMap);
-        String[][] fractionArray = fillFractionArray(outputVariableNames,
-                categoryMap, fractionMap, aliquot);
+        } else {    // otherwise, continues parsing
 
-        //Sorts the table array
-        Arrays.sort(fractionArray, new Comparator<String[]>() {
-            @Override
-            public int compare(final String[] entry1, final String[] entry2) {
+            // saves Report Settings path in the SharedPreferences if table successfully opened
+            saveCurrentReportSettings();
 
-                final String field1 = entry1[0].trim();
-                final String field2 = entry2[0].trim();
+            fractionMap = (TreeMap<String, Fraction>) maps.getFractionMap();
+            imageMap = (TreeMap<String, Image>) maps.getImageMap();
 
-                Comparator<String> forNoah = new IntuitiveStringComparator<String>();
-                return forNoah.compare(field1, field2);
-            }
-        });
+            final String aliquot = AliquotParser.getAliquotName();
 
-        // Creates the final table array for displaying
-        finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
+            // fills the Report Setting and Aliquot arrays
+            String[][] reportSettingsArray = fillReportSettingsArray(
+                    outputVariableNames, categoryMap);
+            String[][] fractionArray = fillFractionArray(outputVariableNames,
+                    categoryMap, fractionMap, aliquot);
 
-        // Creates database entry from current entry
-        CHRONIDatabaseHelper entryHelper = new CHRONIDatabaseHelper(this);
-        entryHelper.createEntry(getCurrentTime(), getAliquotFilePath(), getReportSettingsFilePath());
-        Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
+            // sorts the table array
+            Arrays.sort(fractionArray, new Comparator<String[]>() {
+                @Override
+                public int compare(final String[] entry1, final String[] entry2) {
 
+                    final String field1 = entry1[0].trim();
+                    final String field2 = entry2[0].trim();
+
+                    Comparator<String> forNoah = new IntuitiveStringComparator<String>();
+                    return forNoah.compare(field1, field2);
+                }
+            });
+
+            // creates the final table array for displaying
+            finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
+
+            // creates database entry from current entry only if NOT coming from the History table
+            saveTableInformation();
+        }
+
+        return result;
     }
 
     /**
@@ -161,11 +198,16 @@ public class TablePainterActivity extends Activity {
         Button reportSettingsCell = (Button) findViewById(R.id.reportSettingsTableButton);
         String reportSettingsText = "Report Settings: " + splitFileName(retrieveReportSettingsFilePath());
         reportSettingsCell.setText(reportSettingsText);
-        reportSettingsCell.setBackgroundColor(getResources().getColor(R.color.button_blue));
+        reportSettingsCell.setBackgroundResource(R.drawable.dark_blue_button);
         reportSettingsCell.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent openReportSettingsMenu = new Intent("android.intent.action.REPORTSETTINGSMENU");
                 openReportSettingsMenu.putExtra("From_Table", "true");
+
+                if (getIntent().hasExtra("fromHistory"))    // tells new intent whether it is from a History table or not
+                    openReportSettingsMenu.putExtra("fromHistory", getIntent().getStringExtra("fromHistory"));
+
+                // starts the activity and waits for result to be returned
                 startActivityForResult(openReportSettingsMenu, CHANGE_REPORT_SETTINGS);
             }
         });
@@ -174,11 +216,15 @@ public class TablePainterActivity extends Activity {
         Button aliquotCell = (Button) findViewById(R.id.aliquotTableButton);
         String aliquotCellText = "Aliquot: " + splitFileName(retrieveAliquotFilePath());
         aliquotCell.setText(aliquotCellText);
-        aliquotCell.setBackgroundResource(R.drawable.background_blue_background);
+        aliquotCell.setBackgroundResource(R.drawable.medium_blue_button);
         aliquotCell.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent openAliquotMenu = new Intent("android.intent.action.ALIQUOTMENU");
                 openAliquotMenu.putExtra("From_Table", "true");
+
+                if (getIntent().hasExtra("fromHistory"))    // tells new intent whether it is from a History table or not
+                    openAliquotMenu.putExtra("fromHistory", getIntent().getStringExtra("fromHistory"));
+
                 // starts the activity and waits for result to be returned
                 startActivityForResult(openAliquotMenu, CHANGE_ALIQUOT);
             }
@@ -188,7 +234,7 @@ public class TablePainterActivity extends Activity {
         // Adds button to view a concordia image
         if ((imageMap.containsKey("concordia"))) {
             Button viewConcordiaButton = (Button) findViewById(R.id.concordiaTableButton);
-            viewConcordiaButton.setBackgroundColor(getResources().getColor(R.color.light_grey));
+            viewConcordiaButton.setBackgroundResource(R.drawable.light_gray_button);
 
             viewConcordiaButton.setVisibility(View.VISIBLE);
             viewConcordiaButton.setOnClickListener(new View.OnClickListener() {
@@ -223,14 +269,14 @@ public class TablePainterActivity extends Activity {
         // Adds button to view a probability density image
         if ((imageMap.containsKey("probability_density"))) {
             Button viewProbabilityDensityButton = (Button) findViewById(R.id.probabilityDensityTableButton);
+
             // Decides what color button should be based on if there is a concordia button
-            if ((imageMap.containsKey("concordia"))) {
-                viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-                viewProbabilityDensityButton.setTextColor(Color.WHITE);
-            }else{
-                viewProbabilityDensityButton.setBackgroundColor(getResources().getColor(R.color.light_grey));
-                viewProbabilityDensityButton.setTextColor(Color.BLACK);
-            }
+            if ((imageMap.containsKey("concordia")))
+                viewProbabilityDensityButton.setBackgroundResource(R.drawable.dark_blue_button);
+            else
+                viewProbabilityDensityButton.setBackgroundResource(R.drawable.light_gray_button);
+
+            viewProbabilityDensityButton.setTextColor(Color.BLACK);
 
             viewProbabilityDensityButton.setVisibility(View.VISIBLE);
             //Adds on click functionality
@@ -301,14 +347,19 @@ public class TablePainterActivity extends Activity {
                     categoryCell.setHorizontallyScrolling(true);    // make sure that the text does not wrap
                     if (category.getValue().getDisplayName().contentEquals("Fraction") && categoryCount != 0) { // Easy fix to handle the issue of sizing with last fraction category TODO: Make better!
                         // Simply sets same size as fraction because its always the same length with last column
-                        categoryCell.setMinEms(columnSizes[columnSizes.length - 1] + 2);
-                        categoryCell.setMaxEms(columnSizes[columnSizes.length - 1] + 2);
+                        int desiredLength = columnSizes[columnSizes.length - 1] + 2;
+
+                        categoryCell.setMinEms(desiredLength);
+                        categoryCell.setMaxEms(desiredLength);
+
                     } else {
                         // sets column spacing based on max character count and allows extra space for crowding
-                        categoryCell.setMinEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount()));
-                        categoryCell.setMaxEms(headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount()));
+                        int desiredLength = headerCellSizes[categoryCount] + (2 * category.getValue().getColumnCount());
 
+                        categoryCell.setMinEms(desiredLength);
+                        categoryCell.setMaxEms(desiredLength);
                     }
+
                     categoryCell.setPadding(3, 4, 3, 4);
                     categoryCell.setTextSize((float) 14.5);
                     categoryCell.setTextColor(Color.BLACK);
@@ -316,8 +367,8 @@ public class TablePainterActivity extends Activity {
                     categoryCell.setGravity(Gravity.START);
                     categoryRow.addView(categoryCell); // Adds cell to row
                 }
-                categoryCount++;
 
+                categoryCount++;
             }
 
 
@@ -328,17 +379,15 @@ public class TablePainterActivity extends Activity {
                 TableRow row = new TableRow(this);
 
                 // puts rows in appropriate place on layout
-                if (currentRow < 4) {
+                if (currentRow < 4)
                     // Report Settings and aliquot name rows
                     headerInformationTable.addView(row);
 
-                } else {
+                else
                     // Adds aliquot rows to the aliquot scroll table
                     aliquotDataTable.addView(row);
-                }
 
-                // loops through number of columns and adds text views to each row.
-                // this creates cells!
+                // loops through number of columns and adds text views to each row. This creates cells!
                 for (int currentColumn = 0; currentColumn < COLS; currentColumn++) {
                     TextView cell = new TextView(this);
                     cell.setTypeface(Typeface.MONOSPACE);
@@ -351,21 +400,20 @@ public class TablePainterActivity extends Activity {
                     cell.setTextSize((float) 14.5);
                     cell.setGravity(Gravity.END);
 
-                    // sets appropriate background color for cells
-                    if (currentRow < 4) {
-                        // Colors all header cells same color
+                    // sets appropriate background colors for cells
+                    if (currentRow < 4) // colors all header cells same color
                         cell.setBackgroundResource(R.drawable.background_blue_background);
-                    } else if (currentRow == 4) {
-                        // Handles aliquot name cell
+
+                    else if (currentRow == 4) { // handles aliquot name cell
                         cell.setTextColor(Color.WHITE);
                         cell.setBackgroundResource(R.drawable.light_blue_background);
-                    } else if (currentRow > 4 && currentRow % 2 == 1) {
-                        // colors odd body rows
-                        cell.setBackgroundResource(R.drawable.light_grey_background);
-                    } else {
-                        // colors all even body rows
-                        cell.setBackgroundResource(R.drawable.white_background);
                     }
+                    else if (currentRow > 4 && currentRow % 2 == 1) // colors odd body rows
+                        cell.setBackgroundResource(R.drawable.light_grey_background);
+
+                    else    // colors all even body rows
+                        cell.setBackgroundResource(R.drawable.white_background);
+
 
                     // Adds text to cells
                     if (currentRow > 4) {   // Handles all of the data cells
@@ -376,7 +424,7 @@ public class TablePainterActivity extends Activity {
                         String paddedText = setTextPadding(text, length, hasDecimal);
                         cell.setText(paddedText);
 
-                    } else { // Handles all of the header rows and aliquot name rows
+                    } else {    // Handles all of the header rows and aliquot name rows
                         cell.setTypeface(Typeface.DEFAULT_BOLD);
                         cell.setTypeface(Typeface.MONOSPACE);
                         cell.setGravity(Gravity.CENTER);
@@ -387,14 +435,12 @@ public class TablePainterActivity extends Activity {
 
                     cell.setVisibility(View.VISIBLE);
 
-                    if (cell.getText().equals("-")) {
+                    if (cell.getText().equals("-"))
                         cell.setGravity(Gravity.CENTER);
-                    }
 
                     // left justify fraction column
-                    if (isFractionColumn(finalArray, currentColumn)) {
+                    if (isFractionColumn(finalArray, currentColumn))
                         cell.setGravity(Gravity.START);
-                    }
 
                     // append an individual cell to a content row
                     row.addView(cell);
@@ -431,6 +477,21 @@ public class TablePainterActivity extends Activity {
 
         }
 
+    }
+
+    /**
+     * Saves the Report Settings and Aliquot information to the preferences and displays a message
+     * that this has been done.
+     */
+    public void saveTableInformation() {
+        // only saves the information if not coming from History table
+        if (getIntent().hasExtra("fromHistory")
+                && !getIntent().getStringExtra("fromHistory").equals("true")) {
+
+            CHRONIDatabaseHelper entryHelper = new CHRONIDatabaseHelper(this);
+            entryHelper.createEntry(getCurrentTime(), getAliquotFilePath(), getReportSettingsFilePath());
+            Toast.makeText(TablePainterActivity.this, "Your current table info has been stored!", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void openConcordiaImage() {
@@ -482,19 +543,38 @@ public class TablePainterActivity extends Activity {
      * Accesses current report settings file
      */
     private String retrieveReportSettingsFilePath() {
-        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
-
-        // Gets current RS and if no file there, returns default as the current file
-        return settings.getString("Current Report Settings", Environment.getExternalStorageDirectory()
+        // gets current RS and if no file there, returns the default as the current file
+        String result = getSharedPreferences(PREF_REPORT_SETTINGS, 0)
+                .getString("Current Report Settings", Environment.getExternalStorageDirectory()
                 + "/CHRONI/Report Settings/Default Report Settings.xml");
+
+        // IF coming from a historyTable, obtain the RS path from the Intent's extras
+        if (getIntent().hasExtra("fromHistory")) {
+            if (getIntent().getStringExtra("fromHistory").equals("true"))
+
+                if (getIntent().hasExtra("historyReportSettings"))  // obtain aliquot only if it exists
+                    result = getIntent().getStringExtra("historyReportSettings");
+        }
+
+        return result;
     }
 
     /**
      * Accesses current report settings file
      */
     private String retrieveAliquotFilePath() {
-        SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
-        return settings.getString("Current Aliquot", "Error"); // Gets current RS and if no file there, returns default as the current file
+        // default value to return is the value in the preferences
+        String result = getSharedPreferences(PREF_ALIQUOT, 0).getString("Current Aliquot", "Error");
+
+        // IF coming from a historyTable, obtain the aliquot path from the Intent's extras
+        if (getIntent().hasExtra("fromHistory")) {
+            if (getIntent().getStringExtra("fromHistory").equals("true"))
+
+                if (getIntent().hasExtra("historyAliquot")) // obtain aliquot only if it exists
+                    result = getIntent().getStringExtra("historyAliquot");
+        }
+
+        return result;
     }
 
     /**
@@ -1079,6 +1159,10 @@ public class TablePainterActivity extends Activity {
                 categoryNameTable = null;
                 headerInformationTable = null;
                 aliquotDataTable = null;
+
+                // swaps the old Aliquot with the new Aliquot, and sets the path
+                if (data.hasExtra("historyAliquot"))
+                    getIntent().putExtra("historyAliquot", data.getStringExtra("historyAliquot"));
                 setAliquotFilePath(retrieveAliquotFilePath());
 
                 // remakes data and displays it
@@ -1095,6 +1179,10 @@ public class TablePainterActivity extends Activity {
                 categoryNameTable = null;
                 headerInformationTable = null;
                 aliquotDataTable = null;
+
+                // swaps the old Report Settings with the new Report Settings, and sets the path
+                if (data.hasExtra("historyReportSettings"))
+                    getIntent().putExtra("historyReportSettings", data.getStringExtra("historyReportSettings"));
                 setReportSettingsFilePath(retrieveReportSettingsFilePath());
 
                 // remakes data and displays it
@@ -1108,54 +1196,34 @@ public class TablePainterActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.table_menu, menu);
         return true;
+    }
+
+    /**
+     * Stores Current Report Settings
+     */
+    protected void saveCurrentReportSettings() {
+        // only save the Report Settings if not coming from History table
+        if (getIntent().hasExtra("fromHistory")
+                && !getIntent().getStringExtra("fromHistory").equals("true")) {
+
+            SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("Current Report Settings", getReportSettingsFilePath());
+            editor.apply(); // Committing changes
+
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu: // Takes user to main menu
-                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-                startActivity(openMainMenu);
+            case R.id.exitTable:
+                finish();
                 return true;
-            case R.id.editProfileMenu: //Takes user to credentials screen
-                Intent openUserProfile = new Intent(
-                        "android.intent.action.USERPROFILE");
-                startActivity(openUserProfile);
-                return true;
-            case R.id.historyMenu: //Takes user to credentials screen
-                Intent openHistoryTable = new Intent(
-                        "android.intent.action.HISTORY");
-                startActivity(openHistoryTable);
-                return true;
-            case R.id.viewAliquotsMenu: // Takes user to aliquot menu
-                Intent openAliquotFiles = new Intent(
-                        "android.intent.action.FILEPICKER");
-                openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot_Directory");
-                startActivity(openAliquotFiles);
-                return true;
-            case R.id.viewReportSettingsMenu: // Takes user to report settings menu
-                Intent openReportSettingsFiles = new Intent(
-                        "android.intent.action.FILEPICKER");
-                openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report_Settings_Directory");
-                startActivity(openReportSettingsFiles);
-                return true;
-            case R.id.viewRootMenu:
-                Intent openRootDirectory = new Intent(
-                        "android.intent.action.FILEPICKER");
-                openRootDirectory.putExtra("Default_Directory",
-                        "Root_Directory");
-                startActivity(openRootDirectory);
-                return true;
-            case R.id.aboutScreen: // Takes user to about screen
-                Intent openAboutScreen = new Intent(
-                        "android.intent.action.ABOUT");
-                startActivity(openAboutScreen);
-                return true;
+
             case R.id.helpMenu: // Takes user to help blog
                 // Checks internet connection before downloading files
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1186,6 +1254,7 @@ public class TablePainterActivity extends Activity {
                             .show();
                 }
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

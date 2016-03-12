@@ -35,8 +35,6 @@ import android.widget.Toast;
  */
 public class HistoryActivity extends Activity {
 
-    private static final String PREF_ALIQUOT = "Current Aliquot";   // Path of the current aliquot file
-
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,30 +64,31 @@ public class HistoryActivity extends Activity {
             final String[][] database = myAliquots.fillTableData(); // completes 2D array of aliquot table for history
             int ROWS = 11; // rows for last five MRV entries plus an extra row reserved for header
             if (myAliquots.getTotalEntryCount() < 10){
-                ROWS = (int)myAliquots.getTotalEntryCount() + 1; // Sizes the array based on how many entries are in database
+                ROWS = (int) myAliquots.getTotalEntryCount() + 1; // Sizes the array based on how many entries are in database
             }
-            final long COLUMNS = 3;
+            final long COLUMNS = 4;
 
             // sets up the table to display the database
             TableLayout table = (TableLayout) findViewById(R.id.historyDatabaseTable);
 
-            Display display = getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int displayWidth = size.x;
-            int displayHeight = size.y;
+            // stores the header TextViews for later
+            TextView[] headerCells = new TextView[4];
+            headerCells[0] = (TextView) findViewById(R.id.historyHeaderOne);
+            headerCells[1] = (TextView) findViewById(R.id.historyHeaderTwo);
+            headerCells[2] = (TextView) findViewById(R.id.historyHeaderThree);
+            headerCells[3] = (TextView) findViewById(R.id.historyHeaderFour);
 
-            // sets the maximum height and width values for the history table so it looks goo on every screen size
-            int maxHeight = 120;
-            int maxWidth = 500;
-            if (maxHeight > (displayHeight / 10) + 5)
-                maxHeight = (displayHeight / 10) + 5;
-            if (maxWidth > (displayWidth / 4) + 10)
-                maxWidth = (displayWidth / 4) + 10;
+            // obtains the desired height and width to be used for each View
+            TextView tempText = headerCells[0];
+            tempText.measure(0, 0);
+            int height = tempText.getMaxHeight();
+            int width = tempText.getMeasuredWidth();
+            float textSize = this.getResources().getDisplayMetrics().scaledDensity;
+            textSize = tempText.getTextSize() / textSize;   // converts textSize from px to sp
 
             // Table Layout Printing
             for (int currentRow = 0; currentRow < ROWS; currentRow++) {
-                // Adds current row to the table
+                // Creates current row to the table
                 TableRow row = new TableRow(this);
                 row.setGravity(Gravity.CENTER);
                 table.addView(row);
@@ -97,45 +96,48 @@ public class HistoryActivity extends Activity {
                 for (int currentColumn = 0; currentColumn < COLUMNS; currentColumn++) {
 
                     // Adds text to the history cells if not a button column or is header row
-                    if (currentColumn != 2 || currentRow == 0) {
-                        TextView textCell = new TextView(this);
-
-                        // Formats the file names correctly for history table
-                        if (database[currentRow][currentColumn].contains("/")) {
-                            String[] fileNameText = database[currentRow][currentColumn].split("/");
-                            String fileName = fileNameText[fileNameText.length - 1];
-                            if (fileName.contains(".xml")){ // Removes the extension from the Aliquot name
-                               String fileNameWithExtension[] = fileName.split(".xml");
-                               fileName = fileNameWithExtension[fileNameWithExtension.length-1];
-                            }
-                            textCell.setText(fileName); // Sets correctly formatted file name to middle column
-                        } else {
-                            textCell.setText(database[currentRow][currentColumn]); // Sets date in first column
-                        }
-
-                        // Properly formats all text cells
-                        textCell.setPadding(2,2,2,2);
-                        textCell.setTextSize((float) 15);
-                        textCell.setGravity(Gravity.CENTER);
-                        textCell.setWidth(maxWidth);
-                        textCell.setHeight(maxHeight);
-                        textCell.setTypeface(Typeface.DEFAULT_BOLD);
-
+                    if (currentColumn != 3 || currentRow == 0) {
+                        // if it is a header view, simply make it visible
                         if (currentRow == 0) {
-                            // Colors header row
-                            textCell.setBackgroundResource(R.drawable.dark_grey_background);
-                            textCell.setTextColor(Color.BLACK);
-                        } else if (currentRow % 2 == 1) {
-                            // colors table's odd rows
-                            textCell.setTextColor(Color.WHITE);
-                            textCell.setBackgroundResource(R.drawable.dark_blue_background);
-                        } else {
-                            // Colors even rows
-                            textCell.setTextColor(Color.BLACK);
-                            textCell.setBackgroundResource(R.drawable.white_background);
-                        }
+                            TextView cell = headerCells[currentColumn];
+                            cell.setVisibility(View.VISIBLE);
 
-                        row.addView(textCell); // adds text cell to the row
+                        } else {
+                            TextView textCell = new TextView(this);
+
+                            // Formats the file names correctly for history table
+                            if (database[currentRow][currentColumn].contains("/")) {
+                                String[] fileNameText = database[currentRow][currentColumn].split("/");
+                                String fileName = fileNameText[fileNameText.length - 1];
+                                if (fileName.contains(".xml")) { // Removes the extension from the Aliquot name
+                                    String fileNameWithExtension[] = fileName.split(".xml");
+                                    fileName = fileNameWithExtension[fileNameWithExtension.length - 1];
+                                }
+                                textCell.setText(fileName); // Sets correctly formatted file name to middle column
+                            } else {
+                                textCell.setText(database[currentRow][currentColumn]); // Sets date in first column
+                            }
+
+                            // Properly formats all text cells
+                            textCell.setPadding(4, 4, 4, 4);
+                            textCell.setTextSize(textSize - 2);
+                            textCell.setGravity(Gravity.CENTER);
+                            textCell.setWidth(width);
+                            textCell.setHeight(height);
+                            textCell.setTypeface(Typeface.DEFAULT_BOLD);
+
+                            if (currentRow % 2 == 1) {
+                                // Colors table's odd rows
+                                textCell.setTextColor(Color.WHITE);
+                                textCell.setBackgroundResource(R.drawable.dark_blue_background);
+                            } else {
+                                // Colors even rows
+                                textCell.setTextColor(Color.BLACK);
+                                textCell.setBackgroundResource(R.drawable.white_background);
+                            }
+
+                            row.addView(textCell); // adds text cell to the row
+                        }
 
                     } // ends the formatting of the text cells
 
@@ -143,38 +145,35 @@ public class HistoryActivity extends Activity {
                     else {
                         final Button openButton = new Button(this);
                         openButton.setText("OPEN");
-                        openButton.setTextSize((float) 14);
+                        openButton.setTextSize(textSize - 2);
                         openButton.setPadding(5, 5, 5, 5);
                         openButton.setTypeface(Typeface.DEFAULT_BOLD);
                         openButton.setGravity(Gravity.CENTER);
-                        openButton.setLayoutParams(new TableRow.LayoutParams(maxWidth, maxHeight));
+                        openButton.setLayoutParams(new TableRow.LayoutParams(width-15, height-15));
                         row.addView(openButton);
 
                         // Gets the current aliquot info for sending to the display table
                         final int currentAliquotRow = currentRow;
-                        final int currentAliquotColumn = currentColumn-1;
+                        final int currentAliquotColumn = currentColumn - 2;
 
                         //Changes button color back to blue if it is not already
-                        openButton.setBackgroundResource(R.drawable.light_grey_background);
+                        openButton.setBackgroundResource(R.drawable.light_gray_button);
                         openButton.setTextColor(Color.BLACK);
-
 
                         // adds open button functionality
                         openButton.setOnClickListener(new View.OnClickListener() {
                             // When view/edit is clicked, the review screen is opened
                             public void onClick(View v) {
-                                // Changes button color to indicate it has been opened
-                                openButton.setBackgroundColor(Color.LTGRAY);
-                                openButton.setTextColor(Color.BLACK);
 
                                 Toast.makeText(HistoryActivity.this, "Opening table...", Toast.LENGTH_LONG).show();
                                 Intent openTableScreen = new Intent("android.intent.action.DISPLAY");
 
-                                // saves aliquot and opnes it
-                                SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
-                                SharedPreferences.Editor editor = settings.edit();
-                                editor.putString("Current Aliquot", database[currentAliquotRow][currentAliquotColumn]); // gets chosen file from file browser and stores
-                                editor.apply(); // Committing changes
+                                // put the aliquot file path into the Table Intent
+                                openTableScreen.putExtra("fromHistory", "true");
+                                openTableScreen.putExtra("historyAliquot",
+                                        database[currentAliquotRow][currentAliquotColumn]); // gives Aliquot file path
+                                openTableScreen.putExtra("historyReportSettings",
+                                        database[currentAliquotRow][currentAliquotColumn + 1]); // gives Report Settings file path
 
                                 startActivity(openTableScreen);
                             }

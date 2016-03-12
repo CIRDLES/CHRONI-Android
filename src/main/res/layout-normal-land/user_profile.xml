@@ -10,12 +10,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Profile"
+        android:text="Credentials"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
         android:layout_alignParentTop="true"
         android:textSize="45sp"
-        android:layout_marginTop="5dp" />
+        android:layout_marginTop="10dp" />
 
     <TextView
         android:id="@+id/TextView01"
@@ -81,37 +81,37 @@
         android:id="@+id/profileValidateButton"
         android:layout_width="90dp"
         android:layout_height="45dp"
-        android:background="@color/button_blue"
+        android:background="@drawable/dark_blue_button"
         android:text="Validate"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="15dp"
-        android:layout_toStartOf="@id/fileBrowserHomeButton"
+        android:layout_toStartOf="@id/profileEraseButton"
         android:layout_marginEnd="25dp" />
 
     <Button
         android:id="@+id/fileBrowserHomeButton"
         android:layout_width="90dp"
         android:layout_height="45dp"
-        android:background="@color/button_blue"
+        android:background="@drawable/dark_blue_button"
         android:text="Home"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="15dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_toEndOf="@id/profileEraseButton"
+        android:layout_marginStart="25dp"
+        android:layout_marginBottom="15dp" />
 
     <Button
         android:id="@+id/profileEraseButton"
         android:layout_width="90dp"
         android:layout_height="45dp"
-        android:background="@color/button_blue"
-        android:text="Erase"
+        android:background="@drawable/dark_blue_button"
+        android:text="Reset"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:layout_toEndOf="@id/fileBrowserHomeButton"
-        android:layout_marginStart="25dp"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="15dp" />
 
@@ -122,10 +122,11 @@
         android:layout_height="wrap_content"
         android:maxWidth="150dp"
         android:layout_marginTop="40dp"
-        android:layout_marginEnd="45dp"
+        android:layout_marginStart="30dp"
         android:gravity="center"
         android:textSize="16sp"
-        android:layout_toStartOf="@+id/testText"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:textColor="@color/black"
         android:textColorHint="@color/black" />
 

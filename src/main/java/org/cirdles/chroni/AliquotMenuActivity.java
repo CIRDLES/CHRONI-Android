@@ -23,6 +23,13 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import org.w3c.dom.Document;
+
+import java.io.File;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 public class AliquotMenuActivity extends Activity {
 
     // Layout variables
@@ -39,9 +46,6 @@ public class AliquotMenuActivity extends Activity {
 
     // Base URLs for IGSN downloads
     public static String BASE_ALIQUOT_URI = "http://www.geochronportal.org/getxml.php?igsn=";
-    public static String BASE_SAMPLE_URI = "http://www.geosamples.org/display.php?igsn=";
-
-    public int CIRDLES_ORANGE_RGB = Color.rgb(242, 136, 58);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +71,9 @@ public class AliquotMenuActivity extends Activity {
         });
 
 
-
         aliquotSelectedFileText = (EditText) findViewById(R.id.aliquotFileSelectText); // Contains selected aliquot file name
 
         aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
-        //Changes button color back to blue if it is not already
-        aliquotFileSubmitButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-        aliquotFileSubmitButton.setTextColor(Color.WHITE);
         aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
             // Submits aliquot file to display activity for parsing and displaying in table
             public void onClick(View v) {
@@ -84,34 +84,49 @@ public class AliquotMenuActivity extends Activity {
                     if (getIntent().hasExtra("From_Table")) {
                         if (getIntent().getStringExtra("From_Table").equals("true")) {
 
-                            Toast.makeText(AliquotMenuActivity.this, "Changing Aliquot...", Toast.LENGTH_LONG).show(); // lets user know table is opening
-                            Intent returnAliquot = new Intent("android.intent.action.DISPLAY");
-                            returnAliquot.putExtra("newAliquot", "true");   // tells if a new aliquot has been chosen
+                            // if the Aliquot selected is valid, return to the new table
+                            if (validateFile(getIntent().getStringExtra("AliquotXMLFileName"))) {
+                                Toast.makeText(AliquotMenuActivity.this, "Changing Aliquot...", Toast.LENGTH_LONG).show(); // lets user know table is opening
+                                Intent returnAliquot = new Intent("android.intent.action.DISPLAY");
+                                returnAliquot.putExtra("newAliquot", "true");   // tells if a new Aliquot has been chosen
 
-                            // Changes button color to indicate it has been opened
-                            aliquotFileSubmitButton.setBackgroundColor(Color.LTGRAY);
-                            aliquotFileSubmitButton.setTextColor(Color.BLACK);
-                            saveCurrentAliquot();
+                                // tells Intent that it is from a previous table that was opened via the History table
+                                if (getIntent().hasExtra("fromHistory")) {
+                                    returnAliquot.putExtra("fromHistory", getIntent().getStringExtra("fromHistory"));
+                                    returnAliquot.putExtra("historyAliquot", getIntent().getStringExtra("AliquotXMLFileName"));
 
-                            setResult(RESULT_OK, returnAliquot);
-                            finish();
+                                    if (!getIntent().getStringExtra("fromHistory").equals("true"))
+                                        saveCurrentAliquot();   // saves Aliquot if Intent was NOT originally from the History table
+                                }
+
+                                else    // saves Aliquot if Intent was NOT originally from the History table (and doesn't have extra)
+                                    saveCurrentAliquot();
+
+                                setResult(RESULT_OK, returnAliquot);
+                                finish();
+
+                            } else  // if it is not valid, display a message
+                                Toast.makeText(AliquotMenuActivity.this, "ERROR: Invalid Aliquot XML file.", Toast.LENGTH_LONG).show();
+
                         }
 
                     } else {
 
-                        // Makes sure there is a file selected
-                        Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
-                        Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
-                        openDisplayTable.putExtra("AliquotXML", getIntent().getStringExtra("AliquotXMLFileName")); // Sends selected aliquot file name for display
+                        // if the Aliquot selected is valid, return to the new table
+                        if (validateFile(getIntent().getStringExtra("AliquotXMLFileName"))) {
+                            // Makes sure there is a file selected
+                            Toast.makeText(AliquotMenuActivity.this, "Opening table...", Toast.LENGTH_LONG).show(); // lets user know table is opening
+                            Intent openDisplayTable = new Intent("android.intent.action.DISPLAY"); // Opens display table
+                            openDisplayTable.putExtra("fromHistory", "false");  // tells Intent that it is not from History table
 
-                        // Changes button color to indicate it has been opened
-                        aliquotFileSubmitButton.setBackgroundColor(Color.LTGRAY);
-                        aliquotFileSubmitButton.setTextColor(Color.BLACK);
-                        saveCurrentAliquot();
+                            saveCurrentAliquot();
 
-                        startActivity(openDisplayTable); // Starts display activity
+                            startActivity(openDisplayTable); // Starts display activity
+
+                        } else  // if it is not valid, display a message
+                            Toast.makeText(AliquotMenuActivity.this, "ERROR: Invalid Aliquot XML file.", Toast.LENGTH_LONG).show();
+
                     }
-
 
                 } else {
                     // Tells user to select a file for viewing
@@ -133,9 +148,6 @@ public class AliquotMenuActivity extends Activity {
         igsnDownloadButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
         igsnDownloadButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // temporarily changes button colors
-                igsnDownloadButton.setBackgroundColor(Color.LTGRAY);
-                igsnDownloadButton.setTextColor(Color.BLACK);
 
                 // Hides SoftKeyboard When Download Button is Pressed
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -148,6 +160,7 @@ public class AliquotMenuActivity extends Activity {
                 if (mobileWifi.isConnected()) {
                     if (igsnText.getText().length() != 0) {
                         downloadAliquot();
+                        igsnText.setText("");
                     }
                 } else {//Handles lack of wifi connection
                     new AlertDialog.Builder(AliquotMenuActivity.this).setMessage("You are not connected to WiFi, mobile data rates may apply. " +
@@ -157,6 +170,7 @@ public class AliquotMenuActivity extends Activity {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     downloadAliquot();
+                                    igsnText.setText("");
                                 }
                             })
                                     // if user selects no, just go back
@@ -178,7 +192,7 @@ public class AliquotMenuActivity extends Activity {
      * Downloads an aliquot based on the text entered into the aliquot field
      */
     public void downloadAliquot() {
-        Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_LONG).show(); // Reports that aliquot is being downloaded
+        Toast.makeText(AliquotMenuActivity.this, "Downloading Aliquot...", Toast.LENGTH_SHORT).show(); // Reports that aliquot is being downloaded
 
         // Captures igsn from user input
         String aliquotIGSN = igsnText.getText().toString().toUpperCase().trim();
@@ -188,9 +202,6 @@ public class AliquotMenuActivity extends Activity {
                 makeURI(BASE_ALIQUOT_URI, aliquotIGSN), "igsn");
 
         downloader.startFileDownload(); // begins actual download
-
-        igsnDownloadButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
-        igsnDownloadButton.setTextColor(Color.WHITE);
 
         // Note: Setting above is useful for download-then-open functionality
     }
@@ -221,6 +232,40 @@ public class AliquotMenuActivity extends Activity {
                 }
             }
         }
+    }
+
+    /**
+     * Checks an XML file at the specified file path to see if it is a Aliquot file
+     *
+     * @param filePath the path to the XML file
+     * @return a boolean stating whether it is valid or not
+     */
+    private boolean validateFile(String filePath) {
+        // initializes the end result
+        boolean result = false;
+        String[] splitPathAtPeriod = filePath.split("\\.");
+
+        if (splitPathAtPeriod.length > 0) { // makes sure there is something to index
+            // then makes sure that the file is an XML file
+            if (splitPathAtPeriod[splitPathAtPeriod.length - 1].equals("xml")) {
+                try {
+                    // builds the XML file to parse and checks for validity
+                    File xmlFile = new File(filePath);
+                    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                    Document doc = dBuilder.parse(xmlFile);
+
+                    // returns true if the first node is Aliquot
+                    result = doc.getDocumentElement().getNodeName().equals("Aliquot");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // returns false if there was a different error
+        return result;
     }
 
     /**

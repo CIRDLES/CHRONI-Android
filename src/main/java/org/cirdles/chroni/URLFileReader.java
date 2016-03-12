@@ -234,7 +234,8 @@ public class URLFileReader{
                     File fileToRemove = new File(downloadedFilePath);
                     fileToRemove.delete();
                 } else {
-                    Toast.makeText(context, "File downloaded!", Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(context, getActualFileName(downloadedFilePath) + " downloaded!", Toast.LENGTH_LONG).show();
                 }
 
             } else if(String.valueOf(classContext).contains("ReportSettingsMenuActivity")){
@@ -244,7 +245,7 @@ public class URLFileReader{
                     File fileToRemove = new File(downloadedFilePath);
                     fileToRemove.delete();
                 } else {
-                    Toast.makeText(context, "File downloaded!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, getActualFileName(downloadedFilePath) + " downloaded!", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -263,9 +264,6 @@ public class URLFileReader{
 
 		/**
 		 * Parses file for error
-		 *
-		 * @param downloadedFilePath
-		 * @return
 		 */
         protected boolean parseAliquotFileForError(String downloadedFilePath){
             boolean erroneousFile = false;
@@ -294,6 +292,17 @@ public class URLFileReader{
 
 			return erroneousFile;
         }
+	}
+
+	/**
+	 * Obtains the actual name of the file that is being downloaded (i.e. what the file is named).
+	 *
+	 * @param filePath the path to the file
+	 * @return the name of the file
+	 */
+	private String getActualFileName(String filePath) {
+		String[] splitParts = filePath.split("/");
+		return splitParts[splitParts.length - 1];
 	}
 
 	/**

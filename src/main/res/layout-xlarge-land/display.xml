@@ -14,12 +14,26 @@
 
         <Button android:id="@+id/reportSettingsTableButton"
             android:textSize="15sp" android:textColor="#000000"
-            android:typeface="normal" android:padding="25dp"
+            android:typeface="normal" android:padding="20dp"
             android:textStyle="bold"/>
 
         <Button android:id="@+id/aliquotTableButton"
             android:textSize="15sp" android:textColor="#000000"
-            android:typeface="normal" android:padding="25dp"
+            android:typeface="normal" android:padding="20dp"
+            android:textStyle="bold"/>
+
+        <Button android:id="@+id/concordiaTableButton"
+            android:visibility="gone"
+            android:textColor="#000000" android:textSize="15sp"
+            android:text="Concordia" android:typeface="normal"
+            android:padding="20dp" android:gravity="center"
+            android:textStyle="bold"/>
+
+        <Button android:id="@+id/probabilityDensityTableButton"
+            android:visibility="gone"
+            android:textColor="#000000" android:textSize="15sp"
+            android:text="Probability Density" android:typeface="normal"
+            android:padding="20dp" android:gravity="center"
             android:textStyle="bold"/>
 
     </TableRow>
@@ -30,19 +44,7 @@
         android:layout_height="wrap_content"
         android:gravity="center">
 
-        <Button android:id="@+id/concordiaTableButton"
-            android:visibility="gone"
-            android:textColor="#000000" android:textSize="13sp"
-            android:text="Concordia" android:typeface="normal"
-            android:padding="15dp" android:gravity="center"
-            android:textStyle="bold"/>
 
-        <Button android:id="@+id/probabilityDensityTableButton"
-            android:visibility="gone"
-            android:textColor="#000000" android:textSize="13sp"
-            android:text="Probability Density" android:typeface="normal"
-            android:padding="15dp" android:gravity="center"
-            android:textStyle="bold"/>
 
     </TableRow>
     
