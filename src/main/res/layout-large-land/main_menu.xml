@@ -12,10 +12,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Version Number"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="40dp" />
+        android:layout_marginBottom="30dp" />
 
     <TextView
         android:id="@+id/testText"
@@ -24,58 +24,73 @@
         android:text="Home"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
-        android:textSize="70sp"
+        android:textSize="55sp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="35dp" />
 
     <Button
         android:id="@+id/menuHistoryButton"
         android:layout_width="275dp"
-        android:layout_height="65dp"
+        android:layout_height="50dp"
         android:background="@drawable/dark_blue_button"
         android:minHeight="100dp"
         android:minWidth="400dp"
         android:text="History"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="30sp"
-        android:layout_marginBottom="15dp"
+        android:textSize="26sp"
+        android:layout_marginBottom="10dp"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/menuProfileButton" />
+        android:layout_above="@+id/reportSettingsButton" />
 
     <Button
         android:id="@+id/menuOpenButton"
         android:layout_width="275dp"
-        android:layout_height="65dp"
+        android:layout_height="50dp"
         android:background="@drawable/dark_blue_button"
         android:minHeight="100dp"
         android:minWidth="400dp"
         android:text="Open"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="30sp"
+        android:textSize="26sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="10dp"
         android:layout_above="@+id/menuHistoryButton" />
+
+    <Button
+        android:id="@+id/reportSettingsButton"
+        android:layout_width="275dp"
+        android:layout_height="50dp"
+        android:minHeight="100dp"
+        android:minWidth="400dp"
+        android:background="@drawable/dark_blue_button"
+        android:text="Report Settings"
+        android:textColor="@color/white"
+        android:textColorHint="@color/black"
+        android:textSize="26sp"
+        android:layout_marginBottom="10dp"
+        android:layout_above="@+id/menuProfileButton"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/menuProfileButton"
         android:layout_width="275dp"
-        android:layout_height="65dp"
+        android:layout_height="50dp"
         android:background="@drawable/dark_blue_button"
         android:minHeight="100dip"
         android:minWidth="400dip"
         android:text="Credentials"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="30sp"
+        android:textSize="26sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="15dp"
         android:layout_above="@+id/versionNumberMainMenu" />
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="66dp"
+        android:layout_width="65dp"
         android:layout_height="110dp"
         android:src="@drawable/chroni_logo"
         android:layout_alignParentTop="true"
