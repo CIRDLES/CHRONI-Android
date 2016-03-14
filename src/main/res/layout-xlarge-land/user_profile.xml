@@ -79,7 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/testText"
         android:layout_centerHorizontal="true"
-        android:text="Geochron Portal"
+        android:text="GeoPass"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
         android:textSize="50sp" />
