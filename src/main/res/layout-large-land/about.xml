@@ -70,4 +70,12 @@
         android:layout_marginEnd="50sp"
         android:layout_marginTop="10dp" />
 
+    <ImageView
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:id="@+id/cirdlesLogo"
+        android:src="@drawable/cirdles_logo_text_xhdpi"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="40dp" />
+
 </RelativeLayout>
