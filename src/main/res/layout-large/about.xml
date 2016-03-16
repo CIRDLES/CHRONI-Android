@@ -65,6 +65,16 @@
         android:clickable="false"
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentRight="false"
+        android:layout_toRightOf="@+id/fileBrowserHomeButton" />
+
+    <ImageView
+        android:layout_width="145dp"
+        android:layout_height="145dp"
+        android:id="@+id/cirdlesLogo"
+        android:src="@drawable/cirdles_logo_text_xhdpi"
+        android:layout_alignParentLeft="false"
+        android:layout_toLeftOf="@+id/fileBrowserHomeButton"
+        android:layout_marginTop="3dp" />
 
 </RelativeLayout>

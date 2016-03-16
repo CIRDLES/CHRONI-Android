@@ -369,7 +369,7 @@ public class UserProfileActivity extends Activity {
 
                 if (mobileWifi.isConnected()) {
                     Intent openHelpBlog = new Intent(Intent.ACTION_VIEW,
-                            Uri.parse(getString(R.string.chroni_help_address)));
+                            Uri.parse("http://cirdles.org/projects/et_redux/#what-is-geopass"));
                     startActivity(openHelpBlog);
 
                 } else {
