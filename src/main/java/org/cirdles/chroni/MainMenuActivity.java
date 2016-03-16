@@ -32,6 +32,7 @@ public class MainMenuActivity extends Activity {
 
     private boolean hasDefaultReportSettings1 = true;
     private boolean hasDefaultReportSettings2 = true;
+    private boolean hasDefaultAliquot = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,10 +105,12 @@ public class MainMenuActivity extends Activity {
 
         hasDefaultReportSettings1 = getIntent().getBooleanExtra("hasDefault1", true);
         hasDefaultReportSettings2 = getIntent().getBooleanExtra("hasDefault2", true);
+        hasDefaultAliquot = getIntent().getBooleanExtra("hasDefaultAliquot", true);
 
-        if (!(hasDefaultReportSettings1 && hasDefaultReportSettings2)) {
-            new AlertDialog.Builder(this).setMessage("You do not have the Default Report Settings and are not connected to WiFi, mobile data rates may apply. " +
-                    "Do you wish to download the Default Report Settings?")
+        // alerts user/downloads default files if ANY are missing
+        if (!(hasDefaultReportSettings1 && hasDefaultReportSettings2 && hasDefaultAliquot)) {
+            new AlertDialog.Builder(this).setMessage("You do not have all of the default files and are not connected to WiFi, mobile data rates may apply. " +
+                    "Do you wish to download the default files?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -152,11 +155,26 @@ public class MainMenuActivity extends Activity {
             hasDefaultReportSettings2 = true;
             getIntent().putExtra("hasDefault2", true);
         }
+
+        if (!hasDefaultAliquot) {
+            // TODO: change URL to the designated assets on https://raw.githubusercontent.com/
+            URLFileReader downloader3 = new URLFileReader(
+                    MainMenuActivity.this,
+                    "HomeScreenAliquot",
+                    "http://www.geochronportal.org/getxml.php?igsn=geg000172",
+                    "url");
+            downloader3.startFileDownload();
+            saveCurrentAliquot();
+            hasDefaultAliquot = true;
+            getIntent().putExtra("hasDefaultAliquot", true);
+
+
+        }
     }
 
 
     /**
-     * Stores Current Report Settings
+     * Stores the current Report Settings as default in the Shared Preferences.
      */
     protected void saveCurrentReportSettings() {
         // Establishes the CHRONI folders
@@ -165,6 +183,20 @@ public class MainMenuActivity extends Activity {
         SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("Current Report Settings", reportSettingsDirectory.getPath() + "/Default Report Settings.xml"); // makes the Default Report Settings the current report settings
+        editor.apply(); // Committing changes
+    }
+
+    /**
+     * Stores the current Aliquot as default in the Shared Preferences.
+     */
+    protected  void saveCurrentAliquot() {
+        // Establishes the CHRONI folders
+        File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot");
+        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        // makes the Default Report Settings the current report settings
+        editor.putString("Current Report Settings", reportSettingsDirectory.getPath() + "/Default Aliquot.xml");
         editor.apply(); // Committing changes
     }
 
