@@ -128,10 +128,10 @@ public class AliquotMenuActivity extends Activity {
 
                     }
 
-                } else {
+                } else
                     // Tells user to select a file for viewing
                     Toast.makeText(AliquotMenuActivity.this, "Please select an aliquot file to view.", Toast.LENGTH_LONG).show(); // lets user know table is opening
-                }
+
             }
         });
 
@@ -141,7 +141,7 @@ public class AliquotMenuActivity extends Activity {
         retrieveCredentials();
         if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
             igsnText.setHint("Profile information stored. Private files enabled!");
-        }else{
+        } else {
             igsnText.setHint("No profile information stored. Private files disabled.");
         }
 

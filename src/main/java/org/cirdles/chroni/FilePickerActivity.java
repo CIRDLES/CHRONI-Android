@@ -37,8 +37,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,8 +70,33 @@ public class FilePickerActivity extends ListActivity {
         // Set the view to be shown if the list is empty
 		LayoutInflater inflator = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View emptyView = inflator.inflate(R.layout.file_picker_empty_view, null);
-		((ViewGroup)getListView().getParent()).addView(emptyView);
+		((ViewGroup) getListView().getParent()).addView(emptyView);
 		getListView().setEmptyView(emptyView);
+
+		// adds a RelativeLayout to wrap the listView so that a button can be placed at the bottom
+		RelativeLayout outerLayout = (RelativeLayout) inflator.inflate(R.layout.file_picker_regular_view, null);
+		((ViewGroup) getListView().getParent()).addView(outerLayout);
+
+		// defines the action for the bottom button
+		Button bottomButton = (Button) findViewById(R.id.filePickerButton);
+		bottomButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Button button = (Button) v;
+				String buttonText = button.getText().toString();
+
+				if (buttonText.equals("Previous Directory")) {
+					// moves to the previous directory (if it exists) and refreshes the list of files
+					if (mainDirectory.getParentFile() != null) {
+						mainDirectory = mainDirectory.getParentFile();
+						refreshFilesList();
+					}
+
+				} else if (buttonText.equals("Done"))
+					// finished deleting files
+					toggleDelete();
+			}
+		});
 
 		// Obtain content from the current intent for later use
 		intentContent = getIntent().getStringExtra("Default_Directory");
@@ -80,9 +107,9 @@ public class FilePickerActivity extends ListActivity {
 		// Sets the initial directory based on what file the user is looking for (Aliquot or Report Settings)
 		if (intentContent.contentEquals("Aliquot_Directory")){
 			mainDirectory = new File(mainDirectory + "/CHRONI/Aliquot"); // Takes user to the Aliquot folder
-		} else if(intentContent.contentEquals("Report_Settings_Directory")) {	// Report Settings Menu if coming from a Dropdown Menu
+		} else if (intentContent.contentEquals("Report_Settings_Directory")) {	// Report Settings Menu if coming from a Dropdown Menu
             mainDirectory = new File(mainDirectory + "/CHRONI/Report Settings");
-        }else if(intentContent.contentEquals("From_Report_Directory")) {  // Report Settings Menu if coming from a Report Settings Menu
+        } else if (intentContent.contentEquals("From_Report_Directory")) {  // Report Settings Menu if coming from a Report Settings Menu
             mainDirectory = new File(mainDirectory + "/CHRONI/Report Settings");
         }
 
@@ -126,10 +153,9 @@ public class FilePickerActivity extends ListActivity {
 		File[] files = mainDirectory.listFiles(filter);
 		if (files != null && files.length > 0) {
 			for (File f : files) {
-				if (f.isHidden() && !mShowHiddenFiles) {
+				if (f.isHidden() && !mShowHiddenFiles)
 					// Don't add the file
 					continue;
-				}
 
 				// Add the file the ArrayAdapter
 				mFiles.add(f);
@@ -221,15 +247,13 @@ public class FilePickerActivity extends ListActivity {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-
 			View row;
 
 			if(convertView == null) {
 				LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				row = inflater.inflate(R.layout.file_picker_list_item, parent, false);
-			} else {
+			} else
 				row = convertView;
-			}
 
 			File object = mObjects.get(position);
 
@@ -240,13 +264,12 @@ public class FilePickerActivity extends ListActivity {
 			textView.setTextSize(24);
 
 			textView.setText(object.getName());
-			if(object.isFile()) {
+			if(object.isFile())
 				// Show the file icon
 				imageView.setImageResource(R.drawable.chroni_logo);
-			} else {
+			else
 				// Show the folder icon
 				imageView.setImageResource(R.drawable.chroni_logo);
-			}
 
 			return row;
 		}
@@ -256,17 +279,17 @@ public class FilePickerActivity extends ListActivity {
 	private class FileComparator implements Comparator<File> {
 	    @Override
 	    public int compare(File f1, File f2) {
-	    	if(f1 == f2) {
+	    	if(f1 == f2)
 	    		return 0;
-	    	}
-	    	if(f1.isDirectory() && f2.isFile()) {
+
+	    	if(f1.isDirectory() && f2.isFile())
 	        	// Show directories above files
 	        	return -1;
-	        }
-	    	if(f1.isFile() && f2.isDirectory()) {
+
+	    	if(f1.isFile() && f2.isDirectory())
 	        	// Show files below directories
 	        	return 1;
-	        }
+
 	    	// Sort the directories alphabetically
 	        return f1.getName().compareToIgnoreCase(f2.getName());
 	    }
@@ -287,12 +310,10 @@ public class FilePickerActivity extends ListActivity {
 				return true;
 			}
 			if(mExtensions != null && mExtensions.length > 0) {
-				for(String extension : mExtensions) {
-					if(filename.endsWith(extension)) {
-						// The filename ends with the extension
+				for(String extension : mExtensions)
+					if(filename.endsWith(extension))	// The filename ends with the extension
 						return true;
-					}
-				}
+
 				// The filename did not match any of the extensions
 				return false;
 			}
@@ -311,19 +332,29 @@ public class FilePickerActivity extends ListActivity {
 		int number = list.getChildCount();
 
 		if (inDeleteMode) {
+			// gets rid of all the delete images
 			for (int i=0; i<number; i++) {
 				View child = list.getChildAt(i);
 				View delete = child.findViewById(R.id.deleteButton);
 				delete.setVisibility(View.INVISIBLE);
 			}
+
+			// changes the bottom button text back to "Previous Directory"
+			Button bottomButton = (Button) findViewById(R.id.filePickerButton);
+			bottomButton.setText("Previous Directory");
 		}
 
 		else {
+			// displays all of the delte images
 			for (int i=0; i<number; i++) {
 				View child = list.getChildAt(i);
 				View delete = child.findViewById(R.id.deleteButton);
 				delete.setVisibility(View.VISIBLE);
 			}
+
+			// changes the bottom button text to "Done"
+			Button bottomButton = (Button) findViewById(R.id.filePickerButton);
+			bottomButton.setText("Done");
 		}
 
 		inDeleteMode = !inDeleteMode;

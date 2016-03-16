@@ -26,7 +26,7 @@
         android:textColor="@color/border_grey"
         android:textSize="38sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="10dp" />
 
     <Button
         android:id="@+id/menuHistoryButton"
@@ -39,7 +39,7 @@
         android:textColor="@color/white"
         android:textColorHint="@color/black"
         android:textSize="22sp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/reportSettingsButton" />
 
@@ -55,7 +55,7 @@
         android:textColorHint="@color/black"
         android:textSize="22sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         android:layout_above="@+id/menuHistoryButton" />
 
     <Button
@@ -69,7 +69,7 @@
         android:textColor="@color/white"
         android:textColorHint="@color/black"
         android:textSize="22sp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         android:layout_above="@+id/menuProfileButton"
         android:layout_centerHorizontal="true" />
 

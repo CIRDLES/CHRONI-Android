@@ -38,37 +38,37 @@ public class URLFileReader{
 	}
 
 	public void startFileDownload() {
-		if(className.contentEquals("HomeScreen")) {
-            // Sets the type of file and URL being accessed for saving purposes of the default Report Settings
+
+		if (className.contentEquals("HomeScreen")) {
+            // sets the type of file and URL being accessed for saving purposes of the default Report Settings
             setFileType("Report Settings");
-            setFileName(createFileName());	// Always downloading Default RS here
+            setFileName(createFileName());	// always downloading Default RS here
 
+		} else if (className.contentEquals("HomeScreenAliquot")) {
+			// coming from the home screen but downloading an Aliquot file
+			setFileType("Aliquot");
+			setFileName(createFileName());
 
-            // Sets up the Download thread
-            final DownloadTask downloadTask = new DownloadTask(classContext);
-            downloadTask.execute(fileURL); // retrieves the file from the specified URL
+		} else if (className.contentEquals("AliquotMenu")) {
+			// sets the type of file and URL being accessed for saving purposes
+			setFileType("Aliquot");
 
-		} else {
+			if(getFileName().isEmpty())
+				// generates file name based on URL
+				setFileName(createFileName());
 
-			if(className.contentEquals("AliquotMenu")){
-				// Sets the type of file and URL being accessed for saving purposes
-				setFileType("Aliquot");
-                if(getFileName().isEmpty()){
-    				setFileName(createFileName());
-                }	// generates file name based on URL
+		} else if (className.contentEquals("ReportSettingsMenu")){
+			// sets the type of file and URL being accessed for saving purposes
+			setFileType("Report Settings");
 
-			} else if(className.contentEquals("ReportSettingsMenu")){
-				// Sets the type of file and URL being accessed for saving purposes
-				setFileType("Report Settings");
-                if(getFileName().isEmpty()) {
-                    setFileName(createFileName());
-                }// generates file name based on URL
-			}
-		
-			// Sets up the Download thread 
-			final DownloadTask downloadTask = new DownloadTask(classContext);
-			downloadTask.execute(fileURL); // retrieves the file from the specified URL		
+			if(getFileName().isEmpty())
+				// generates file name based on URL
+				setFileName(createFileName());
 		}
+
+		// sets up the Download thread
+		final DownloadTask downloadTask = new DownloadTask(classContext);
+		downloadTask.execute(fileURL);	// retrieves the file from the specified URL
 
 	}
 
@@ -78,9 +78,25 @@ public class URLFileReader{
 	protected String createFileName() {
 		String name = null;
 
-		if(getFileType().contains("Aliquot")){
+		// coming from the home screen but making the name for the default Aliquot file
+		if (className.contentEquals("HomeScreenAliquot"))
+			name = "Default Aliquot";
+
+		// coming from home screen but making the name for a default Report Settings file
+		else if (className.contentEquals("HomeScreen")) {
+
+			if (fileURL.contentEquals("https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings.xml"))
+				name = "Default Report Settings";
+
+			else if (fileURL.contentEquals("https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings%202.xml"))
+				name = "Default Report Settings 2";
+
+		}
+
+		// coming from the aliquot menu, must create the name based on the file name
+		else if (getFileType().contains("Aliquot")) {
 			// If downloading based on IGSN URL, just use IGSN for name
-			if(downloadMethod.contains("igsn")){
+			if (downloadMethod.contains("igsn")) {
 				String[] url = getFileURL().split("igsn=");
 				name = url[1];
 
@@ -90,36 +106,22 @@ public class URLFileReader{
 					name = url2[0];
 				}
 			}
-			
 			// if downloading based on URL, makes name from ending of URL
-			else if(downloadMethod.contains("url")){
+			else if (downloadMethod.contains("url")) {
 
 				String[] URL = getFileURL().split("/");
 				name = URL[URL.length-1];
 
-				if (name.contains(".xml")){
+				if (name.contains(".xml")) {
 					// Removes the file name ending from XML files
 					String [] newName = name.split(".xml");
 					name = newName[0];
 				}
 			}
-
 		}
-
-        if(getClassName().contentEquals("HomeScreen")) {
-            if (fileURL.contentEquals("https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings.xml")) {
-                name = "Default Report Settings";
-            } else if (fileURL.contentEquals("https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings%202.xml")) {
-                name = "Default Report Settings 2";
-            }
-        }
 
 		return name;
 	}
-
-    public String getClassName() {
-        return className;
-    }
 
     public void setClassName(String className) {
         this.className = className;
@@ -163,14 +165,15 @@ public class URLFileReader{
 					// download the file to the appropriate location
 					input = connection.getInputStream();
 					if(fileType.contains("Aliquot")) {
-						if(fileLength >= 55){ // Cancels if invalid IGSN file (if file has a length of 0.05 KB)
+						if(fileLength <= 55 && fileLength >= 0)
+							// Cancels if invalid IGSN file (if file has a length of 0.05 KB)
 							cancel(true);
 
-						} else {
-                            downloadedFilePath = Environment.getExternalStorageDirectory()
+						else {	// continues the download if not an error file
+							downloadedFilePath = Environment.getExternalStorageDirectory()
 									+ "/CHRONI/Aliquot/" + fileName + ".xml"; // Stores name of path
 
-                            output = new FileOutputStream(Environment.getExternalStorageDirectory()
+							output = new FileOutputStream(Environment.getExternalStorageDirectory()
 									+ "/CHRONI/Aliquot/" + fileName + ".xml");
 						}
 
@@ -187,29 +190,36 @@ public class URLFileReader{
 					int count;
 					while ((count = input.read(data)) != -1) {
 						// allow canceling with back button
-						if (isCancelled()){
+						if (isCancelled())
 							return null;
-							}
+
 						total += count;
 						// for publishing with progress bar
 						if (fileLength > 0) // only if total length is known
 							publishProgress((int) (total * 100 / fileLength));
+
 						// Creates the actual downloaded file.
 						// Must be bigger than 55 because that is the size of error files
-						// if -1, the server is not sending back requested length so, for now, downloading 
+						// if -1, the server is not sending back requested length so, for now, downloading
+						if (output != null)
 							output.write(data, 0, count);
+
+						else
+							Toast.makeText(context, "Error: File was unable to be written to the directory", Toast.LENGTH_SHORT).show();
 					}
 
 				} catch (Exception e) {
 					return e.toString();
+
 				} finally {
+
 					try {
 						if (output != null)
 							output.close();
 						if (input != null)
 							input.close();
-					} catch (IOException ignored) {
-					}
+
+					} catch (IOException ignored) {}
 
 					if (connection != null)
 						connection.disconnect();
@@ -263,7 +273,10 @@ public class URLFileReader{
 		}
 
 		/**
-		 * Parses file for error
+		 * Parses an Aliquot XML file and looks for any errors.
+		 *
+		 * @param downloadedFilePath the path that points to the downloaded file.
+		 * @return a boolean stating whether the file is valid or not.
 		 */
         protected boolean parseAliquotFileForError(String downloadedFilePath){
             boolean erroneousFile = false;
@@ -306,10 +319,10 @@ public class URLFileReader{
 	}
 
 	/**
-	 * Parses file for error
+	 * Parses a Report Settings XML file and looks for any errors.
 	 *
-	 * @param downloadedFilePath
-	 * @return
+	 * @param downloadedFilePath the path that points to the downloaded file.
+	 * @return a boolean stating whether the file is valid or not.
 	 */
     protected boolean parseReportSettingsFileForError(String downloadedFilePath){
         boolean erroneousFile = false;

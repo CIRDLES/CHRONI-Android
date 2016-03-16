@@ -26,66 +26,66 @@
         android:textColor="@color/border_grey"
         android:textSize="78sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp" />
+        android:layout_marginTop="30dp" />
 
     <Button
         android:id="@+id/menuHistoryButton"
         android:layout_width="350dp"
-        android:layout_height="80dp"
+        android:layout_height="85dp"
         android:background="@drawable/dark_blue_button"
         android:minHeight="100dp"
         android:minWidth="400dp"
         android:text="History"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="44sp"
-        android:layout_marginBottom="20dp"
+        android:textSize="42sp"
+        android:layout_marginBottom="15dp"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/reportSettingsButton" />
 
     <Button
         android:id="@+id/menuOpenButton"
         android:layout_width="350dp"
-        android:layout_height="80dp"
+        android:layout_height="85dp"
         android:background="@drawable/dark_blue_button"
         android:minHeight="100dp"
         android:minWidth="400dp"
         android:text="Open"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="44sp"
+        android:textSize="42sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
         android:layout_above="@+id/menuHistoryButton" />
 
     <Button
         android:id="@+id/reportSettingsButton"
         android:layout_width="350dp"
-        android:layout_height="80dp"
+        android:layout_height="85dp"
         android:minHeight="100dp"
         android:minWidth="400dp"
         android:background="@drawable/dark_blue_button"
         android:text="Report Settings"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="44sp"
-        android:layout_marginBottom="20dp"
+        android:textSize="42sp"
+        android:layout_marginBottom="15dp"
         android:layout_above="@+id/menuProfileButton"
         android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/menuProfileButton"
         android:layout_width="350dp"
-        android:layout_height="80dp"
+        android:layout_height="85dp"
         android:background="@drawable/dark_blue_button"
         android:minHeight="100dip"
         android:minWidth="400dip"
         android:text="Credentials"
         android:textColor="@color/white"
         android:textColorHint="@color/black"
-        android:textSize="44sp"
+        android:textSize="42sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="30dp"
         android:layout_above="@+id/versionNumberMainMenu" />
 
     <ImageView

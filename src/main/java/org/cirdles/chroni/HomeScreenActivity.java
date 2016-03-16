@@ -30,6 +30,7 @@ public class HomeScreenActivity extends Activity  {
 
     private boolean defaultReportSettingsPresent = true;
     private boolean defaultReportSettings2Present = true;
+    private boolean defaultAliquotPresent = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,7 @@ public class HomeScreenActivity extends Activity  {
                     openMainMenu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     openMainMenu.putExtra("hasDefault1", defaultReportSettingsPresent);
                     openMainMenu.putExtra("hasDefault2", defaultReportSettings2Present);
+                    openMainMenu.putExtra("hasDefaultAliquot", defaultAliquotPresent);
                     startActivity(openMainMenu);
                 }
             }
@@ -90,38 +92,42 @@ public class HomeScreenActivity extends Activity  {
      * Creates the necessary application directories: CIRDLES, Aliquot and Report Settings folders
      */
     protected void createDirectories() throws FileNotFoundException {
-        // Establishes the CIRDLES directories
+        // establishes the CIRDLES directories
         File chroniDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/");
         File aliquotDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Aliquot");
         File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Report Settings");
 
-        // Gives default aliquot a path
+        // gives default aliquot a path
         File defaultAliquotDirectory = new File(reportSettingsDirectory, "Default Aliquot");
 
         defaultReportSettingsPresent = false; // determines whether the default report settings is present or not
         defaultReportSettings2Present = false; // determines whether the default report settings 2 is present or not
-        boolean defaultAliquotPresent = false; // determines whether the aliquot is present or not
+        defaultAliquotPresent = false; // determines whether the aliquot is present or not
 
-        //Creates the directories if they are not there
+        // creates the directories if they are not there
         chroniDirectory.mkdirs();
         aliquotDirectory.mkdirs();
         reportSettingsDirectory.mkdirs();
 
-        // Checks internet connection before downloading files
+        // checks internet connection before downloading files
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mobileWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        // Checks to see if the default report settings is present
-        File[] files = reportSettingsDirectory.listFiles(); // Lists files in CHRONI directory
-        for (File f : files) {
-            if (f.getName().contentEquals("Default Report Settings.xml")) {
+        // checks to see if the default Report Settings files are present
+        File[] reportSettingsFiles = reportSettingsDirectory.listFiles(); // Lists files in CHRONI directory
+        for (File f : reportSettingsFiles) {
+            if (f.getName().contentEquals("Default Report Settings.xml"))
                 defaultReportSettingsPresent = true;
-            }if (f.getName().contentEquals("Default Report Settings 2.xml")) {
+
+            if (f.getName().contentEquals("Default Report Settings 2.xml"))
                 defaultReportSettings2Present = true;
-            }if(f.getName().contentEquals("Default Aliquot.xml")) {
-                defaultAliquotPresent = true;
-            }
         }
+
+        // checks to see if the default Aliquot file is present
+        File[] aliquotFiles = aliquotDirectory.listFiles();
+        for (File f : aliquotFiles)
+            if (f.getName().contentEquals("Default Aliquot.xml"))
+                defaultAliquotPresent = true;
 
         if (mobileWifi.isConnected()) {
             // Downloads default report settings 1 if not present
@@ -151,6 +157,19 @@ public class HomeScreenActivity extends Activity  {
                 saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
             }
 
+            if (!defaultAliquotPresent) {
+                // TODO: change URL to the designated assets on https://raw.githubusercontent.com/
+                URLFileReader downloader3 = new URLFileReader(
+                        HomeScreenActivity.this,
+                        "HomeScreenAliquot",
+                        "http://www.geochronportal.org/getxml.php?igsn=geg000172",
+                        "url");
+                downloader3.startFileDownload();
+                defaultAliquotPresent = true;
+                saveInitialLaunch();
+                saveCurrentAliquot();
+            }
+
         }
 
     }
@@ -164,8 +183,7 @@ public class HomeScreenActivity extends Activity  {
     }
 
     /**
-     * Stores Current Report Settings
-     * TODO clean up this process
+     * Stores the current Report Settings as default in the Shared Preferences.
      */
     protected void saveCurrentReportSettings() {
         // Establishes the CHRONI folders
@@ -175,6 +193,20 @@ public class HomeScreenActivity extends Activity  {
 
         // makes the Default Report Settings the current report settings
         editor.putString("Current Report Settings", reportSettingsDirectory.getPath() + "/Default Report Settings.xml");
+        editor.apply(); // Committing changes
+    }
+
+    /**
+     * Stores the current Aliquot as default in the Shared Preferences.
+     */
+    protected  void saveCurrentAliquot() {
+        // Establishes the CHRONI folders
+        File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot");
+        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        // makes the Default Report Settings the current report settings
+        editor.putString("Current Report Settings", reportSettingsDirectory.getPath() + "/Default Aliquot.xml");
         editor.apply(); // Committing changes
     }
 
