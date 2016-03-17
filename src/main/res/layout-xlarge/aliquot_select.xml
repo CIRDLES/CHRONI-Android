@@ -84,13 +84,13 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="180dp"
-        android:layout_height="300dp"
+        android:layout_width="160dp"
+        android:layout_height="260dp"
         android:layout_centerHorizontal="true"
         android:maxHeight="200dp"
         android:maxWidth="200dp"
         android:src="@drawable/chroni_logo"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="35dp" />
 
     <TextView
         android:id="@+id/testText"
@@ -101,8 +101,21 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/border_grey"
         android:textSize="100sp"
-        android:layout_above="@+id/aliquotFileSelectText"
-        android:layout_marginBottom="235dp" />
+        android:layout_below="@id/imageView1"
+        android:layout_marginTop="15dp"/>
+
+    <TextView
+        android:id="@+id/aliquotCurrentReportSettingsLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/testText"
+        android:layout_marginTop="75dp"
+        android:gravity="center"
+        android:layout_gravity="center" />
 
     <EditText
         android:id="@+id/aliquotIGSNText"
