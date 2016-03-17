@@ -87,8 +87,8 @@
         android:textSize="20sp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="15dp"
-        android:layout_toStartOf="@id/profileEraseButton"
-        android:layout_marginEnd="25dp" />
+        android:layout_marginRight="20dp"
+        android:layout_toLeftOf="@+id/fileBrowserHomeButton" />
 
     <Button
         android:id="@+id/fileBrowserHomeButton"
@@ -99,9 +99,8 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@id/profileEraseButton"
-        android:layout_marginStart="25dp"
-        android:layout_marginBottom="15dp" />
+        android:layout_marginBottom="15dp"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/profileEraseButton"
@@ -111,9 +110,10 @@
         android:text="Reset"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="15dp" />
+        android:layout_marginBottom="15dp"
+        android:layout_toRightOf="@+id/fileBrowserHomeButton"
+        android:layout_marginLeft="20dp" />
 
 
     <TextView
