@@ -27,7 +27,8 @@ import java.io.File;
  */
 public class MainMenuActivity extends Activity {
 
-    // Path of the current report settings file
+    // path of the current Report Settings and Aliquot files
+    private static final String PREF_ALIQUOT = "Current Aliquot"; // Path of the current aliquot file
     private static final String PREF_REPORT_SETTINGS = "Current Report Settings";
 
     private boolean hasDefaultReportSettings1 = true;
@@ -122,8 +123,7 @@ public class MainMenuActivity extends Activity {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
                         }
-                    })
-                    .show();
+                    }).show();
         }
 
     }
@@ -157,17 +157,15 @@ public class MainMenuActivity extends Activity {
         }
 
         if (!hasDefaultAliquot) {
-            // TODO: change URL to the designated assets on https://raw.githubusercontent.com/
             URLFileReader downloader3 = new URLFileReader(
                     MainMenuActivity.this,
                     "HomeScreenAliquot",
-                    "http://www.geochronportal.org/getxml.php?igsn=geg000172",
+                    "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default-Aliquot-XML/Default%20Aliquot.xml",
                     "url");
             downloader3.startFileDownload();
             saveCurrentAliquot();
             hasDefaultAliquot = true;
             getIntent().putExtra("hasDefaultAliquot", true);
-
 
         }
     }
@@ -192,11 +190,11 @@ public class MainMenuActivity extends Activity {
     protected  void saveCurrentAliquot() {
         // Establishes the CHRONI folders
         File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot");
-        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+        SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
         SharedPreferences.Editor editor = settings.edit();
 
         // makes the Default Report Settings the current report settings
-        editor.putString("Current Report Settings", reportSettingsDirectory.getPath() + "/Default Aliquot.xml");
+        editor.putString("Current Aliquot", reportSettingsDirectory.getPath() + "/Default Aliquot.xml");
         editor.apply(); // Committing changes
     }
 

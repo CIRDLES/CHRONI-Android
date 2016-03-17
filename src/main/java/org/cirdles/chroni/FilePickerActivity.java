@@ -90,6 +90,17 @@ public class FilePickerActivity extends ListActivity {
 					if (mainDirectory.getParentFile() != null) {
 						mainDirectory = mainDirectory.getParentFile();
 						refreshFilesList();
+
+						// goes through and remo any stubborn delete imageViews
+						ViewGroup list = getListView();
+						int number = list.getChildCount();
+
+						// gets rid of all the delete images
+						for (int i=0; i<number; i++) {
+							View child = list.getChildAt(i);
+							View delete = child.findViewById(R.id.deleteButton);
+							delete.setVisibility(View.INVISIBLE);
+						}
 					}
 
 				} else if (buttonText.equals("Done"))
@@ -105,13 +116,12 @@ public class FilePickerActivity extends ListActivity {
         mainDirectory = Environment.getExternalStorageDirectory(); // Takes user to root directory folder
 
 		// Sets the initial directory based on what file the user is looking for (Aliquot or Report Settings)
-		if (intentContent.contentEquals("Aliquot_Directory")){
+		if (intentContent.contentEquals("Aliquot_Directory"))
 			mainDirectory = new File(mainDirectory + "/CHRONI/Aliquot"); // Takes user to the Aliquot folder
-		} else if (intentContent.contentEquals("Report_Settings_Directory")) {	// Report Settings Menu if coming from a Dropdown Menu
+		else if (intentContent.contentEquals("Report_Settings_Directory"))	// Report Settings Menu if coming from a Dropdown Menu
             mainDirectory = new File(mainDirectory + "/CHRONI/Report Settings");
-        } else if (intentContent.contentEquals("From_Report_Directory")) {  // Report Settings Menu if coming from a Report Settings Menu
+        else if (intentContent.contentEquals("From_Report_Directory"))	// Report Settings Menu if coming from a Report Settings Menu
             mainDirectory = new File(mainDirectory + "/CHRONI/Report Settings");
-        }
 
 		// Initialize the ArrayList
 		mFiles = new ArrayList<File>();
@@ -167,7 +177,7 @@ public class FilePickerActivity extends ListActivity {
 	}
 
 	@Override
-	protected void onListItemClick(ListView l, View v, final int position, long id) {
+	protected void onListItemClick(final ListView l, final View v, final int position, long id) {
 		final File newFile = (File) l.getItemAtPosition(position);
 
 		// give a prompt asking if the user wishes to delete the selected file
@@ -178,6 +188,12 @@ public class FilePickerActivity extends ListActivity {
 						.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialogInterface, int i) {
+								// first sets the delete image of the very last item in the list to invisible
+								View child = l.getChildAt(mAdapter.getCount() - 1);
+								ImageView deleteImage = (ImageView) child.findViewById(R.id.deleteButton);
+								deleteImage.setVisibility(View.INVISIBLE);
+
+								// then deletes the file and removes it from the adapter
 								newFile.delete();
 								mAdapter.remove(newFile);
 								dialogInterface.dismiss();
@@ -194,7 +210,6 @@ public class FilePickerActivity extends ListActivity {
 		}
 
 		else {
-
 			// If item selected is a file (and not a directory), allows user to select file
 			if (newFile.isFile()) {
 				// Sends back selected file name
@@ -345,7 +360,7 @@ public class FilePickerActivity extends ListActivity {
 		}
 
 		else {
-			// displays all of the delte images
+			// displays all of the delete images
 			for (int i=0; i<number; i++) {
 				View child = list.getChildAt(i);
 				View delete = child.findViewById(R.id.deleteButton);

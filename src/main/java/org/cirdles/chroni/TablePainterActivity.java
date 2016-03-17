@@ -1,5 +1,6 @@
 package org.cirdles.chroni;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -112,76 +113,90 @@ public class TablePainterActivity extends Activity {
         setReportSettingsFilePath(reportSettingsPath);
         previousReportSettingsFilePath = reportSettingsPath;    // saves the Report Settings path for later
 
-        // parses the Report Settings XML file
-        categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
-        outputVariableNames = reportSettingsParser.getOutputVariableNames();
+        // if neither the Default Report Settings OR the current Report Settings don't exist, exits activity and downloads Default
+        boolean defaultReportSettingsExists = new File(Environment.getExternalStorageDirectory()
+                + "/CHRONI/Report Settings/Default Report Settings.xml").exists();
 
-        // if the report settings file is invalid, show error message and switch Report Settings path
-        if (categoryMap == null) {
-            Toast.makeText(TablePainterActivity.this, "ERROR: Invalid Report Settings XML file, switched to Default Report Settings.",
-                    Toast.LENGTH_LONG).show();
+        boolean currentReportSettingsExists = new File(getReportSettingsFilePath()).exists();
 
-            // if the Report Settings file is invalid at this stage, switch to Default Report Settings
-            setReportSettingsFilePath(Environment.getExternalStorageDirectory()
-                    + "/CHRONI/Report Settings/Default Report Settings.xml");
+        if (!currentReportSettingsExists && !defaultReportSettingsExists) {
+            // downloads OR asks user to download (see downloadDefaultReportSettings())
+            downloadDefaultReportSettings();
+            result = false; // then finishes the activity so the file can download
 
-            // re-parses the Report Settings XML file
-            categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
-            outputVariableNames = reportSettingsParser.getOutputVariableNames();
+        } else {    // continues on with the activity
 
-        }
+                // parses the Report Settings XML file
+                categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
+                outputVariableNames = reportSettingsParser.getOutputVariableNames();
 
-        columnMaxLengths = new ArrayList<Integer>();
-        columnDecimals = new ArrayList<Boolean>();
+                // if the report settings file is invalid, show error message and switch Report Settings path
+                if (categoryMap == null) {
+                    Toast.makeText(TablePainterActivity.this, "ERROR: Invalid Report Settings XML file, switched to Default Report Settings.",
+                            Toast.LENGTH_LONG).show();
 
-        // gets and sets the current Aliquot path
-        String aliquotPath = retrieveAliquotFilePath();
-        setAliquotFilePath(aliquotPath);
-        previousAliquotFilePath = aliquotPath;  // saves Aliquot file path for later
+                    // if the Report Settings file is invalid at this stage, switch to Default Report Settings
+                    setReportSettingsFilePath(Environment.getExternalStorageDirectory()
+                            + "/CHRONI/Report Settings/Default Report Settings.xml");
 
-        // parses aliquot file and retrieves maps
-        MapTuple maps = AliquotParser.runAliquotParser(getAliquotFilePath());
+                    // re-parses the Report Settings XML file
+                    categoryMap = (TreeMap<Integer, Category>) reportSettingsParser.runReportSettingsParser(getReportSettingsFilePath());
+                    outputVariableNames = reportSettingsParser.getOutputVariableNames();
 
-        // if the aliquot file is not valid, show error message
-        if (maps == null) {
-            Toast.makeText(TablePainterActivity.this, "ERROR: Invalid Aliquot XML file.", Toast.LENGTH_LONG).show();
-            result = false;
-
-        } else {    // otherwise, continues parsing
-
-            // saves Report Settings path in the SharedPreferences if table successfully opened
-            saveCurrentReportSettings();
-
-            fractionMap = (TreeMap<String, Fraction>) maps.getFractionMap();
-            imageMap = (TreeMap<String, Image>) maps.getImageMap();
-
-            final String aliquot = AliquotParser.getAliquotName();
-
-            // fills the Report Setting and Aliquot arrays
-            String[][] reportSettingsArray = fillReportSettingsArray(
-                    outputVariableNames, categoryMap);
-            String[][] fractionArray = fillFractionArray(outputVariableNames,
-                    categoryMap, fractionMap, aliquot);
-
-            // sorts the table array
-            Arrays.sort(fractionArray, new Comparator<String[]>() {
-                @Override
-                public int compare(final String[] entry1, final String[] entry2) {
-
-                    final String field1 = entry1[0].trim();
-                    final String field2 = entry2[0].trim();
-
-                    Comparator<String> forNoah = new IntuitiveStringComparator<String>();
-                    return forNoah.compare(field1, field2);
                 }
-            });
 
-            // creates the final table array for displaying
-            finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
+                columnMaxLengths = new ArrayList<Integer>();
+                columnDecimals = new ArrayList<Boolean>();
 
-            // creates database entry from current entry only if NOT coming from the History table
-            saveTableInformation();
-        }
+                // gets and sets the current Aliquot path
+                String aliquotPath = retrieveAliquotFilePath();
+                setAliquotFilePath(aliquotPath);
+                previousAliquotFilePath = aliquotPath;  // saves Aliquot file path for later
+
+                // parses aliquot file and retrieves maps
+                MapTuple maps = AliquotParser.runAliquotParser(getAliquotFilePath());
+
+                // if the aliquot file is not valid, show error message
+                if (maps == null) {
+                    Toast.makeText(TablePainterActivity.this, "ERROR: Invalid Aliquot XML file.", Toast.LENGTH_LONG).show();
+                    result = false;
+
+                } else {    // otherwise, continues parsing
+
+                    // saves Report Settings path in the SharedPreferences if table successfully opened
+                    saveCurrentReportSettings();
+
+                    fractionMap = (TreeMap<String, Fraction>) maps.getFractionMap();
+                    imageMap = (TreeMap<String, Image>) maps.getImageMap();
+
+                    final String aliquot = AliquotParser.getAliquotName();
+
+                    // fills the Report Setting and Aliquot arrays
+                    String[][] reportSettingsArray = fillReportSettingsArray(
+                            outputVariableNames, categoryMap);
+                    String[][] fractionArray = fillFractionArray(outputVariableNames,
+                            categoryMap, fractionMap, aliquot);
+
+                    // sorts the table array
+                    Arrays.sort(fractionArray, new Comparator<String[]>() {
+                        @Override
+                        public int compare(final String[] entry1, final String[] entry2) {
+
+                            final String field1 = entry1[0].trim();
+                            final String field2 = entry2[0].trim();
+
+                            Comparator<String> forNoah = new IntuitiveStringComparator<String>();
+                            return forNoah.compare(field1, field2);
+                        }
+                    });
+
+                    // creates the final table array for displaying
+                    finalArray = fillArray(outputVariableNames, reportSettingsArray, fractionArray);
+
+                    // creates database entry from current entry only if NOT coming from the History table
+                    saveTableInformation();
+                }
+            }
 
         return result;
     }
@@ -505,6 +520,30 @@ public class TablePainterActivity extends Activity {
         Toast.makeText(TablePainterActivity.this, "Opening Probability Density Image...", Toast.LENGTH_LONG).show();
         Intent viewProbabilityDensityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse( imageMap.get("probability_density").getImageURL()));
         startActivity(viewProbabilityDensityIntent);
+    }
+
+    public void downloadDefaultReportSettings() {
+        // checks internet connection before downloading files
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mobileWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+        if (mobileWifi.isConnected()) {
+            Toast.makeText(TablePainterActivity.this,
+                    "ERROR: Invalid Report Settings XML file, downloading the Default Report Settings...", Toast.LENGTH_LONG).show();
+
+            // downloads the default report settings file if on WiFi
+            URLFileReader downloader = new URLFileReader(
+                    // acts just like it would on the HomeScreen
+                    TablePainterActivity.this,
+                    "HomeScreen",
+                    "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings.xml",
+                    "url");
+            downloader.startFileDownload(); // begins download
+
+        } else
+            Toast.makeText(TablePainterActivity.this,
+                    "ERROR: Invalid Report Settings XML file, please connect to WiFi or " +
+                            "download the Default Report Settings by restarting the application.", Toast.LENGTH_LONG).show();
     }
 
     /**

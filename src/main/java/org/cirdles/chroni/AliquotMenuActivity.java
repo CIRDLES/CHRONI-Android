@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Document;
@@ -43,6 +44,7 @@ public class AliquotMenuActivity extends Activity {
     public static final String USER_PREFS = "My CIRDLES Settings"; // code to access stored preferences
 
     private static final String PREF_ALIQUOT = "Current Aliquot";   // Path of the current aliquot file
+    private static final String PREF_REPORT_SETTINGS = "Current Report Settings";   // Path of the current report settings file
 
     // Base URLs for IGSN downloads
     public static String BASE_ALIQUOT_URI = "http://www.geochronportal.org/getxml.php?igsn=";
@@ -139,11 +141,10 @@ public class AliquotMenuActivity extends Activity {
         // Checks to see if user profile information has been authenticated for private file access
         // Sets appropriate hint based on if credentials are stored or not
         retrieveCredentials();
-        if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None")) {
+        if (!getGeochronUsername().contentEquals("None")&& !getGeochronPassword().contentEquals("None"))
             igsnText.setHint("Profile information stored. Private files enabled!");
-        } else {
+        else
             igsnText.setHint("No profile information stored. Private files disabled.");
-        }
 
         igsnDownloadButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
         igsnDownloadButton.setOnClickListener(new View.OnClickListener() {
@@ -186,6 +187,31 @@ public class AliquotMenuActivity extends Activity {
 
         });
 
+        // displays the current Report Settings
+        TextView currentReportSettingsLabel = (TextView) findViewById(R.id.aliquotCurrentReportSettingsLabel);
+        currentReportSettingsLabel.setText("Current Report Settings:\n" + splitReportSettingsName(retrieveReportSettingsFileName()));
+
+    }
+
+    /**
+     * Accesses current report settings file
+     */
+    private String retrieveReportSettingsFileName() {
+        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+        return settings.getString("Current Report Settings", "Default Report Settings.xml"); // Gets current RS and if no file there, returns default as the current file
+    }
+
+    /**
+     * Splits report settings file name returning a displayable version without the entire path
+     */
+    private String splitReportSettingsName(String fileName){
+        String[] fileNameParts = fileName.split("/");
+        String name = fileNameParts[fileNameParts.length-1];
+        if (name.contains(".xml")) {    // removes '.xml' from end of name
+            String[] newParts = name.split(".xml");
+            name = newParts[0];
+        }
+        return name;
     }
 
     /**

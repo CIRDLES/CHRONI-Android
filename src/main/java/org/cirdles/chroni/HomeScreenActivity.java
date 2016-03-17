@@ -67,7 +67,7 @@ public class HomeScreenActivity extends Activity  {
             e.printStackTrace();
         }
 
-        // Waits 3.5 seconds before moving to the main menu
+        // Waits 2 seconds before moving to the main menu
         Thread timer = new Thread() {
             public void run() {
                 try {
@@ -158,11 +158,10 @@ public class HomeScreenActivity extends Activity  {
             }
 
             if (!defaultAliquotPresent) {
-                // TODO: change URL to the designated assets on https://raw.githubusercontent.com/
                 URLFileReader downloader3 = new URLFileReader(
                         HomeScreenActivity.this,
                         "HomeScreenAliquot",
-                        "http://www.geochronportal.org/getxml.php?igsn=geg000172",
+                        "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default-Aliquot-XML/Default%20Aliquot.xml",
                         "url");
                 downloader3.startFileDownload();
                 defaultAliquotPresent = true;
@@ -201,12 +200,12 @@ public class HomeScreenActivity extends Activity  {
      */
     protected  void saveCurrentAliquot() {
         // Establishes the CHRONI folders
-        File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot");
-        SharedPreferences settings = getSharedPreferences(PREF_REPORT_SETTINGS, 0);
+        File aliquotDirectory = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Aliquot");
+        SharedPreferences settings = getSharedPreferences(PREF_ALIQUOT, 0);
         SharedPreferences.Editor editor = settings.edit();
 
         // makes the Default Report Settings the current report settings
-        editor.putString("Current Report Settings", reportSettingsDirectory.getPath() + "/Default Aliquot.xml");
+        editor.putString("Current Aliquot", aliquotDirectory.getPath() + "/Default Aliquot.xml");
         editor.apply(); // Committing changes
     }
 
