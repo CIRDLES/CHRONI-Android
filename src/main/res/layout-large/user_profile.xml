@@ -27,7 +27,7 @@
         android:textColor="@color/border_grey"
         android:textSize="26sp"
         android:layout_marginStart="105dp"
-        android:layout_above="@+id/profileEraseButton"
+        android:layout_above="@+id/fileBrowserHomeButton"
         android:layout_marginBottom="60dp" />
 
     <EditText
@@ -88,9 +88,9 @@
         android:text="Home"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:layout_alignBottom="@+id/profileEraseButton"
-        android:layout_toEndOf="@+id/profileEraseButton"
-        android:layout_marginStart="25dp" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/validationText"
@@ -101,7 +101,8 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/TextView01"
         android:layout_marginTop="50dp"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_toLeftOf="@+id/fileBrowserHomeButton" />
 
     <Button
         android:id="@+id/profileEraseButton"
@@ -113,9 +114,10 @@
         android:text="Reset"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="60dp" />
+        android:layout_alignParentBottom="false"
+        android:layout_alignBottom="@+id/fileBrowserHomeButton"
+        android:layout_toRightOf="@+id/fileBrowserHomeButton"
+        android:layout_marginLeft="25dp" />
 
     <Button
         android:id="@+id/profileValidateButton"
@@ -128,9 +130,9 @@
         android:text="Validate"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:layout_toStartOf="@+id/profileEraseButton"
-        android:layout_alignBottom="@+id/profileEraseButton"
-        android:layout_marginEnd="25dp" />
+        android:layout_alignBottom="@+id/fileBrowserHomeButton"
+        android:layout_marginEnd="25dp"
+        android:layout_toLeftOf="@+id/fileBrowserHomeButton" />
 
     <ImageView
         android:id="@+id/imageView"

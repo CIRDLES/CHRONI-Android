@@ -14,7 +14,8 @@
         android:textColor="@color/border_grey"
         android:textSize="65sp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/logoImageView" />
+        android:layout_below="@+id/logoImageView"
+        android:layout_marginTop="-20dp" />
 
 
     <Button
@@ -35,7 +36,7 @@
     <TextView
         android:id="@+id/aboutText"
         android:layout_width="wrap_content"
-        android:layout_height="575dp"
+        android:layout_height="520dp"
         android:ems="10"
         android:layout_gravity="center"
         android:gravity="center"
@@ -64,9 +65,10 @@
         android:layout_alignWithParentIfMissing="false"
         android:clickable="false"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_alignParentRight="false"
-        android:layout_toRightOf="@+id/fileBrowserHomeButton" />
+        android:layout_toRightOf="@+id/fileBrowserHomeButton"
+        android:layout_marginLeft="30dp" />
 
     <ImageView
         android:layout_width="145dp"
@@ -75,6 +77,6 @@
         android:src="@drawable/cirdles_logo_text_xhdpi"
         android:layout_alignParentLeft="false"
         android:layout_toLeftOf="@+id/fileBrowserHomeButton"
-        android:layout_marginTop="3dp" />
+        android:layout_marginTop="13dp" />
 
 </RelativeLayout>

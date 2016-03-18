@@ -65,7 +65,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
         android:layout_alignParentRight="false"
-        android:layout_toRightOf="@+id/fileBrowserHomeButton" />
+        android:layout_toRightOf="@+id/fileBrowserHomeButton"
+        android:layout_marginLeft="40dp" />
 
     <ImageView
         android:layout_width="220dp"
