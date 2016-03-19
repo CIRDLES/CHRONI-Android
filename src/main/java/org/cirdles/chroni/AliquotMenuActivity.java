@@ -4,7 +4,6 @@ package org.cirdles.chroni;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -13,7 +12,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,7 +53,6 @@ public class AliquotMenuActivity extends Activity {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.aliquot_select);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         RelativeLayout aliquotMenuLayout =(RelativeLayout)findViewById(R.id.aliquotSelectBackground);
 

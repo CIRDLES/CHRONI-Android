@@ -1,28 +1,22 @@
 package org.cirdles.chroni;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -43,7 +37,6 @@ public class HistoryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.history);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         //Places background image on layout due to theme overriding
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.historyBackground);

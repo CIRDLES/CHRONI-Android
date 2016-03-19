@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Environment;
 import android.view.Menu;
@@ -41,7 +40,6 @@ public class MainMenuActivity extends Activity {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.main_menu);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
          // Places background image on layout due to theme overriding
          RelativeLayout layout =(RelativeLayout)findViewById(R.id.mainMenuBackground);

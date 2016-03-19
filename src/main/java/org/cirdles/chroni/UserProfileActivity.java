@@ -26,7 +26,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,14 +44,12 @@ public class UserProfileActivity extends Activity {
     private TextView validationText;
 
     private String geochronUsername, geochronPassword; // the login values on file
-    private boolean isValidated = false; // the current status of user profile credentials
 
     public static final String USER_PREFS = "My CIRDLES Settings";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.user_profile);
 
@@ -206,7 +203,6 @@ public class UserProfileActivity extends Activity {
                         if (doc.getElementsByTagName("valid").getLength() > 0) {
                             valid = doc.getElementsByTagName("valid").item(0)
                                     .getTextContent().trim().equalsIgnoreCase("yes");
-                            setValidated(valid);
                         }
                     }
                     if (valid) {
@@ -309,10 +305,6 @@ public class UserProfileActivity extends Activity {
     public void setGeochronPassword(String pass) {
 	    this.geochronPassword = pass;
     }
-
-	public void setValidated(boolean valid) {
-		this.isValidated = valid;
-	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -23,8 +23,8 @@
         
         <activity
             android:name="org.cirdles.chroni.HomeScreenActivity"
-             android:screenOrientation="sensorPortrait"
-             android:noHistory="true">
+            android:screenOrientation="user"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -33,16 +33,16 @@
         
         <activity
             android:name="org.cirdles.chroni.MainMenuActivity"
-            android:screenOrientation="sensorPortrait">
+            android:screenOrientation="user">
             <intent-filter>
                 <action android:name="android.intent.action.MAINMENU" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         
-                <activity
+        <activity
             android:name="org.cirdles.chroni.UserProfileActivity"
-            android:screenOrientation="sensorPortrait"
+            android:screenOrientation="user"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.USERPROFILE" />
@@ -52,7 +52,7 @@
         
          <activity
             android:name="org.cirdles.chroni.HistoryActivity"
-            android:screenOrientation="sensorPortrait">
+            android:screenOrientation="user">
             <intent-filter>
                 <action android:name="android.intent.action.HISTORY" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -61,7 +61,7 @@
         
         <activity 
            android:name="org.cirdles.chroni.FilePickerActivity"
-           android:screenOrientation="sensorPortrait"
+           android:screenOrientation="user"
            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.FILEPICKER" />
@@ -71,7 +71,7 @@
 
         <activity
             android:name="org.cirdles.chroni.AliquotMenuActivity"
-            android:screenOrientation="sensorPortrait"
+            android:screenOrientation="user"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.ALIQUOTMENU" />
@@ -81,7 +81,7 @@
         
         <activity
             android:name="org.cirdles.chroni.ReportSettingsMenuActivity"
-            android:screenOrientation="sensorPortrait"
+            android:screenOrientation="user"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.REPORTSETTINGSMENU" />
@@ -91,7 +91,7 @@
 
          <activity
             android:name="org.cirdles.chroni.TablePainterActivity"
-            android:screenOrientation="sensorPortrait">
+            android:screenOrientation="user">
             <intent-filter>
                 <action android:name="android.intent.action.DISPLAY" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -100,7 +100,7 @@
 
         <activity
             android:name="org.cirdles.chroni.ViewAnalysisImageActivity"
-            android:screenOrientation="sensorPortrait">
+            android:screenOrientation="user">
             <intent-filter>
                 <action android:name="android.intent.action.VIEWANALYSISIMAGE" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -109,7 +109,7 @@
 
         <activity
             android:name="org.cirdles.chroni.AboutActivity"
-            android:screenOrientation="sensorPortrait"
+            android:screenOrientation="user"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.ABOUT" />

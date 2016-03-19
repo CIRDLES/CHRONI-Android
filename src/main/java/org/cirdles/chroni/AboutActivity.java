@@ -9,7 +9,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -29,7 +28,6 @@ public class AboutActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.about);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         // Makes About text scrollable
         TextView aboutText = (TextView) findViewById(R.id.aboutText);
