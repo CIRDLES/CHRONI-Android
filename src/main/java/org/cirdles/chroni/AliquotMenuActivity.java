@@ -32,8 +32,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class AliquotMenuActivity extends Activity {
 
     // Layout variables
-    private Button aliquotFileSubmitButton; // button submits aliquot file for viewing
-    private Button igsnDownloadButton; // button submits current inputted IGSN for downloading
     private EditText aliquotSelectedFileText; // holds the currently selected file name
     private EditText igsnText; // holds user-inputted IGSN
 
@@ -72,7 +70,7 @@ public class AliquotMenuActivity extends Activity {
 
         aliquotSelectedFileText = (EditText) findViewById(R.id.aliquotFileSelectText); // Contains selected aliquot file name
 
-        aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
+        Button aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
         aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
             // Submits aliquot file to display activity for parsing and displaying in table
             public void onClick(View v) {
@@ -143,7 +141,7 @@ public class AliquotMenuActivity extends Activity {
         else
             igsnText.setHint("No profile information stored. Private files disabled.");
 
-        igsnDownloadButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
+        Button igsnDownloadButton = (Button) findViewById(R.id.aliquotIGSNSubmitButton);
         igsnDownloadButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -336,23 +334,41 @@ public class AliquotMenuActivity extends Activity {
         return true;
     }
 
+    /**
+     * The purpose of overriding this method is to alter/delete some of the menu items from the default
+     * menu, as they are not wanted in this Activity. Doing so prevents the unnecessary stacking of
+     * Activities by making the user follow the intended flow of Activities in the application.
+     *
+     * @param menu the menu that has been inflated in the Activity
+     * @return true so that the menu is displayed
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // removes the History item from the menu
+        MenuItem historyItem = menu.findItem(R.id.historyMenu);
+        historyItem.setVisible(false);
+
+        // removes the Edit Credentials item from the menu
+        MenuItem credentialsItem = menu.findItem(R.id.editProfileMenu);
+        credentialsItem.setVisible(false);
+
+        // if coming from a Table Activity, changes Main Menu item to say "Back to Table"
+        if (getIntent().hasExtra("From_Table")) {
+            if (getIntent().getStringExtra("From_Table").equals("true")) {
+                MenuItem backItem = menu.findItem(R.id.returnToMenu);
+                backItem.setTitle("Back to Table");
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu: // Takes user to main menu
-                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-                startActivity(openMainMenu);
-                return true;
-            case R.id.editProfileMenu: //Takes user to credentials screen
-                Intent openUserProfile = new Intent(
-                        "android.intent.action.USERPROFILE");
-                startActivity(openUserProfile);
-                return true;
-            case R.id.historyMenu: //Takes user to credentials screen
-                Intent openHistoryTable = new Intent(
-                        "android.intent.action.HISTORY");
-                startActivity(openHistoryTable);
+            case R.id.returnToMenu: // Takes user to main menu by finishing the Activity
+                finish();
                 return true;
             case R.id.viewAliquotsMenu: // Takes user to aliquot menu
                 Intent openAliquotFiles = new Intent(

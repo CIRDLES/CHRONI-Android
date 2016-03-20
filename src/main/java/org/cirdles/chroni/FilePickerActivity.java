@@ -385,9 +385,12 @@ public class FilePickerActivity extends ListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.delete: // Takes user to main menu
+            case R.id.delete:	// Takes user to main menu
                 toggleDelete();
                 return true;
+			case R.id.exitFilePickerMenu:	// Exits the File Picker Activity
+				finish();
+				return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

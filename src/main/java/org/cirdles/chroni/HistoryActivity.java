@@ -185,20 +185,33 @@ public class HistoryActivity extends Activity {
         return true;
     }
 
+    /**
+     * The purpose of overriding this method is to alter/delete some of the menu items from the default
+     * menu, as they are not wanted in this Activity. Doing so prevents the unnecessary stacking of
+     * Activities by making the user follow the intended flow of Activities in the application.
+     *
+     * @param menu the menu that has been inflated in the Activity
+     * @return true so that the menu is displayed
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // removes the History item from the menu
+        MenuItem historyItem = menu.findItem(R.id.historyMenu);
+        historyItem.setVisible(false);
+
+        // removes the Edit Credentials item from the menu
+        MenuItem credentialsItem = menu.findItem(R.id.editProfileMenu);
+        credentialsItem.setVisible(false);
+
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu: // Takes user to main menu
-                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-                startActivity(openMainMenu);
-                return true;
-            case R.id.editProfileMenu: //Takes user to credentials screen
-                Intent openUserProfile = new Intent(
-                        "android.intent.action.USERPROFILE");
-                startActivity(openUserProfile);
-                return true;
-            case R.id.historyMenu: // Already on the history menu, so just return true
+            case R.id.returnToMenu: // Takes user to main menu by finishing the Activity
+                finish();
                 return true;
             case R.id.viewAliquotsMenu: // Takes user to aliquot menu
                 Intent openAliquotFiles = new Intent(

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
@@ -1246,7 +1245,7 @@ public class TablePainterActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.exitTable:
+            case R.id.exitMenu:
                 finish();
                 return true;
 
