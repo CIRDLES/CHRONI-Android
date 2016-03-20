@@ -26,7 +26,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,14 +44,12 @@ public class UserProfileActivity extends Activity {
     private TextView validationText;
 
     private String geochronUsername, geochronPassword; // the login values on file
-    private boolean isValidated = false; // the current status of user profile credentials
 
     public static final String USER_PREFS = "My CIRDLES Settings";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.user_profile);
 
@@ -206,7 +203,6 @@ public class UserProfileActivity extends Activity {
                         if (doc.getElementsByTagName("valid").getLength() > 0) {
                             valid = doc.getElementsByTagName("valid").item(0)
                                     .getTextContent().trim().equalsIgnoreCase("yes");
-                            setValidated(valid);
                         }
                     }
                     if (valid) {
@@ -279,7 +275,7 @@ public class UserProfileActivity extends Activity {
        try {
            // Create a builder factory
            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-           factory.setValidating( false );
+           factory.setValidating(false);
 
            // Create the builder and parse the file
            doc = factory.newDocumentBuilder().parse( XMLfile );
@@ -310,10 +306,6 @@ public class UserProfileActivity extends Activity {
 	    this.geochronPassword = pass;
     }
 
-	public void setValidated(boolean valid) {
-		this.isValidated = valid;
-	}
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -321,20 +313,33 @@ public class UserProfileActivity extends Activity {
         return true;
     }
 
+    /**
+     * The purpose of overriding this method is to alter/delete some of the menu items from the default
+     * menu, as they are not wanted in this Activity. Doing so prevents the unnecessary stacking of
+     * Activities by making the user follow the intended flow of Activities in the application.
+     *
+     * @param menu the menu that has been inflated in the Activity
+     * @return true so that the menu is displayed
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // removes the History item from the menu
+        MenuItem historyItem = menu.findItem(R.id.historyMenu);
+        historyItem.setVisible(false);
+
+        // removes the Edit Credentials item from the menu
+        MenuItem credentialsItem = menu.findItem(R.id.editProfileMenu);
+        credentialsItem.setVisible(false);
+
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu: // Takes user to main menu
-                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-                startActivity(openMainMenu);
-                return true;
-            case R.id.editProfileMenu: // Already on the profile menu, so just return true
-                return true;
-            case R.id.historyMenu: //Takes user to credentials screen
-                Intent openHistoryTable = new Intent(
-                        "android.intent.action.HISTORY");
-                startActivity(openHistoryTable);
+            case R.id.returnToMenu: // Takes user to main menu by finishing the Activity
+                finish();
                 return true;
             case R.id.viewAliquotsMenu: // Takes user to aliquot menu
                 Intent openAliquotFiles = new Intent(

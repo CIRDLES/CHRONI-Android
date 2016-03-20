@@ -43,7 +43,6 @@ public class ReportSettingsMenuActivity extends Activity {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
         setContentView(R.layout.report_settings_select);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         // Sets up background
         RelativeLayout layout =(RelativeLayout)findViewById(R.id.reportSettingsBackground);
@@ -226,23 +225,41 @@ public class ReportSettingsMenuActivity extends Activity {
         return true;
     }
 
+    /**
+     * The purpose of overriding this method is to alter/delete some of the menu items from the default
+     * menu, as they are not wanted in this Activity. Doing so prevents the unnecessary stacking of
+     * Activities by making the user follow the intended flow of Activities in the application.
+     *
+     * @param menu the menu that has been inflated in the Activity
+     * @return true so that the menu is displayed
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // removes the History item from the menu
+        MenuItem historyItem = menu.findItem(R.id.historyMenu);
+        historyItem.setVisible(false);
+
+        // removes the Edit Credentials item from the menu
+        MenuItem credentialsItem = menu.findItem(R.id.editProfileMenu);
+        credentialsItem.setVisible(false);
+
+        // if coming from a Table Activity, changes Main Menu item to say "Back to Table"
+        if (getIntent().hasExtra("From_Table")) {
+            if (getIntent().getStringExtra("From_Table").equals("true")) {
+                MenuItem backItem = menu.findItem(R.id.returnToMenu);
+                backItem.setTitle("Back to Table");
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.returnToMenu: // Takes user to main menu
-                Intent openMainMenu = new Intent("android.intent.action.MAINMENU");
-                startActivity(openMainMenu);
-                return true;
-            case R.id.editProfileMenu: //Takes user to credentials screen
-                Intent openUserProfile = new Intent(
-                        "android.intent.action.USERPROFILE");
-                startActivity(openUserProfile);
-                return true;
-            case R.id.historyMenu: //Takes user to credentials screen
-                Intent openHistoryTable = new Intent(
-                        "android.intent.action.HISTORY");
-                startActivity(openHistoryTable);
+            case R.id.returnToMenu: // Takes user to main menu by finishing the Activity
+                finish();
                 return true;
             case R.id.viewAliquotsMenu: // Takes user to aliquot menu
                 Intent openAliquotFiles = new Intent(

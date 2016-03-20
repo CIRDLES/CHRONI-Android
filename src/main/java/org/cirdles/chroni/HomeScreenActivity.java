@@ -16,7 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.widget.Toast;
 
 /**
  * Defines the home screen activity of the application
@@ -37,12 +36,7 @@ public class HomeScreenActivity extends Activity  {
         // sets up layout screen
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Holo);
-
         setContentView(R.layout.home_screen);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-
-        //Places background image on layout  due to theme overriding
-        RelativeLayout layout =(RelativeLayout)findViewById(R.id.homeScreenBackground);
 
         try {
             // Puts the versioning information on the layout screen
@@ -207,13 +201,6 @@ public class HomeScreenActivity extends Activity  {
         // makes the Default Report Settings the current report settings
         editor.putString("Current Aliquot", aliquotDirectory.getPath() + "/Default Aliquot.xml");
         editor.apply(); // Committing changes
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        // getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 
 }

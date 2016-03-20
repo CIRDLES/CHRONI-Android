@@ -1,7 +1,6 @@
 package org.cirdles.chroni;
 
 import java.io.File;
-import java.lang.ref.SoftReference;
 import java.util.SortedMap;
 import java.util.TreeMap;
 

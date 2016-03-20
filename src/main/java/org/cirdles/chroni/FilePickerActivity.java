@@ -65,7 +65,6 @@ public class FilePickerActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTheme(android.R.style.Theme_Holo);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         // Set the view to be shown if the list is empty
 		LayoutInflater inflator = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -386,9 +385,12 @@ public class FilePickerActivity extends ListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handles menu item selection
         switch (item.getItemId()) {
-            case R.id.delete: // Takes user to main menu
+            case R.id.delete:	// Takes user to main menu
                 toggleDelete();
                 return true;
+			case R.id.exitFilePickerMenu:	// Exits the File Picker Activity
+				finish();
+				return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
