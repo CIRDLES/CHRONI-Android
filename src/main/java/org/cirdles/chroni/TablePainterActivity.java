@@ -779,7 +779,7 @@ public class TablePainterActivity extends Activity {
     }
 
     /**
-     * Fills the Aliquot portion of the array
+     * Iterates over the TreeMaps and fills in the Aliquot portion of the array.
      *
      * @param outputVariableName keeps track of the number of columns and to retrieve value models
      * @param categoryMap used to fill table
@@ -791,10 +791,11 @@ public class TablePainterActivity extends Activity {
             ArrayList<String> outputVariableName,
             TreeMap<Integer, Category> categoryMap,
             TreeMap<String, Fraction> fractionMap, String aliquotName) {
+
         BigDecimal valueToBeRounded;
         BigDecimal roundedValue;
-        final int COLUMNS = outputVariableName.size();
-        final int ROWS = fractionMap.size();
+        final int COLUMNS = outputVariableName.size();  // overall number of columns in the array
+        final int ROWS = fractionMap.size();    // overall number of rows in the array
         String[][] fractionArray = new String[ROWS][COLUMNS];
         int arrayColumnCount = 0; // the current column number for the array
 
@@ -817,16 +818,13 @@ public class TablePainterActivity extends Activity {
                 String variableName = column.getValue().getVariableName();
                 String methodName = column.getValue().getMethodName();
 
-                // Going to iterate through all the fractions and uncertainties (IF they exist) for every column
-                Iterator<Entry<String, Fraction>> fractionIterator = fractionMap
-                        .entrySet().iterator();
                 int arrayRowCount = 0; // the current row number for the array;
                 Column uncertaintyColumn = column.getValue().getUncertaintyColumn();    // Get Uncertainty Column for later use
 
                 boolean uncertaintyColumnExists =  uncertaintyColumn != null; // See if there is an uncertainty column
 
-                while (fractionIterator.hasNext()) {
-                    Entry<String, Fraction> currentFraction = fractionIterator.next();
+                // iterates through all the fractions and uncertainties (IF they exist) for every column
+                for (Entry<String, Fraction> currentFraction : fractionMap.entrySet()) {
 
                     boolean firstDecimal = false;   // knows whether there has already been a decimal in the column
 
@@ -861,9 +859,8 @@ public class TablePainterActivity extends Activity {
 
                                 // Calculates value if column is percent uncertainty
                                 uncertaintyType = column.getValue().getUncertaintyType();
-                                if (uncertaintyType.equals("PCT")) {
+                                if (uncertaintyType.equals("PCT"))
                                     valueToBeRounded = new BigDecimal((oneSigma / initialValue) * 200);
-                                }
 
                                 // Rounds the uncertainty value based on the report settings
                                 String newValue;    // instantiate value to end up in uncertainty place
@@ -875,10 +872,8 @@ public class TablePainterActivity extends Activity {
 
                                     newValue = roundedValue.toPlainString();
 
-                                } else {
-                                    // when the uncertainty is in SIG FIG format
+                                } else  // when the uncertainty is in SIG FIG format
                                     newValue = toSignificantFiguresUncertaintyString(valueToBeRounded, uncertaintyCountOfSignificantDigits); // Rounds the uncertainty value appropriately
-                                }
 
                                 uncertaintyValue = newValue;    // save for later use
                                 fractionArray[arrayRowCount][arrayColumnCount] = newValue; // places final value in array
@@ -886,26 +881,26 @@ public class TablePainterActivity extends Activity {
                                 // checks if the value is larger than other previous values
                                 int valueLength;
                                 String[] splitList = newValue.split("\\."); // splits the value to check decimal place
+
                                 if (splitList.length > 1) { // if there is a decimal, length is the length after the decimal
                                     valueLength = splitList[1].length();
-                                    if (!columnDecimals.get(arrayColumnCount)) {    // if there hasn't already been a decimal in column
+
+                                    if (!columnDecimals.get(arrayColumnCount))  // if there hasn't already been a decimal in column
                                         firstDecimal =  true;   // this is the first decimal
-                                    }
+
                                     columnDecimals.set(arrayColumnCount, true); // adds a true to the column because it contains a decimal
 
-                                } else {    // if not, the length is the overall length
+                                } else  // if no decimal, the length is the overall length
                                     valueLength = splitList[0].length();
-                                }
 
-                                // puts the length value for the column into columnMaxLengths
-                                if (valueLength > columnMaxLengths.get(arrayColumnCount)
-                                        || firstDecimal) {
-                                    // if the value is greater than current max length or it is the first decimal
-                                    if (columnDecimals.get(arrayColumnCount) && (splitList.length > 1)) {
-                                        // if the column is a decimal and the current value is a decimal
+                                // if the value is greater than current max length OR it is the first decimal
+                                if (valueLength > columnMaxLengths.get(arrayColumnCount) || firstDecimal)
+
+                                    // puts the length value for the column into columnMaxLengths
+                                    // IF the column is a decimal and the current value is a decimal
+                                    if (columnDecimals.get(arrayColumnCount) && (splitList.length > 1))
                                         columnMaxLengths.set(arrayColumnCount, valueLength);
-                                    }
-                                }
+
                             }
                         }
 
@@ -919,11 +914,10 @@ public class TablePainterActivity extends Activity {
                     //  Fills in the FRACTION COLUMN (column on the left)
                     if (variableName.equals("")) {
                         // Value Models under Fraction don't have variable names so have to account for those specifically
-                        if(methodName.equals("getFractionID")) {
+                        if(methodName.equals("getFractionID"))
                             fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getFractionID();
-                        } else if(methodName.equals("getNumberOfGrains")) {
+                        else if(methodName.equals("getNumberOfGrains"))
                             fractionArray[arrayRowCount][arrayColumnCount] = currentFraction.getValue().getNumberOfGrains();
-                        }
 
                     } else {
                         // Retrieves the correct value model based off the variable name
@@ -948,41 +942,40 @@ public class TablePainterActivity extends Activity {
                                  *      a) if the uncertainty column is also in sig fig format
                                  *      b) if the uncertainty column is in arbitrary format
                                  */
-                                if (column.getValue().isDisplayedWithArbitraryDigitCount()) {
+                                if (column.getValue().isDisplayedWithArbitraryDigitCount())
                                     // when the report settings specifies an ARBITRARY digit
                                     // count AFTER the decimal
                                     roundedValue = valueToBeRounded.setScale(
                                             column.getValue().getCountOfSignificantDigits(),
                                             BigDecimal.ROUND_HALF_UP); // performs rounding
 
-                                } else {
+                                else {
                                     // current column is in SIG FIG format
 
                                     if (!uncertaintyType.equals("")) {  // UNCERTAINTY COLUMN EXISTS
 
                                         // if BOTH current column AND it's uncertainty column are in
                                         // SIG FIG format, use the getShape() method to find shape
-                                        if (!column.getValue().getUncertaintyColumn().isDisplayedWithArbitraryDigitCount()) {
+                                        if (!column.getValue().getUncertaintyColumn().isDisplayedWithArbitraryDigitCount())
                                             roundedValue = valueToBeRounded.setScale(
                                                     getShape(uncertaintyValue, uncertaintyType, valueToBeRounded),
                                                     BigDecimal.ROUND_HALF_UP); // performs rounding
 
-                                        } else {
+                                        else
                                             // if current column is in SIG FIG format but the
                                             // uncertainty column is in ARBITRARY format, the shape
                                             // is just the arbitrary number of digits
                                             roundedValue = valueToBeRounded.round(
                                                     new MathContext(column.getValue().getCountOfSignificantDigits(),
                                                             RoundingMode.HALF_UP));
-                                        }
 
-                                    } else {
+                                    } else
                                         // there is no uncertainty column, so round up based on
                                         // the number of significant figures
                                         roundedValue = valueToBeRounded.round(
                                                 new MathContext(column.getValue().getCountOfSignificantDigits(),
                                                         RoundingMode.HALF_UP));
-                                    }
+
                                 }
 
                                 fractionArray[arrayRowCount][arrayColumnCount] = roundedValue.toPlainString(); // Places final value in array
@@ -998,22 +991,17 @@ public class TablePainterActivity extends Activity {
                                     }
                                     columnDecimals.set(arrayColumnCount, true); // add a true to the column because it contains a decimal
 
-                                } else {    // if not, the length is the overall length
+                                } else  // if not, the length is the overall length
                                     valueLength = splitList[0].length();
-                                }
 
-                                // put the length value for the column into columnMaxLengths
-                                if (valueLength > columnMaxLengths.get(arrayColumnCount)
-                                        || firstDecimal) {
-                                    // if the value is greater than current max length or it is the first decimal
-                                    if (columnDecimals.get(arrayColumnCount) && (splitList.length > 1)) {
-                                        // if the column is a decimal and the current value is a decimal
+                                // if the value is greater than current max length or it is the first decimal
+                                if (valueLength > columnMaxLengths.get(arrayColumnCount) || firstDecimal)
+                                    // puts the length value for the column into columnMaxLengths
+                                    // IF the column is a decimal and the current value is a decimal
+                                    if (columnDecimals.get(arrayColumnCount) && (splitList.length > 1))
                                         columnMaxLengths.set(arrayColumnCount, valueLength);
-                                    }
-                                }
 
                             }
-
 
                         }
 
@@ -1026,13 +1014,14 @@ public class TablePainterActivity extends Activity {
 
                 } // done looping through fraction
 
-                //  Goes to the next column
-                if (uncertaintyColumnExists) {
-                    arrayColumnCount += 2;  // If uncertainty column exists, advance TWO columns to the right
-                }
-                else {
-                    arrayColumnCount++;     // If not, only advance ONE column to the right
-                }
+                //  goes to the next column
+                if (uncertaintyColumnExists)
+                    // if uncertainty column exists, advance TWO columns to the right
+                    arrayColumnCount += 2;
+
+                else
+                    // if not, only advance ONE column to the right
+                    arrayColumnCount++;
 
             }
 
