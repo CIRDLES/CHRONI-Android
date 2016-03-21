@@ -363,8 +363,9 @@ public class FilePickerActivity extends ListActivity {
 
 		// the button is acting as a paste button
 		if (buttonText.equals("Paste")) {
-			// only copy if a file to copy exists
-			if (copiedFile != null) {
+			// only copy if a file to copy exists AND it is not the same directory
+			if (copiedFile != null
+					&& !copiedFile.getAbsolutePath().equals(mainDirectory.getAbsolutePath() + "/" + copiedFile.getName())) {
 
 				// copies the file through the use of Streams
 				InputStream input = null;
