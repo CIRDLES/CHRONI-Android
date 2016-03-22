@@ -3,12 +3,12 @@
 
     <item
         android:id="@+id/moveFilePickerMenu"
-        android:title="Move Items"/>
+        android:title="Move Files"/>
     <item
         android:id="@+id/deleteFilePickerMenu"
-        android:title="Delete Items" />
+        android:title="Delete Files" />
     <item
         android:id="@+id/exitFilePickerMenu"
-        android:title="Exit" />
+        android:title="Close" />
 
 </menu>
