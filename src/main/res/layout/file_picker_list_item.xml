@@ -47,14 +47,15 @@
 			android:singleLine="true"
 			android:text="filename"/>
 
-		<ImageView
-			android:id="@+id/deleteButton"
-			android:layout_width="50dp"
-			android:layout_height="30dp"
-			android:src="@drawable/delete"
+		<CheckBox
+			android:id="@+id/checkBoxFilePicker"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:layout_centerVertical="true"
-			android:visibility="invisible"
-			android:layout_alignEnd="@id/file_picker_text"/>
+			android:layout_marginEnd="10dp"
+			android:visibility="gone"
+			android:layout_alignEnd="@id/file_picker_text"
+			android:focusable="false"/>
 
 
 	</RelativeLayout>
