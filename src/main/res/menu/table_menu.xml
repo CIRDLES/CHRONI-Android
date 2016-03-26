@@ -6,6 +6,6 @@
         android:title="Help"/>
     <item
         android:id="@+id/exitMenu"
-        android:title="Exit"/>
+        android:title="Exit Table"/>
 
 </menu>

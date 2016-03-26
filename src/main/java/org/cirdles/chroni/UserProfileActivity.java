@@ -182,7 +182,7 @@ public class UserProfileActivity extends Activity {
 	public void validateGeochronCredentials(final String username, final String password) {
 
         validationText.setText("");
-		String geochronCredentialsService = "http://www.geochronportal.org/credentials_service.php";
+		String geochronCredentialsService = "https://app.geosamples.org/webservices/credentials_service.php";
 
 		// Specify the information to be sent with the AsyncHttpClient
 		RequestParams params = new RequestParams(); 
@@ -234,6 +234,7 @@ public class UserProfileActivity extends Activity {
                 Toast.makeText(UserProfileActivity.this,
                         "Error " + statusCode, Toast.LENGTH_LONG)
                         .show();
+                error.printStackTrace();
             }
 
         });
@@ -241,7 +242,7 @@ public class UserProfileActivity extends Activity {
 	}
 
 
-   public static File HTTP_PostAndResponse ( byte[] data ) {
+   public static File HTTP_PostAndResponse (byte[] data) {
        File fileOut = new File(Environment.getExternalStorageDirectory() + "/CHRONI/Profile Information.xml");
 
        try {
@@ -266,7 +267,7 @@ public class UserProfileActivity extends Activity {
        return fileOut;
    }
 
-   public static org.w3c.dom.Document ConvertXMLTextToDOMdocument ( File XMLfile ) {
+   public static org.w3c.dom.Document ConvertXMLTextToDOMdocument (File XMLfile) {
        org.w3c.dom.Document doc = null;
 
        // Parses an XML file and returns a DOM document.
@@ -278,7 +279,7 @@ public class UserProfileActivity extends Activity {
            factory.setValidating(false);
 
            // Create the builder and parse the file
-           doc = factory.newDocumentBuilder().parse( XMLfile );
+           doc = factory.newDocumentBuilder().parse(XMLfile);
        } catch (SAXException e) {
            e.printStackTrace();
        } catch (ParserConfigurationException e) {

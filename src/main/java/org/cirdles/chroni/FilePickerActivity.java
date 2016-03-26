@@ -149,6 +149,7 @@ public class FilePickerActivity extends ListActivity {
 										cutFiles = null;
 
 									copiedFile = chosenFile;
+									Toast.makeText(FilePickerActivity.this, "File Copied!", Toast.LENGTH_SHORT).show();
 
 									// sets the pasteButton's visibility to visible once the file has been copied
 									Button pasteButton = (Button) findViewById(R.id.filePickerPasteButton);
@@ -163,6 +164,7 @@ public class FilePickerActivity extends ListActivity {
 
 									cutFiles = new ArrayList<File>();
 									cutFiles.add(chosenFile);
+									Toast.makeText(FilePickerActivity.this, "File Copied!", Toast.LENGTH_SHORT).show();
 
 									// sets the pasteButton's visibility to visible once the file has been copied
 									Button pasteButton = (Button) findViewById(R.id.filePickerPasteButton);
@@ -213,9 +215,17 @@ public class FilePickerActivity extends ListActivity {
 										.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 											@Override
 											public void onClick(DialogInterface dialog, int which) {
-												// if deleting the currently copied file, un-copy it
-												if (copiedFile != null && chosenFile.equals(copiedFile)) {
-													copiedFile = null;
+												// if deleting a currently copied or cut file, un-copy it
+												if ((copiedFile != null && chosenFile.equals(copiedFile))
+														|| (cutFiles != null && cutFiles.contains(chosenFile))) {
+
+													// resets the copied/cut file(s)
+													if (copiedFile != null)
+														copiedFile = null;
+													if (cutFiles != null)
+														cutFiles = null;
+
+													// and gets rid of the paste button on the bottom
 													Button pasteButton = (Button) findViewById(R.id.filePickerPasteButton);
 													pasteButton.setVisibility(View.GONE);
 												}
@@ -223,6 +233,8 @@ public class FilePickerActivity extends ListActivity {
 												// deletes the file and updates the adapter
 												chosenFile.delete();
 												mAdapter.remove(chosenFile);
+												Toast.makeText(FilePickerActivity.this, "File Deleted!", Toast.LENGTH_SHORT).show();
+
 												dialog.dismiss();
 											}
 										})
@@ -414,6 +426,7 @@ public class FilePickerActivity extends ListActivity {
 			if (cutFiles != null) {
 				boolean success = true;	// tells whether all files have been copied or not
 				boolean allDeleted = true;	// tells whether all files have been deleted or not
+				boolean filesMoved = false; // tells if any files have been moved at all
 
 				// pastes each file to the new directory one at a time
 				for (File file : cutFiles) {
@@ -424,13 +437,15 @@ public class FilePickerActivity extends ListActivity {
 
 						// same with allDeleted
 						allDeleted = allDeleted && file.delete();	// deletes the file after copying
+
+						filesMoved = true;	// files have now been moved
 					}
 				}
 
 				// inform the user of any errors (deleting or copying)
 				if (!success || !allDeleted)
 					Toast.makeText(this, "ERROR: Could not successfully move all files", Toast.LENGTH_SHORT).show();
-				else
+				else if (filesMoved)
 					Toast.makeText(this,"File(s) Moved!", Toast.LENGTH_SHORT).show();
 
 				// reset cutFiles ArrayList and Paste Button
@@ -536,8 +551,11 @@ public class FilePickerActivity extends ListActivity {
 					if (!createdSuccessfully)
 						Toast.makeText(FilePickerActivity.this, "ERROR: Folder could not be created", Toast.LENGTH_SHORT).show();
 
-					else	// if it succeeded, updates the adapter
+					else {    // if it succeeded, updates the adapter
 						mAdapter.add(newFolder);
+						Toast.makeText(FilePickerActivity.this, "Folder Created!",Toast.LENGTH_SHORT).show();
+					}
+
 				} else
 					Toast.makeText(FilePickerActivity.this, "ERROR: Invalid folder name", Toast.LENGTH_SHORT).show();
 
@@ -665,6 +683,8 @@ public class FilePickerActivity extends ListActivity {
 					if (checkbox.isChecked()) {
 						File fileToCut = mAdapter.getItem(i);
 						cutFiles.add(fileToCut);
+
+						// un-checks the checkbox
 						checkbox.setChecked(false);
 					}
 
@@ -728,33 +748,35 @@ public class FilePickerActivity extends ListActivity {
 			// only deletes items IF there are any checked off
 			if (hasCheckedItems) {
 
+				final ArrayList<File> filesToDelete = new ArrayList<File>();	// stores the files that will be deleted
+
+				// gets rid of all the checkboxes and adds the checked off files to the delete list
+				for (int i = 0; i < number; i++) {
+					View child = list.getChildAt(i);
+					CheckBox checkbox = (CheckBox) child.findViewById(R.id.checkBoxFilePicker);
+
+					if (checkbox.isChecked()) {
+						// adds the file to the list of files that will be deleted
+						filesToDelete.add(mAdapter.getItem(i));
+						// un-checks the checkbox if checked
+						checkbox.setChecked(false);
+					}
+
+					// gets rid of the checkbox
+					checkbox.setVisibility(View.GONE);
+				}
+
 				new AlertDialog.Builder(this).setMessage("File(s) will be deleted, do you wish to continue?")
 						.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								// if the user selects yes, proceeds with delete
 								boolean allDeleted = true;    // tells whether all files have been deleted or not
 
-								int counter = 0;    // stores a counter because when an item is deleted, it will be different than i
-
-								// gets rid of all the checkboxes and deletes the checked off files
-								for (int i = 0; i < number; i++) {
-									View child = list.getChildAt(i);
-									CheckBox checkbox = (CheckBox) child.findViewById(R.id.checkBoxFilePicker);
-
-									if (checkbox.isChecked()) {
-										File fileDeleting = mAdapter.getItem(counter);
-
-										// once allDeleted becomes false, it will aways be false
-										allDeleted = allDeleted && fileDeleting.delete();
-										mAdapter.remove(fileDeleting);
-										counter--;
-
-										checkbox.setChecked(false);    // un-checks the checkbox if checked
-									}
-									checkbox.setVisibility(View.GONE);    // gets rid of the checkbox
-
-									counter++;
+								// goes through and deletes the files in the list
+								for (File file : filesToDelete) {
+									// once allDeleted becomes false, it will aways be false
+									allDeleted = allDeleted && file.delete();
+									mAdapter.remove(file);
 								}
 
 								if (!allDeleted)    // alerts the user if all the files could not be deleted
@@ -768,20 +790,24 @@ public class FilePickerActivity extends ListActivity {
 						.setNegativeButton("No", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								// if user selects no, just un-checks and gets rid of checkboxes
-								for (int i=0; i<number; i++) {
-									View child = list.getChildAt(i);
-									CheckBox checkbox = (CheckBox) child.findViewById(R.id.checkBoxFilePicker);
-
-									if (checkbox.isChecked())	// un-checks checkbox
-										checkbox.setChecked(false);
-
-									checkbox.setVisibility(View.GONE);    // gets rid of it
-								}
 								dialog.dismiss();
 							}
 						})
 						.show();
+
+			} else {
+				// gets rid of all the checkboxes but doesn't add any files to delete
+				for (int i = 0; i < number; i++) {
+					View child = list.getChildAt(i);
+					CheckBox checkbox = (CheckBox) child.findViewById(R.id.checkBoxFilePicker);
+
+					if (checkbox.isChecked())
+						// un-checks the checkbox if checked
+						checkbox.setChecked(false);
+
+					// gets rid of the checkbox
+					checkbox.setVisibility(View.GONE);
+				}
 			}
 
 			// changes the bottom button text back to "Paste"
