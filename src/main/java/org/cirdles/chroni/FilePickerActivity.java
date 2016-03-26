@@ -71,6 +71,7 @@ public class FilePickerActivity extends ListActivity {
 	protected boolean inDeleteMode = false;
 	protected boolean inMovePickMode = false;
 
+	protected boolean choosingDirectory = false;	// not choosing directory unless otherwise stated
 	protected File copiedFile = null;
 	protected ArrayList<File> cutFiles = null;
 	protected Menu mOptionsMenu = null;	// stores the options menu for the Activity
@@ -134,41 +135,79 @@ public class FilePickerActivity extends ListActivity {
 				// stores the address of the file/folder that has been chosen
 				final File chosenFile = (File) parent.getItemAtPosition(position);
 
-				// only gives options if the chosen file is NOT a directory
-				if (!chosenFile.isDirectory()) {
-					// brings up a Dialog box and asks the user if they want to copy or delete the file
-					CharSequence[] options = {"Copy", "Move", "Delete"};    // the user's options
-					new AlertDialog.Builder(FilePickerActivity.this).setItems(options, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							if (which == 0) {    // copy has been chosen
-								// resets cutFiles if it contains files
-								if (cutFiles != null)
-									cutFiles = null;
+				if (!choosingDirectory) {
+					// only gives options if the chosen file is NOT a directory
+					if (!chosenFile.isDirectory()) {
+						// brings up a Dialog box and asks the user if they want to copy or delete the file
+						CharSequence[] options = {"Copy", "Move", "Delete"};    // the user's options
+						new AlertDialog.Builder(FilePickerActivity.this).setItems(options, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								if (which == 0) {    // copy has been chosen
+									// resets cutFiles if it contains files
+									if (cutFiles != null)
+										cutFiles = null;
 
-								copiedFile = chosenFile;
+									copiedFile = chosenFile;
 
-								// sets the pasteButton's visibility to visible once the file has been copied
-								Button pasteButton = (Button) findViewById(R.id.filePickerPasteButton);
-								pasteButton.setVisibility(View.VISIBLE);
+									// sets the pasteButton's visibility to visible once the file has been copied
+									Button pasteButton = (Button) findViewById(R.id.filePickerPasteButton);
+									pasteButton.setVisibility(View.VISIBLE);
 
-								dialog.dismiss();
+									dialog.dismiss();
 
-							} else if (which == 1) {	// move has been chosen
-								// resets copiedFile if it has a file in it
-								if (copiedFile != null)
-									copiedFile = null;
+								} else if (which == 1) {    // move has been chosen
+									// resets copiedFile if it has a file in it
+									if (copiedFile != null)
+										copiedFile = null;
 
-								cutFiles = new ArrayList<File>();
-								cutFiles.add(chosenFile);
+									cutFiles = new ArrayList<File>();
+									cutFiles.add(chosenFile);
 
-								// sets the pasteButton's visibility to visible once the file has been copied
-								Button pasteButton = (Button) findViewById(R.id.filePickerPasteButton);
-								pasteButton.setVisibility(View.VISIBLE);
+									// sets the pasteButton's visibility to visible once the file has been copied
+									Button pasteButton = (Button) findViewById(R.id.filePickerPasteButton);
+									pasteButton.setVisibility(View.VISIBLE);
 
-								dialog.dismiss();
+									dialog.dismiss();
 
-							} else if (which == 2) {    // delete has been chosen
+								} else if (which == 2) {    // delete has been chosen
+									// shows a new dialog asking if the user would like to delete the file or not
+									new AlertDialog.Builder(FilePickerActivity.this).setMessage("Are you sure you want to delete this file?")
+											.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(DialogInterface dialog, int which) {
+													// if deleting the currently copied file, un-copy it
+													if (copiedFile != null && chosenFile.equals(copiedFile)) {
+														copiedFile = null;
+														Button pasteButton = (Button) findViewById(R.id.filePickerPasteButton);
+														pasteButton.setVisibility(View.GONE);
+													}
+
+													// deletes the file and updates the adapter
+													chosenFile.delete();
+													mAdapter.remove(chosenFile);
+													dialog.dismiss();
+												}
+											})
+											.setNegativeButton("No", new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(DialogInterface dialog, int which) {
+													dialog.dismiss();
+												}
+											})
+											.show();
+									dialog.dismiss();
+								}
+							}
+						}).show();
+
+					} else if (chosenFile.list().length == 0) {    // can only delete directory if it's empty
+
+						// brings up a Dialog box and asks the user if they want to copy or delete the file
+						CharSequence[] options = {"Delete"};    // the user's options
+						new AlertDialog.Builder(FilePickerActivity.this).setItems(options, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
 								// shows a new dialog asking if the user would like to delete the file or not
 								new AlertDialog.Builder(FilePickerActivity.this).setMessage("Are you sure you want to delete this file?")
 										.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -194,45 +233,9 @@ public class FilePickerActivity extends ListActivity {
 											}
 										})
 										.show();
-								dialog.dismiss();
 							}
-						}
-					}).show();
-
-				} else if (chosenFile.list().length == 0) {	// can only delete directory if it's empty
-
-					// brings up a Dialog box and asks the user if they want to copy or delete the file
-					CharSequence[] options = {"Delete"};    // the user's options
-					new AlertDialog.Builder(FilePickerActivity.this).setItems(options, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// shows a new dialog asking if the user would like to delete the file or not
-							new AlertDialog.Builder(FilePickerActivity.this).setMessage("Are you sure you want to delete this file?")
-									.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(DialogInterface dialog, int which) {
-											// if deleting the currently copied file, un-copy it
-											if (copiedFile != null && chosenFile.equals(copiedFile)) {
-												copiedFile = null;
-												Button pasteButton = (Button) findViewById(R.id.filePickerPasteButton);
-												pasteButton.setVisibility(View.GONE);
-											}
-
-											// deletes the file and updates the adapter
-											chosenFile.delete();
-											mAdapter.remove(chosenFile);
-											dialog.dismiss();
-										}
-									})
-									.setNegativeButton("No", new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(DialogInterface dialog, int which) {
-											dialog.dismiss();
-										}
-									})
-									.show();
-						}
-					}).show();
+						}).show();
+					}
 				}
 
 				return true;
@@ -244,15 +247,21 @@ public class FilePickerActivity extends ListActivity {
 
 		// Set initial directory if it hasn't been already defined
 		if (mainDirectory == null) {
-			mainDirectory = Environment.getExternalStorageDirectory(); // Takes user to root directory folder
+			mainDirectory = Environment.getExternalStorageDirectory();	// Takes user to root directory folder
 
 			// Sets the initial directory based on what file the user is looking for (Aliquot or Report Settings)
 			if (intentContent.contentEquals("Aliquot_Directory"))
-				mainDirectory = new File(mainDirectory + "/CHRONI/Aliquot"); // Takes user to the Aliquot folder
-			else if (intentContent.contentEquals("Report_Settings_Directory"))    // Report Settings Menu if coming from a Dropdown Menu
+				mainDirectory = new File(mainDirectory + "/CHRONI/Aliquot");	// Takes user to the Aliquot folder
+
+			// Report Settings Menu if coming from a Dropdown Menu or the Report Settings Menu
+			else if (intentContent.contentEquals("Report_Settings_Directory")
+					|| intentContent.contentEquals("From_Report_Directory"))
 				mainDirectory = new File(mainDirectory + "/CHRONI/Report Settings");
-			else if (intentContent.contentEquals("From_Report_Directory"))    // Report Settings Menu if coming from a Report Settings Menu
-				mainDirectory = new File(mainDirectory + "/CHRONI/Report Settings");
+
+			else if (intentContent.contentEquals("Parent_Directory"))
+				choosingDirectory = true;	// choosing a directory rather than a file
+
+			// if none of these are true, the directory will be CHRONI's parent directory (externalStorageDirectory)
 		}
 
 		// Initialize the ArrayList
@@ -299,8 +308,11 @@ public class FilePickerActivity extends ListActivity {
 					// Don't add the file
 					continue;
 
-				// Add the file the ArrayAdapter
-				mFiles.add(f);
+				// Add the file the ArrayAdapter IF not choosing an import directory for importFilesActivity
+				if (!choosingDirectory)
+					mFiles.add(f);
+				else if (f.isDirectory())
+					mFiles.add(f);	// if choosing directory, only adds if it is a directory
 			}
 
 			Collections.sort(mFiles, new FileComparator());
@@ -358,9 +370,33 @@ public class FilePickerActivity extends ListActivity {
 				// Finishes the activity
 				finish();
 			} else {
-				mainDirectory = newFile;
-				// Updates the files list
-				refreshFilesList();
+				// if the user is trying the choose a directory, sends the directory's path back
+				if (choosingDirectory) {
+					// when choosing a directory for importing, display the option to step into directory
+					CharSequence[] options = {"Choose Directory", "Step Into Directory"};	// the user's options
+					new AlertDialog.Builder(FilePickerActivity.this).setItems(options, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							if (which == 0) {
+								// coming from ImportFilesActivity, so return the chosen directory
+								Intent returnImportIntent = new Intent("android.intent.action.IMPORTMENU");
+								returnImportIntent.putExtra("ImportDirectory", newFile.getAbsolutePath());
+								setResult(RESULT_OK, returnImportIntent);
+								finish();
+
+							} else if (which == 1) {
+								// steps into the new directory and refreshes files
+								mainDirectory = newFile;
+								refreshFilesList();
+								dialog.dismiss();
+							}
+						}
+					}).show();
+
+				} else {	// if not choosing a directory, updates the files list
+					mainDirectory = newFile;
+					refreshFilesList();
+				}
 			}
 
 			super.onListItemClick(l, v, position, id);
@@ -443,7 +479,7 @@ public class FilePickerActivity extends ListActivity {
 			input = new FileInputStream(fileCopying);
 			output = new FileOutputStream(newFile.getAbsolutePath());
 
-			// copies the file's contents to the new director
+			// copies the file's contents to the new directory
 			byte[] buf = new byte[1024];
 			int bytesRead;
 			while ((bytesRead = input.read(buf)) > 0) {
@@ -461,7 +497,7 @@ public class FilePickerActivity extends ListActivity {
 			try {
 				input.close();
 				output.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -629,6 +665,7 @@ public class FilePickerActivity extends ListActivity {
 					if (checkbox.isChecked()) {
 						File fileToCut = mAdapter.getItem(i);
 						cutFiles.add(fileToCut);
+						checkbox.setChecked(false);
 					}
 
 					checkbox.setVisibility(View.GONE);

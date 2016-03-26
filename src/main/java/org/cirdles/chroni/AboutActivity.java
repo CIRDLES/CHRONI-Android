@@ -62,7 +62,6 @@ public class AboutActivity extends Activity  {
         // changes the Exit item to say "Back" instead
         MenuItem exitItem = menu.findItem(R.id.exitMenu);
         exitItem.setTitle("Back");
-
         return true;
     }
 

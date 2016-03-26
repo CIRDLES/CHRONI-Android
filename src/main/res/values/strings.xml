@@ -14,6 +14,7 @@ We would like to thank the College of Charleston Department of Computer Science,
     <string name="chroni_report_settings_help_address">http://cirdles.org/projects/chroni/#reportSettingsHelp</string>
 
     <string name="back_string">Back</string>
+    <string name="title_activity_import_files">ImportFilesActivity</string>
 
 
 </resources>

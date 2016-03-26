@@ -384,6 +384,11 @@ public class AliquotMenuActivity extends Activity {
                         "Report_Settings_Directory");
                 startActivity(openReportSettingsFiles);
                 return true;
+            case R.id.importFilesMenu:  // Takes user to import files menu
+                Intent importFiles = new Intent(
+                        "android.intent.action.IMPORTFILES");
+                startActivity(importFiles);
+                return true;
             case R.id.viewRootMenu:
                 Intent openRootDirectory = new Intent(
                         "android.intent.action.FILEPICKER");

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context="org.cirdles.chroni.ImportFilesActivity">
+
+    <ImageView
+        android:id="@+id/chroniLogo"
+        android:layout_width="160dp"
+        android:layout_height="260dp"
+        android:layout_centerHorizontal="true"
+        android:maxHeight="200dp"
+        android:maxWidth="200dp"
+        android:src="@drawable/chroni_logo"
+        android:layout_marginTop="35dp" />
+
+    <TextView
+        android:id="@+id/headerText"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:text="Import Aliquot and Report Settings Files"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/border_grey"
+        android:textSize="60sp"
+        android:gravity="center"
+        android:layout_below="@+id/chroniLogo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp" />
+
+    <TextView
+        android:id="@+id/importFromText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:layout_marginStart="65dp"
+        android:textColor="@color/black"
+        android:text="Import From:"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="400dp"/>
+
+    <EditText
+        android:id="@+id/directoryChosenText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:textSize="24sp"
+        android:hint="Choose a directory"
+        android:textColor="@color/black"
+        android:inputType="none"
+        android:layout_toEndOf="@+id/importFromText"
+        android:layout_toStartOf="@+id/importDirectoryButton"
+        android:layout_alignBottom="@+id/importFromText" />
+
+    <Button
+        android:id="@+id/importDirectoryButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/light_gray_button"
+        android:textColor="#000000"
+        android:onClick="filePickerButtonPressed"
+        android:layout_marginEnd="65dp"
+        android:text="+" android:textSize="15sp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBaseline="@+id/directoryChosenText"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_below="@+id/directoryChosenText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="Import Files"
+        android:textColor="#FFFFFF"
+        android:onClick="importButtonPressed"
+        android:background="@drawable/dark_blue_button"/>
+
+    <TextView
+        android:layout_width="625dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="28sp"
+        android:layout_marginBottom="75dp"
+        android:textColor="@color/black"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:text="Aliquot and Report Settings files will be moved from the selected directory to the appropriate CHRONI directories."/>
+
+</RelativeLayout>
