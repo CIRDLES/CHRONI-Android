@@ -14,7 +14,8 @@
         android:orientation="vertical"
         android:layout_above="@+id/historyFinishButton"
         android:layout_below="@+id/testText"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="15dp"
+        android:visibility="gone">
 
         <TableLayout
             android:id="@+id/historyDatabaseTable"
