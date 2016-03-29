@@ -11,18 +11,22 @@ buildscript {
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile 'com.google.android:support-v4:r7'
-    compile 'com.github.japgolly.android:svg-android:2.0.6'
     compile 'com.loopj.android:android-async-http:1.4.8'
+
+    compile ('com.github.cirdles:geosamples:v1.0.1') {
+        exclude group: 'org.apache.httpcomponents'
+        exclude group: 'commons-logging'
+    }
 
     testCompile 'junit:junit:4.12'
 }
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion "20.0.0"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
 }
 
 repositories {
     jcenter()
+    maven { url "https://jitpack.io" }
 }
