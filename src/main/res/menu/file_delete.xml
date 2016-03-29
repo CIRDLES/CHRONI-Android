@@ -2,10 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/delete"
-        android:title="Delete" />
+        android:id="@+id/moveFilePickerMenu"
+        android:title="Move Files"/>
+    <item
+        android:id="@+id/deleteFilePickerMenu"
+        android:title="Delete Files" />
     <item
         android:id="@+id/exitFilePickerMenu"
-        android:title="Exit" />
+        android:title="Close" />
 
 </menu>

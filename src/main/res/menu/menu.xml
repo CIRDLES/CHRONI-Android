@@ -10,6 +10,10 @@
     <item
         android:id="@+id/editProfileMenu"
         android:title="Edit Credentials"/>
+
+    <item
+        android:id="@+id/importFilesMenu"
+        android:title="Import Files"/>
     
     <item android:id="@+id/viewFilesMenu"
         android:title="View Files" >

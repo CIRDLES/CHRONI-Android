@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -53,6 +54,10 @@ public class HistoryActivity extends Activity {
         final CHRONIDatabaseHelper myAliquots = new CHRONIDatabaseHelper(this); // used to access the stored CHRONI database
 
         if (!myAliquots.isEmpty()) {
+            // first makes the table visible to the user
+            View tableLayout = findViewById(R.id.tableLayout);
+            tableLayout.setVisibility(View.VISIBLE);
+
             // Collects information from the database if it isn't empty
             final String[][] database = myAliquots.fillTableData(); // completes 2D array of aliquot table for history
             int ROWS = 11; // rows for last five MRV entries plus an extra row reserved for header
@@ -226,6 +231,11 @@ public class HistoryActivity extends Activity {
                 openReportSettingsFiles.putExtra("Default_Directory",
                         "Report_Settings_Directory");
                 startActivity(openReportSettingsFiles);
+                return true;
+            case R.id.importFilesMenu:  // Takes user to import files menu
+                Intent importFiles = new Intent(
+                        "android.intent.action.IMPORTFILES");
+                startActivity(importFiles);
                 return true;
             case R.id.viewRootMenu:
                 Intent openRootDirectory = new Intent(
