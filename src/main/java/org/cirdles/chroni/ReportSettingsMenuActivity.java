@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -243,6 +242,9 @@ public class ReportSettingsMenuActivity extends Activity {
         MenuItem credentialsItem = menu.findItem(R.id.editProfileMenu);
         credentialsItem.setVisible(false);
 
+        MenuItem viewFiles = menu.findItem(R.id.viewFilesMenu);
+        viewFiles.setVisible(false);
+
         // if coming from a Table Activity, changes Main Menu item to say "Back to Table"
         if (getIntent().hasExtra("From_Table")) {
             if (getIntent().getStringExtra("From_Table").equals("true")) {
@@ -272,8 +274,8 @@ public class ReportSettingsMenuActivity extends Activity {
                 Intent openReportSettingsFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openReportSettingsFiles.putExtra("Default_Directory",
-                        "Report_Settings_Directory");
-                startActivity(openReportSettingsFiles);
+                        "From_Report_Directory");
+                startActivityForResult(openReportSettingsFiles, 1);
                 return true;
             case R.id.importFilesMenu:  // Takes user to import files menu
                 Intent importFiles = new Intent(

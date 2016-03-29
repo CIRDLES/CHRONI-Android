@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -207,6 +206,9 @@ public class HistoryActivity extends Activity {
         // removes the Edit Credentials item from the menu
         MenuItem credentialsItem = menu.findItem(R.id.editProfileMenu);
         credentialsItem.setVisible(false);
+
+        MenuItem viewFiles = menu.findItem(R.id.viewFilesMenu);
+        viewFiles.setVisible(false);
 
         return true;
     }

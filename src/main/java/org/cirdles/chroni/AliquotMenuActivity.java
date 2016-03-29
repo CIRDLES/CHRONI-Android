@@ -62,13 +62,19 @@ public class AliquotMenuActivity extends Activity {
             public void onClick(View v) {
                 // Opens file picker activity to main menu
                 Intent openFilePicker = new Intent("android.intent.action.FILEPICKER");
-                openFilePicker.putExtra("Default_Directory", "Aliquot_Directory");
+                openFilePicker.putExtra("Default_Directory", "From_Aliquot_Directory");
                 startActivityForResult(openFilePicker, 1);  // Opens FilePicker and waits for it to return an Extra (SEE onActivityResult())
             }
         });
 
 
         aliquotSelectedFileText = (EditText) findViewById(R.id.aliquotFileSelectText); // Contains selected aliquot file name
+
+        // sets the Aliquot file when one has already been selected (through "View Files" menu)
+        if (getIntent().hasExtra("AliquotXMLFileName")) {
+            String aliquotPath = getIntent().getStringExtra("AliquotXMLFileName");
+            aliquotSelectedFileText.setText(splitReportSettingsName(aliquotPath));
+        }
 
         Button aliquotFileSubmitButton = (Button) findViewById(R.id.aliquotFileSubmitButton);
         aliquotFileSubmitButton.setOnClickListener(new View.OnClickListener() {
@@ -352,6 +358,9 @@ public class AliquotMenuActivity extends Activity {
         MenuItem credentialsItem = menu.findItem(R.id.editProfileMenu);
         credentialsItem.setVisible(false);
 
+        MenuItem viewFiles = menu.findItem(R.id.viewFilesMenu);
+        viewFiles.setVisible(false);
+
         // if coming from a Table Activity, changes Main Menu item to say "Back to Table"
         if (getIntent().hasExtra("From_Table")) {
             if (getIntent().getStringExtra("From_Table").equals("true")) {
@@ -374,8 +383,8 @@ public class AliquotMenuActivity extends Activity {
                 Intent openAliquotFiles = new Intent(
                         "android.intent.action.FILEPICKER");
                 openAliquotFiles.putExtra("Default_Directory",
-                        "Aliquot_Directory");
-                startActivity(openAliquotFiles);
+                        "From_Aliquot_Directory");
+                startActivityForResult(openAliquotFiles, 1);
                 return true;
             case R.id.viewReportSettingsMenu: // Takes user to report settings menu
                 Intent openReportSettingsFiles = new Intent(

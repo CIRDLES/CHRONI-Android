@@ -162,7 +162,7 @@ public class FilePickerActivity extends ListActivity {
 									if (copiedFile != null)
 										copiedFile = null;
 
-									cutFiles = new ArrayList<File>();
+									cutFiles = new ArrayList<>();
 									cutFiles.add(chosenFile);
 									Toast.makeText(FilePickerActivity.this, "File Copied!", Toast.LENGTH_SHORT).show();
 
@@ -262,7 +262,8 @@ public class FilePickerActivity extends ListActivity {
 			mainDirectory = Environment.getExternalStorageDirectory();	// Takes user to root directory folder
 
 			// Sets the initial directory based on what file the user is looking for (Aliquot or Report Settings)
-			if (intentContent.contentEquals("Aliquot_Directory"))
+			if (intentContent.contentEquals("Aliquot_Directory")
+					|| intentContent.contentEquals("From_Aliquot_Directory"))
 				mainDirectory = new File(mainDirectory + "/CHRONI/Aliquot");	// Takes user to the Aliquot folder
 
 			// Report Settings Menu if coming from a Dropdown Menu or the Report Settings Menu
@@ -277,7 +278,7 @@ public class FilePickerActivity extends ListActivity {
 		}
 
 		// Initialize the ArrayList
-		mFiles = new ArrayList<File>();
+		mFiles = new ArrayList<>();
 
 		// Set the ListAdapter
 		mAdapter = new FilePickerListAdapter(this, mFiles);
@@ -354,11 +355,15 @@ public class FilePickerActivity extends ListActivity {
 			// If item selected is a file (and not a directory), allows user to select file
 			if (newFile.isFile()) {
 				// Sends back selected file name
-				if (intentContent.contentEquals("Aliquot_Directory")) {
+				if (intentContent.contentEquals("From_Aliquot_Directory")) {
 					Intent returnAliquotIntent = new Intent("android.intent.action.ALIQUOTMENU");
 					returnAliquotIntent.putExtra("AliquotXMLFileName", newFile.getAbsolutePath());
 					setResult(RESULT_OK, returnAliquotIntent);    // Returns Extra to AliquotMenuActivity
-					Toast.makeText(this, "File Name: " + newFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+
+				} else if (intentContent.contentEquals("Aliquot_Directory")) {
+					Intent newAliquotIntent = new Intent("android.intent.action.ALIQUOTMENU");
+					newAliquotIntent.putExtra("AliquotXMLFileName", newFile.getAbsolutePath());
+					startActivity(newAliquotIntent);	// starts a new Aliquot activity because the user was not originally in one
 
 					// If coming from any menu (by using the dropdown menu)
 				} else if (intentContent.contentEquals("Report_Settings_Directory")) {
@@ -371,16 +376,10 @@ public class FilePickerActivity extends ListActivity {
 					Intent returnRSIntent = new Intent("android.intent.action.REPORTSETTINGSMENU");
 					returnRSIntent.putExtra("NewReportSettingsXMLFileName", newFile.getAbsolutePath());
 					setResult(RESULT_OK, returnRSIntent);   // Return to previous Report Settings Menu with the new Report Settings
-
-				} else if (intentContent.contentEquals("Root_Directory")) {
-					Intent openRSMenu = new Intent("android.intent.action.MAINMENU");
-					openRSMenu.putExtra("XMLFileName", newFile.getAbsolutePath());
-					Toast.makeText(this, "Please move your selected file to one of the CHRONI directories.", Toast.LENGTH_SHORT).show();
-					startActivity(openRSMenu);
 				}
 
-				// Finishes the activity
 				finish();
+
 			} else {
 				// if the user is trying the choose a directory, sends the directory's path back
 				if (choosingDirectory) {
@@ -670,7 +669,7 @@ public class FilePickerActivity extends ListActivity {
 		if (inMovePickMode) {
 			mOptionsMenu.findItem(R.id.deleteFilePickerMenu).setVisible(true);	// puts the delete items option back
 
-			cutFiles = new ArrayList<File>();	// initializes cutFiles to add files to
+			cutFiles = new ArrayList<>();	// initializes cutFiles to add files to
 
 			// only adds files IF the user has pressed done (executeMove will be true)
 			if (executeMove) {
@@ -748,7 +747,7 @@ public class FilePickerActivity extends ListActivity {
 			// only deletes items IF there are any checked off
 			if (hasCheckedItems) {
 
-				final ArrayList<File> filesToDelete = new ArrayList<File>();	// stores the files that will be deleted
+				final ArrayList<File> filesToDelete = new ArrayList<>();	// stores the files that will be deleted
 
 				// gets rid of all the checkboxes and adds the checked off files to the delete list
 				for (int i = 0; i < number; i++) {

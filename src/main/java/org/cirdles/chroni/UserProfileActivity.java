@@ -332,6 +332,9 @@ public class UserProfileActivity extends Activity {
         MenuItem credentialsItem = menu.findItem(R.id.editProfileMenu);
         credentialsItem.setVisible(false);
 
+        MenuItem viewFiles = menu.findItem(R.id.viewFilesMenu);
+        viewFiles.setVisible(false);
+
         return true;
     }
 

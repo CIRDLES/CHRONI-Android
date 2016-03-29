@@ -38,6 +38,10 @@
         android:ems="10"
         android:hint="Select a file from this device"
         android:textColor="@color/black"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:textSize="25sp"
         android:layout_alignBaseline="@+id/reportSettingsFileSelectButton"
         android:layout_toStartOf="@+id/reportSettingsFileSelectButton" />

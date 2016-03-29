@@ -38,6 +38,10 @@
         android:hint="Select a file from this device"
         android:layout_toEndOf="@+id/textView2"
         android:layout_marginStart="20dp"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:layout_alignBottom="@id/textView2"
         android:textColor="@color/black"
         android:textSize="20sp" />
