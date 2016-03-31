@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/chroniLogo"
-        android:layout_width="160dp"
-        android:layout_height="260dp"
+        android:layout_width="165dp"
+        android:layout_height="275dp"
         android:layout_centerHorizontal="true"
         android:maxHeight="200dp"
         android:maxWidth="200dp"

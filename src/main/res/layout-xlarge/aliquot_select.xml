@@ -88,13 +88,13 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="160dp"
-        android:layout_height="260dp"
+        android:layout_width="165dp"
+        android:layout_height="275dp"
         android:layout_centerHorizontal="true"
         android:maxHeight="200dp"
         android:maxWidth="200dp"
         android:src="@drawable/chroni_logo"
-        android:layout_marginTop="35dp" />
+        android:layout_marginTop="15dp" />
 
     <TextView
         android:id="@+id/testText"

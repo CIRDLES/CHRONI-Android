@@ -84,6 +84,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="65dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/dark_blue_button"
         android:text="Home"
         android:textColor="@color/white"
@@ -93,7 +94,7 @@
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="100dp"
-        android:layout_height="140dp"
+        android:layout_height="150dp"
         android:layout_marginTop="25dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"

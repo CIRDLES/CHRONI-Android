@@ -8,7 +8,7 @@ import java.io.IOException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.http.Header;
+
 import org.xml.sax.SAXException;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -34,6 +34,8 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * This class is used to collect the information from a new user.
@@ -185,61 +187,73 @@ public class UserProfileActivity extends Activity {
 		String geochronCredentialsService = "https://app.geosamples.org/webservices/credentials_service.php";
 
 		// Specify the information to be sent with the AsyncHttpClient
-		RequestParams params = new RequestParams(); 
+		RequestParams params = new RequestParams();
 		params.put("username", username);
 		params.put("password", password);
 
 		UserVerificationClient.post(geochronCredentialsService, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-
-                File fileOut = HTTP_PostAndResponse(responseBody);
-                boolean valid = false;
-
-                if (fileOut != null) {
-                    org.w3c.dom.Document doc = ConvertXMLTextToDOMdocument(fileOut);
-
-                    if (doc != null) {
-                        if (doc.getElementsByTagName("valid").getLength() > 0) {
-                            valid = doc.getElementsByTagName("valid").item(0)
-                                    .getTextContent().trim().equalsIgnoreCase("yes");
-                        }
-                    }
-                    if (valid) {
-                        validationText.setText("Your Geochron Portal credentials are VALID!");
-                        validationText.setTextColor(Color.parseColor("#00D000"));
-
-                        // stores the credentials in settings
-                        SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putString("Geochron Username", username);
-                        editor.putString("Geochron Password", password);
-                        editor.apply();
-                        geochronUsername = username;
-                        geochronPassword = password;
-
-                    } else {
-                        validationText.setText("Your Geochron Portal credentials are INVALID!");
-                        validationText.setTextColor(Color.RED);
-                    }
-                } else {
-                    Toast.makeText(
-                            UserProfileActivity.this,
-                            "Credentials Server cannot be located.\n", Toast.LENGTH_LONG).show();
-                }
+                checkValid(responseBody, username, password);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(UserProfileActivity.this,
-                        "Error " + statusCode, Toast.LENGTH_LONG)
-                        .show();
-                error.printStackTrace();
-            }
+                // sometimes the request will fail but the responseBody will still be obtained with the correct information,
+                // so when this happens (when error is 401: Authorization Required), still checks for validation
+                if (statusCode == 401)
+                    checkValid(responseBody, username, password);
 
+                else {  // a different error has occurred
+                    Toast.makeText(UserProfileActivity.this,
+                            "Error " + statusCode + ": " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    error.printStackTrace();
+                }
+            }
         });
 
 	}
+
+    /**
+     * Checks a responseBody retrieved from a URL to see if the username and password entered are valid.
+     *
+     * @param responseBody the body obtained from the URL.
+     */
+    public void checkValid(byte[] responseBody, String username, String password) {
+
+        File fileOut = HTTP_PostAndResponse(responseBody);
+        boolean valid = false;
+
+        if (fileOut != null) {
+            org.w3c.dom.Document doc = ConvertXMLTextToDOMdocument(fileOut);
+
+            if (doc != null) {
+                if (doc.getElementsByTagName("valid").getLength() > 0)
+                    valid = doc.getElementsByTagName("valid").item(0).getTextContent().trim().equalsIgnoreCase("yes");
+            }
+
+            if (valid) {
+                validationText.setText("Your Geochron Portal credentials are VALID!");
+                validationText.setTextColor(Color.parseColor("#00D000"));
+
+                // stores the credentials in settings
+                SharedPreferences settings = getSharedPreferences(USER_PREFS, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("Geochron Username", username);
+                editor.putString("Geochron Password", password);
+                editor.apply();
+                geochronUsername = username;
+                geochronPassword = password;
+
+            } else {
+                validationText.setText("Your Geochron Portal credentials are INVALID!");
+                validationText.setTextColor(Color.RED);
+            }
+
+        } else
+            Toast.makeText(UserProfileActivity.this, "Credentials Server cannot be located.\n", Toast.LENGTH_LONG).show();
+
+    }
 
 
    public static File HTTP_PostAndResponse (byte[] data) {

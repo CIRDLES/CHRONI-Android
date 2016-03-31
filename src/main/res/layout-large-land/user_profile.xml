@@ -115,10 +115,9 @@
         android:id="@+id/validationText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/geochronUsername"
-        android:layout_alignBottom="@+id/geochronPassword"
-        android:layout_marginStart="25dp"
-        android:layout_marginBottom="10dp"
+        android:layout_toStartOf="@+id/testText"
+        android:layout_alignTop="@+id/testText"
+        android:layout_marginEnd="85dp"
         android:textSize="20sp"
         android:maxWidth="175dp"
         android:gravity="center"
@@ -142,12 +141,12 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="66dp"
+        android:layout_width="65dp"
         android:layout_height="110dp"
         android:src="@drawable/chroni_logo"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="50dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginTop="20dp"
         android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

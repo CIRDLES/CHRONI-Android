@@ -136,8 +136,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="180dp"
-        android:layout_height="300dp"
+        android:layout_width="165dp"
+        android:layout_height="275dp"
         android:src="@drawable/chroni_logo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
