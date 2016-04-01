@@ -133,7 +133,7 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="72dp"
+        android:layout_width="75dp"
         android:layout_height="120dp"
         android:layout_centerHorizontal="true"
         android:src="@drawable/chroni_logo"

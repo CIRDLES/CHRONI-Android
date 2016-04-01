@@ -50,7 +50,10 @@
         android:textSize="14sp"
         android:hint="Choose a directory"
         android:textColor="@color/black"
-        android:inputType="none"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:layout_toEndOf="@+id/importFromText"
         android:layout_toStartOf="@+id/importDirectoryButton"
         android:layout_alignBottom="@+id/importFromText" />

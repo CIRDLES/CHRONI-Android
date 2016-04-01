@@ -15,7 +15,7 @@
         android:textSize="18sp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="60dp"
-        android:layout_toStartOf="@id/aliquotIGSNSubmitButton"
+        android:layout_centerHorizontal="true"
         android:layout_marginEnd="20dp" />
 
     <Button
@@ -25,7 +25,7 @@
         android:layout_height="30dp"
         android:background="@drawable/light_gray_button"
         android:textColor="#000000"
-        android:layout_marginStart="3dp"
+        android:layout_marginStart="5dp"
         android:text="+" android:textSize="15sp"
         android:layout_toEndOf="@+id/aliquotFileSelectText"
         android:layout_alignBaseline="@+id/aliquotFileSelectText" />
@@ -38,9 +38,8 @@
         android:text="Download"
         android:layout_alignBottom="@+id/aliquotIGSNText"
         android:layout_alignParentEnd="false"
-        android:layout_toStartOf="@+id/imageView1"
-        android:layout_alignParentStart="false"
-        android:layout_marginEnd="40dp"
+        android:layout_toEndOf="@+id/aliquotIGSNText"
+        android:layout_marginStart="30dp"
         android:textColor="@color/white" />
 
     <EditText
@@ -52,7 +51,11 @@
         android:minWidth="275dp"
         android:textColor="@color/black"
         android:textSize="18sp"
-        android:layout_alignStart="@+id/aliquotIGSNText"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:layout_centerHorizontal="true"
         android:layout_above="@+id/aliquotIGSNText"
         android:layout_marginBottom="30dp" />
 

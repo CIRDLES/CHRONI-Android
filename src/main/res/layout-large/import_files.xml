@@ -8,10 +8,10 @@
 
     <ImageView
         android:id="@+id/chroniLogo"
-        android:layout_width="110dp"
-        android:layout_height="180dp"
+        android:layout_width="120dp"
+        android:layout_height="200dp"
         android:src="@drawable/chroni_logo"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15dp"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -46,7 +46,10 @@
         android:layout_marginEnd="15dp"
         android:textColor="@color/black"
         android:hint="Choose a directory"
-        android:inputType="none"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:layout_toEndOf="@+id/importFromText"
         android:layout_toStartOf="@+id/importDirectoryButton"
         android:layout_alignBottom="@+id/importFromText" />

@@ -51,6 +51,10 @@
         android:ems="10"
         android:hint="Select a file from this device"
         android:minWidth="250dp"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:textColor="@color/black"
         android:layout_marginStart="3dp"
         android:textSize="17sp"
@@ -83,8 +87,8 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="130dp"
-        android:layout_height="210dp"
+        android:layout_width="120dp"
+        android:layout_height="200dp"
         android:layout_centerHorizontal="true"
         android:maxHeight="200dp"
         android:maxWidth="200dp"

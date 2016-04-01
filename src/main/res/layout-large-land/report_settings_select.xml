@@ -38,21 +38,25 @@
         android:hint="Select a file from this device"
         android:layout_toEndOf="@+id/textView2"
         android:layout_marginStart="20dp"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:layout_alignBottom="@id/textView2"
         android:textColor="@color/black"
         android:textSize="20sp" />
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="66dp"
+        android:layout_width="65dp"
         android:layout_height="110dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="50dp"
+        android:layout_marginEnd="60dp"
         android:minHeight="200dp"
         android:minWidth="200dp"
         android:src="@drawable/chroni_logo"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="20dp" />
 
     <Button
         android:id="@+id/reportSettingsFileOpenButton"
