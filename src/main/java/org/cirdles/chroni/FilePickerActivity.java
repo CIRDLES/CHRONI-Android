@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
@@ -47,7 +48,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -75,6 +75,7 @@ public class FilePickerActivity extends ListActivity {
 	protected File copiedFile = null;
 	protected ArrayList<File> cutFiles = null;
 	protected Menu mOptionsMenu = null;	// stores the options menu for the Activity
+	protected ActionBar actionBar;
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -117,13 +118,18 @@ public class FilePickerActivity extends ListActivity {
 						View checkbox = child.findViewById(R.id.checkBoxFilePicker);
 						checkbox.setVisibility(View.GONE);
 					}
+
+					// sets the action bar at the top so that it tells the user what the current directory is
+					actionBar = getActionBar();
+					if (actionBar != null)
+						actionBar.setTitle("/" + mainDirectory.getName());
 				}
 
 				// if in delete mode or move mode, resets back to normal mode
 				if (inDeleteMode)
 					toggleDelete();
 				if (inMovePickMode)
-					toggleMove(false);	// pass false, not actually executing the move
+					toggleMove(false);    // pass false, not actually executing the move
 
 			}
 		});
@@ -277,6 +283,11 @@ public class FilePickerActivity extends ListActivity {
 			// if none of these are true, the directory will be CHRONI's parent directory (externalStorageDirectory)
 		}
 
+		// sets the action bar at the top so that it tells the user what the current directory is
+		actionBar = getActionBar();
+		if (actionBar != null)
+			actionBar.setTitle("/" + mainDirectory.getName());
+
 		// Initialize the ArrayList
 		mFiles = new ArrayList<>();
 
@@ -307,6 +318,11 @@ public class FilePickerActivity extends ListActivity {
 	 * Updates the list view to the current directory
 	 */
 	protected void refreshFilesList() {
+		// sets the action bar at the top so that it tells the user what the current directory is
+		actionBar = getActionBar();
+		if (actionBar != null)
+			actionBar.setTitle("/" + mainDirectory.getName());
+
 		// Clear the files ArrayList
 		mFiles.clear();
 
@@ -592,19 +608,12 @@ public class FilePickerActivity extends ListActivity {
 
 			File object = mObjects.get(position);
 
-			ImageView imageView = (ImageView)row.findViewById(R.id.file_picker_image);
 			TextView textView = (TextView)row.findViewById(R.id.file_picker_text);
 			// Set single line
 			textView.setSingleLine(true);
 			textView.setTextSize(24);
 
 			textView.setText(object.getName());
-			if(object.isFile())
-				// Show the file icon
-				imageView.setImageResource(R.drawable.chroni_logo);
-			else
-				// Show the folder icon
-				imageView.setImageResource(R.drawable.chroni_logo);
 
 			return row;
 		}
