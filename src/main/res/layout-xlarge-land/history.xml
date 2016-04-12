@@ -63,7 +63,6 @@
                     android:id="@+id/historyHeaderFour"
                     android:width="250dp"
                     android:height="75dp"
-                    android:text="View"
                     android:gravity="center"
                     android:padding="2dp"
                     android:textSize="28sp"
