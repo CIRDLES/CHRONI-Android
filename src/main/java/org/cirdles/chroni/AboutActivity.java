@@ -30,6 +30,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,6 +50,7 @@ public class AboutActivity extends Activity  {
         // Makes About text scrollable
         TextView aboutText = (TextView) findViewById(R.id.aboutText);
         aboutText.setMovementMethod(new ScrollingMovementMethod());
+        aboutText.setMovementMethod(LinkMovementMethod.getInstance());
 
         // Programs button for main screen
         Button aboutHomeButton = (Button) findViewById(R.id.fileBrowserHomeButton);
@@ -57,6 +59,8 @@ public class AboutActivity extends Activity  {
                 finish();
             }
         });
+
+
     }
 
     @Override
@@ -125,5 +129,6 @@ public class AboutActivity extends Activity  {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
 }
