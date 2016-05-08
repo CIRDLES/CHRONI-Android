@@ -56,6 +56,7 @@
         android:layout_marginRight="20dp"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/fileBrowserHomeButton"
+        android:autoLink="web"
         android:layout_marginTop="5dp" />
 
     <ImageView

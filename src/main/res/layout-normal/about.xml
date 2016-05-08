@@ -55,6 +55,7 @@
         android:layout_marginRight="15dp"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/fileBrowserHomeButton"
+        android:autoLink="web"
         android:layout_alignWithParentIfMissing="false"
         android:layout_marginTop="150dp" />
 
