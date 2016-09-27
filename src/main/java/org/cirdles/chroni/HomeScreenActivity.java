@@ -47,6 +47,8 @@ public class HomeScreenActivity extends Activity  {
     private boolean defaultReportSettings2Present = true;
     private boolean defaultAliquotPresent = true;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // sets up layout screen
