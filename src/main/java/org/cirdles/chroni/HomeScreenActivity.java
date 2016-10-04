@@ -18,7 +18,9 @@ package org.cirdles.chroni;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.jar.Manifest;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -27,6 +29,8 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -104,84 +108,92 @@ public class HomeScreenActivity extends Activity  {
      * Creates the necessary application directories: CIRDLES, Aliquot and Report Settings folders
      */
     protected void createDirectories() throws FileNotFoundException {
-        // establishes the CIRDLES directories
-        File chroniDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/");
-        File aliquotDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Aliquot");
-        File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Report Settings");
 
-        // gives default aliquot a path
-        File defaultAliquotDirectory = new File(reportSettingsDirectory, "Default Aliquot");
-
-        defaultReportSettingsPresent = false; // determines whether the default report settings is present or not
-        defaultReportSettings2Present = false; // determines whether the default report settings 2 is present or not
-        defaultAliquotPresent = false; // determines whether the aliquot is present or not
-
-        // creates the directories if they are not there
-        chroniDirectory.mkdirs();
-        aliquotDirectory.mkdirs();
-        reportSettingsDirectory.mkdirs();
-
-        // checks internet connection before downloading files
-        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mobileWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        // checks to see if the default Report Settings files are present
-        File[] reportSettingsFiles = reportSettingsDirectory.listFiles(); // Lists files in CHRONI directory
-        for (File f : reportSettingsFiles) {
-            if (f.getName().contentEquals("Default Report Settings.xml"))
-                defaultReportSettingsPresent = true;
-
-            if (f.getName().contentEquals("Default Report Settings 2.xml"))
-                defaultReportSettings2Present = true;
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
 
-        // checks to see if the default Aliquot file is present
-        File[] aliquotFiles = aliquotDirectory.listFiles();
-        for (File f : aliquotFiles)
-            if (f.getName().contentEquals("Default Aliquot.xml"))
-                defaultAliquotPresent = true;
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            // establishes the CIRDLES directories
+            File chroniDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/");
+            File aliquotDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Aliquot");
+            File reportSettingsDirectory = new File(Environment.getExternalStorageDirectory()+ "/CHRONI/Report Settings");
 
-        if (mobileWifi.isConnected()) {
-            // Downloads default report settings 1 if not present
-            if (!defaultReportSettingsPresent) {
-                // Downloads the default report settings file if absent
-                URLFileReader downloader = new URLFileReader(
-                        HomeScreenActivity.this,
-                        "HomeScreen",
-                        "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings.xml",
-                        "url");
-                downloader.startFileDownload();     // begins download
-                defaultReportSettingsPresent = true;
-                saveInitialLaunch();
-                saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
+            // gives default aliquot a path
+            File defaultAliquotDirectory = new File(reportSettingsDirectory, "Default Aliquot");
+
+            defaultReportSettingsPresent = false; // determines whether the default report settings is present or not
+            defaultReportSettings2Present = false; // determines whether the default report settings 2 is present or not
+            defaultAliquotPresent = false; // determines whether the aliquot is present or not
+
+            // creates the directories if they are not there
+            chroniDirectory.mkdirs();
+            aliquotDirectory.mkdirs();
+            reportSettingsDirectory.mkdirs();
+
+            // checks internet connection before downloading files
+            ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mobileWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+            // checks to see if the default Report Settings files are present
+            File[] reportSettingsFiles = reportSettingsDirectory.listFiles(); // Lists files in CHRONI directory
+            for (File f : reportSettingsFiles) {
+                if (f.getName().contentEquals("Default Report Settings.xml"))
+                    defaultReportSettingsPresent = true;
+
+                if (f.getName().contentEquals("Default Report Settings 2.xml"))
+                    defaultReportSettings2Present = true;
             }
 
-            if (!defaultReportSettings2Present) {
-                // Downloads the second default report settings file if absent
-                URLFileReader downloader2 = new URLFileReader(
-                        HomeScreenActivity.this,
-                        "HomeScreen",
-                        "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings%202.xml",
-                        "url");
-                downloader2.startFileDownload();    // begins download
-                defaultReportSettings2Present = true;
-                saveInitialLaunch();
-                saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
-            }
+            // checks to see if the default Aliquot file is present
+            File[] aliquotFiles = aliquotDirectory.listFiles();
+            for (File f : aliquotFiles)
+                if (f.getName().contentEquals("Default Aliquot.xml"))
+                    defaultAliquotPresent = true;
 
-            if (!defaultAliquotPresent) {
-                URLFileReader downloader3 = new URLFileReader(
-                        HomeScreenActivity.this,
-                        "HomeScreenAliquot",
-                        "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default-Aliquot-XML/Default%20Aliquot.xml",
-                        "url");
-                downloader3.startFileDownload();
-                defaultAliquotPresent = true;
-                saveInitialLaunch();
-                saveCurrentAliquot();
-            }
+            if (mobileWifi.isConnected()) {
+                // Downloads default report settings 1 if not present
+                if (!defaultReportSettingsPresent) {
+                    // Downloads the default report settings file if absent
+                    URLFileReader downloader = new URLFileReader(
+                            HomeScreenActivity.this,
+                            "HomeScreen",
+                            "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings.xml",
+                            "url");
+                    downloader.startFileDownload();     // begins download
+                    defaultReportSettingsPresent = true;
+                    saveInitialLaunch();
+                    saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
+                }
 
+                if (!defaultReportSettings2Present) {
+                    // Downloads the second default report settings file if absent
+                    URLFileReader downloader2 = new URLFileReader(
+                            HomeScreenActivity.this,
+                            "HomeScreen",
+                            "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default%20Report%20Settings%20XML/Default%20Report%20Settings%202.xml",
+                            "url");
+                    downloader2.startFileDownload();    // begins download
+                    defaultReportSettings2Present = true;
+                    saveInitialLaunch();
+                    saveCurrentReportSettings();    // Notes that files have been downloaded and application has been properly initialized
+                }
+
+                if (!defaultAliquotPresent) {
+                    URLFileReader downloader3 = new URLFileReader(
+                            HomeScreenActivity.this,
+                            "HomeScreenAliquot",
+                            "https://raw.githubusercontent.com/CIRDLES/cirdles.github.com/master/assets/Default-Aliquot-XML/Default%20Aliquot.xml",
+                            "url");
+                    downloader3.startFileDownload();
+                    defaultAliquotPresent = true;
+                    saveInitialLaunch();
+                    saveCurrentAliquot();
+                }
+
+            }
         }
+
 
     }
 
