@@ -35,8 +35,11 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -306,6 +309,11 @@ public class FilePickerActivity extends ListActivity {
 		if(getIntent().hasExtra(EXTRA_ACCEPTED_FILE_EXTENSIONS)) {
 			ArrayList<String> collection = getIntent().getStringArrayListExtra(EXTRA_ACCEPTED_FILE_EXTENSIONS);
 			acceptedFileExtensions = collection.toArray(new String[collection.size()]);
+		}
+
+		// if no file permissions, asks for them
+		if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 		}
 	}
 

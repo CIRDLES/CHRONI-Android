@@ -20,6 +20,7 @@ package org.cirdles.chroni;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -28,6 +29,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -208,6 +211,10 @@ public class AliquotMenuActivity extends Activity {
         TextView currentReportSettingsLabel = (TextView) findViewById(R.id.aliquotCurrentReportSettingsLabel);
         currentReportSettingsLabel.setText("Current Report Settings:\n" + splitReportSettingsName(retrieveReportSettingsFileName()));
 
+        // if no file permissions, asks for them
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
     }
 
     /**
