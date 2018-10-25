@@ -1,3 +1,9 @@
+**Warning**
+===========
+This project has been deprecated. The project has moved to a hybrid mobile solution located at: https://github.com/CIRDLES/CHRONI
+
+
+
 CHRONI
 ======
 **CHRONI** is a mobile application that presents archived data downloaded from the Geochron database in a customizable format for use by geologists in the field. Currently, the **CHRONI** application only works with Android devices. The project is led and maintained by [CIRDLES](https://cirdles.org), an undergraduate research lab at the College of Charleston in Charleston, South Carolina. 
